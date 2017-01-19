@@ -1,0 +1,28 @@
+{
+  "name": "exonum-client",
+  "description": "Client for Exonum blockchain platform",
+  "version": "1.0.0",
+  "license": "MIT",
+  "author": "BitFury Group Limited",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "publish": "browserify browser.js | uglifyjs -o exonum-client.min.js",
+    "build": "browserify browser.js | uglifyjs -o exonum-client.min.js",
+    "build-debug": "browserify browser.js -o exonum-client.js -d",
+    "test": "./node_modules/.bin/mocha --reporter spec",
+    "test-coverage": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha"
+  },
+  "dependencies": {
+    "browserify": "^13.1.1",
+    "object-assign": "^4.1.0",
+    "sha.js": "^2.4.8",
+    "tweetnacl": "^0.14.5",
+    "uglifyjs": "^2.4.10"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.2.0"
+  }
+}

@@ -1,0 +1,20 @@
+{
+    "root_hash": "55ac21c79a92f0224a2ff53b078edc416451070ada4768d93e856d28b290c8cb",
+    "list_length": 7,
+    "proof": {
+        "left": {
+            "left": {
+                "left": {
+                    "val": [
+                        1,
+                        2
+                    ]
+                }
+            },
+            "right": "7c51150809ce23d03cf1c99c0042a1577452e083b3bf4884115ecd1ac7a240e5"
+        },
+        "right": "1d6fd0070793ab34e9a5e4c62fe8df126894e2633ab2dbfd13f0868a72cb0d53"
+    },
+    "range_st": 0,
+    "range_end": 1
+}
