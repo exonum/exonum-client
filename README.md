@@ -4,7 +4,7 @@ Pure JavaScript toolkit to work with Exonum blockchain in both of browser and No
 
 #### Use in browser:
 
-```
+```html
 <script src="exonum-client.min.js"></script>
 <script>
     Exonum.hash(buffer);
@@ -13,7 +13,7 @@ Pure JavaScript toolkit to work with Exonum blockchain in both of browser and No
 
 #### Use in Node.js:
 
-```
+```javascript
 var Exonum = require('exonum-client');
 Exonum.hash(buffer);
 ```
@@ -66,7 +66,7 @@ Returns an object of format type.
 
 Here is an example. Lets declare custom format called `User` with two fields `firstName` and `lastName` of string type:
 
-```
+```javascript
 var User = Exonum.newType({
     size: 16,
     fields: {
@@ -87,7 +87,7 @@ Exonum.hash(buffer); // 22635e36303ff3ef4c86b855e57356f41483e6637136d1d2ec46ba2e
 
 Lets declare custom type `Transfer` that will use custom type `User` as one of the fields: 
 
-```
+```javascript
 var Transfer = Exonum.newType({
     size: 24,
     fields: {
@@ -116,7 +116,11 @@ Exonum.hash(buffer) // 63b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972
 
 ### Exonum.merkleProof(...)
 
+// TODO
+
 ### Exonum.merklePatriciaProof(...)
+
+// TODO
 
 ## Built-in types
 
@@ -146,9 +150,9 @@ Values range from `-9223372036854775808` to `9223372036854775807`.
 
 Please note that JavaScript limits minimum and maximum integer number.
 
-Minimum safe integer in JavaScript is `-(2^53 - 1)` which is equal to `-9007199254740991`
+Minimum safe integer in JavaScript is $`-(2^53-1)`$ which is equal to `-9007199254740991`
 
-Maximum safe integer in JavaScript is `2^53 - 1` which is equal to `9007199254740991`. 
+Maximum safe integer in JavaScript is $`2^53-1`$ which is equal to `9007199254740991`. 
 
 #### Exonum.U8
 
@@ -170,13 +174,13 @@ Values range from `0` to `4294967295`.
 
 #### Exonum.U64
 
-A Signed integer value of the length of `8` bytes.
+Unsigned integer value of the length of `8` bytes.
 
 Values range from `0` to `18446744073709551615`.
 
 Please note that JavaScript limits maximum integer number.
 
-Maximum safe integer in JavaScript is `2^53 - 1` which is equal to `9007199254740991`. 
+Maximum safe integer in JavaScript is $`2^53-1`$ which is equal to `9007199254740991`. 
 
 #### Exonum.String
 
@@ -192,7 +196,7 @@ Hexadecimal value of the length of `32` bytes.
 
 #### Exonum.Timespec
 
-Integer value of the length of `8` bytes. Represents Unix time in nanosecond.
+Unsigned integer value of the length of `8` bytes. Represents Unix time in nanosecond.
 
 #### Exonum.Bool
 
