@@ -44,7 +44,7 @@ var ThinClient = (function() {
         size: 34,
         fields: {
             variant: {type: U8, size: 1, from: 0, to: 1},
-            hash: {type: Hash, size: 32, from: 1, to: 33},
+            key: {type: Hash, size: 32, from: 1, to: 33},
             length: {type: U8, size: 1, from: 33, to: 34}
         }
     });
@@ -642,10 +642,9 @@ var ThinClient = (function() {
     /**
      * Convert binary string into array of 8-bit integers
      * @param {String} str
-     * @param {Number} length
      * @returns {Uint8Array}
      */
-    function binaryStringToUint8Array(str, length) {
+    function binaryStringToUint8Array(str) {
         var array = [];
         for (var i = 0, len = str.length; i < len; i += 8) {
             array.push(parseInt(str.substr(i, 8), 2));
@@ -729,28 +728,6 @@ var ThinClient = (function() {
      * @return {Array}
      */
     function merkleProof(rootHash, count, proofNode, range, type) {
-        var elements = [];
-        var branch = 'left';
-
-        if (!validateHexHash(rootHash)) {
-            return undefined;
-        } else if (typeof count !== 'number') {
-            console.error('Invalid value is passed as count parameter. Number expected.');
-            return undefined;
-        } else if (!isObject(proofNode)) {
-            console.error('Invalid type of proofNode parameter. Object expected.');
-            return undefined;
-        } else if (!Array.isArray(range) || range.length !== 2) {
-            console.error('Invalid type of range parameter. Array of two elements expected.');
-            return undefined;
-        } else if (typeof range[0] !== 'number' || typeof range[1] !== 'number') {
-            console.error('Invalid value is passed as range parameter. Number expected.');
-            return undefined;
-        } else if (range[0] > range[1]) {
-            console.error('Invalid range parameter. Start index can\'t be out of range.');
-            return undefined;
-        }
-
         function insertElement(data, depth, index) {
             var element;
             var buffer;
@@ -813,7 +790,7 @@ var ThinClient = (function() {
                     }
                     hashLeft = node.left;
                 } else if (isObject(node.left)) {
-                    if (node.left.val) {
+                    if (typeof node.left.val !== 'undefined') {
                         hashLeft = insertElement(node.left.val, depth, index * 2);
                     } else {
                         hashLeft = recursiveStep(node.left, depth + 1, index * 2);
@@ -841,7 +818,7 @@ var ThinClient = (function() {
                     }
                     hashRight = node.right;
                 } else if (isObject(node.right)) {
-                    if (node.right.val) {
+                    if (typeof node.right.val !== 'undefined') {
                         hashRight = insertElement(node.right.val, depth, index * 2 + 1);
                     } else {
                         hashRight = recursiveStep(node.right, depth + 1, index * 2 + 1);
@@ -867,6 +844,28 @@ var ThinClient = (function() {
             return sha('sha256').update(summingHash, 'utf8').digest('hex');
         }
 
+        var elements = [];
+        var branch = 'left';
+
+        if (!validateHexHash(rootHash)) {
+            return undefined;
+        } else if (typeof count !== 'number') {
+            console.error('Invalid value is passed as count parameter. Number expected.');
+            return undefined;
+        } else if (!isObject(proofNode)) {
+            console.error('Invalid type of proofNode parameter. Object expected.');
+            return undefined;
+        } else if (!Array.isArray(range) || range.length !== 2) {
+            console.error('Invalid type of range parameter. Array of two elements expected.');
+            return undefined;
+        } else if (typeof range[0] !== 'number' || typeof range[1] !== 'number') {
+            console.error('Invalid value is passed as range parameter. Number expected.');
+            return undefined;
+        } else if (range[0] > range[1]) {
+            console.error('Invalid range parameter. Start index can\'t be out of range.');
+            return undefined;
+        }
+
         if (range[0] > (count - 1)) {
             return [];
         }
@@ -876,8 +875,8 @@ var ThinClient = (function() {
         var end = (range[1] < count) ? range[1] : (count - 1);
         var actualHash = recursiveStep(proofNode, 0, 0);
 
-        if (actualHash === null) {
-            return undefined; // not possible to get a hash of invalid tree
+        if (actualHash === null) { // tree is invalid
+            return undefined;
         } else if (rootHash.toLowerCase() !== actualHash) {
             console.error('rootHash parameter is not equal to actual hash.');
             return undefined;
@@ -913,9 +912,131 @@ var ThinClient = (function() {
             }
         }
 
+        function getElementsBuffer(value) {
+            var buffer;
+            if (Array.isArray(value)) {
+                buffer = value;
+            } else {
+                if (NewType.prototype.isPrototypeOf(type)) {
+                    buffer = getBuffer(value, type);
+                    if (buffer === null) {
+                        return null;
+                    }
+                } else {
+                    console.error('Invalid type of type parameter.');
+                    return null;
+                }
+            }
+            return buffer;
+        }
+
+        function recursiveStep(node, key) {
+            if (getObjectLength(proofNode) !== 2) {
+                console.error('Invalid number of children in the tree node.');
+                return null;
+            }
+
+            var branch = {};
+
+            for (var i in node) {
+                if (node.hasOwnProperty(i)) {
+                    if (!validateBinaryString(i)) {
+                        return null;
+                    }
+
+                    var branchValueHash;
+                    var key = key + i;
+                    var variant;
+                    if (typeof node[i] === 'string') {
+                        if (!validateHexHash(node[i])) {
+                            return null;
+                        } else if (key.length > CONST.MERKLE_PATRICIA_KEY_LENGTH * 8) {
+                            console.error('Too long length of key.');
+                            return null;
+                        }
+                        branchValueHash = node[i];
+                        variant = 1;
+                    } else if (isObject(node[i])) {
+                        if (typeof node[i].val !== 'undefined') {
+                            if (typeof element !== 'undefined') {
+                                console.error('Tree can not contains more than one node with value.');
+                                return null;
+                            } else if (key.length !== CONST.MERKLE_PATRICIA_KEY_LENGTH * 8) {
+                                console.error('Wrong length of key of element with value.');
+                                return null;
+                            }
+                            element = getValue(node[i].val);
+                            if (element === null) {
+                                return null;
+                            }
+                            var elementsBuffer = getElementsBuffer(element);
+                            if (elementsBuffer === null) {
+                                return null;
+                            }
+                            branchValueHash = sha('sha256').update(new Uint8Array(elementsBuffer), 'utf8').digest('hex');
+                            variant = 1;
+                        } else {
+                            if (key.length >= CONST.MERKLE_PATRICIA_KEY_LENGTH * 8) {
+                                console.error('Wrong length of key of element with branch.');
+                                return null;
+                            }
+                            branchValueHash = recursiveStep(node[i].val, key);
+                            variant = 0;
+                        }
+                    } else {
+                        console.error('Invalid type of node value in tree.');
+                        return null;
+                    }
+
+                    var binaryKey = key;
+                    var binaryKeyLength;
+                    if (key.length < CONST.MERKLE_PATRICIA_KEY_LENGTH * 8) {
+                        for (var j = 0; j < (CONST.MERKLE_PATRICIA_KEY_LENGTH * 8 - key.length); j++) {
+                            binaryKey += '0';
+                        }
+                        binaryKeyLength = key.length;
+                    } else {
+                        binaryKeyLength = 0;
+                    }
+                    var branchKey = {
+                        variant: variant,
+                        key: sha('sha256').update(binaryStringToUint8Array(binaryKey), 'utf8').digest('hex'),
+                        length: binaryKeyLength
+                    };
+
+                    if (i[0] === '0') {
+                        if (typeof branch.left_hash === 'undefined') {
+                            branch.left_hash = branchValueHash;
+                            branch.left_key = branchKey;
+                        } else {
+                            console.error('Left node is duplicated in tree.');
+                            return null;
+                        }
+                    } else {
+                        if (typeof branch.right_hash === 'undefined') {
+                            branch.right_hash = branchValueHash;
+                            branch.right_key = branchKey;
+                        } else {
+                            console.error('Right node is duplicated in tree.');
+                            return null;
+                        }
+                    }
+                }
+            }
+
+            var buffer = getBuffer(branch, Branch);
+
+            return sha('sha256').update(new Uint8Array(buffer), 'utf8').digest('hex');
+        }
+
+        var element;
+
         if (!validateHexHash(rootHash)) {
             return undefined;
-        } else if (!isObject(proofNode)) {
+        }
+        var rootHash = rootHash.toLowerCase();
+
+        if (!isObject(proofNode)) {
             console.error('Invalid type of proofNode parameter. Object expected.');
             return undefined;
         }
@@ -950,7 +1071,7 @@ var ThinClient = (function() {
                         return undefined;
                     }
                     var data = proofNode[i];
-                    var nodeKeyBuffer = binaryStringToUint8Array(i, CONST.MERKLE_PATRICIA_KEY_LENGTH);
+                    var nodeKeyBuffer = binaryStringToUint8Array(i);
                     var nodeKey = uint8ArrayToHexadecimal(nodeKeyBuffer);
                     var buffer;
                     var hash;
@@ -978,35 +1099,25 @@ var ThinClient = (function() {
                             return undefined;
                         }
                     } else if (isObject(data)) {
-                        var value = getValue(data.val);
-                        if (value === null) {
+                        element = getValue(data.val);
+                        if (element === null) {
                             return undefined;
                         }
 
-                        var valueBuffer;
-                        if (Array.isArray(value)) {
-                            valueBuffer = value;
-                        } else {
-                            if (NewType.prototype.isPrototypeOf(type)) {
-                                valueBuffer = getBuffer(value, type);
-                                if (valueBuffer === null) {
-                                    return undefined;
-                                }
-                            } else {
-                                console.error('Invalid type of type parameter.');
-                                return undefined;
-                            }
+                        var elementsBuffer = getElementsBuffer(element);
+                        if (elementsBuffer === null) {
+                            return undefined;
                         }
 
                         buffer = new Uint8Array(65);
                         buffer.set(new Uint8Array([2]));
                         buffer.set(nodeKeyBuffer, 1);
-                        buffer.set(valueBuffer, 33);
+                        buffer.set(elementsBuffer, 33);
                         hash = sha('sha256').update(new Uint8Array(buffer), 'utf8').digest('hex');
 
                         if (rootHash === hash) {
                             if (key === nodeKey) {
-                                return value;
+                                return element;
                             } else {
                                 console.error('Invalid key with value is in the root of proofNode parameter.');
                                 return undefined
@@ -1021,16 +1132,17 @@ var ThinClient = (function() {
                     }
                 }
             }
-        } else if (getObjectLength(proofNode) === 2) {
-            // 3. Recursive fn
-                // rootHash = hash( LH RH fn(L) fn(R) )
-                // where fn is:
-                    // leaf => [01] [key] [00]
-                    // branch => [00] [not full key] [05]
-                        // 05 is length of not full key
         } else {
-            console.error('Invalid number of children in the root of proofNode parameter.');
-            return undefined;
+            var actualHash = recursiveStep(proofNode, '');
+
+            if (actualHash === null) { // tree is invalid
+                return undefined;
+            } else if (rootHash !== actualHash) {
+                console.error('rootHash parameter is not equal to actual hash.');
+                return undefined;
+            }
+
+            return element;
         }
     }
 

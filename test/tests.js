@@ -3055,6 +3055,19 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
+        it('Invalid Merkle Patricia tree with invalid number of children in root node', function() {
+            var elements = Exonum.merklePatriciaProof(
+                '0000000000000000000000000000000000000000000000000000000000000001',
+                {
+                    '1': '',
+                    '2': '',
+                    '3': ''
+                },
+                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
+            );
+            expect(elements).to.equal(undefined);
+        });
+
     });
 
 });
