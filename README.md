@@ -150,9 +150,9 @@ Values range from `-9223372036854775808` to `9223372036854775807`.
 
 Please note that JavaScript limits minimum and maximum integer number.
 
-Minimum safe integer in JavaScript is $`-(2^53-1)`$ which is equal to `-9007199254740991`
+Minimum safe integer in JavaScript is `-(2^53-1)` which is equal to `-9007199254740991`
 
-Maximum safe integer in JavaScript is $`2^53-1`$ which is equal to `9007199254740991`. 
+Maximum safe integer in JavaScript is `2^53-1` which is equal to `9007199254740991`. 
 
 #### Exonum.U8
 
@@ -180,7 +180,7 @@ Values range from `0` to `18446744073709551615`.
 
 Please note that JavaScript limits maximum integer number.
 
-Maximum safe integer in JavaScript is $`2^53-1`$ which is equal to `9007199254740991`. 
+Maximum safe integer in JavaScript is `2^53-1` which is equal to `9007199254740991`. 
 
 #### Exonum.String
 
@@ -197,6 +197,8 @@ Hexadecimal value of the length of `32` bytes.
 #### Exonum.Timespec
 
 Unsigned integer value of the length of `8` bytes. Represents Unix time in nanosecond.
+
+Maximum safe integer in JavaScript is `2^53-1` which is equal to `9007199254740991`.
 
 #### Exonum.Bool
 

@@ -319,9 +319,9 @@ var ThinClient = (function() {
             return;
         }
 
-        insertNumberToByteArray(buffer.length, buffer, from, from + 4);
-        insertNumberToByteArray(string.length, buffer, from + 4, from + 8);
-        insertStringToByteArray(string, buffer, buffer.length, buffer.length + string.length - 1);
+        insertNumberToByteArray(buffer.length, buffer, from, from + 4); // index where string content starts in buffer
+        insertNumberToByteArray(string.length, buffer, from + 4, from + 8); // string length
+        insertStringToByteArray(string, buffer, buffer.length, buffer.length + string.length - 1); // string content
 
     }
 
@@ -728,7 +728,14 @@ var ThinClient = (function() {
      * @return {Array}
      */
     function merkleProof(rootHash, count, proofNode, range, type) {
-        function insertElement(data, depth, index) {
+        /**
+         * Get value from node, insert into elements array and return its hash
+         * @param data
+         * @param {Number} depth
+         * @param {Number} index
+         * @returns {String}
+         */
+        function getNodeValue(data, depth, index) {
             var element;
             var buffer;
 
@@ -778,7 +785,14 @@ var ThinClient = (function() {
             return sha('sha256').update(new Uint8Array(buffer), 'utf8').digest('hex');
         }
 
-        function recursiveStep(node, depth, index) {
+        /**
+         * Recursive tree traversal function
+         * @param {Object} node
+         * @param {Number} depth
+         * @param {Number} index
+         * @returns {null}
+         */
+        function recursive(node, depth, index) {
             var hashLeft;
             var hashRight;
             var summingHash;
@@ -791,9 +805,9 @@ var ThinClient = (function() {
                     hashLeft = node.left;
                 } else if (isObject(node.left)) {
                     if (typeof node.left.val !== 'undefined') {
-                        hashLeft = insertElement(node.left.val, depth, index * 2);
+                        hashLeft = getNodeValue(node.left.val, depth, index * 2);
                     } else {
-                        hashLeft = recursiveStep(node.left, depth + 1, index * 2);
+                        hashLeft = recursive(node.left, depth + 1, index * 2);
                     }
                     if (hashLeft === null) {
                         return null;
@@ -808,7 +822,7 @@ var ThinClient = (function() {
             }
 
             if (depth === 0) {
-                branch = 'right';
+                rootBranch = 'right';
             }
 
             if (typeof node.right !== 'undefined') {
@@ -819,9 +833,9 @@ var ThinClient = (function() {
                     hashRight = node.right;
                 } else if (isObject(node.right)) {
                     if (typeof node.right.val !== 'undefined') {
-                        hashRight = insertElement(node.right.val, depth, index * 2 + 1);
+                        hashRight = getNodeValue(node.right.val, depth, index * 2 + 1);
                     } else {
-                        hashRight = recursiveStep(node.right, depth + 1, index * 2 + 1);
+                        hashRight = recursive(node.right, depth + 1, index * 2 + 1);
                     }
                     if (hashRight === null) {
                         return null;
@@ -834,7 +848,7 @@ var ThinClient = (function() {
                 summingHash = new Uint8Array(64);
                 summingHash.set(hexadecimalToUint8Array(hashLeft));
                 summingHash.set(hexadecimalToUint8Array(hashRight), 32);
-            } else if (depth === 0 || branch === 'left') {
+            } else if (depth === 0 || rootBranch === 'left') {
                 console.error('Right leaf is missed in left branch of tree.');
                 return null;
             } else {
@@ -845,8 +859,9 @@ var ThinClient = (function() {
         }
 
         var elements = [];
-        var branch = 'left';
+        var rootBranch = 'left';
 
+        // validate arguments
         if (!validateHexHash(rootHash)) {
             return undefined;
         } else if (typeof count !== 'number') {
@@ -873,7 +888,7 @@ var ThinClient = (function() {
         var height = Math.ceil(Math.log2(count));
         var start = range[0];
         var end = (range[1] < count) ? range[1] : (count - 1);
-        var actualHash = recursiveStep(proofNode, 0, 0);
+        var actualHash = recursive(proofNode, 0, 0);
 
         if (actualHash === null) { // tree is invalid
             return undefined;
@@ -897,7 +912,12 @@ var ThinClient = (function() {
      * @return {Array}
      */
     function merklePatriciaProof(rootHash, proofNode, key, type) {
-        function getValue(data) {
+        /**
+         * Get value from node
+         * @param data
+         * @returns {Array}
+         */
+        function getNodeValue(data) {
             if (Array.isArray(data)) {
                 if (validateBytesArray(data)) {
                     return data.slice(0); // clone array of 8-bit integers
@@ -912,7 +932,12 @@ var ThinClient = (function() {
             }
         }
 
-        function getElementsBuffer(value) {
+        /**
+         * Get value as array of 8-bit integers
+         * @param value
+         * @returns {Array}
+         */
+        function getValueAsBuffer(value) {
             var buffer;
             if (Array.isArray(value)) {
                 buffer = value;
@@ -930,7 +955,13 @@ var ThinClient = (function() {
             return buffer;
         }
 
-        function recursiveStep(node, key) {
+        /**
+         * Recursive tree traversal function
+         * @param {Object} node
+         * @param {String} key
+         * @returns {null}
+         */
+        function recursive(node, key) {
             if (getObjectLength(proofNode) !== 2) {
                 console.error('Invalid number of children in the tree node.');
                 return null;
@@ -947,6 +978,7 @@ var ThinClient = (function() {
                     var branchValueHash;
                     var key = key + i;
                     var variant;
+                    // TODO rework, look on key size, NOT ON VALUE TYPE
                     if (typeof node[i] === 'string') {
                         if (!validateHexHash(node[i])) {
                             return null;
@@ -965,11 +997,11 @@ var ThinClient = (function() {
                                 console.error('Wrong length of key of element with value.');
                                 return null;
                             }
-                            element = getValue(node[i].val);
+                            element = getNodeValue(node[i].val);
                             if (element === null) {
                                 return null;
                             }
-                            var elementsBuffer = getElementsBuffer(element);
+                            var elementsBuffer = getValueAsBuffer(element);
                             if (elementsBuffer === null) {
                                 return null;
                             }
@@ -980,7 +1012,7 @@ var ThinClient = (function() {
                                 console.error('Wrong length of key of element with branch.');
                                 return null;
                             }
-                            branchValueHash = recursiveStep(node[i].val, key);
+                            branchValueHash = recursive(node[i].val, key);
                             variant = 0;
                         }
                     } else {
@@ -1099,12 +1131,12 @@ var ThinClient = (function() {
                             return undefined;
                         }
                     } else if (isObject(data)) {
-                        element = getValue(data.val);
+                        element = getNodeValue(data.val);
                         if (element === null) {
                             return undefined;
                         }
 
-                        var elementsBuffer = getElementsBuffer(element);
+                        var elementsBuffer = getValueAsBuffer(element);
                         if (elementsBuffer === null) {
                             return undefined;
                         }
@@ -1133,7 +1165,7 @@ var ThinClient = (function() {
                 }
             }
         } else {
-            var actualHash = recursiveStep(proofNode, '');
+            var actualHash = recursive(proofNode, '');
 
             if (actualHash === null) { // tree is invalid
                 return undefined;
