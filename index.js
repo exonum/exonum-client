@@ -686,7 +686,10 @@ var ThinClient = (function() {
      */
     function hash(data, type) {
         var buffer = type ? getBuffer(data, type) : data;
-        return sha('sha256').update(new Uint8Array(buffer), 'utf8').digest('hex');
+        if (!(buffer instanceof Uint8Array)) {
+            buffer = new Uint8Array(buffer);
+        }
+        return sha('sha256').update(buffer, 'utf8').digest('hex');
     }
 
     /**
@@ -782,7 +785,7 @@ var ThinClient = (function() {
 
             elements.push(element);
 
-            return sha('sha256').update(new Uint8Array(buffer), 'utf8').digest('hex');
+            return hash(buffer);
         }
 
         /**
@@ -855,7 +858,7 @@ var ThinClient = (function() {
                 summingHash = hexadecimalToUint8Array(hashLeft);
             }
 
-            return sha('sha256').update(summingHash, 'utf8').digest('hex');
+            return hash(summingHash);
         }
 
         var elements = [];
@@ -1004,7 +1007,7 @@ var ThinClient = (function() {
                                 return null;
                             }
 
-                            branchValueHash = sha('sha256').update(new Uint8Array(elementsBuffer), 'utf8').digest('hex');
+                            branchValueHash = hash(elementsBuffer);
                         }  else {
                             console.error('Invalid type of node in tree leaf.');
                             return null;
@@ -1012,7 +1015,7 @@ var ThinClient = (function() {
 
                         branchKey = {
                             variant: 0,
-                            key: sha('sha256').update(binaryStringToUint8Array(key), 'utf8').digest('hex'),
+                            key: hash(binaryStringToUint8Array(key)),
                             length: 0
                         };
                     } else if (key.length < CONST.MERKLE_PATRICIA_KEY_LENGTH * 8) { // node is branch
@@ -1036,7 +1039,7 @@ var ThinClient = (function() {
 
                         branchKey = {
                             variant: 1,
-                            key: sha('sha256').update(binaryStringToUint8Array(binaryKey), 'utf8').digest('hex'),
+                            key: hash(binaryStringToUint8Array(binaryKey)),
                             length: binaryKeyLength
                         };
                     } else {
@@ -1066,7 +1069,7 @@ var ThinClient = (function() {
 
             var buffer = getBuffer(branch, Branch);
 
-            return sha('sha256').update(new Uint8Array(buffer), 'utf8').digest('hex');
+            return hash(buffer);
         }
 
         var element;
@@ -1114,7 +1117,7 @@ var ThinClient = (function() {
                     var nodeKeyBuffer = binaryStringToUint8Array(i);
                     var nodeKey = uint8ArrayToHexadecimal(nodeKeyBuffer);
                     var buffer;
-                    var hash;
+                    var nodeHash;
 
                     if (typeof data === 'string') {
                         if (!validateHexHash(data)) {
@@ -1125,9 +1128,9 @@ var ThinClient = (function() {
                         buffer.set(new Uint8Array([2]));
                         buffer.set(nodeKeyBuffer, 1);
                         buffer.set(hexadecimalToUint8Array(data), 33);
-                        hash = sha('sha256').update(new Uint8Array(buffer), 'utf8').digest('hex');
+                        nodeHash = hash(buffer);
 
-                        if (rootHash === hash) {
+                        if (rootHash === nodeHash) {
                             if (key !== nodeKey) {
                                 return null; // element was not found in tree
                             } else {
@@ -1153,9 +1156,9 @@ var ThinClient = (function() {
                         buffer.set(new Uint8Array([2]));
                         buffer.set(nodeKeyBuffer, 1);
                         buffer.set(elementsBuffer, 33);
-                        hash = sha('sha256').update(new Uint8Array(buffer), 'utf8').digest('hex');
+                        nodeHash = hash(buffer);
 
-                        if (rootHash === hash) {
+                        if (rootHash === nodeHash) {
                             if (key === nodeKey) {
                                 return element;
                             } else {
