@@ -909,7 +909,7 @@ var ThinClient = (function() {
      * @param {Object} proofNode
      * @param key
      * @param {NewType} type (optional)
-     * @return {Array}
+     * @return {Object}
      */
     function merklePatriciaProof(rootHash, proofNode, key, type) {
         /**
@@ -977,66 +977,74 @@ var ThinClient = (function() {
 
                     var branchValueHash;
                     var key = key + i;
-                    var variant;
-                    // TODO rework, look on key size, NOT ON VALUE TYPE
-                    if (typeof node[i] === 'string') {
-                        if (!validateHexHash(node[i])) {
-                            return null;
-                        } else if (key.length > CONST.MERKLE_PATRICIA_KEY_LENGTH * 8) {
-                            console.error('Too long length of key.');
-                            return null;
-                        }
-                        branchValueHash = node[i];
-                        variant = 1;
-                    } else if (isObject(node[i])) {
-                        if (typeof node[i].val !== 'undefined') {
-                            if (typeof element !== 'undefined') {
-                                console.error('Tree can not contains more than one node with value.');
-                                return null;
-                            } else if (key.length !== CONST.MERKLE_PATRICIA_KEY_LENGTH * 8) {
-                                console.error('Wrong length of key of element with value.');
+                    var branchKey;
+
+                    if (key.length === CONST.MERKLE_PATRICIA_KEY_LENGTH * 8) { // node is leaf
+                        if (typeof node[i] === 'string') {
+                            if (!validateHexHash(node[i])) {
                                 return null;
                             }
+                            branchValueHash = node[i];
+                        } else if (isObject(node[i])) {
+                            if (typeof node[i].val === 'undefined') {
+                                console.error('Leaf tree contains invalid data.');
+                                return null;
+                            } else if (typeof element !== 'undefined') {
+                                console.error('Tree can not contains more than one node with value.');
+                                return null;
+                            }
+
                             element = getNodeValue(node[i].val);
                             if (element === null) {
                                 return null;
                             }
+
                             var elementsBuffer = getValueAsBuffer(element);
                             if (elementsBuffer === null) {
                                 return null;
                             }
+
                             branchValueHash = sha('sha256').update(new Uint8Array(elementsBuffer), 'utf8').digest('hex');
-                            variant = 1;
-                        } else {
-                            if (key.length >= CONST.MERKLE_PATRICIA_KEY_LENGTH * 8) {
-                                console.error('Wrong length of key of element with branch.');
+                        }  else {
+                            console.error('Invalid type of node in tree leaf.');
+                            return null;
+                        }
+
+                        branchKey = {
+                            variant: 0,
+                            key: sha('sha256').update(binaryStringToUint8Array(key), 'utf8').digest('hex'),
+                            length: 0
+                        };
+                    } else if (key.length < CONST.MERKLE_PATRICIA_KEY_LENGTH * 8) { // node is branch
+                        if (isObject(node[i])) {
+                            if (typeof node[i].val !== 'undefined') {
+                                console.error('Node with value is at non-leaf position in tree.');
                                 return null;
                             }
                             branchValueHash = recursive(node[i].val, key);
-                            variant = 0;
+                        }  else {
+                            console.error('Invalid type of node in tree.');
+                            return null;
                         }
-                    } else {
-                        console.error('Invalid type of node value in tree.');
-                        return null;
-                    }
 
-                    var binaryKey = key;
-                    var binaryKeyLength;
-                    if (key.length < CONST.MERKLE_PATRICIA_KEY_LENGTH * 8) {
+                        var binaryKeyLength = key.length;
+                        var binaryKey = key;
+
                         for (var j = 0; j < (CONST.MERKLE_PATRICIA_KEY_LENGTH * 8 - key.length); j++) {
                             binaryKey += '0';
                         }
-                        binaryKeyLength = key.length;
-                    } else {
-                        binaryKeyLength = 0;
-                    }
-                    var branchKey = {
-                        variant: variant,
-                        key: sha('sha256').update(binaryStringToUint8Array(binaryKey), 'utf8').digest('hex'),
-                        length: binaryKeyLength
-                    };
 
-                    if (i[0] === '0') {
+                        branchKey = {
+                            variant: 1,
+                            key: sha('sha256').update(binaryStringToUint8Array(binaryKey), 'utf8').digest('hex'),
+                            length: binaryKeyLength
+                        };
+                    } else {
+                        console.error('Invalid key length in tree.');
+                        return null;
+                    }
+
+                    if (i[0] === '0') { // left branch/leaf
                         if (typeof branch.left_hash === 'undefined') {
                             branch.left_hash = branchValueHash;
                             branch.left_key = branchKey;
@@ -1044,7 +1052,7 @@ var ThinClient = (function() {
                             console.error('Left node is duplicated in tree.');
                             return null;
                         }
-                    } else {
+                    } else { // right branch/leaf
                         if (typeof branch.right_hash === 'undefined') {
                             branch.right_hash = branchValueHash;
                             branch.right_key = branchKey;
@@ -1174,7 +1182,7 @@ var ThinClient = (function() {
                 return undefined;
             }
 
-            return element;
+            return element || null;
         }
     }
 
