@@ -519,10 +519,14 @@ var ThinClient = (function() {
             var from = shift + fieldType.from;
 
             if (fieldType.type instanceof NewType) {
-                var end = buffer.length;
-                insertNumberToByteArray(end, buffer, from, from + 4);
-                serialize(buffer, end, fieldData, fieldType.type);
-                insertNumberToByteArray(buffer.length - end, buffer, from + 4, from + 8);
+                if (fieldType.fixed === true) {
+                    serialize(buffer, from, fieldData, fieldType.type);
+                } else {
+                    var end = buffer.length;
+                    insertNumberToByteArray(end, buffer, from, from + 4);
+                    serialize(buffer, end, fieldData, fieldType.type);
+                    insertNumberToByteArray(buffer.length - end, buffer, from + 4, from + 8);
+                }
             } else {
                 fieldType.type(fieldData, buffer, from, shift + fieldType.to);
             }

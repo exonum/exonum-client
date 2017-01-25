@@ -18,7 +18,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input correct string of 32 bytes', function() {
             var Type = Exonum.newType({
                 size: 32,
-                fields: {hash: {type: Exonum.Hash, size: 32, from: 0, to: 32}}
+                fields: {hash: {type: Exonum.Hash, size: 32, from: 0, to: 32, fixed: true}}
             });
             var data = {hash: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'};
             var buffer = Type.serialize(data);
@@ -29,7 +29,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input wrong segment range', function() {
             var Type = Exonum.newType({
                 size: 32,
-                fields: {hash: {type: Exonum.Hash, size: 32, from: 0, to: 16}}
+                fields: {hash: {type: Exonum.Hash, size: 32, from: 0, to: 16, fixed: true}}
             });
             var data = {hash: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'};
             var buffer = Type.serialize(data);
@@ -40,7 +40,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input invalid string', function() {
             var Type = Exonum.newType({
                 size: 32,
-                fields: {hash: {type: Exonum.Hash, size: 32, from: 0, to: 32}}
+                fields: {hash: {type: Exonum.Hash, size: 32, from: 0, to: 32, fixed: true}}
             });
             var data = {hash: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3z'};
             var buffer = Type.serialize(data);
@@ -51,7 +51,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input too long string', function() {
             var Type = Exonum.newType({
                 size: 32,
-                fields: {hash: {type: Exonum.Hash, size: 32, from: 0, to: 32}}
+                fields: {hash: {type: Exonum.Hash, size: 32, from: 0, to: 32, fixed: true}}
             });
             var data = {hash: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365'};
             var buffer = Type.serialize(data);
@@ -62,7 +62,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input too short string', function() {
             var Type = Exonum.newType({
                 size: 32,
-                fields: {hash: {type: Exonum.Hash, size: 32, from: 0, to: 32}}
+                fields: {hash: {type: Exonum.Hash, size: 32, from: 0, to: 32, fixed: true}}
             });
             var data = {hash: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3'};
             var buffer = Type.serialize(data);
@@ -73,7 +73,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input data of wrong type', function() {
             var Type = Exonum.newType({
                 size: 32,
-                fields: {hash: {type: Exonum.Hash, size: 32, from: 0, to: 32}}
+                fields: {hash: {type: Exonum.Hash, size: 32, from: 0, to: 32, fixed: true}}
             });
             var data;
             var buffer;
@@ -117,7 +117,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input correct string of 32 bytes', function() {
             var Type = Exonum.newType({
                 size: 32,
-                fields: {key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32}}
+                fields: {key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32, fixed: true}}
             });
             var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'};
             var buffer = Type.serialize(data);
@@ -128,7 +128,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input wrong segment range', function() {
             var Type = Exonum.newType({
                 size: 32,
-                fields: {key: {type: Exonum.PublicKey, size: 32, from: 0, to: 16}}
+                fields: {key: {type: Exonum.PublicKey, size: 32, from: 0, to: 16, fixed: true}}
             });
             var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'};
             var buffer = Type.serialize(data);
@@ -139,7 +139,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input invalid string', function() {
             var Type = Exonum.newType({
                 size: 32,
-                fields: {key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32}}
+                fields: {key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32, fixed: true}}
             });
             var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3z'};
             var buffer = Type.serialize(data);
@@ -150,7 +150,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input too long string', function() {
             var Type = Exonum.newType({
                 size: 32,
-                fields: {key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32}}
+                fields: {key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32, fixed: true}}
             });
             var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365'};
             var buffer = Type.serialize(data);
@@ -161,7 +161,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input too short string', function() {
             var Type = Exonum.newType({
                 size: 32,
-                fields: {key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32}}
+                fields: {key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32, fixed: true}}
             });
             var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3'};
             var buffer = Type.serialize(data);
@@ -172,7 +172,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input data of wrong type', function() {
             var Type = Exonum.newType({
                 size: 32,
-                fields: {key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32}}
+                fields: {key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32, fixed: true}}
             });
             var data;
             var buffer;
@@ -216,7 +216,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input correct timestamp in nanoseconds', function() {
             var Type = Exonum.newType({
                 size: 8,
-                fields: {since: {type: Exonum.Timespec, size: 8, from: 0, to: 8}}
+                fields: {since: {type: Exonum.Timespec, size: 8, from: 0, to: 8, fixed: true}}
             });
             var data = {since: 1483979894237};
             var buffer = Type.serialize(data);
@@ -227,7 +227,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input negative number', function() {
             var Type = Exonum.newType({
                 size: 8,
-                fields: {since: {type: Exonum.Timespec, size: 8, from: 0, to: 8}}
+                fields: {since: {type: Exonum.Timespec, size: 8, from: 0, to: 8, fixed: true}}
             });
             var data = {since: -1483979894237};
             var buffer = Type.serialize(data);
@@ -238,7 +238,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input wrong segment range', function() {
             var Type = Exonum.newType({
                 size: 8,
-                fields: {since: {type: Exonum.Timespec, size: 8, from: 0, to: 4}}
+                fields: {since: {type: Exonum.Timespec, size: 8, from: 0, to: 4, fixed: true}}
             });
             var data = {since: 1483979894237};
             var buffer = Type.serialize(data);
@@ -249,7 +249,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input unsafe number', function() {
             var Type = Exonum.newType({
                 size: 8,
-                fields: {since: {type: Exonum.Timespec, size: 8, from: 0, to: 8}}
+                fields: {since: {type: Exonum.Timespec, size: 8, from: 0, to: 8, fixed: true}}
             });
             var data = {since: Number.MAX_SAFE_INTEGER + 1};
             var buffer = Type.serialize(data);
@@ -260,7 +260,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input data of wrong type', function() {
             var Type = Exonum.newType({
                 size: 8,
-                fields: {since: {type: Exonum.Timespec, size: 8, from: 0, to: 8}}
+                fields: {since: {type: Exonum.Timespec, size: 8, from: 0, to: 8, fixed: true}}
             });
             var data;
             var buffer;
@@ -300,7 +300,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input positive boolean', function() {
             var Type = Exonum.newType({
                 size: 1,
-                fields: {active: {type: Exonum.Bool, size: 1, from: 0, to: 1}}
+                fields: {active: {type: Exonum.Bool, size: 1, from: 0, to: 1, fixed: true}}
             });
             var data = {active: true};
             var buffer = Type.serialize(data);
@@ -311,7 +311,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input negative boolean', function() {
             var Type = Exonum.newType({
                 size: 1,
-                fields: {active: {type: Exonum.Bool, size: 1, from: 0, to: 1}}
+                fields: {active: {type: Exonum.Bool, size: 1, from: 0, to: 1, fixed: true}}
             });
             var data = {active: false};
             var buffer = Type.serialize(data);
@@ -322,7 +322,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input wrong segment range', function() {
             var Type = Exonum.newType({
                 size: 1,
-                fields: {active: {type: Exonum.Bool, size: 1, from: 0, to: 0}}
+                fields: {active: {type: Exonum.Bool, size: 1, from: 0, to: 0, fixed: true}}
             });
             var data = {active: true};
             var buffer = Type.serialize(data);
@@ -333,7 +333,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input data of wrong type', function() {
             var Type = Exonum.newType({
                 size: 1,
-                fields: {active: {type: Exonum.Bool, size: 1, from: 0, to: 1}}
+                fields: {active: {type: Exonum.Bool, size: 1, from: 0, to: 1, fixed: true}}
             });
             var data;
             var buffer;
@@ -443,7 +443,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input correct number', function() {
             var Type = Exonum.newType({
                 size: 1,
-                fields: {balance: {type: Exonum.I8, size: 1, from: 0, to: 1}}
+                fields: {balance: {type: Exonum.I8, size: 1, from: 0, to: 1, fixed: true}}
             });
             var data = {balance: 120};
             var buffer = Type.serialize(data);
@@ -454,7 +454,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input correct negative number', function() {
             var Type = Exonum.newType({
                 size: 1,
-                fields: {balance: {type: Exonum.I8, size: 1, from: 0, to: 1}}
+                fields: {balance: {type: Exonum.I8, size: 1, from: 0, to: 1, fixed: true}}
             });
             var data = {balance: -120};
             var buffer = Type.serialize(data);
@@ -465,7 +465,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input wrong segment range', function() {
             var Type = Exonum.newType({
                 size: 1,
-                fields: {balance: {type: Exonum.I8, size: 1, from: 0, to: 0}}
+                fields: {balance: {type: Exonum.I8, size: 1, from: 0, to: 0, fixed: true}}
             });
             var data = {balance: 120};
             var buffer = Type.serialize(data);
@@ -476,7 +476,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input unsafe number', function() {
             var Type = Exonum.newType({
                 size: 1,
-                fields: {balance: {type: Exonum.I8, size: 1, from: 0, to: 1}}
+                fields: {balance: {type: Exonum.I8, size: 1, from: 0, to: 1, fixed: true}}
             });
             var data = {balance: 130};
             var buffer = Type.serialize(data);
@@ -487,7 +487,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input unsafe negative number', function() {
             var Type = Exonum.newType({
                 size: 1,
-                fields: {balance: {type: Exonum.I8, size: 1, from: 0, to: 1}}
+                fields: {balance: {type: Exonum.I8, size: 1, from: 0, to: 1, fixed: true}}
             });
             var data = {balance: -130};
             var buffer = Type.serialize(data);
@@ -498,7 +498,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input data of wrong type', function() {
             var Type = Exonum.newType({
                 size: 1,
-                fields: {balance: {type: Exonum.I8, size: 1, from: 0, to: 1}}
+                fields: {balance: {type: Exonum.I8, size: 1, from: 0, to: 1, fixed: true}}
             });
             var data;
             var buffer;
@@ -538,7 +538,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input correct number', function() {
             var Type = Exonum.newType({
                 size: 2,
-                fields: {balance: {type: Exonum.I16, size: 2, from: 0, to: 2}}
+                fields: {balance: {type: Exonum.I16, size: 2, from: 0, to: 2, fixed: true}}
             });
             var data = {balance: 30767};
             var buffer = Type.serialize(data);
@@ -549,7 +549,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input correct negative number', function() {
             var Type = Exonum.newType({
                 size: 2,
-                fields: {balance: {type: Exonum.I16, size: 2, from: 0, to: 2}}
+                fields: {balance: {type: Exonum.I16, size: 2, from: 0, to: 2, fixed: true}}
             });
             var data = {balance: -30767};
             var buffer = Type.serialize(data);
@@ -560,7 +560,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input wrong segment range', function() {
             var Type = Exonum.newType({
                 size: 2,
-                fields: {balance: {type: Exonum.I16, size: 2, from: 0, to: 1}}
+                fields: {balance: {type: Exonum.I16, size: 2, from: 0, to: 1, fixed: true}}
             });
             var data = {balance: 30767};
             var buffer = Type.serialize(data);
@@ -571,7 +571,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input unsafe number', function() {
             var Type = Exonum.newType({
                 size: 2,
-                fields: {balance: {type: Exonum.I16, size: 2, from: 0, to: 2}}
+                fields: {balance: {type: Exonum.I16, size: 2, from: 0, to: 2, fixed: true}}
             });
             var data = {balance: 32769};
             var buffer = Type.serialize(data);
@@ -582,7 +582,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input unsafe negative number', function() {
             var Type = Exonum.newType({
                 size: 2,
-                fields: {balance: {type: Exonum.I16, size: 2, from: 0, to: 2}}
+                fields: {balance: {type: Exonum.I16, size: 2, from: 0, to: 2, fixed: true}}
             });
             var data = {balance: -32770};
             var buffer = Type.serialize(data);
@@ -593,7 +593,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input data of wrong type', function() {
             var Type = Exonum.newType({
                 size: 2,
-                fields: {balance: {type: Exonum.I16, size: 2, from: 0, to: 2}}
+                fields: {balance: {type: Exonum.I16, size: 2, from: 0, to: 2, fixed: true}}
             });
             var data;
             var buffer;
@@ -633,7 +633,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input correct number', function() {
             var Type = Exonum.newType({
                 size: 4,
-                fields: {balance: {type: Exonum.I32, size: 4, from: 0, to: 4}}
+                fields: {balance: {type: Exonum.I32, size: 4, from: 0, to: 4, fixed: true}}
             });
             var data = {balance: 1147483647};
             var buffer = Type.serialize(data);
@@ -644,7 +644,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input correct negative number', function() {
             var Type = Exonum.newType({
                 size: 4,
-                fields: {balance: {type: Exonum.I32, size: 4, from: 0, to: 4}}
+                fields: {balance: {type: Exonum.I32, size: 4, from: 0, to: 4, fixed: true}}
             });
             var data = {balance: -1147483648};
             var buffer = Type.serialize(data);
@@ -655,7 +655,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input wrong segment range', function() {
             var Type = Exonum.newType({
                 size: 4,
-                fields: {balance: {type: Exonum.I32, size: 4, from: 0, to: 3}}
+                fields: {balance: {type: Exonum.I32, size: 4, from: 0, to: 3, fixed: true}}
             });
             var data = {balance: 613228};
             var buffer = Type.serialize(data);
@@ -666,7 +666,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input unsafe number', function() {
             var Type = Exonum.newType({
                 size: 4,
-                fields: {balance: {type: Exonum.I32, size: 4, from: 0, to: 4}}
+                fields: {balance: {type: Exonum.I32, size: 4, from: 0, to: 4, fixed: true}}
             });
             var data = {balance: 2147483649};
             var buffer = Type.serialize(data);
@@ -677,7 +677,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input unsafe negative number', function() {
             var Type = Exonum.newType({
                 size: 4,
-                fields: {balance: {type: Exonum.I32, size: 4, from: 0, to: 4}}
+                fields: {balance: {type: Exonum.I32, size: 4, from: 0, to: 4, fixed: true}}
             });
             var data = {balance: -2147483650};
             var buffer = Type.serialize(data);
@@ -688,7 +688,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input data of wrong type', function() {
             var Type = Exonum.newType({
                 size: 4,
-                fields: {balance: {type: Exonum.I32, size: 4, from: 0, to: 4}}
+                fields: {balance: {type: Exonum.I32, size: 4, from: 0, to: 4, fixed: true}}
             });
             var data;
             var buffer;
@@ -728,7 +728,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input correct number', function() {
             var Type = Exonum.newType({
                 size: 8,
-                fields: {balance: {type: Exonum.I64, size: 8, from: 0, to: 8}}
+                fields: {balance: {type: Exonum.I64, size: 8, from: 0, to: 8, fixed: true}}
             });
             var data = {balance: 900719925474000};
             var buffer = Type.serialize(data);
@@ -739,7 +739,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input correct negative number', function() {
             var Type = Exonum.newType({
                 size: 8,
-                fields: {balance: {type: Exonum.I64, size: 8, from: 0, to: 8}}
+                fields: {balance: {type: Exonum.I64, size: 8, from: 0, to: 8, fixed: true}}
             });
             var data = {balance: -900719925474000};
             var buffer = Type.serialize(data);
@@ -750,7 +750,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input wrong segment range', function() {
             var Type = Exonum.newType({
                 size: 8,
-                fields: {balance: {type: Exonum.I64, size: 8, from: 0, to: 4}}
+                fields: {balance: {type: Exonum.I64, size: 8, from: 0, to: 4, fixed: true}}
             });
             var data = {balance: 613228};
             var buffer = Type.serialize(data);
@@ -761,7 +761,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input unsafe number', function() {
             var Type = Exonum.newType({
                 size: 8,
-                fields: {balance: {type: Exonum.I64, size: 8, from: 0, to: 8}}
+                fields: {balance: {type: Exonum.I64, size: 8, from: 0, to: 8, fixed: true}}
             });
             var data = {balance: Number.MAX_SAFE_INTEGER + 1};
             var buffer = Type.serialize(data);
@@ -772,7 +772,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input unsafe negative number', function() {
             var Type = Exonum.newType({
                 size: 8,
-                fields: {balance: {type: Exonum.I64, size: 8, from: 0, to: 8}}
+                fields: {balance: {type: Exonum.I64, size: 8, from: 0, to: 8, fixed: true}}
             });
             var data = {balance: Number.MIN_SAFE_INTEGER - 1};
             var buffer = Type.serialize(data);
@@ -783,7 +783,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input data of wrong type', function() {
             var Type = Exonum.newType({
                 size: 8,
-                fields: {balance: {type: Exonum.I64, size: 8, from: 0, to: 8}}
+                fields: {balance: {type: Exonum.I64, size: 8, from: 0, to: 8, fixed: true}}
             });
             var data;
             var buffer;
@@ -823,7 +823,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input correct number', function() {
             var Type = Exonum.newType({
                 size: 1,
-                fields: {balance: {type: Exonum.U8, size: 1, from: 0, to: 1}}
+                fields: {balance: {type: Exonum.U8, size: 1, from: 0, to: 1, fixed: true}}
             });
             var data = {balance: 230};
             var buffer = Type.serialize(data);
@@ -834,7 +834,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input wrong segment range', function() {
             var Type = Exonum.newType({
                 size: 1,
-                fields: {balance: {type: Exonum.U8, size: 1, from: 0, to: 0}}
+                fields: {balance: {type: Exonum.U8, size: 1, from: 0, to: 0, fixed: true}}
             });
             var data = {balance: 230};
             var buffer = Type.serialize(data);
@@ -845,7 +845,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input negative number', function() {
             var Type = Exonum.newType({
                 size: 1,
-                fields: {balance: {type: Exonum.U8, size: 1, from: 0, to: 1}}
+                fields: {balance: {type: Exonum.U8, size: 1, from: 0, to: 1, fixed: true}}
             });
             var data = {balance: -1};
             var buffer = Type.serialize(data);
@@ -856,7 +856,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input unsafe number', function() {
             var Type = Exonum.newType({
                 size: 1,
-                fields: {balance: {type: Exonum.U8, size: 1, from: 0, to: 1}}
+                fields: {balance: {type: Exonum.U8, size: 1, from: 0, to: 1, fixed: true}}
             });
             var data = {balance: 256};
             var buffer = Type.serialize(data);
@@ -867,7 +867,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input data of wrong type', function() {
             var Type = Exonum.newType({
                 size: 1,
-                fields: {balance: {type: Exonum.U8, size: 1, from: 0, to: 1}}
+                fields: {balance: {type: Exonum.U8, size: 1, from: 0, to: 1, fixed: true}}
             });
             var data;
             var buffer;
@@ -907,7 +907,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input correct number', function() {
             var Type = Exonum.newType({
                 size: 2,
-                fields: {balance: {type: Exonum.U16, size: 2, from: 0, to: 2}}
+                fields: {balance: {type: Exonum.U16, size: 2, from: 0, to: 2, fixed: true}}
             });
             var data = {balance: 60535};
             var buffer = Type.serialize(data);
@@ -918,7 +918,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input wrong segment range', function() {
             var Type = Exonum.newType({
                 size: 2,
-                fields: {balance: {type: Exonum.U16, size: 2, from: 0, to: 1}}
+                fields: {balance: {type: Exonum.U16, size: 2, from: 0, to: 1, fixed: true}}
             });
             var data = {balance: 60535};
             var buffer = Type.serialize(data);
@@ -929,7 +929,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input negative number', function() {
             var Type = Exonum.newType({
                 size: 2,
-                fields: {balance: {type: Exonum.U16, size: 2, from: 0, to: 2}}
+                fields: {balance: {type: Exonum.U16, size: 2, from: 0, to: 2, fixed: true}}
             });
             var data = {balance: -1};
             var buffer = Type.serialize(data);
@@ -940,7 +940,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input unsafe number', function() {
             var Type = Exonum.newType({
                 size: 2,
-                fields: {balance: {type: Exonum.U16, size: 2, from: 0, to: 2}}
+                fields: {balance: {type: Exonum.U16, size: 2, from: 0, to: 2, fixed: true}}
             });
             var data = {balance: 65536};
             var buffer = Type.serialize(data);
@@ -951,7 +951,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input data of wrong type', function() {
             var Type = Exonum.newType({
                 size: 2,
-                fields: {balance: {type: Exonum.U16, size: 2, from: 0, to: 2}}
+                fields: {balance: {type: Exonum.U16, size: 2, from: 0, to: 2, fixed: true}}
             });
             var data;
             var buffer;
@@ -991,7 +991,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input correct number', function() {
             var Type = Exonum.newType({
                 size: 4,
-                fields: {balance: {type: Exonum.U32, size: 4, from: 0, to: 4}}
+                fields: {balance: {type: Exonum.U32, size: 4, from: 0, to: 4, fixed: true}}
             });
             var data = {balance: 613228};
             var buffer = Type.serialize(data);
@@ -1002,7 +1002,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input wrong segment range', function() {
             var Type = Exonum.newType({
                 size: 4,
-                fields: {balance: {type: Exonum.U32, size: 4, from: 0, to: 3}}
+                fields: {balance: {type: Exonum.U32, size: 4, from: 0, to: 3, fixed: true}}
             });
             var data = {balance: 613228};
             var buffer = Type.serialize(data);
@@ -1013,7 +1013,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input negative number', function() {
             var Type = Exonum.newType({
                 size: 4,
-                fields: {balance: {type: Exonum.U32, size: 4, from: 0, to: 4}}
+                fields: {balance: {type: Exonum.U32, size: 4, from: 0, to: 4, fixed: true}}
             });
             var data = {balance: -1};
             var buffer = Type.serialize(data);
@@ -1024,7 +1024,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input unsafe number', function() {
             var Type = Exonum.newType({
                 size: 4,
-                fields: {balance: {type: Exonum.U32, size: 4, from: 0, to: 4}}
+                fields: {balance: {type: Exonum.U32, size: 4, from: 0, to: 4, fixed: true}}
             });
             var data = {balance: 4294967296};
             var buffer = Type.serialize(data);
@@ -1035,7 +1035,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input data of wrong type', function() {
             var Type = Exonum.newType({
                 size: 4,
-                fields: {balance: {type: Exonum.U32, size: 4, from: 0, to: 4}}
+                fields: {balance: {type: Exonum.U32, size: 4, from: 0, to: 4, fixed: true}}
             });
             var data;
             var buffer;
@@ -1075,7 +1075,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input correct number', function() {
             var Type = Exonum.newType({
                 size: 8,
-                fields: {balance: {type: Exonum.U64, size: 8, from: 0, to: 8}}
+                fields: {balance: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true}}
             });
             var data = {balance: 613228};
             var buffer = Type.serialize(data);
@@ -1086,7 +1086,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input wrong segment range', function() {
             var Type = Exonum.newType({
                 size: 8,
-                fields: {balance: {type: Exonum.U64, size: 8, from: 0, to: 4}}
+                fields: {balance: {type: Exonum.U64, size: 8, from: 0, to: 4, fixed: true}}
             });
             var data = {balance: 613228};
             var buffer = Type.serialize(data);
@@ -1097,7 +1097,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input negative number', function() {
             var Type = Exonum.newType({
                 size: 8,
-                fields: {balance: {type: Exonum.U64, size: 8, from: 0, to: 8}}
+                fields: {balance: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true}}
             });
             var data = {balance: -613228};
             var buffer = Type.serialize(data);
@@ -1108,7 +1108,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input unsafe number', function() {
             var Type = Exonum.newType({
                 size: 8,
-                fields: {balance: {type: Exonum.U64, size: 8, from: 0, to: 8}}
+                fields: {balance: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true}}
             });
             var data = {balance: Number.MAX_SAFE_INTEGER + 1};
             var buffer = Type.serialize(data);
@@ -1119,7 +1119,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input data of wrong type', function() {
             var Type = Exonum.newType({
                 size: 8,
-                fields: {balance: {type: Exonum.U64, size: 8, from: 0, to: 8}}
+                fields: {balance: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true}}
             });
             var data;
             var buffer;
@@ -1166,10 +1166,10 @@ describe('Client for Exonum blockchain platform: ', function() {
             var Wallet = Exonum.newType({
                 size: 80,
                 fields: {
-                    pub_key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
+                    pub_key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32, fixed: true},
                     name: {type: Exonum.String, size: 8, from: 32, to: 40},
-                    balance: {type: Exonum.U64, size: 8, from: 40, to: 48},
-                    history_hash: {type: Exonum.Hash, size: 32, from: 48, to: 80}
+                    balance: {type: Exonum.U64, size: 8, from: 40, to: 48, fixed: true},
+                    history_hash: {type: Exonum.Hash, size: 32, from: 48, to: 80, fixed: true}
                 }
             });
             var walletData = {
@@ -1184,14 +1184,80 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(buffer).to.deep.equal([245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161, 242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54, 0, 0, 0, 80, 0, 0, 0, 12, 0, 0, 0, 0, 0, 5, 122, 208, 103, 82, 190, 136, 35, 20, 245, 187, 188, 154, 106, 242, 174, 99, 79, 192, 112, 56, 88, 74, 74, 119, 81, 14, 165, 236, 237, 69, 245, 77, 192, 48, 83, 109, 97, 114, 116, 32, 119, 97, 108, 108, 101, 116]);
         });
 
+        it('Check array of 8-bit integers of the data of type complicated non-fixed type Transaction', function() {
+            var User = Exonum.newType({
+                size: 16,
+                fields: {
+                    name: {type: Exonum.String, size: 8, from: 0, to: 8},
+                    surname: {type: Exonum.String, size: 8, from: 8, to: 16}
+                }
+            });
+            var Transaction = Exonum.newType({
+                size: 40,
+                fields: {
+                    from: {type: User, size: 16, from: 0, to: 16},
+                    to: {type: User, size: 16, from: 16, to: 32},
+                    sum: {type: Exonum.U64, size: 8, from: 32, to: 40, fixed: true}
+                }
+            });
+            var transactionData = {
+                from: {
+                    name: 'John',
+                    surname: 'Doe'
+                },
+                to: {
+                    name: 'Steven',
+                    surname: 'Black'
+                },
+                sum: 200
+            };
+
+            var buffer = Transaction.serialize(transactionData);
+
+            expect(buffer).to.deep.equal([0, 0, 0, 40, 0, 0, 0, 23, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 0, 27, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 200, 0, 0, 0, 56, 0, 0, 0, 4, 0, 0, 0, 60, 0, 0, 0, 3, 74, 111, 104, 110, 68, 111, 101, 0, 0, 0, 79, 0, 0, 0, 6, 0, 0, 0, 85, 0, 0, 0, 5, 83, 116, 101, 118, 101, 110, 66, 108, 97, 99, 107]);
+        });
+
+        it('Check array of 8-bit integers of the data of type complicated fixed type Transaction', function() {
+            var Wallet = Exonum.newType({
+                size: 16,
+                fields: {
+                    id: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true},
+                    balance: {type: Exonum.U64, size: 8, from: 8, to: 16, fixed: true}
+                }
+            });
+            var Transaction = Exonum.newType({
+                size: 40,
+                fields: {
+                    from: {type: Wallet, size: 16, from: 0, to: 16, fixed: true},
+                    to: {type: Wallet, size: 16, from: 16, to: 32, fixed: true},
+                    sum: {type: Exonum.U64, size: 8, from: 32, to: 40, fixed: true}
+                }
+            });
+            var transactionData = {
+                from: {
+                    id: 57,
+                    balance: 500
+                },
+                to: {
+                    id: 921,
+                    balance: 0
+                },
+                sum: 200
+            };
+
+            var buffer = Transaction.serialize(transactionData);
+
+            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 57, 0, 0, 0, 0, 0, 0, 1, 244, 0, 0, 0, 0, 0, 0, 3, 153, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 200]);
+        });
+
         it('Send data with inherited properties that should be ignored', function() {
             var Wallet = Exonum.newType({
                 size: 80,
                 fields: {
-                    pub_key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
+                    pub_key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32, fixed: true},
                     name: {type: Exonum.String, size: 8, from: 32, to: 40},
-                    balance: {type: Exonum.U64, size: 8, from: 40, to: 48},
-                    history_hash: {type: Exonum.Hash, size: 32, from: 48, to: 80}
+                    balance: {type: Exonum.U64, size: 8, from: 40, to: 48, fixed: true},
+                    history_hash: {type: Exonum.Hash, size: 32, from: 48, to: 80, fixed: true}
                 }
             });
 
@@ -1231,10 +1297,10 @@ describe('Client for Exonum blockchain platform: ', function() {
             var Wallet = Exonum.newType({
                 size: 80,
                 fields: {
-                    pub_key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
+                    pub_key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32, fixed: true},
                     name: {type: Exonum.String, size: 8, from: 32, to: 40},
-                    balance: {type: Exonum.U64, size: 8, from: 40, to: 48},
-                    history_hash: {type: Exonum.Hash, size: 32, from: 48, to: 80}
+                    balance: {type: Exonum.U64, size: 8, from: 40, to: 48, fixed: true},
+                    history_hash: {type: Exonum.Hash, size: 32, from: 48, to: 80, fixed: true}
                 }
             });
             var walletData = {
@@ -1252,10 +1318,10 @@ describe('Client for Exonum blockchain platform: ', function() {
             var Wallet = Exonum.newType({
                 size: 80,
                 fields: {
-                    pub_key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
+                    pub_key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32, fixed: true},
                     name: {type: Exonum.String, size: 8, from: 32, to: 40},
-                    balance: {type: Exonum.U64, size: 8, from: 40, to: 48},
-                    history_hash: {type: Exonum.Hash, size: 32, from: 48, to: 80}
+                    balance: {type: Exonum.U64, size: 8, from: 40, to: 48, fixed: true},
+                    history_hash: {type: Exonum.Hash, size: 32, from: 48, to: 80, fixed: true}
                 }
             });
             var walletData = {
@@ -1918,7 +1984,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Invalid Merkle tree with invalid value', function() {
             var Type = Exonum.newType({
                 size: 32,
-                fields: {hash: {type: Exonum.Hash, size: 32, from: 0, to: 32}}
+                fields: {hash: {type: Exonum.Hash, size: 32, from: 0, to: 32, fixed: true}}
             });
             var elements;
 
@@ -1986,7 +2052,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Invalid Merkle tree with invalid value not corresponding to passed type', function() {
             var Type = Exonum.newType({
                 size: 32,
-                fields: {hash: {type: Exonum.Hash, size: 32, from: 0, to: 32}}
+                fields: {hash: {type: Exonum.Hash, size: 32, from: 0, to: 32, fixed: true}}
             });
             var elements = Exonum.merkleProof(
                 '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
@@ -2992,7 +3058,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var elements;
             var Type = Exonum.newType({
                 size: 8,
-                fields: {balance: {type: Exonum.I64, size: 8, from: 0, to: 8}}
+                fields: {balance: {type: Exonum.I64, size: 8, from: 0, to: 8, fixed: true}}
             });
 
             elements = Exonum.merklePatriciaProof(
@@ -3015,7 +3081,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var elements;
             var Type = Exonum.newType({
                 size: 8,
-                fields: {balance: {type: Exonum.I64, size: 8, from: 0, to: 8}}
+                fields: {balance: {type: Exonum.I64, size: 8, from: 0, to: 8, fixed: true}}
             });
 
             elements = Exonum.merklePatriciaProof(
@@ -3037,7 +3103,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var elements;
             var Type = Exonum.newType({
                 size: 8,
-                fields: {balance: {type: Exonum.I64, size: 8, from: 0, to: 8}}
+                fields: {balance: {type: Exonum.I64, size: 8, from: 0, to: 8, fixed: true}}
             });
 
             elements = Exonum.merklePatriciaProof(
@@ -3067,6 +3133,8 @@ describe('Client for Exonum blockchain platform: ', function() {
             );
             expect(elements).to.equal(undefined);
         });
+
+        //
 
     });
 
