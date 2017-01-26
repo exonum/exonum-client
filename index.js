@@ -461,7 +461,7 @@ var ThinClient = (function() {
      * @param {Number} bits
      */
     function validateBinaryString(str, bits) {
-        if (str.length !== bits) {
+        if (typeof bits !== 'undefined' && str.length !== bits) {
             console.error('Binary string is of wrong length.');
             return null;
         }
@@ -1023,7 +1023,12 @@ var ThinClient = (function() {
                             length: 0
                         };
                     } else if (key.length < CONST.MERKLE_PATRICIA_KEY_LENGTH * 8) { // node is branch
-                        if (isObject(node[i])) {
+                        if (typeof node[i] === 'string') {
+                            if (!validateHexHash(node[i])) {
+                                return null;
+                            }
+                            branchValueHash = node[i];
+                        } else if (isObject(node[i])) {
                             if (typeof node[i].val !== 'undefined') {
                                 console.error('Node with value is at non-leaf position in tree.');
                                 return null;

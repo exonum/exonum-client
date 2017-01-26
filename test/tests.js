@@ -1474,7 +1474,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         });
 
         it('Valid Merkle tree but range end is out of range', function() {
-            var data = require('./common_data/valid-merkle-tree-range-end-is-out-of-range.json');
+            var data = require('./common_data/valid-merkle-tree-with-single-node.json');
             var elements = Exonum.merkleProof(
                 data.root_hash,
                 data.list_length,
@@ -2433,7 +2433,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         });
 
         it('Invalid Merkle tree with missed right leaf inside right tree branch', function() {
-            var data = require('./common_data/invalid-merkle-tree-missed-right-leaf-on-right-branch.json');
+            var data = require('./common_data/invalid-merkle-tree-missed-right-leaf-on-left-branch.json');
             var elements = Exonum.merkleProof(
                 data.root_hash,
                 data.list_length,
@@ -2471,6 +2471,56 @@ describe('Client for Exonum blockchain platform: ', function() {
      Exonum.merklePatriciaProof
      */
     describe('Check proof of Merkle Patricia tree:', function() {
+
+        it('Valid Merkle Patricia empty tree', function() {
+            var data = require('./common_data/valid-merkle-patricia-tree-empty-tree.json');
+            var element = Exonum.merklePatriciaProof(
+                data.root_hash,
+                data.proof,
+                data.searched_key
+            );
+            expect(element).to.equal(null);
+        });
+
+        it('Valid Merkle Patricia tree with leaf exclusive', function() {
+            var data = require('./common_data/valid-merkle-patricia-tree-leaf-exclusive.json');
+            var element = Exonum.merklePatriciaProof(
+                data.root_hash,
+                data.proof,
+                data.searched_key
+            );
+            expect(element).to.equal(null);
+        });
+
+        it('Valid Merkle Patricia tree with leaf inclusive', function() {
+            var data = require('./common_data/valid-merkle-patricia-tree-leaf-inclusive.json');
+            var element = Exonum.merklePatriciaProof(
+                data.root_hash,
+                data.proof,
+                data.searched_key
+            );
+            expect(element).to.deep.equal([2]);
+        });
+
+        it('Valid Merkle Patricia tree with nested node exclusive', function() {
+            var data = require('./common_data/valid-merkle-patricia-tree-nested-exclusive.json');
+            var element = Exonum.merklePatriciaProof(
+                data.root_hash,
+                data.proof,
+                data.searched_key
+            );
+            expect(element).to.equal(null);
+        });
+
+        it('Valid Merkle Patricia tree with nested node inclusive', function() {
+            var data = require('./common_data/valid-merkle-patricia-tree-nested-inclusive.json');
+            var element = Exonum.merklePatriciaProof(
+                data.root_hash,
+                data.proof,
+                data.searched_key
+            );
+            expect(element).to.deep.equal([36, 49, 15, 31, 163, 171, 247, 217]);
+        });
 
         it('Invalid Merkle Patricia tree with invalid rootHash parameter', function() {
             var elements;
@@ -3133,8 +3183,6 @@ describe('Client for Exonum blockchain platform: ', function() {
             );
             expect(elements).to.equal(undefined);
         });
-
-        //
 
     });
 
