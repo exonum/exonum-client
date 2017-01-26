@@ -43,18 +43,25 @@ var ThinClient = (function() {
     var DBKey = createNewType({
         size: 34,
         fields: {
-            variant: {type: U8, size: 1, from: 0, to: 1},
-            key: {type: Hash, size: 32, from: 1, to: 33},
-            length: {type: U8, size: 1, from: 33, to: 34}
+            variant: {type: U8, size: 1, from: 0, to: 1, fixed: true},
+            key: {type: Hash, size: 32, from: 1, to: 33, fixed: true},
+            length: {type: U8, size: 1, from: 33, to: 34, fixed: true}
         }
     });
     var Branch = createNewType({
         size: 132,
         fields: {
-            left_hash: {type: Hash, size: 32, from: 0, to: 32},
-            right_hash: {type: Hash, size: 32, from: 32, to: 64},
-            left_key: {type: DBKey, size: 34, from: 64, to: 98},
-            right_key: {type: DBKey, size: 34, from: 98, to: 132}
+            left_hash: {type: Hash, size: 32, from: 0, to: 32, fixed: true},
+            right_hash: {type: Hash, size: 32, from: 32, to: 64, fixed: true},
+            left_key: {type: DBKey, size: 34, from: 64, to: 98, fixed: true},
+            right_key: {type: DBKey, size: 34, from: 98, to: 132, fixed: true}
+        }
+    });
+    var RootBranch = createNewType({
+        size: 66,
+        fields: {
+            key: {type: DBKey, size: 34, from: 0, to: 34, fixed: true},
+            hash: {type: Hash, size: 32, from: 34, to: 66, fixed: true}
         }
     });
 
@@ -689,10 +696,26 @@ var ThinClient = (function() {
      * @return {String}
      */
     function hash(data, type) {
-        var buffer = type ? getBuffer(data, type) : data;
-        if (!(buffer instanceof Uint8Array)) {
-            buffer = new Uint8Array(buffer);
+        var buffer;
+        if (type instanceof NewType) {
+            if (isObject(data)) {
+                buffer = getBuffer(data, type);
+                if (buffer === null) {
+                    return;
+                }
+            } else {
+                console.error('Wrong type of data. Should be object.');
+                return;
+            }
+        } else if (data instanceof Uint8Array) {
+            buffer = data;
+        } else if (Array.isArray(data)) {
+            buffer = new Uint8Array(data);
+        } else {
+            console.error('Wrong type of data. Should be array of 8-bit integers.');
+            return;
         }
+
         return sha('sha256').update(buffer, 'utf8').digest('hex');
     }
 
@@ -745,6 +768,7 @@ var ThinClient = (function() {
         function getNodeValue(data, depth, index) {
             var element;
             var buffer;
+            var elementsHash;
 
             if ((depth + 1) !== height) {
                 console.error('Value node is on wrong height in tree.');
@@ -789,7 +813,9 @@ var ThinClient = (function() {
 
             elements.push(element);
 
-            return hash(buffer);
+            elementsHash = hash(buffer);
+
+            return elementsHash || null;
         }
 
         /**
@@ -802,6 +828,7 @@ var ThinClient = (function() {
         function recursive(node, depth, index) {
             var hashLeft;
             var hashRight;
+            var summingBuffer;
             var summingHash;
 
             if (typeof node.left !== 'undefined') {
@@ -852,17 +879,19 @@ var ThinClient = (function() {
                     return null;
                 }
 
-                summingHash = new Uint8Array(64);
-                summingHash.set(hexadecimalToUint8Array(hashLeft));
-                summingHash.set(hexadecimalToUint8Array(hashRight), 32);
+                summingBuffer = new Uint8Array(64);
+                summingBuffer.set(hexadecimalToUint8Array(hashLeft));
+                summingBuffer.set(hexadecimalToUint8Array(hashRight), 32);
             } else if (depth === 0 || rootBranch === 'left') {
                 console.error('Right leaf is missed in left branch of tree.');
                 return null;
             } else {
-                summingHash = hexadecimalToUint8Array(hashLeft);
+                summingBuffer = hexadecimalToUint8Array(hashLeft);
             }
 
-            return hash(summingHash);
+            summingHash = hash(summingBuffer);
+
+            return summingHash || null;
         }
 
         var elements = [];
@@ -940,29 +969,6 @@ var ThinClient = (function() {
         }
 
         /**
-         * Get value as array of 8-bit integers
-         * @param value
-         * @returns {Array}
-         */
-        function getValueAsBuffer(value) {
-            var buffer;
-            if (Array.isArray(value)) {
-                buffer = value;
-            } else {
-                if (NewType.prototype.isPrototypeOf(type)) {
-                    buffer = getBuffer(value, type);
-                    if (buffer === null) {
-                        return null;
-                    }
-                } else {
-                    console.error('Invalid type of type parameter.');
-                    return null;
-                }
-            }
-            return buffer;
-        }
-
-        /**
          * Recursive tree traversal function
          * @param {Object} node
          * @param {String} key
@@ -985,6 +991,7 @@ var ThinClient = (function() {
                     var branchValueHash;
                     var key = key + i;
                     var branchKey;
+                    var branchKeyHash;
 
                     if (key.length === CONST.MERKLE_PATRICIA_KEY_LENGTH * 8) { // node is leaf
                         if (typeof node[i] === 'string') {
@@ -1006,20 +1013,23 @@ var ThinClient = (function() {
                                 return null;
                             }
 
-                            var elementsBuffer = getValueAsBuffer(element);
-                            if (elementsBuffer === null) {
+                            branchValueHash = hash(element, type);
+                            if (typeof branchValueHash === 'undefined') {
                                 return null;
                             }
-
-                            branchValueHash = hash(elementsBuffer);
                         }  else {
                             console.error('Invalid type of node in tree leaf.');
                             return null;
                         }
 
+                        branchKeyHash = hash(binaryStringToUint8Array(key));
+                        if (typeof branchKeyHash === 'undefined') {
+                            return null;
+                        }
+
                         branchKey = {
                             variant: 0,
-                            key: hash(binaryStringToUint8Array(key)),
+                            key: branchKeyHash,
                             length: 0
                         };
                     } else if (key.length < CONST.MERKLE_PATRICIA_KEY_LENGTH * 8) { // node is branch
@@ -1046,9 +1056,14 @@ var ThinClient = (function() {
                             binaryKey += '0';
                         }
 
+                        branchKeyHash = hash(binaryStringToUint8Array(binaryKey));
+                        if (typeof branchKeyHash === 'undefined') {
+                            return null;
+                        }
+
                         branchKey = {
                             variant: 1,
-                            key: hash(binaryStringToUint8Array(binaryKey)),
+                            key: branchKeyHash,
                             length: binaryKeyLength
                         };
                     } else {
@@ -1076,9 +1091,13 @@ var ThinClient = (function() {
                 }
             }
 
-            var buffer = getBuffer(branch, Branch);
+            var summingHash = hash(branch, Branch);
 
-            return hash(buffer);
+            if (typeof summingHash === 'undefined') {
+                return null;
+            }
+
+            return summingHash;
         }
 
         var element;
@@ -1110,7 +1129,7 @@ var ThinClient = (function() {
         }
 
         if (getObjectLength(proofNode) === 0) { // tree is empty
-            if (rootHash === (new Uint8Array(CONST.MERKLE_PATRICIA_KEY_LENGTH)).join('')) {
+            if (rootHash === (new Uint8Array(CONST.MERKLE_PATRICIA_KEY_LENGTH * 2)).join('')) {
                 return null;
             } else {
                 console.error('Invalid rootHash parameter of empty tree.');
@@ -1125,7 +1144,6 @@ var ThinClient = (function() {
                     var data = proofNode[i];
                     var nodeKeyBuffer = binaryStringToUint8Array(i);
                     var nodeKey = uint8ArrayToHexadecimal(nodeKeyBuffer);
-                    var buffer;
                     var nodeHash;
 
                     if (typeof data === 'string') {
@@ -1133,12 +1151,18 @@ var ThinClient = (function() {
                             return undefined;
                         }
 
-                        buffer = new Uint8Array(65);
-                        buffer.set(new Uint8Array([2]));
-                        buffer.set(nodeKeyBuffer, 1);
-                        buffer.set(hexadecimalToUint8Array(data), 33);
-                        nodeHash = hash(buffer);
+                        nodeHash = hash({
+                            key: {
+                                variant: 1,
+                                key: nodeKey,
+                                length: 0
+                            },
+                            hash: data
+                        }, RootBranch);
 
+                        if (typeof nodeHash === 'undefined') {
+                            return undefined;
+                        }
                         if (rootHash === nodeHash) {
                             if (key !== nodeKey) {
                                 return null; // element was not found in tree
@@ -1156,16 +1180,22 @@ var ThinClient = (function() {
                             return undefined;
                         }
 
-                        var elementsBuffer = getValueAsBuffer(element);
-                        if (elementsBuffer === null) {
+                        var elementsHash = hash(element, type);
+                        if (typeof elementsHash === 'undefined') {
                             return undefined;
                         }
 
-                        buffer = new Uint8Array(65);
-                        buffer.set(new Uint8Array([2]));
-                        buffer.set(nodeKeyBuffer, 1);
-                        buffer.set(elementsBuffer, 33);
-                        nodeHash = hash(buffer);
+                        nodeHash = hash({
+                            key: {
+                                variant: 1,
+                                key: nodeKey,
+                                length: 0
+                            },
+                            hash: elementsHash
+                        }, RootBranch);
+                        if (typeof nodeHash === 'undefined') {
+                            return undefined;
+                        }
 
                         if (rootHash === nodeHash) {
                             if (key === nodeKey) {
