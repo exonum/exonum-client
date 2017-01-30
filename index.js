@@ -897,7 +897,7 @@ var ThinClient = (function() {
         var elements = [];
         var rootBranch = 'left';
 
-        // validate arguments
+        // validate parameters
         if (!validateHexHash(rootHash)) {
             return undefined;
         } else if (typeof count !== 'number') {
@@ -969,38 +969,53 @@ var ThinClient = (function() {
         }
 
         /**
+         * Check either suffix is a part of search key
+         * @param {String} prefix
+         * @param {String} suffix
+         * @returns {Boolean}
+         */
+        function isPartOfSearchKey(prefix, suffix) {
+            var diff = key.substr(prefix.length);
+            return diff[0] === suffix[0];
+        }
+
+        /**
          * Recursive tree traversal function
          * @param {Object} node
-         * @param {String} key
+         * @param {String} keyPrefix
          * @returns {null}
          */
-        function recursive(node, key) {
-            if (getObjectLength(proofNode) !== 2) {
+        function recursive(node, keyPrefix) {
+            if (getObjectLength(node) !== 2) {
                 console.error('Invalid number of children in the tree node.');
                 return null;
             }
 
             var branch = {};
 
-            for (var i in node) {
-                if (node.hasOwnProperty(i)) {
-                    if (!validateBinaryString(i)) {
+            for (var keySuffix in node) {
+                if (node.hasOwnProperty(keySuffix)) {
+                    // validate key
+                    if (!validateBinaryString(keySuffix)) {
                         return null;
                     }
 
                     var branchValueHash;
-                    var key = key + i;
+                    var fullKey = keyPrefix + keySuffix;
+                    var nodeValue = node[keySuffix];
+                    var branchType;
                     var branchKey;
                     var branchKeyHash;
 
-                    if (key.length === CONST.MERKLE_PATRICIA_KEY_LENGTH * 8) { // node is leaf
-                        if (typeof node[i] === 'string') {
-                            if (!validateHexHash(node[i])) {
+                    if (fullKey.length === CONST.MERKLE_PATRICIA_KEY_LENGTH * 8) {
+                        if (typeof nodeValue === 'string') {
+                            if (!validateHexHash(nodeValue)) {
                                 return null;
                             }
-                            branchValueHash = node[i];
-                        } else if (isObject(node[i])) {
-                            if (typeof node[i].val === 'undefined') {
+                            branchValueHash = nodeValue;
+                            branchType = 'hash';
+                        } else if (isObject(nodeValue)) {
+                            if (typeof nodeValue.val === 'undefined') {
                                 console.error('Leaf tree contains invalid data.');
                                 return null;
                             } else if (typeof element !== 'undefined') {
@@ -1008,7 +1023,7 @@ var ThinClient = (function() {
                                 return null;
                             }
 
-                            element = getNodeValue(node[i].val);
+                            element = getNodeValue(nodeValue.val);
                             if (element === null) {
                                 return null;
                             }
@@ -1017,12 +1032,13 @@ var ThinClient = (function() {
                             if (typeof branchValueHash === 'undefined') {
                                 return null;
                             }
+                            branchType = 'value';
                         }  else {
                             console.error('Invalid type of node in tree leaf.');
                             return null;
                         }
 
-                        branchKeyHash = hash(binaryStringToUint8Array(key));
+                        branchKeyHash = hash(binaryStringToUint8Array(fullKey));
                         if (typeof branchKeyHash === 'undefined') {
                             return null;
                         }
@@ -1032,27 +1048,33 @@ var ThinClient = (function() {
                             key: branchKeyHash,
                             length: 0
                         };
-                    } else if (key.length < CONST.MERKLE_PATRICIA_KEY_LENGTH * 8) { // node is branch
-                        if (typeof node[i] === 'string') {
-                            if (!validateHexHash(node[i])) {
+                    } else if (fullKey.length < CONST.MERKLE_PATRICIA_KEY_LENGTH * 8) { // node is branch
+                        if (typeof nodeValue === 'string') {
+                            if (!validateHexHash(nodeValue)) {
                                 return null;
                             }
-                            branchValueHash = node[i];
-                        } else if (isObject(node[i])) {
-                            if (typeof node[i].val !== 'undefined') {
+                            branchValueHash = nodeValue;
+                            branchType = 'hash';
+                        } else if (isObject(nodeValue)) {
+                            if (typeof nodeValue.val !== 'undefined') {
                                 console.error('Node with value is at non-leaf position in tree.');
                                 return null;
                             }
-                            branchValueHash = recursive(node[i].val, key);
+
+                            branchValueHash = recursive(nodeValue.val, fullKey);
+                            if (branchValueHash === null) {
+                                return null;
+                            }
+                            branchType = 'branch';
                         }  else {
                             console.error('Invalid type of node in tree.');
                             return null;
                         }
 
-                        var binaryKeyLength = key.length;
-                        var binaryKey = key;
+                        var binaryKeyLength = fullKey.length;
+                        var binaryKey = fullKey;
 
-                        for (var j = 0; j < (CONST.MERKLE_PATRICIA_KEY_LENGTH * 8 - key.length); j++) {
+                        for (var j = 0; j < (CONST.MERKLE_PATRICIA_KEY_LENGTH * 8 - fullKey.length); j++) {
                             binaryKey += '0';
                         }
 
@@ -1067,27 +1089,40 @@ var ThinClient = (function() {
                             length: binaryKeyLength
                         };
                     } else {
-                        console.error('Invalid key length in tree.');
+                        console.error('Invalid length of key in tree.');
                         return null;
                     }
 
-                    if (i[0] === '0') { // left branch/leaf
+                    if (i[0] === '0') { // '0' at the beginning means left branch/leaf
                         if (typeof branch.left_hash === 'undefined') {
                             branch.left_hash = branchValueHash;
                             branch.left_key = branchKey;
+
+                            branch.left_type = branchType;
+                            branch.left_suffix = i;
                         } else {
                             console.error('Left node is duplicated in tree.');
                             return null;
                         }
-                    } else { // right branch/leaf
+                    } else { // '1' at the beginning means right branch/leaf
                         if (typeof branch.right_hash === 'undefined') {
                             branch.right_hash = branchValueHash;
                             branch.right_key = branchKey;
+
+                            branch.right_type = branchType;
+                            branch.right_suffix = i;
                         } else {
                             console.error('Right node is duplicated in tree.');
                             return null;
                         }
                     }
+                }
+            }
+
+            if (branch.left_type === 'hash' && branch.right_type === 'hash') {
+                if (isPartOfSearchKey(keyPrefix, branch.left_suffix) || isPartOfSearchKey(keyPrefix, branch.right_suffix)) {
+                    console.error('Tree is invalid. Key is a part of search key but its branch is not expanded.');
+                    return null;
                 }
             }
 
@@ -1102,16 +1137,19 @@ var ThinClient = (function() {
 
         var element;
 
+        // validate rootHash parameter
         if (!validateHexHash(rootHash)) {
             return undefined;
         }
         var rootHash = rootHash.toLowerCase();
 
+        // validate proofNode parameter
         if (!isObject(proofNode)) {
             console.error('Invalid type of proofNode parameter. Object expected.');
             return undefined;
         }
 
+        // validate key parameter
         var key = key;
         if (Array.isArray(key)) {
             if (validateBytesArray(key, CONST.MERKLE_PATRICIA_KEY_LENGTH)) {
@@ -1128,14 +1166,15 @@ var ThinClient = (function() {
             return undefined;
         }
 
-        if (getObjectLength(proofNode) === 0) { // tree is empty
+        var proofNodeRootNumberOfNodes = getObjectLength(proofNode);
+        if (proofNodeRootNumberOfNodes === 0) {
             if (rootHash === (new Uint8Array(CONST.MERKLE_PATRICIA_KEY_LENGTH * 2)).join('')) {
                 return null;
             } else {
                 console.error('Invalid rootHash parameter of empty tree.');
                 return undefined;
             }
-        } else if (getObjectLength(proofNode) === 1) { // tree contains single node
+        } else if (proofNodeRootNumberOfNodes === 1) {
             for (var i in proofNode) {
                 if (proofNode.hasOwnProperty(i)) {
                     if (!validateBinaryString(i, 256)) {
