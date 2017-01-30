@@ -630,6 +630,20 @@ var ThinClient = (function() {
     }
 
     /**
+     * Convert hexadecimal string into array of 8-bit integers
+     * @param {String} str
+     *  hexadecimal
+     * @returns {String}
+     */
+    function hexadecimalToBinaryString(str) {
+        var binaryStr = '';
+        for (var i = 0, len = str.length; i < len; i += 2) {
+            binaryStr += parseInt(str.substr(i, 2), 16).toString(2);
+        }
+        return binaryStr;
+    }
+
+    /**
      * Convert array of 8-bit integers into hexadecimal string
      * @param {Uint8Array} uint8arr
      * @returns {String}
@@ -814,7 +828,7 @@ var ThinClient = (function() {
                 if (isObject(data)) {
                     element = objectAssign(data); // deep copy
                     buffer = getBuffer(data, type);
-                    if (buffer === null || !Array.isArray(buffer)) {
+                    if (buffer === null) {
                         return null;
                     }
                 } else {
@@ -845,7 +859,6 @@ var ThinClient = (function() {
             var hashLeft;
             var hashRight;
             var summingBuffer;
-            var summingHash;
 
             if (typeof node.left !== 'undefined') {
                 if (typeof node.left === 'string') {
@@ -905,9 +918,7 @@ var ThinClient = (function() {
                 summingBuffer = hexadecimalToUint8Array(hashLeft);
             }
 
-            summingHash = hash(summingBuffer);
-
-            return summingHash || null;
+            return hash(summingBuffer) || null;
         }
 
         var elements = [];
@@ -991,7 +1002,7 @@ var ThinClient = (function() {
          * @returns {Boolean}
          */
         function isPartOfSearchKey(prefix, suffix) {
-            var diff = key.substr(prefix.length);
+            var diff = keyBinary.substr(prefix.length);
             return diff[0] === suffix[0];
         }
 
@@ -1055,10 +1066,6 @@ var ThinClient = (function() {
                         }
 
                         branchKeyHash = binaryStringToHexadecimal(fullKey);
-                        if (typeof branchKeyHash === 'undefined') {
-                            return null;
-                        }
-
                         branchKey = {
                             variant: 1,
                             key: branchKeyHash,
@@ -1095,10 +1102,6 @@ var ThinClient = (function() {
                         }
 
                         branchKeyHash = binaryStringToHexadecimal(binaryKey);
-                        if (typeof branchKeyHash === 'undefined') {
-                            return null;
-                        }
-
                         branchKey = {
                             variant: 0,
                             key: branchKeyHash,
@@ -1115,7 +1118,8 @@ var ThinClient = (function() {
                                 hash: branchValueHash,
                                 key: branchKey,
                                 type: branchType,
-                                suffix: keySuffix
+                                suffix: keySuffix,
+                                size: fullKey.length
                             };
                         } else {
                             console.error('Left node is duplicated in tree.');
@@ -1127,7 +1131,8 @@ var ThinClient = (function() {
                                 hash: branchValueHash,
                                 key: branchKey,
                                 type: branchType,
-                                suffix: keySuffix
+                                suffix: keySuffix,
+                                size: fullKey.length
                             };
                         } else {
                             console.error('Right node is duplicated in tree.');
@@ -1137,31 +1142,22 @@ var ThinClient = (function() {
                 }
             }
 
-            if (typeof levelData.left === 'undefined') {
-                console.error('Tree is invalid. Left node is missed.');
-                return null;
-            } else if (typeof levelData.right === 'undefined') {
-                console.error('Tree is invalid. Right node is missed.');
-                return null;
-            } else if (levelData.left.type === 'hash' && levelData.right.type === 'hash') {
-                if (isPartOfSearchKey(keyPrefix, levelData.left.suffix) || isPartOfSearchKey(keyPrefix, levelData.right.suffix)) {
-                    console.error('Tree is invalid. Key is a part of search key but its branch is not expanded.');
+            if ((levelData.left.type === 'hash') && (levelData.right.type === 'hash') && (fullKey.length < CONST.MERKLE_PATRICIA_KEY_LENGTH * 8)) {
+                if (isPartOfSearchKey(keyPrefix, levelData.left.suffix)) {
+                    console.error('Tree is invalid. Left key is a part of search key but its branch is not expanded.');
+                    return null;
+                } else if (isPartOfSearchKey(keyPrefix, levelData.right.suffix)) {
+                    console.error('Tree is invalid. Right key is a part of search key but its branch is not expanded.');
                     return null;
                 }
             }
 
-            var summingHash = hash({
+            return hash({
                 left_hash: levelData.left.hash,
                 right_hash: levelData.right.hash,
                 left_key: levelData.left.key,
                 right_key: levelData.right.key
             }, Branch);
-
-            if (typeof summingHash === 'undefined') {
-                return null;
-            }
-
-            return summingHash;
         }
 
         var element;
@@ -1182,7 +1178,7 @@ var ThinClient = (function() {
         var key = key;
         if (Array.isArray(key)) {
             if (validateBytesArray(key, CONST.MERKLE_PATRICIA_KEY_LENGTH)) {
-                key = uint8ArrayToHexadecimal(keyBuffer);
+                key = uint8ArrayToHexadecimal(key);
             } else {
                 return undefined;
             }
@@ -1194,6 +1190,7 @@ var ThinClient = (function() {
             console.error('Invalid type of key parameter. Aarray of 8-bit integers or hexadecimal string is expected.');
             return undefined;
         }
+        var keyBinary = hexadecimalToBinaryString(key);
 
         var proofNodeRootNumberOfNodes = getObjectLength(proofNode);
         if (proofNodeRootNumberOfNodes === 0) {
@@ -1228,9 +1225,6 @@ var ThinClient = (function() {
                             hash: data
                         }, RootBranch);
 
-                        if (typeof nodeHash === 'undefined') {
-                            return undefined;
-                        }
                         if (rootHash === nodeHash) {
                             if (key !== nodeKey) {
                                 return null; // element was not found in tree
@@ -1261,9 +1255,6 @@ var ThinClient = (function() {
                             },
                             hash: elementsHash
                         }, RootBranch);
-                        if (typeof nodeHash === 'undefined') {
-                            return undefined;
-                        }
 
                         if (rootHash === nodeHash) {
                             if (key === nodeKey) {

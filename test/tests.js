@@ -1286,6 +1286,22 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(buffer).to.deep.equal([245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161, 242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54, 0, 0, 0, 80, 0, 0, 0, 12, 0, 0, 0, 0, 0, 5, 122, 208, 103, 82, 190, 136, 35, 20, 245, 187, 188, 154, 106, 242, 174, 99, 79, 192, 112, 56, 88, 74, 74, 119, 81, 14, 165, 236, 237, 69, 245, 77, 192, 48, 83, 109, 97, 114, 116, 32, 119, 97, 108, 108, 101, 116]);
         });
 
+        it('Break on missed data parameters', function() {
+            var Wallet = Exonum.newType({
+                size: 80,
+                fields: {
+                    pub_key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32, fixed: true},
+                    name: {type: Exonum.String, size: 8, from: 32, to: 40},
+                    balance: {type: Exonum.U64, size: 8, from: 40, to: 48, fixed: true},
+                    history_hash: {type: Exonum.Hash, size: 32, from: 48, to: 80, fixed: true}
+                }
+            });
+            var walletData = {fake: 123};
+            var buffer = Wallet.serialize(walletData);
+
+            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+        });
+
     });
 
     /*
@@ -1334,6 +1350,34 @@ describe('Client for Exonum blockchain platform: ', function() {
             var hash = Exonum.hash(buffer);
 
             expect(hash).to.equal('7ba0c9544176ce7e079da9c7869fc91dca2cfa4b8dc1c6098f74d96b75542e12');
+        });
+
+        it('Insert data of wrong type', function() {
+            var Wallet = Exonum.newType({
+                size: 80,
+                fields: {
+                    pub_key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32, fixed: true},
+                    name: {type: Exonum.String, size: 8, from: 32, to: 40},
+                    balance: {type: Exonum.U64, size: 8, from: 40, to: 48, fixed: true},
+                    history_hash: {type: Exonum.Hash, size: 32, from: 48, to: 80, fixed: true}
+                }
+            });
+            var hash;
+
+            hash = Exonum.hash(undefined, Wallet);
+            expect(hash).to.equal(undefined);
+
+            hash = Exonum.hash(false, Wallet);
+            expect(hash).to.equal(undefined);
+
+            hash = Exonum.hash(42, Wallet);
+            expect(hash).to.equal(undefined);
+
+            hash = Exonum.hash(new Date(), Wallet);
+            expect(hash).to.equal(undefined);
+
+            hash = Exonum.hash([], Wallet);
+            expect(hash).to.equal(undefined);
         });
 
     });
@@ -1455,7 +1499,7 @@ describe('Client for Exonum blockchain platform: ', function() {
      */
     describe('Check proof of Merkle tree:', function() {
 
-        it('Valid Merkle tree', function() {
+        it('Valid tree', function() {
             var data = require('./common_data/valid-merkle-tree.json');
             var elements = Exonum.merkleProof(
                 data.root_hash,
@@ -1473,7 +1517,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             ]);
         });
 
-        it('Valid Merkle tree but range end is out of range', function() {
+        it('Valid tree but range end is out of range', function() {
             var data = require('./common_data/valid-merkle-tree-with-single-node.json');
             var elements = Exonum.merkleProof(
                 data.root_hash,
@@ -1484,7 +1528,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.deep.equal([[7, 8]]);
         });
 
-        it('Valid fully balanced Merkle tree with all values', function() {
+        it('Valid fully balanced tree with all values', function() {
             var data = require('./common_data/valid-merkle-tree-fully-balanced-with-all-values.json');
             var elements = Exonum.merkleProof(
                 data.root_hash,
@@ -1504,7 +1548,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             ]);
         });
 
-        it('Invalid Merkle tree with invalid rootHash', function() {
+        it('Invalid tree with invalid rootHash', function() {
             var elements;
 
             elements = Exonum.merkleProof(
@@ -1580,7 +1624,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle tree with invalid count', function() {
+        it('Invalid tree with invalid count', function() {
             var elements;
 
             elements = Exonum.merkleProof(
@@ -1648,7 +1692,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle tree with invalid proofNode', function() {
+        it('Invalid tree with invalid proofNode', function() {
             var elements;
 
             elements = Exonum.merkleProof(
@@ -1708,7 +1752,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle tree with invalidrange', function() {
+        it('Invalid tree with invalidrange', function() {
             var elements;
 
             elements = Exonum.merkleProof(
@@ -1864,7 +1908,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle tree with range start is out of range', function() {
+        it('Invalid tree with range start is out of range', function() {
             var elements = Exonum.merkleProof(
                 '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
                 8,
@@ -1874,7 +1918,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle tree with elements that out of tree range', function() {
+        it('Invalid tree with elements that out of tree range', function() {
             var elements = Exonum.merkleProof(
                 '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
                 8,
@@ -1884,7 +1928,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.deep.equal([]);
         });
 
-        it('Invalid Merkle tree with leaf on wrong height', function() {
+        it('Invalid tree with leaf on wrong height', function() {
             var data = require('./common_data/invalid-merkle-tree-with-leaf-on-wrong-height.json');
             var elements = Exonum.merkleProof(
                 data.root_hash,
@@ -1895,7 +1939,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle tree with wrong index of value node', function() {
+        it('Invalid tree with wrong index of value node', function() {
             var data = require('./data/invalid-merkle-tree-with-wrong-index-of-value-node.json');
             var elements = Exonum.merkleProof(
                 data.root_hash,
@@ -1906,7 +1950,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle tree with value on wrong position', function() {
+        it('Invalid tree with value on wrong position', function() {
             var data = require('./data/invalid-merkle-tree-with-value-on-wrong-position.json');
             var elements = Exonum.merkleProof(
                 data.root_hash,
@@ -1917,7 +1961,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle tree with invalid type of type parameter', function() {
+        it('Invalid tree with invalid type of type parameter', function() {
             var elements;
 
             elements = Exonum.merkleProof(
@@ -1981,7 +2025,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle tree with invalid value', function() {
+        it('Invalid tree with invalid value', function() {
             var Type = Exonum.newType({
                 size: 32,
                 fields: {hash: {type: Exonum.Hash, size: 32, from: 0, to: 32, fixed: true}}
@@ -2049,7 +2093,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle tree with invalid value not corresponding to passed type', function() {
+        it('Invalid tree with invalid value not corresponding to passed type', function() {
             var Type = Exonum.newType({
                 size: 32,
                 fields: {hash: {type: Exonum.Hash, size: 32, from: 0, to: 32, fixed: true}}
@@ -2067,7 +2111,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle tree with invalid array of 8-bit integers as value', function() {
+        it('Invalid tree with invalid array of 8-bit integers as value', function() {
             var elements;
 
             elements = Exonum.merkleProof(
@@ -2225,7 +2269,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle tree with missed left node', function() {
+        it('Invalid tree with missed left node', function() {
             var elements = Exonum.merkleProof(
                 '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
                 4,
@@ -2240,7 +2284,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle tree with invalid string in left node', function() {
+        it('Invalid tree with invalid string in left node', function() {
             var elements;
 
             elements = Exonum.merkleProof(
@@ -2288,7 +2332,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle tree with invalid string in right node', function() {
+        it('Invalid tree with invalid string in right node', function() {
             var elements;
 
             elements = Exonum.merkleProof(
@@ -2336,7 +2380,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle tree with invalid type of left node', function() {
+        it('Invalid tree with invalid type of left node', function() {
             var elements;
 
             elements = Exonum.merkleProof(
@@ -2384,7 +2428,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle tree with invalid type of right node', function() {
+        it('Invalid tree with invalid type of right node', function() {
             var elements;
 
             elements = Exonum.merkleProof(
@@ -2432,7 +2476,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle tree with missed right leaf inside right tree branch', function() {
+        it('Invalid tree with missed right leaf inside right tree branch', function() {
             var data = require('./common_data/invalid-merkle-tree-missed-right-leaf-on-left-branch.json');
             var elements = Exonum.merkleProof(
                 data.root_hash,
@@ -2443,7 +2487,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle tree with wrong rootHash', function() {
+        it('Invalid tree with wrong rootHash', function() {
             var data = require('./data/invalid-merkle-tree-with-wrong-root-hash.json');
             var elements = Exonum.merkleProof(
                 data.root_hash,
@@ -2454,7 +2498,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle tree with wrong amount of elements', function() {
+        it('Invalid tree with wrong amount of elements', function() {
             var data = require('./data/invalid-merkle-tree-with-wrong-amount-of-elements.json');
             var elements = Exonum.merkleProof(
                 data.root_hash,
@@ -2472,7 +2516,7 @@ describe('Client for Exonum blockchain platform: ', function() {
      */
     describe('Check proof of Merkle Patricia tree:', function() {
 
-        it('Valid Merkle Patricia empty tree', function() {
+        it('Valid empty tree', function() {
             var data = require('./common_data/valid-merkle-patricia-tree-empty-tree.json');
             var element = Exonum.merklePatriciaProof(
                 data.root_hash,
@@ -2482,7 +2526,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(element).to.equal(null);
         });
 
-        it('Valid Merkle Patricia tree with leaf exclusive', function() {
+        it('Valid tree with leaf exclusive', function() {
             var data = require('./common_data/valid-merkle-patricia-tree-leaf-exclusive.json');
             var element = Exonum.merklePatriciaProof(
                 data.root_hash,
@@ -2492,7 +2536,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(element).to.equal(null);
         });
 
-        it('Valid Merkle Patricia tree with leaf inclusive', function() {
+        it('Valid tree with leaf inclusive', function() {
             var data = require('./common_data/valid-merkle-patricia-tree-leaf-inclusive.json');
             var element = Exonum.merklePatriciaProof(
                 data.root_hash,
@@ -2502,7 +2546,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(element).to.deep.equal([2]);
         });
 
-        it('Valid Merkle Patricia tree with nested node exclusive', function() {
+        it('Valid tree with nested node exclusive', function() {
             var data = require('./common_data/valid-merkle-patricia-tree-nested-exclusive.json');
             var element = Exonum.merklePatriciaProof(
                 data.root_hash,
@@ -2512,7 +2556,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(element).to.equal(null);
         });
 
-        it('Valid Merkle Patricia tree with nested node inclusive', function() {
+        it('Valid tree with nested node inclusive', function() {
             var data = require('./common_data/valid-merkle-patricia-tree-nested-inclusive.json');
             var element = Exonum.merklePatriciaProof(
                 data.root_hash,
@@ -2522,7 +2566,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(element).to.deep.equal([36, 49, 15, 31, 163, 171, 247, 217]);
         });
 
-        it('Invalid Merkle Patricia tree with invalid rootHash parameter', function() {
+        it('Invalid tree with invalid rootHash parameter', function() {
             var elements;
 
             elements = Exonum.merklePatriciaProof('6z56f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13');
@@ -2553,7 +2597,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle Patricia tree with invalid proofNode parameter', function() {
+        it('Invalid tree with invalid proofNode parameter', function() {
             var elements;
 
             elements = Exonum.merklePatriciaProof(
@@ -2599,7 +2643,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle Patricia tree with invalid byte array key parameter', function() {
+        it('Invalid tree with invalid byte array key parameter', function() {
             var elements;
 
             elements = Exonum.merklePatriciaProof(
@@ -2666,7 +2710,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle Patricia tree with invalid string key parameter', function() {
+        it('Invalid tree with invalid string key parameter', function() {
             var elements;
 
             elements = Exonum.merklePatriciaProof(
@@ -2684,7 +2728,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle Patricia tree with key parameter of wrong type', function() {
+        it('Invalid tree with key parameter of wrong type', function() {
             var elements;
 
             elements = Exonum.merklePatriciaProof(
@@ -2737,7 +2781,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle Patricia tree with empty root and wrong rootHash', function() {
+        it('Invalid tree with empty root and wrong rootHash', function() {
             var elements = Exonum.merklePatriciaProof(
                 '0000000000000000000000000000000000000000000000000000000000000001',
                 {},
@@ -2746,7 +2790,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle Patricia tree with single node and invalid binary string as key', function() {
+        it('Invalid tree with single node and invalid binary string as key', function() {
             var elements;
 
             elements = Exonum.merklePatriciaProof(
@@ -2777,7 +2821,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle Patricia tree with single node and wrong invalid hash on value position', function() {
+        it('Invalid tree with single node and wrong invalid hash on value position', function() {
             var elements;
 
             elements = Exonum.merklePatriciaProof(
@@ -2808,7 +2852,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle Patricia tree with single node and rootHash parameter not equal to actual hash (element is not found)', function() {
+        it('Invalid tree with single node and rootHash parameter not equal to actual hash (element is not found)', function() {
             var elements = Exonum.merklePatriciaProof(
                 '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
                 {
@@ -2819,7 +2863,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle Patricia tree with single node and invalid key with hash is in the root of proofNode parameter (element is not found)', function() {
+        it('Invalid tree with single node and invalid key with hash is in the root of proofNode parameter (element is not found)', function() {
             var elements = Exonum.merklePatriciaProof(
                 '335ec501d811725a9e60f89a1b67103e6fa5e65712a007ed33324719a6e2de3a',
                 {
@@ -2830,7 +2874,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle Patricia tree with single node and wrong type data on value position', function() {
+        it('Invalid tree with single node and wrong type data on value position', function() {
             var elements;
 
             elements = Exonum.merklePatriciaProof(
@@ -2900,7 +2944,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle Patricia tree with single node and invalid bytes array on value position', function() {
+        it('Invalid tree with single node and invalid bytes array on value position', function() {
             var elements;
 
             elements = Exonum.merklePatriciaProof(
@@ -2937,7 +2981,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle Patricia tree with single node and invalid value type (not array, not object)', function() {
+        it('Invalid tree with single node and invalid value type (not array, not object)', function() {
             var elements;
 
             elements = Exonum.merklePatriciaProof(
@@ -2995,7 +3039,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle Patricia tree with single node and invalid type parameter', function() {
+        it('Invalid tree with single node and invalid type parameter', function() {
             var elements;
 
             elements = Exonum.merklePatriciaProof(
@@ -3104,7 +3148,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle Patricia tree with single node and wrong type parameter', function() {
+        it('Invalid tree with single node and wrong type parameter', function() {
             var elements;
             var Type = Exonum.newType({
                 size: 8,
@@ -3127,7 +3171,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle Patricia tree with single node and rootHash parameter not equal to actual hash (element is found)', function() {
+        it('Invalid tree with single node and rootHash parameter not equal to actual hash (element is found)', function() {
             var elements;
             var Type = Exonum.newType({
                 size: 8,
@@ -3149,7 +3193,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle Patricia tree with single node and invalid key with value is in the root of proofNode parameter (element is found)', function() {
+        it('Invalid tree with single node and invalid key with value is in the root of proofNode parameter (element is found)', function() {
             var elements;
             var Type = Exonum.newType({
                 size: 8,
@@ -3171,7 +3215,37 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid Merkle Patricia tree with invalid number of children in root node', function() {
+        it('Invalid tree with single node and invalid key in the root of proofNode parameneter', function() {
+            var elements;
+
+            elements = Exonum.merklePatriciaProof(
+                '8be78622dc7fd18b069a226133f1e943652bc5d53fd5df3d59735f49da1df692',
+                {
+                    "1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110": "dbc1b4c900ffe48d575b5da5c638040125f65db0fe3e24494b76ea986457d986"
+                },
+                'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+            );
+            expect(elements).to.equal(undefined);
+        });
+
+        it('Invalid tree with single node and invalid key with value in the root of proofNode parameneter', function() {
+            var elements;
+
+            elements = Exonum.merklePatriciaProof(
+                '8be78622dc7fd18b069a226133f1e943652bc5d53fd5df3d59735f49da1df692',
+                {
+                    "1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110": {
+                        "val": [
+                            2
+                        ]
+                    }
+                },
+                'f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4'
+            );
+            expect(elements).to.equal(undefined);
+        });
+
+        it('Invalid tree with invalid number of children in root node', function() {
             var elements = Exonum.merklePatriciaProof(
                 '0000000000000000000000000000000000000000000000000000000000000001',
                 {
@@ -3182,6 +3256,522 @@ describe('Client for Exonum blockchain platform: ', function() {
                 '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
             );
             expect(elements).to.equal(undefined);
+        });
+
+        it('Valid tree with array as key parameter ', function() {
+            var elements = Exonum.merklePatriciaProof(
+                '8be78622dc7fd18b069a226133f1e943652bc5d53fd5df3d59735f49da1df692',
+                {
+                    "1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110": "dbc1b4c900ffe48d575b5da5c638040125f65db0fe3e24494b76ea986457d986"
+                },
+                [244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244]
+            );
+            expect(elements).to.equal(null);
+        });
+
+        it('Invalid tree with wrong rootHash parameter ', function() {
+            var data = require('./data/invalid-merkle-patricia-tree-wrong-root-hash.json');
+            var element = Exonum.merklePatriciaProof(
+                data.root_hash,
+                data.proof,
+                data.searched_key
+            );
+            expect(element).to.deep.equal(undefined);
+        });
+
+        it('Invalid tree with invalid binary key', function() {
+            var element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '12323': {},
+                    '5927': {}
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+        });
+
+        it('Invalid tree with non full key and value of wrong type', function() {
+            var element;
+
+            element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '0': true,
+                    '1': {}
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+
+            element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '0': null,
+                    '1': {}
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+
+            element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '0': undefined,
+                    '1': {}
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+
+            element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '0': [],
+                    '1': {}
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+
+            element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '0': 42,
+                    '1': {}
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+
+            element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '0': new Date(),
+                    '1': {}
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+        });
+
+        it('Invalid tree with full key and value of wrong type', function() {
+            var element;
+
+            element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '0011001010001111110000101101101011111110000101010111001100101110011110010011110000111001011111111011110110100101111111111110111001110011111110011111001110011110111100001100100101110011010010111111011110001001000010000110000001000101101111100000101010100': true,
+                    '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+
+            element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '0011001010001111110000101101101011111110000101010111001100101110011110010011110000111001011111111011110110100101111111111110111001110011111110011111001110011110111100001100100101110011010010111111011110001001000010000110000001000101101111100000101010100': null,
+                    '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+
+            element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '0011001010001111110000101101101011111110000101010111001100101110011110010011110000111001011111111011110110100101111111111110111001110011111110011111001110011110111100001100100101110011010010111111011110001001000010000110000001000101101111100000101010100': undefined,
+                    '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+
+            element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '0011001010001111110000101101101011111110000101010111001100101110011110010011110000111001011111111011110110100101111111111110111001110011111110011111001110011110111100001100100101110011010010111111011110001001000010000110000001000101101111100000101010100': [],
+                    '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+
+            element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '0011001010001111110000101101101011111110000101010111001100101110011110010011110000111001011111111011110110100101111111111110111001110011111110011111001110011110111100001100100101110011010010111111011110001001000010000110000001000101101111100000101010100': 42,
+                    '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+
+            element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': new Date(),
+                    '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+        });
+
+        it('Invalid tree with non full key and invalid hash', function() {
+            var element;
+
+            element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '0': 'ads',
+                    '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+
+            element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6ez',
+                    '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+        });
+
+        it('Invalid tree with full key and invalid hash', function() {
+            var element;
+
+            element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': 'ads',
+                    '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+
+            element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6ez',
+                    '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+        });
+
+        it('Invalid tree with full key and missed value', function() {
+            var element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
+                        'age': 5
+                    },
+                    '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+        });
+
+        it('Invalid tree with full key and duplicated value', function() {
+            var element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
+                        val: [25, 13]
+                    },
+                    '0110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
+                        val: [71]
+                    }
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+        });
+
+        it('Invalid tree with non full key and value on wrong position', function() {
+            var element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '011001101': {
+                        val: [25, 13]
+                    },
+                    '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+        });
+
+        it('Invalid tree with key of wrong length', function() {
+            var element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6',
+                    '11100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101': {
+                        val: [25, 13]
+                    }
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+        });
+
+        it('Invalid tree with full key and value of wrong type', function() {
+            var element;
+
+            element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
+                        val: false
+                    },
+                    '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+
+            element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
+                        val: null
+                    },
+                    '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+
+            element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
+                        val: 42
+                    },
+                    '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+
+            element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
+                        val: 'Hello world'
+                    },
+                    '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+        });
+
+        it('Invalid tree with full key and value as invalid binary array', function() {
+            var element;
+
+            element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
+                        val: [false]
+                    },
+                    '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+
+            element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
+                        val: [null]
+                    },
+                    '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+
+            element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
+                        val: [257]
+                    },
+                    '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+
+            element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
+                        val: [{}]
+                    },
+                    '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+
+            element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
+                        val: [[]]
+                    },
+                    '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+
+            element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
+                        val: [new Date()]
+                    },
+                    '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+        });
+
+        it('Invalid tree with full key and wrong type parameter', function() {
+            var Wallet = Exonum.newType({
+                size: 80,
+                fields: {
+                    pub_key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32, fixed: true},
+                    name: {type: Exonum.String, size: 8, from: 32, to: 40},
+                    balance: {type: Exonum.U64, size: 8, from: 40, to: 48, fixed: true},
+                    history_hash: {type: Exonum.Hash, size: 32, from: 48, to: 80, fixed: true}
+                }
+            });
+            var element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
+                        val: {
+                            name: 'John',
+                            surname: 'Doe'
+                        }
+                    },
+                    '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3',
+                Wallet
+            );
+            expect(element).to.deep.equal(undefined);
+        });
+
+        it('Invalid tree with non full key and wrong type parameter', function() {
+            var Wallet = Exonum.newType({
+                size: 80,
+                fields: {
+                    pub_key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32, fixed: true},
+                    name: {type: Exonum.String, size: 8, from: 32, to: 40},
+                    balance: {type: Exonum.U64, size: 8, from: 40, to: 48, fixed: true},
+                    history_hash: {type: Exonum.Hash, size: 32, from: 48, to: 80, fixed: true}
+                }
+            });
+            var element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '111': {
+                        '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6',
+                        '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100': {
+                            val: {
+                                name: 'John',
+                                surname: 'Doe'
+                            }
+                        }
+                    },
+                    '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3',
+                Wallet
+            );
+            expect(element).to.deep.equal(undefined);
+        });
+
+        it('Invalid tree with duplicated left leaf', function() {
+            var element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '111': {
+                        '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6',
+                        '0110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100': {
+                            val: [255, 0, 5]
+                        }
+                    },
+                    '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+        });
+
+        it('Invalid tree with duplicated right leaf', function() {
+            var element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '111': {
+                        '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6',
+                        '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100': {
+                            val: [255, 0, 5]
+                        }
+                    },
+                    '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+                },
+                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+            );
+            expect(element).to.deep.equal(undefined);
+        });
+
+        it('Invalid tree with left key which is part of search key but branch is not expanded', function() {
+            var element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '111': {
+                        "01111111010111000100100111101010110010111100011010100000100111111110101011011000011000000000100001000100000101101101100010101110110101101010001100000101110100011101101111100100101110100110010011011100011111011010110010100011111011010011000101111011010": "9be1fdaa5e58640e6c17dba7e734c56ec7ccab77f823933301661e3514284dd7",
+                        "11111111010111000100100111101010110010111100011010100000100110111110101011011000011000000000100001000100000101101101100010101110110101101010001100000101110100011101101111100100101110100110010011011100011111011010110010100011111011010011000101111011010": "9be1fdaa5e58640e6c17dba7e734c56ec7ccab77f823933301661e3514284dd7",
+                    },
+                    '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+                },
+                'ecdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdc'
+            );
+            expect(element).to.equal(undefined);
+        });
+
+        it('Invalid tree with right key which is part of search key but branch is not expanded', function() {
+            var element = Exonum.merklePatriciaProof(
+                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                {
+                    '111': {
+                        "01111111010111000100100111101010110010111100011010100000100111111110101011011000011000000000100001000100000101101101100010101110110101101010001100000101110100011101101111100100101110100110010011011100011111011010110010100011111011010011000101111011010": "9be1fdaa5e58640e6c17dba7e734c56ec7ccab77f823933301661e3514284dd7",
+                        "11111111010111000100100111101010110010111100011010100000100110111110101011011000011000000000100001000100000101101101100010101110110101101010001100000101110100011101101111100100101110100110010011011100011111011010110010100011111011010011000101111011010": "9be1fdaa5e58640e6c17dba7e734c56ec7ccab77f823933301661e3514284dd7",
+                    },
+                    '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+                },
+                'fcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdc'
+            );
+            expect(element).to.equal(undefined);
         });
 
     });
