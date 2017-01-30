@@ -652,16 +652,32 @@ var ThinClient = (function() {
 
     /**
      * Convert binary string into array of 8-bit integers
-     * @param {String} str
+     * @param {String} binaryStr
      * @returns {Uint8Array}
      */
-    function binaryStringToUint8Array(str) {
+    function binaryStringToUint8Array(binaryStr) {
         var array = [];
-        for (var i = 0, len = str.length; i < len; i += 8) {
-            array.push(parseInt(str.substr(i, 8), 2));
+        for (var i = 0, len = binaryStr.length; i < len; i += 8) {
+            array.push(parseInt(binaryStr.substr(i, 8), 2));
         }
 
         return new Uint8Array(array);
+    }
+
+    /**
+     * Convert binary string into hexadecimal string
+     * @param {String} binaryStr
+     * @returns {string}
+     */
+    function binaryStringToHexadecimal(binaryStr) {
+        var str = '';
+        for (var i = 0, len = binaryStr.length; i < len; i += 8) {
+            var hex = (parseInt(binaryStr.substr(i, 8), 2)).toString(16);
+            hex = (hex.length === 1) ? '0' + hex : hex;
+            str += hex;
+        }
+
+        return str.toLowerCase();
     }
 
     /**
@@ -991,7 +1007,7 @@ var ThinClient = (function() {
                 return null;
             }
 
-            var branch = {};
+            var levelData = {};
 
             for (var keySuffix in node) {
                 if (node.hasOwnProperty(keySuffix)) {
@@ -1038,13 +1054,13 @@ var ThinClient = (function() {
                             return null;
                         }
 
-                        branchKeyHash = hash(binaryStringToUint8Array(fullKey));
+                        branchKeyHash = binaryStringToHexadecimal(fullKey);
                         if (typeof branchKeyHash === 'undefined') {
                             return null;
                         }
 
                         branchKey = {
-                            variant: 0,
+                            variant: 1,
                             key: branchKeyHash,
                             length: 0
                         };
@@ -1061,7 +1077,7 @@ var ThinClient = (function() {
                                 return null;
                             }
 
-                            branchValueHash = recursive(nodeValue.val, fullKey);
+                            branchValueHash = recursive(nodeValue, fullKey);
                             if (branchValueHash === null) {
                                 return null;
                             }
@@ -1078,13 +1094,13 @@ var ThinClient = (function() {
                             binaryKey += '0';
                         }
 
-                        branchKeyHash = hash(binaryStringToUint8Array(binaryKey));
+                        branchKeyHash = binaryStringToHexadecimal(binaryKey);
                         if (typeof branchKeyHash === 'undefined') {
                             return null;
                         }
 
                         branchKey = {
-                            variant: 1,
+                            variant: 0,
                             key: branchKeyHash,
                             length: binaryKeyLength
                         };
@@ -1093,24 +1109,26 @@ var ThinClient = (function() {
                         return null;
                     }
 
-                    if (i[0] === '0') { // '0' at the beginning means left branch/leaf
-                        if (typeof branch.left_hash === 'undefined') {
-                            branch.left_hash = branchValueHash;
-                            branch.left_key = branchKey;
-
-                            branch.left_type = branchType;
-                            branch.left_suffix = i;
+                    if (keySuffix[0] === '0') { // '0' at the beginning means left branch/leaf
+                        if (typeof levelData.left === 'undefined') {
+                            levelData.left = {
+                                hash: branchValueHash,
+                                key: branchKey,
+                                type: branchType,
+                                suffix: keySuffix
+                            };
                         } else {
                             console.error('Left node is duplicated in tree.');
                             return null;
                         }
                     } else { // '1' at the beginning means right branch/leaf
-                        if (typeof branch.right_hash === 'undefined') {
-                            branch.right_hash = branchValueHash;
-                            branch.right_key = branchKey;
-
-                            branch.right_type = branchType;
-                            branch.right_suffix = i;
+                        if (typeof levelData.right === 'undefined') {
+                            levelData.right = {
+                                hash: branchValueHash,
+                                key: branchKey,
+                                type: branchType,
+                                suffix: keySuffix
+                            };
                         } else {
                             console.error('Right node is duplicated in tree.');
                             return null;
@@ -1119,14 +1137,25 @@ var ThinClient = (function() {
                 }
             }
 
-            if (branch.left_type === 'hash' && branch.right_type === 'hash') {
-                if (isPartOfSearchKey(keyPrefix, branch.left_suffix) || isPartOfSearchKey(keyPrefix, branch.right_suffix)) {
+            if (typeof levelData.left === 'undefined') {
+                console.error('Tree is invalid. Left node is missed.');
+                return null;
+            } else if (typeof levelData.right === 'undefined') {
+                console.error('Tree is invalid. Right node is missed.');
+                return null;
+            } else if (levelData.left.type === 'hash' && levelData.right.type === 'hash') {
+                if (isPartOfSearchKey(keyPrefix, levelData.left.suffix) || isPartOfSearchKey(keyPrefix, levelData.right.suffix)) {
                     console.error('Tree is invalid. Key is a part of search key but its branch is not expanded.');
                     return null;
                 }
             }
 
-            var summingHash = hash(branch, Branch);
+            var summingHash = hash({
+                left_hash: levelData.left.hash,
+                right_hash: levelData.right.hash,
+                left_key: levelData.left.key,
+                right_key: levelData.right.key
+            }, Branch);
 
             if (typeof summingHash === 'undefined') {
                 return null;

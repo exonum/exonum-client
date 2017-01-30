@@ -2502,25 +2502,25 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(element).to.deep.equal([2]);
         });
 
-        // it('Valid Merkle Patricia tree with nested node exclusive', function() {
-        //     var data = require('./common_data/valid-merkle-patricia-tree-nested-exclusive.json');
-        //     var element = Exonum.merklePatriciaProof(
-        //         data.root_hash,
-        //         data.proof,
-        //         data.searched_key
-        //     );
-        //     expect(element).to.equal(null);
-        // });
-        //
-        // it('Valid Merkle Patricia tree with nested node inclusive', function() {
-        //     var data = require('./common_data/valid-merkle-patricia-tree-nested-inclusive.json');
-        //     var element = Exonum.merklePatriciaProof(
-        //         data.root_hash,
-        //         data.proof,
-        //         data.searched_key
-        //     );
-        //     expect(element).to.deep.equal([36, 49, 15, 31, 163, 171, 247, 217]);
-        // });
+        it('Valid Merkle Patricia tree with nested node exclusive', function() {
+            var data = require('./common_data/valid-merkle-patricia-tree-nested-exclusive.json');
+            var element = Exonum.merklePatriciaProof(
+                data.root_hash,
+                data.proof,
+                data.searched_key
+            );
+            expect(element).to.equal(null);
+        });
+
+        it('Valid Merkle Patricia tree with nested node inclusive', function() {
+            var data = require('./common_data/valid-merkle-patricia-tree-nested-inclusive.json');
+            var element = Exonum.merklePatriciaProof(
+                data.root_hash,
+                data.proof,
+                data.searched_key
+            );
+            expect(element).to.deep.equal([36, 49, 15, 31, 163, 171, 247, 217]);
+        });
 
         it('Invalid Merkle Patricia tree with invalid rootHash parameter', function() {
             var elements;
