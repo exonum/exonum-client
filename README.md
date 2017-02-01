@@ -120,7 +120,7 @@ Lets declare custom type `Transfer` that will use custom type `User` as one of t
 var Transfer = Exonum.newType({
     size: 24,
     fields: {
-        amount: {type: Exonum.I64, size: 8, from: 0, to: 8},
+        amount: {type: Exonum.I64, size: 8, from: 0, to: 8, fixed: true},
         from: {type: User, size: 8, from: 8, to: 16},
         to: {type: User, size: 8, from: 16, to: 24}
     }
