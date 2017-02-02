@@ -2,7 +2,7 @@
   "name": "exonum-client",
   "description": "Client for Exonum blockchain platform",
   "version": "1.0.0",
-  "license": "MIT",
+  "license": "",
   "author": "BitFury Group Limited",
   "private": true,
   "main": "index.js",

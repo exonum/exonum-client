@@ -1,33 +1,13 @@
-// MIT License
-//
-// Copyright (c) 2016 BitFury Group Limited
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-
 "use strict";
 
 var sha = require('sha.js');
 var nacl = require('tweetnacl');
 var objectAssign = require('object-assign');
+var fs = require('fs');
 
 var ThinClient = (function() {
 
+    var CONFIG = require('./config.json');
     var CONST = {
         MIN_I8: -128,
         MAX_I8: 127,
@@ -64,6 +44,30 @@ var ThinClient = (function() {
             hash: {type: Hash, size: 32, from: 34, to: 66, fixed: true}
         }
     });
+    var Block = createNewType({
+        size: 116,
+        fields: {
+            height: {type: U64, size: 8, from: 0, to: 8, fixed: true},
+            propose_round: {type: U32, size: 4, from: 8, to: 12, fixed: true},
+            time: {type: Timespec, size: 8, from: 12, to: 20, fixed: true},
+            prev_hash: {type: Hash, size: 32, from: 20, to: 52, fixed: true},
+            tx_hash: {type: Hash, size: 32, from: 52, to: 84, fixed: true},
+            state_hash: {type: Hash, size: 32, from: 84, to: 116, fixed: true}
+        }
+    });
+    var Precommit = createNewMessage({
+        size: 84,
+        service_id: 2,
+        message_type: 40,
+        version: 1,
+        fields: {
+            validator: {type: U32, size: 4, from: 0, to: 4, fixed: true},
+            height: {type: U64, size: 8, from: 8, to: 16, fixed: true},
+            round: {type: U32, size: 4, from: 16, to: 20, fixed: true},
+            propose_hash: {type: Hash, size: 32, from: 20, to: 52, fixed: true},
+            block_hash: {type: Hash, size: 32, from: 52, to: 84, fixed: true}
+        }
+    });
 
     /**
      * @constructor
@@ -92,6 +96,40 @@ var ThinClient = (function() {
      */
     function createNewType(type) {
         return new NewType(type);
+    }
+
+    /**
+     * @constructor
+     * @param {Object} type
+     */
+    function NewMessage(type) {
+        this.size = type.size;
+        this.service_id = type.service_id;
+        this.message_type = type.message_type;
+        this.version = type.version;
+        this.network_id = CONFIG.networkId;
+        this.fields = type.fields;
+
+        // signature
+        // body
+
+        // TODO calc CONFIG.payload
+    }
+
+    /**
+     * Built-in method to serialize data into array of 8-bit integers
+     * @param {Object} data
+     * @returns {Array}
+     */
+    NewMessage.prototype.serialize = function(data) {
+        // TODO rework serialization
+        var buffer = [];
+        serialize(buffer, 0, data, this);
+        return buffer;
+    };
+
+    function createNewMessage(type) {
+        return new NewMessage(type);
     }
 
     /**
@@ -348,6 +386,24 @@ var ThinClient = (function() {
         }
 
         insertHexadecimalToArray(hash, buffer, from, to);
+    }
+
+    /**
+     * Built-in data type
+     * @param {String} digest
+     * @param {Array} buffer
+     * @param {Number} from
+     * @param {Number} to
+     */
+    function Digest(digest, buffer, from, to) {
+        if (!validateHexHash(digest, 64)) {
+            return;
+        } else if ((to - from) !== 64) {
+            console.error('Digest segment is of wrong length. 64 bytes long is required to store transmitted value.');
+            return;
+        }
+
+        insertHexadecimalToArray(digest, buffer, from, to);
     }
 
     /**
@@ -757,25 +813,72 @@ var ThinClient = (function() {
      * @return {String}
      */
     function sign(data, type, secretKey) {
-        var buffer = secretKey ? getBuffer(data, type) : data;
-        var secretKey = secretKey || type;
+        var buffer;
+        var secretKey = secretKey;
+        var signature;
 
-        if (typeof secretKey !== 'string') {
-            console.error('Wrong data type is passed as secretKey. String is required');
-            return;
-        } else if (secretKey.length !== 128) {
-            console.error('Wrong of wrong length is passed.');
-            return;
-        }
-
-        for (var i = 0, len = secretKey.length; i < len; i++) {
-            if (isNaN(parseInt(secretKey[i], 16))) {
-                console.error('Invalid symbol in hexadecimal string of secretKey.');
+        if (typeof secretKey !== 'undefined') {
+            buffer = getBuffer(data, type);
+        } else {
+            if (!validateBytesArray(data)) {
+                console.error('Invalid data parameter.');
                 return;
             }
+
+            buffer = data;
+            secretKey = type;
         }
 
-        return uint8ArrayToHexadecimal(nacl.sign.detached(new Uint8Array(buffer), hexadecimalToUint8Array(secretKey)));
+        if (!validateHexHash(secretKey, 64)) {
+            console.error('Invalid secretKey parameter.');
+            return;
+        }
+
+        buffer = new Uint8Array(buffer);
+        secretKey = hexadecimalToUint8Array(secretKey);
+        signature = nacl.sign.detached(buffer, secretKey);
+
+        return uint8ArrayToHexadecimal(signature);
+    }
+
+    /**
+     * Verifies ED25519 signature
+     * Method with overloading. Accept two combinations of arguments:
+     * 1) {Object} data, {NewType} type, {String} signature, {String} publicKey
+     * 2) {Array} buffer, {String} signature, {String} publicKey
+     * @return {Boolean}
+     */
+    function verifySignature(data, type, signature, publicKey) {
+        var buffer;
+        var signature = signature;
+        var publicKey = publicKey;
+
+        if (typeof publicKey !== 'undefined') {
+            buffer = getBuffer(data, type);
+        } else {
+            if (!validateBytesArray(data)) {
+                console.error('Invalid data parameter.');
+                return;
+            }
+
+            buffer = data;
+            signature = type;
+            publicKey = signature;
+        }
+
+        if (!validateHexHash(publicKey)) {
+            console.error('Invalid publicKey parameter.');
+            return;
+        } else if (!validateHexHash(signature, 64)) {
+            console.error('Invalid signature parameter.');
+            return;
+        }
+
+        buffer = new Uint8Array(buffer);
+        signature = hexadecimalToUint8Array(signature);
+        publicKey = hexadecimalToUint8Array(publicKey);
+
+        return nacl.sign.detached.verify(buffer, signature, publicKey);
     }
 
     /**
@@ -1287,14 +1390,35 @@ var ThinClient = (function() {
         }
     }
 
+    function verifyBlock(data) {
+        if (!isObject(data)) {
+            console.error('Wrong type of data parameter. Object is expected.');
+            return undefined;
+        } else if (!isObject(data.block)) {
+            console.error('Wrong type of block value. Object is expected.');
+            return undefined;
+        } else if (!Array.isArray(data.precommits)) {
+            console.error('Wrong type of precommits value. Array is expected.');
+            return undefined;
+        }
+
+        for (var i in data.precommits) {
+            if (data.precommits.hasOwnProperty(i)) {
+                // var precommit = hash(data.precommits[i], Precommit);
+            }
+        }
+    }
+
     return {
 
         // API methods
         newType: createNewType,
         hash: hash,
         sign: sign,
+        verifySignature: verifySignature,
         merkleProof: merkleProof,
         merklePatriciaProof: merklePatriciaProof,
+        verifyBlock: verifyBlock,
 
         // built-in types
         I8: I8,
@@ -1307,6 +1431,7 @@ var ThinClient = (function() {
         U64: U64,
         String: String,
         Hash: Hash,
+        Digest: Digest,
         PublicKey: PublicKey,
         Timespec: Timespec,
         Bool: Bool

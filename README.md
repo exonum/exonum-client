@@ -8,6 +8,7 @@ Pure JavaScript toolkit to work with Exonum blockchain in both of browser and No
 3. [API methods](#api-methods)
    * [hash](#exonumhash)
    * [sign](#exonumsign)
+   * [verifySignature](#exonumverifysignature)
    * [newType](#exonumnewtype)
    * [merkleProof](#exonummerkleproof)
    * [merklePatriciaProof](#exonummerklepatriciaproof)
@@ -23,6 +24,7 @@ Pure JavaScript toolkit to work with Exonum blockchain in both of browser and No
    * [String](#exonumstring)
    * [Hash](#exonumhash-1)
    * [PublicKey](#exonumpublickey)
+   * [Digest](#exonumdigest)
    * [Timespec](#exonumtimespec)
    * [Bool](#exonumbool)
 5. [Tests](#tests)
@@ -67,7 +69,7 @@ The `buffer` is a data serialized according to its type (array of 8-bit integers
 
 Returns ED25519 signature of the data as hexadecimal string.
 
-Same as `hash` methods `sign` method accept two combinations of an arguments:
+Accept two combinations of an arguments:
 
 ##### Exonum.sign(data, type, secretKey)
 
@@ -83,6 +85,30 @@ The `buffer` is a data serialized according to its type (array of 8-bit integers
 
 The `secretKey` is a 64 bit secret key.
 
+### Exonum.verifySignature(...)
+
+Returns `true` if verification succeeded or `false` if it failed.
+
+Accept two combinations of an arguments:
+
+##### Exonum.verifySignature(data, type, signature, publicKey)
+
+The `data` is a custom data in JSON format.
+
+The `type` is a format of data in a special format.
+
+The `signature` is a 64 bit hexadecimal string.
+
+The `publicKey` is a 32 bit secret key.
+
+##### Exonum.verifySignature(buffer, signature, publicKey)
+
+The `buffer` is a data serialized according to its type (array of 8-bit integers).
+
+The `signature` is a 64 bit hexadecimal string.
+
+The `publicKey` is a 32 bit secret key.
+
 ### Exonum.newType({...})
 
 This methods create custom data format based on built-in formats and other custom formats:
@@ -90,6 +116,8 @@ This methods create custom data format based on built-in formats and other custo
 Receive a declarative format of the data.
 
 Returns an object of format type.
+
+Object of `newType` has method `serialize` which can be used to retrieve representation of data of type newType as array of 8-bit integers.
 
 ### Example of usage of Exonum.newType
 
@@ -271,6 +299,12 @@ Hexadecimal value of the length of `32` bytes.
 
 `fixed: true` should be used.
 
+#### Exonum.Digest
+
+Hexadecimal value of the length of `64` bytes.
+
+`fixed: true` should be used.
+
 #### Exonum.Timespec
 
 Unsigned integer value of the length of `8` bytes. Represents Unix time in nanosecond.
@@ -315,4 +349,4 @@ npm run build-debug
 
 ## License
 
-MIT
+TODO
