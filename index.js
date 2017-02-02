@@ -862,8 +862,8 @@ var ThinClient = (function() {
             }
 
             buffer = data;
-            signature = type;
             publicKey = signature;
+            signature = type;
         }
 
         if (!validateHexHash(publicKey)) {
