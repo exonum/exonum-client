@@ -55,17 +55,26 @@ var ThinClient = (function() {
             state_hash: {type: Hash, size: 32, from: 84, to: 116, fixed: true}
         }
     });
-    var Precommit = createNewMessage({
+    var PrecommitBody = createNewType({
         size: 84,
-        service_id: 2,
-        message_type: 40,
-        version: 1,
         fields: {
             validator: {type: U32, size: 4, from: 0, to: 4, fixed: true},
             height: {type: U64, size: 8, from: 8, to: 16, fixed: true},
             round: {type: U32, size: 4, from: 16, to: 20, fixed: true},
             propose_hash: {type: Hash, size: 32, from: 20, to: 52, fixed: true},
             block_hash: {type: Hash, size: 32, from: 52, to: 84, fixed: true}
+        }
+    });
+    var Precommit = createNewType({
+        size: 158,
+        fields: {
+            network_id: {type: U8, size: 1, from: 0, to: 1, fixed: true},
+            version: {type: U8, size: 1, from: 1, to: 2, fixed: true},
+            service_id: {type: U16, size: 2, from: 2, to: 4, fixed: true},
+            message_type: {type: U16, size: 2, from: 4, to: 6, fixed: true},
+            payload: {type: U32, size: 4, from: 6, to: 10, fixed: true},
+            body: {type: PrecommitBody, size: 84, from: 10, to: 94, fixed: true},
+            signature: {type: Digest, size: 64, from: 94, to: 158, fixed: true}
         }
     });
 
@@ -96,40 +105,6 @@ var ThinClient = (function() {
      */
     function createNewType(type) {
         return new NewType(type);
-    }
-
-    /**
-     * @constructor
-     * @param {Object} type
-     */
-    function NewMessage(type) {
-        this.size = type.size;
-        this.service_id = type.service_id;
-        this.message_type = type.message_type;
-        this.version = type.version;
-        this.network_id = CONFIG.networkId;
-        this.fields = type.fields;
-
-        // signature
-        // body
-
-        // TODO calc CONFIG.payload
-    }
-
-    /**
-     * Built-in method to serialize data into array of 8-bit integers
-     * @param {Object} data
-     * @returns {Array}
-     */
-    NewMessage.prototype.serialize = function(data) {
-        // TODO rework serialization
-        var buffer = [];
-        serialize(buffer, 0, data, this);
-        return buffer;
-    };
-
-    function createNewMessage(type) {
-        return new NewMessage(type);
     }
 
     /**
@@ -1124,123 +1099,125 @@ var ThinClient = (function() {
             var levelData = {};
 
             for (var keySuffix in node) {
-                if (node.hasOwnProperty(keySuffix)) {
-                    // validate key
-                    if (!validateBinaryString(keySuffix)) {
+                if (!node.hasOwnProperty(keySuffix)) {
+                    continue;
+                }
+
+                // validate key
+                if (!validateBinaryString(keySuffix)) {
+                    return null;
+                }
+
+                var branchValueHash;
+                var fullKey = keyPrefix + keySuffix;
+                var nodeValue = node[keySuffix];
+                var branchType;
+                var branchKey;
+                var branchKeyHash;
+
+                if (fullKey.length === CONST.MERKLE_PATRICIA_KEY_LENGTH * 8) {
+                    if (typeof nodeValue === 'string') {
+                        if (!validateHexHash(nodeValue)) {
+                            return null;
+                        }
+                        branchValueHash = nodeValue;
+                        branchType = 'hash';
+                    } else if (isObject(nodeValue)) {
+                        if (typeof nodeValue.val === 'undefined') {
+                            console.error('Leaf tree contains invalid data.');
+                            return null;
+                        } else if (typeof element !== 'undefined') {
+                            console.error('Tree can not contains more than one node with value.');
+                            return null;
+                        }
+
+                        element = getNodeValue(nodeValue.val);
+                        if (element === null) {
+                            return null;
+                        }
+
+                        branchValueHash = hash(element, type);
+                        if (typeof branchValueHash === 'undefined') {
+                            return null;
+                        }
+                        branchType = 'value';
+                    }  else {
+                        console.error('Invalid type of node in tree leaf.');
                         return null;
                     }
 
-                    var branchValueHash;
-                    var fullKey = keyPrefix + keySuffix;
-                    var nodeValue = node[keySuffix];
-                    var branchType;
-                    var branchKey;
-                    var branchKeyHash;
-
-                    if (fullKey.length === CONST.MERKLE_PATRICIA_KEY_LENGTH * 8) {
-                        if (typeof nodeValue === 'string') {
-                            if (!validateHexHash(nodeValue)) {
-                                return null;
-                            }
-                            branchValueHash = nodeValue;
-                            branchType = 'hash';
-                        } else if (isObject(nodeValue)) {
-                            if (typeof nodeValue.val === 'undefined') {
-                                console.error('Leaf tree contains invalid data.');
-                                return null;
-                            } else if (typeof element !== 'undefined') {
-                                console.error('Tree can not contains more than one node with value.');
-                                return null;
-                            }
-
-                            element = getNodeValue(nodeValue.val);
-                            if (element === null) {
-                                return null;
-                            }
-
-                            branchValueHash = hash(element, type);
-                            if (typeof branchValueHash === 'undefined') {
-                                return null;
-                            }
-                            branchType = 'value';
-                        }  else {
-                            console.error('Invalid type of node in tree leaf.');
+                    branchKeyHash = binaryStringToHexadecimal(fullKey);
+                    branchKey = {
+                        variant: 1,
+                        key: branchKeyHash,
+                        length: 0
+                    };
+                } else if (fullKey.length < CONST.MERKLE_PATRICIA_KEY_LENGTH * 8) { // node is branch
+                    if (typeof nodeValue === 'string') {
+                        if (!validateHexHash(nodeValue)) {
+                            return null;
+                        }
+                        branchValueHash = nodeValue;
+                        branchType = 'hash';
+                    } else if (isObject(nodeValue)) {
+                        if (typeof nodeValue.val !== 'undefined') {
+                            console.error('Node with value is at non-leaf position in tree.');
                             return null;
                         }
 
-                        branchKeyHash = binaryStringToHexadecimal(fullKey);
-                        branchKey = {
-                            variant: 1,
-                            key: branchKeyHash,
-                            length: 0
-                        };
-                    } else if (fullKey.length < CONST.MERKLE_PATRICIA_KEY_LENGTH * 8) { // node is branch
-                        if (typeof nodeValue === 'string') {
-                            if (!validateHexHash(nodeValue)) {
-                                return null;
-                            }
-                            branchValueHash = nodeValue;
-                            branchType = 'hash';
-                        } else if (isObject(nodeValue)) {
-                            if (typeof nodeValue.val !== 'undefined') {
-                                console.error('Node with value is at non-leaf position in tree.');
-                                return null;
-                            }
-
-                            branchValueHash = recursive(nodeValue, fullKey);
-                            if (branchValueHash === null) {
-                                return null;
-                            }
-                            branchType = 'branch';
-                        }  else {
-                            console.error('Invalid type of node in tree.');
+                        branchValueHash = recursive(nodeValue, fullKey);
+                        if (branchValueHash === null) {
                             return null;
                         }
+                        branchType = 'branch';
+                    }  else {
+                        console.error('Invalid type of node in tree.');
+                        return null;
+                    }
 
-                        var binaryKeyLength = fullKey.length;
-                        var binaryKey = fullKey;
+                    var binaryKeyLength = fullKey.length;
+                    var binaryKey = fullKey;
 
-                        for (var j = 0; j < (CONST.MERKLE_PATRICIA_KEY_LENGTH * 8 - fullKey.length); j++) {
-                            binaryKey += '0';
-                        }
+                    for (var j = 0; j < (CONST.MERKLE_PATRICIA_KEY_LENGTH * 8 - fullKey.length); j++) {
+                        binaryKey += '0';
+                    }
 
-                        branchKeyHash = binaryStringToHexadecimal(binaryKey);
-                        branchKey = {
-                            variant: 0,
-                            key: branchKeyHash,
-                            length: binaryKeyLength
+                    branchKeyHash = binaryStringToHexadecimal(binaryKey);
+                    branchKey = {
+                        variant: 0,
+                        key: branchKeyHash,
+                        length: binaryKeyLength
+                    };
+                } else {
+                    console.error('Invalid length of key in tree.');
+                    return null;
+                }
+
+                if (keySuffix[0] === '0') { // '0' at the beginning means left branch/leaf
+                    if (typeof levelData.left === 'undefined') {
+                        levelData.left = {
+                            hash: branchValueHash,
+                            key: branchKey,
+                            type: branchType,
+                            suffix: keySuffix,
+                            size: fullKey.length
                         };
                     } else {
-                        console.error('Invalid length of key in tree.');
+                        console.error('Left node is duplicated in tree.');
                         return null;
                     }
-
-                    if (keySuffix[0] === '0') { // '0' at the beginning means left branch/leaf
-                        if (typeof levelData.left === 'undefined') {
-                            levelData.left = {
-                                hash: branchValueHash,
-                                key: branchKey,
-                                type: branchType,
-                                suffix: keySuffix,
-                                size: fullKey.length
-                            };
-                        } else {
-                            console.error('Left node is duplicated in tree.');
-                            return null;
-                        }
-                    } else { // '1' at the beginning means right branch/leaf
-                        if (typeof levelData.right === 'undefined') {
-                            levelData.right = {
-                                hash: branchValueHash,
-                                key: branchKey,
-                                type: branchType,
-                                suffix: keySuffix,
-                                size: fullKey.length
-                            };
-                        } else {
-                            console.error('Right node is duplicated in tree.');
-                            return null;
-                        }
+                } else { // '1' at the beginning means right branch/leaf
+                    if (typeof levelData.right === 'undefined') {
+                        levelData.right = {
+                            hash: branchValueHash,
+                            key: branchKey,
+                            type: branchType,
+                            suffix: keySuffix,
+                            size: fullKey.length
+                        };
+                    } else {
+                        console.error('Right node is duplicated in tree.');
+                        return null;
                     }
                 }
             }
@@ -1305,76 +1282,80 @@ var ThinClient = (function() {
             }
         } else if (proofNodeRootNumberOfNodes === 1) {
             for (var i in proofNode) {
-                if (proofNode.hasOwnProperty(i)) {
-                    if (!validateBinaryString(i, 256)) {
+                if (!proofNode.hasOwnProperty(i)) {
+                    continue;
+                }
+
+                if (!validateBinaryString(i, 256)) {
+                    return undefined;
+                }
+
+                var data = proofNode[i];
+                var nodeKeyBuffer = binaryStringToUint8Array(i);
+                var nodeKey = uint8ArrayToHexadecimal(nodeKeyBuffer);
+                var nodeHash;
+
+                if (typeof data === 'string') {
+                    if (!validateHexHash(data)) {
                         return undefined;
                     }
-                    var data = proofNode[i];
-                    var nodeKeyBuffer = binaryStringToUint8Array(i);
-                    var nodeKey = uint8ArrayToHexadecimal(nodeKeyBuffer);
-                    var nodeHash;
 
-                    if (typeof data === 'string') {
-                        if (!validateHexHash(data)) {
-                            return undefined;
-                        }
+                    nodeHash = hash({
+                        key: {
+                            variant: 1,
+                            key: nodeKey,
+                            length: 0
+                        },
+                        hash: data
+                    }, RootBranch);
 
-                        nodeHash = hash({
-                            key: {
-                                variant: 1,
-                                key: nodeKey,
-                                length: 0
-                            },
-                            hash: data
-                        }, RootBranch);
-
-                        if (rootHash === nodeHash) {
-                            if (key !== nodeKey) {
-                                return null; // element was not found in tree
-                            } else {
-                                console.error('Invalid key with hash is in the root of proofNode parameter.');
-                                return undefined;
-                            }
+                    if (rootHash === nodeHash) {
+                        if (key !== nodeKey) {
+                            return null; // element was not found in tree
                         } else {
-                            console.error('rootHash parameter is not equal to actual hash.');
-                            return undefined;
-                        }
-                    } else if (isObject(data)) {
-                        element = getNodeValue(data.val);
-                        if (element === null) {
-                            return undefined;
-                        }
-
-                        var elementsHash = hash(element, type);
-                        if (typeof elementsHash === 'undefined') {
-                            return undefined;
-                        }
-
-                        nodeHash = hash({
-                            key: {
-                                variant: 1,
-                                key: nodeKey,
-                                length: 0
-                            },
-                            hash: elementsHash
-                        }, RootBranch);
-
-                        if (rootHash === nodeHash) {
-                            if (key === nodeKey) {
-                                return element;
-                            } else {
-                                console.error('Invalid key with value is in the root of proofNode parameter.');
-                                return undefined
-                            }
-                        } else {
-                            console.error('rootHash parameter is not equal to actual hash.');
+                            console.error('Invalid key with hash is in the root of proofNode parameter.');
                             return undefined;
                         }
                     } else {
-                        console.error('Invalid type of value in the root of proofNode parameter.');
+                        console.error('rootHash parameter is not equal to actual hash.');
                         return undefined;
                     }
+                } else if (isObject(data)) {
+                    element = getNodeValue(data.val);
+                    if (element === null) {
+                        return undefined;
+                    }
+
+                    var elementsHash = hash(element, type);
+                    if (typeof elementsHash === 'undefined') {
+                        return undefined;
+                    }
+
+                    nodeHash = hash({
+                        key: {
+                            variant: 1,
+                            key: nodeKey,
+                            length: 0
+                        },
+                        hash: elementsHash
+                    }, RootBranch);
+
+                    if (rootHash === nodeHash) {
+                        if (key === nodeKey) {
+                            return element;
+                        } else {
+                            console.error('Invalid key with value is in the root of proofNode parameter.');
+                            return undefined
+                        }
+                    } else {
+                        console.error('rootHash parameter is not equal to actual hash.');
+                        return undefined;
+                    }
+                } else {
+                    console.error('Invalid type of value in the root of proofNode parameter.');
+                    return undefined;
                 }
+
             }
         } else {
             var actualHash = recursive(proofNode, '');
@@ -1390,6 +1371,11 @@ var ThinClient = (function() {
         }
     }
 
+    /**
+     * Verifies block
+     * @param {Object} data
+     * @return {Boolean}
+     */
     function verifyBlock(data) {
         if (!isObject(data)) {
             console.error('Wrong type of data parameter. Object is expected.');
@@ -1402,10 +1388,65 @@ var ThinClient = (function() {
             return undefined;
         }
 
+        var validatorsTotalNumber = CONFIG.validators.length;
+        var validatorsCounters = new Array(validatorsTotalNumber);
+        for (var i = 0; i < validatorsTotalNumber; i++) {
+            validatorsCounters[i] = 0;
+        }
+
+        var round;
+        var blockHash = hash(data.block, Block); // TODO (II) smthng wrong with 'time' field
+
         for (var i in data.precommits) {
-            if (data.precommits.hasOwnProperty(i)) {
-                // var precommit = hash(data.precommits[i], Precommit);
+            if (!data.precommits.hasOwnProperty(i)) {
+                continue;
             }
+
+            var precommit = data.precommits[i];
+
+            if (precommit.body.validator >= validatorsTotalNumber) {
+                return false;
+            }
+
+            validatorsCounters[precommit.body.validator]++;
+
+            if (precommit.body.height !== data.block.height) {
+                return false;
+            } else if (precommit.body.block_hash !== blockHash) {
+                return false;
+            }
+
+            if (typeof round === 'undefined') {
+                round = precommit.body.round;
+            } else if (precommit.body.round !== round) {
+                return false;
+            }
+
+            var bodyBuffer = PrecommitBody.serialize(precommit.body);
+            var buffer = Precommit.serialize({
+                network_id: CONFIG.networkId,
+                version: 1,
+                service_id: 2,
+                message_type: 40,
+                payload: bodyBuffer.length,
+                body: precommit.body,
+                signature: precommit.signature
+            });
+            var publicKey = CONFIG.validators[precommit.body.validator].publicKey;
+
+            if (!verifySignature(buffer, precommit.signature, publicKey)) {
+                return false;
+            }
+        }
+
+        var uniqueValidators = 0;
+        for (var i = 0; i < validatorsTotalNumber; i++) {
+            if (validatorsCounters[i] > 0) {
+                uniqueValidators++;
+            }
+        }
+        if (uniqueValidators <= validatorsTotalNumber * 2 / 3) {
+            return false;
         }
     }
 
