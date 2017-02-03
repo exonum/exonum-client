@@ -1428,7 +1428,7 @@ var ThinClient = (function() {
                 version: 1,
                 service_id: 2,
                 message_type: 40,
-                payload: bodyBuffer.length,
+                payload: bodyBuffer.length, // TODO (II) + signature?
                 body: precommit.body,
                 signature: precommit.signature
             });
