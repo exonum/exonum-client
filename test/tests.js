@@ -323,6 +323,17 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(buffer).to.deep.equal([0, 0, 1, 89, 132, 24, 45, 221]);
         });
 
+        it('Input correct timestamp in nanoseconds as string', function() {
+            var Type = Exonum.newType({
+                size: 8,
+                fields: {since: {type: Exonum.Timespec, size: 8, from: 0, to: 8, fixed: true}}
+            });
+            var data = {since: '18446744073709551615'};
+            var buffer = Type.serialize(data);
+
+            expect(buffer).to.deep.equal([255, 255, 255, 255, 255, 255, 255, 255]);
+        });
+
         it('Input negative number', function() {
             var Type = Exonum.newType({
                 size: 8,
@@ -345,12 +356,12 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
         });
 
-        it('Input unsafe number', function() {
+        it('Input too big number', function() {
             var Type = Exonum.newType({
                 size: 8,
                 fields: {since: {type: Exonum.Timespec, size: 8, from: 0, to: 8, fixed: true}}
             });
-            var data = {since: Number.MAX_SAFE_INTEGER + 1};
+            var data = {since: '18446744073709551616'};
             var buffer = Type.serialize(data);
 
             expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
@@ -572,7 +583,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(buffer).to.deep.equal([0]);
         });
 
-        it('Input unsafe number', function() {
+        it('Input too big number', function() {
             var Type = Exonum.newType({
                 size: 1,
                 fields: {balance: {type: Exonum.I8, size: 1, from: 0, to: 1, fixed: true}}
@@ -583,7 +594,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(buffer).to.deep.equal([0]);
         });
 
-        it('Input unsafe negative number', function() {
+        it('Input too small number', function() {
             var Type = Exonum.newType({
                 size: 1,
                 fields: {balance: {type: Exonum.I8, size: 1, from: 0, to: 1, fixed: true}}
@@ -667,7 +678,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(buffer).to.deep.equal([0, 0]);
         });
 
-        it('Input unsafe number', function() {
+        it('Input too big number', function() {
             var Type = Exonum.newType({
                 size: 2,
                 fields: {balance: {type: Exonum.I16, size: 2, from: 0, to: 2, fixed: true}}
@@ -678,7 +689,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(buffer).to.deep.equal([0, 0]);
         });
 
-        it('Input unsafe negative number', function() {
+        it('Input too small number', function() {
             var Type = Exonum.newType({
                 size: 2,
                 fields: {balance: {type: Exonum.I16, size: 2, from: 0, to: 2, fixed: true}}
@@ -762,7 +773,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(buffer).to.deep.equal([0, 0, 0, 0]);
         });
 
-        it('Input unsafe number', function() {
+        it('Input too big number', function() {
             var Type = Exonum.newType({
                 size: 4,
                 fields: {balance: {type: Exonum.I32, size: 4, from: 0, to: 4, fixed: true}}
@@ -773,7 +784,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(buffer).to.deep.equal([0, 0, 0, 0]);
         });
 
-        it('Input unsafe negative number', function() {
+        it('Input too small number', function() {
             var Type = Exonum.newType({
                 size: 4,
                 fields: {balance: {type: Exonum.I32, size: 4, from: 0, to: 4, fixed: true}}
@@ -835,15 +846,26 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(buffer).to.deep.equal([0, 3, 51, 51, 51, 51, 50, 208]);
         });
 
+        it('Input correct potentially unsafe number', function() {
+            var Type = Exonum.newType({
+                size: 8,
+                fields: {balance: {type: Exonum.I64, size: 8, from: 0, to: 8, fixed: true}}
+            });
+            var data = {balance: '9223372036854775807'};
+            var buffer = Type.serialize(data);
+
+            expect(buffer).to.deep.equal([127, 255, 255, 255, 255, 255, 255, 255]);
+        });
+
         it('Input correct negative number', function() {
             var Type = Exonum.newType({
                 size: 8,
                 fields: {balance: {type: Exonum.I64, size: 8, from: 0, to: 8, fixed: true}}
             });
-            var data = {balance: -900719925474000};
+            var data = {balance: '-9223372036854775808'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([255, 252, 204, 204, 204, 204, 208, 0]);
+            expect(buffer).to.deep.equal([128, 0, 0, 0, 0, 0, 0, 0]);
         });
 
         it('Input wrong segment range', function() {
@@ -857,23 +879,23 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
         });
 
-        it('Input unsafe number', function() {
+        it('Input too big number', function() {
             var Type = Exonum.newType({
                 size: 8,
                 fields: {balance: {type: Exonum.I64, size: 8, from: 0, to: 8, fixed: true}}
             });
-            var data = {balance: Number.MAX_SAFE_INTEGER + 1};
+            var data = {balance: '9223372036854775808'};
             var buffer = Type.serialize(data);
 
             expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
         });
 
-        it('Input unsafe negative number', function() {
+        it('Input too small number', function() {
             var Type = Exonum.newType({
                 size: 8,
                 fields: {balance: {type: Exonum.I64, size: 8, from: 0, to: 8, fixed: true}}
             });
-            var data = {balance: Number.MIN_SAFE_INTEGER - 1};
+            var data = {balance: '-9223372036854775809'};
             var buffer = Type.serialize(data);
 
             expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
@@ -1182,6 +1204,17 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 9, 91, 108]);
         });
 
+        it('Input correct potentially unsafe number', function() {
+            var Type = Exonum.newType({
+                size: 8,
+                fields: {balance: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true}}
+            });
+            var data = {balance: '9007199254740993'};
+            var buffer = Type.serialize(data);
+
+            expect(buffer).to.deep.equal([0, 32, 0, 0, 0, 0, 0, 1]);
+        });
+
         it('Input wrong segment range', function() {
             var Type = Exonum.newType({
                 size: 8,
@@ -1204,12 +1237,12 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
         });
 
-        it('Input unsafe number', function() {
+        it('Input too big number', function() {
             var Type = Exonum.newType({
                 size: 8,
                 fields: {balance: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true}}
             });
-            var data = {balance: Number.MAX_SAFE_INTEGER + 1};
+            var data = {balance: '18446744073709551616'};
             var buffer = Type.serialize(data);
 
             expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);

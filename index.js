@@ -4,6 +4,7 @@ var sha = require('sha.js');
 var nacl = require('tweetnacl');
 var objectAssign = require('object-assign');
 var fs = require('fs');
+var bigInt = require("big-integer");
 
 var ThinClient = (function() {
 
@@ -15,9 +16,12 @@ var ThinClient = (function() {
         MAX_I16: 32767,
         MIN_I32: -2147483648,
         MAX_I32: 2147483647,
+        MIN_I64: '-9223372036854775808',
+        MAX_I64: '9223372036854775807',
         MAX_U8: 255,
         MAX_U16: 65535,
         MAX_U32: 4294967295,
+        MAX_U64: '18446744073709551615',
         MERKLE_PATRICIA_KEY_LENGTH: 32
     };
     var DBKey = createNewType({
@@ -109,218 +113,122 @@ var ThinClient = (function() {
 
     /**
      * Built-in data type
-     * @param {Number} value
+     * @param {Number || String} value
      * @param {Array} buffer
      * @param {Number} from
      * @param {Number} to
      */
     function I8(value, buffer, from, to) {
-        if (typeof value !== 'number') {
-            console.error('Wrong data type is passed as I8. Number is required');
-            return;
-        } else if (value < CONST.MIN_I8) {
-            console.error('I8 should be greater o ' + CONST.MIN_I8 + '.');
-            return;
-        } else if (value > CONST.MAX_I8) {
-            console.error('I8 should be less or equal to ' + CONST.MAX_I8 + '.');
-            return;
-        } else if ((to - from) !== 1) {
-            console.error('I8 segment is of wrong length. 1 bytes long is required to store transmitted value.');
-            return;
-        }
+        if (validateNumber(value, CONST.MIN_I8, CONST.MAX_I8, from, to, 1)) {
+            if (bigInt(value).isNegative()) {
+                value = bigInt(CONST.MAX_U8).plus(1).plus(value);
+            }
 
-        if (value < 0) {
-            value = 0xff + value + 1;
+            insertNumberToByteArray(value, buffer, from, to);
         }
-
-        insertNumberToByteArray(value, buffer, from, to);
     }
 
     /**
      * Built-in data type
-     * @param {Number} value
+     * @param {Number || String} value
      * @param {Array} buffer
      * @param {Number} from
      * @param {Number} to
      */
     function I16(value, buffer, from, to) {
-        if (typeof value !== 'number') {
-            console.error('Wrong data type is passed as I16. Number is required');
-            return;
-        } else if (value < CONST.MIN_I16) {
-            console.error('I16 should be more or equal to ' + CONST.MIN_I16 + '.');
-            return;
-        } else if (value > CONST.MAX_I16) {
-            console.error('I16 should be less or equal to ' + CONST.MAX_I16 + '.');
-            return;
-        } else if ((to - from) !== 2) {
-            console.error('I16 segment is of wrong length. 2 bytes long is required to store transmitted value.');
-            return;
-        }
+        if (validateNumber(value, CONST.MIN_I16, CONST.MAX_I16, from, to, 2)) {
+            if (bigInt(value).isNegative()) {
+                value = bigInt(CONST.MAX_U16).plus(1).plus(value);
+            }
 
-        if (value < 0) {
-            value = 0xffff + value + 1;
+            insertNumberToByteArray(value, buffer, from, to);
         }
-
-        insertNumberToByteArray(value, buffer, from, to);
     }
 
     /**
      * Built-in data type
-     * @param {Number} value
+     * @param {Number || String} value
      * @param {Array} buffer
      * @param {Number} from
      * @param {Number} to
      */
     function I32(value, buffer, from, to) {
-        if (typeof value !== 'number') {
-            console.error('Wrong data type is passed as I32. Number is required');
-            return;
-        } else if (value < CONST.MIN_I32) {
-            console.error('I32 should be more or equal to ' + CONST.MIN_I32 + '.');
-            return;
-        } else if (value > CONST.MAX_I32) {
-            console.error('I32 should be less or equal to ' + CONST.MAX_I32 + '.');
-            return;
-        } else if ((to - from) !== 4) {
-            console.error('I32 segment is of wrong length. 8 bytes long is required to store transmitted value.');
-            return;
-        }
+        if (validateNumber(value, CONST.MIN_I32, CONST.MAX_I32, from, to, 4)) {
+            if (bigInt(value).isNegative()) {
+                value = bigInt(CONST.MAX_U32).plus(1).plus(value);
+            }
 
-        if (value < 0) {
-            value = 0xffffffff + value + 1;
+            insertNumberToByteArray(value, buffer, from, to);
         }
-
-        insertNumberToByteArray(value, buffer, from, to);
     }
 
     /**
      * Built-in data type
-     * @param {Number} value
+     * @param {Number || String} value
      * @param {Array} buffer
      * @param {Number} from
      * @param {Number} to
      */
     function I64(value, buffer, from, to) {
-        if (typeof value !== 'number') {
-            console.error('Wrong data type is passed as I64. Number is required');
-            return;
-        } else if (value < Number.MIN_SAFE_INTEGER) {
-            console.error('I64 should be more or equal to ' + Number.MIN_SAFE_INTEGER + '.');
-            return;
-        } else if (value > Number.MAX_SAFE_INTEGER) {
-            console.error('I64 should be less or equal to ' + Number.MAX_SAFE_INTEGER + '.');
-            return;
-        } else if ((to - from) !== 8) {
-            console.error('I64 segment is of wrong length. 8 bytes long is required to store transmitted value.');
-            return;
-        }
+        if (validateNumber(value, CONST.MIN_I64, CONST.MAX_I64, from, to, 8)) {
+            if (bigInt(value).isNegative()) {
+                value = bigInt(CONST.MAX_U64).plus(1).plus(value);
+            }
 
-        if (value < 0) {
-            value = 0xffffffffffffffff + value + 1;
+            insertNumberToByteArray(value, buffer, from, to);
         }
-
-        insertNumberToByteArray(value, buffer, from, to);
     }
 
     /**
      * Built-in data type
-     * @param {Number} value
+     * @param {Number || String} value
      * @param {Array} buffer
      * @param {Number} from
      * @param {Number} to
      */
     function U8(value, buffer, from, to) {
-        if (typeof value !== 'number') {
-            console.error('Wrong data type is passed as U8. Number is required');
-            return;
-        } else if (value < 0) {
-            console.error('U8 should be more or equal to zero.');
-            return;
-        } else if (value > CONST.MAX_U8) {
-            console.error('U8 should be less or equal to ' + CONST.MAX_U8 + '.');
-            return;
-        } else if ((to - from) !== 1) {
-            console.error('U8 segment is of wrong length. 1 bytes long is required to store transmitted value.');
-            return;
+        if (validateNumber(value, 0, CONST.MAX_U8, from, to, 1)) {
+            insertNumberToByteArray(value, buffer, from, to);
         }
-
-        insertNumberToByteArray(value, buffer, from, to);
     }
 
     /**
      * Built-in data type
-     * @param {Number} value
+     * @param {Number || String} value
      * @param {Array} buffer
      * @param {Number} from
      * @param {Number} to
      */
     function U16(value, buffer, from, to) {
-        if (typeof value !== 'number') {
-            console.error('Wrong data type is passed as U16. Number is required');
-            return;
-        } else if (value < 0) {
-            console.error('U16 should be more or equal to zero.');
-            return;
-        } else if (value > CONST.MAX_U16) {
-            console.error('U16 should be less or equal to ' + CONST.MAX_U16 + '.');
-            return;
-        } else if ((to - from) !== 2) {
-            console.error('U16 segment is of wrong length. 2 bytes long is required to store transmitted value.');
-            return;
+        if (validateNumber(value, 0, CONST.MAX_U16, from, to, 2)) {
+            insertNumberToByteArray(value, buffer, from, to);
         }
-
-        insertNumberToByteArray(value, buffer, from, to);
     }
 
     /**
      * Built-in data type
-     * @param {Number} value
+     * @param {Number || String} value
      * @param {Array} buffer
      * @param {Number} from
      * @param {Number} to
      */
     function U32(value, buffer, from, to) {
-        if (typeof value !== 'number') {
-            console.error('Wrong data type is passed as U32. Number is required');
-            return;
-        } else if (value < 0) {
-            console.error('U32 should be more or equal to zero.');
-            return;
-        } else if (value > CONST.MAX_U32) {
-            console.error('U32 should be less or equal to ' + CONST.MAX_U32 + '.');
-            return;
-        } else if ((to - from) !== 4) {
-            console.error('U32 segment is of wrong length. 8 bytes long is required to store transmitted value.');
-            return;
+        if (validateNumber(value, 0, CONST.MAX_U32, from, to, 4)) {
+            insertNumberToByteArray(value, buffer, from, to);
         }
-
-        insertNumberToByteArray(value, buffer, from, to);
     }
 
     /**
      * Built-in data type
-     * @param {Number} value
+     * @param {Number || String} value
      * @param {Array} buffer
      * @param {Number} from
      * @param {Number} to
      */
     function U64(value, buffer, from, to) {
-        if (typeof value !== 'number') {
-            console.error('Wrong data type is passed as U64. Number is required');
-            return;
-        } else if (value < 0) {
-            console.error('U64 should be more or equal to zero.');
-            return;
-        } else if (value > Number.MAX_SAFE_INTEGER) {
-            console.error('U64 should be less or equal to ' + Number.MAX_SAFE_INTEGER + '.');
-            return;
-        } else if ((to - from) !== 8) {
-            console.error('U64 segment is of wrong length. 8 bytes long is required to store transmitted value.');
-            return;
+        if (validateNumber(value, 0, CONST.MAX_U64, from, to, 8)) {
+            insertNumberToByteArray(value, buffer, from, to);
         }
-
-        insertNumberToByteArray(value, buffer, from, to);
     }
 
     /**
@@ -401,27 +309,15 @@ var ThinClient = (function() {
 
     /**
      * Built-in data type
-     * @param {Number} nanoseconds
+     * @param {Number || String} nanoseconds
      * @param {Array} buffer
      * @param {Number} from
      * @param {Number} to
      */
     function Timespec(nanoseconds, buffer, from, to) {
-        if (typeof nanoseconds !== 'number') {
-            console.error('Wrong data type is passed as Timespec. Number is required');
-            return;
-        } else if (nanoseconds < 0) {
-            console.error('Timespec number should be more or equal to zero.');
-            return;
-        } else if (nanoseconds > Number.MAX_SAFE_INTEGER) {
-            console.error('Timespec number should be less or equal to ' + Number.MAX_SAFE_INTEGER + '.');
-            return;
-        } else if ((to - from) !== 8) {
-            console.error('Timespec segment is of wrong length. 8 bytes long is required to store transmitted value.');
-            return;
+        if (validateNumber(nanoseconds, 0, CONST.MAX_U64, from, to, 8)) {
+            insertNumberToByteArray(nanoseconds, buffer, from, to);
         }
-
-        insertNumberToByteArray(nanoseconds, buffer, from, to);
     }
 
     /**
@@ -444,9 +340,38 @@ var ThinClient = (function() {
     }
 
     /**
+     * Check number validity
+     * @param {Number || String} value
+     * @param {Number} min
+     * @param {Number} max
+     * @param {Number} from
+     * @param {Number} to
+     * @param {Number} length
+     * @returns {Boolean}
+     */
+    function validateNumber(value, min, max, from, to, length) {
+        if (typeof value !== 'number' && typeof value !== 'string') {
+            console.error('Wrong data type is passed as number. Should be of type Number or String.');
+            return false;
+        } else if (bigInt(value).lt(min)) {
+            console.error('Number should be more or equal to ' + min + '.');
+            return false;
+        } else if (bigInt(value).gt(max)) {
+            console.error('Number should be less or equal to ' + max + '.');
+            return false;
+        } else if ((to - from) !== length) {
+            console.error('Number segment is of wrong length. ' + length + ' bytes long is required to store transmitted value.');
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Check hash validity
      * @param {String} hash
      * @param {Number} bytes
+     * @returns {Boolean}
      */
     function validateHexHash(hash, bytes) {
         var bytes = bytes || 32;
@@ -473,6 +398,7 @@ var ThinClient = (function() {
      * Check array of 8-bit integers validity
      * @param {Array} arr
      * @param {Number} bytes
+     * @returns {Boolean}
      */
     function validateBytesArray(arr, bytes) {
         if (bytes && arr.length !== bytes) {
@@ -497,6 +423,7 @@ var ThinClient = (function() {
      * Check binary string validity
      * @param {String} str
      * @param {Number} bits
+     * @returns {Boolean}
      */
     function validateBinaryString(str, bits) {
         if (typeof bits !== 'undefined' && str.length !== bits) {
@@ -599,7 +526,7 @@ var ThinClient = (function() {
      * @param {number} to
      */
     function insertNumberToByteArray(number, buffer, from, to) {
-        var str = number.toString(16);
+        var str = bigInt(number).toString(16);
 
         if (str.length < 3) {
             buffer[to - 1] = parseInt(str, 16);
