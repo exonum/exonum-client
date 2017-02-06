@@ -22,7 +22,8 @@ var ThinClient = (function() {
         MAX_U16: 65535,
         MAX_U32: 4294967295,
         MAX_U64: '18446744073709551615',
-        MERKLE_PATRICIA_KEY_LENGTH: 32
+        MERKLE_PATRICIA_KEY_LENGTH: 32,
+        PRECOMMIT_SIGNATURE_LENGTH: 64
     };
     var DBKey = createNewType({
         size: 34,
@@ -59,6 +60,16 @@ var ThinClient = (function() {
             state_hash: {type: Hash, size: 32, from: 84, to: 116, fixed: true}
         }
     });
+    var PrecommitHead = createNewType({
+        size: 10,
+        fields: {
+            network_id: {type: U8, size: 1, from: 0, to: 1, fixed: true},
+            version: {type: U8, size: 1, from: 1, to: 2, fixed: true},
+            service_id: {type: U16, size: 2, from: 2, to: 4, fixed: true},
+            message_type: {type: U16, size: 2, from: 4, to: 6, fixed: true},
+            payload: {type: U32, size: 4, from: 6, to: 10, fixed: true}
+        }
+    });
     var PrecommitBody = createNewType({
         size: 84,
         fields: {
@@ -69,18 +80,7 @@ var ThinClient = (function() {
             block_hash: {type: Hash, size: 32, from: 52, to: 84, fixed: true}
         }
     });
-    var Precommit = createNewType({
-        size: 158,
-        fields: {
-            network_id: {type: U8, size: 1, from: 0, to: 1, fixed: true},
-            version: {type: U8, size: 1, from: 1, to: 2, fixed: true},
-            service_id: {type: U16, size: 2, from: 2, to: 4, fixed: true},
-            message_type: {type: U16, size: 2, from: 4, to: 6, fixed: true},
-            payload: {type: U32, size: 4, from: 6, to: 10, fixed: true},
-            body: {type: PrecommitBody, size: 84, from: 10, to: 94, fixed: true},
-            signature: {type: Digest, size: 64, from: 94, to: 158, fixed: true}
-        }
-    });
+    // TODO should it be more versatile discuss with II
 
     /**
      * @constructor
@@ -1322,7 +1322,7 @@ var ThinClient = (function() {
         }
 
         var round;
-        var blockHash = hash(data.block, Block); // TODO (II) smthng wrong with 'time' field
+        var blockHash = hash(data.block, Block); // TODO smthng wrong with 'time' field, should be string, discuss with II
 
         for (var i in data.precommits) {
             if (!data.precommits.hasOwnProperty(i)) {
@@ -1349,16 +1349,15 @@ var ThinClient = (function() {
                 return false;
             }
 
-            var bodyBuffer = PrecommitBody.serialize(precommit.body);
-            var buffer = Precommit.serialize({
+            var headBuffer = PrecommitHead.serialize({
                 network_id: CONFIG.networkId,
                 version: 1,
                 service_id: 2,
                 message_type: 40,
-                payload: bodyBuffer.length, // TODO (II) + signature?
-                body: precommit.body,
-                signature: precommit.signature
+                payload: PrecommitHead.size + PrecommitBody.size + CONST.PRECOMMIT_SIGNATURE_LENGTH
             });
+            var bodyBuffer = PrecommitBody.serialize(precommit.body);
+            var buffer = headBuffer.concat(bodyBuffer);
             var publicKey = CONFIG.validators[precommit.body.validator].publicKey;
 
             if (!verifySignature(buffer, precommit.signature, publicKey)) {
