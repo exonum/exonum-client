@@ -4112,13 +4112,13 @@ describe('Client for Exonum blockchain platform: ', function() {
         });
 
         it('Invalid block with precommits info of wrong type', function() {
-            expect(Exonum.verifyBlock({})).to.equal(false);
-            expect(Exonum.verifyBlock({precommits: null})).to.equal(false);
-            expect(Exonum.verifyBlock({precommits: undefined})).to.equal(false);
-            expect(Exonum.verifyBlock({precommits: 'Hello world'})).to.equal(false);
-            expect(Exonum.verifyBlock({precommits: {}})).to.equal(false);
-            expect(Exonum.verifyBlock({precommits: 42})).to.equal(false);
-            expect(Exonum.verifyBlock({precommits: new Date()})).to.equal(false);
+            expect(Exonum.verifyBlock({block: {}})).to.equal(false);
+            expect(Exonum.verifyBlock({block: {}, precommits: null})).to.equal(false);
+            expect(Exonum.verifyBlock({block: {}, precommits: undefined})).to.equal(false);
+            expect(Exonum.verifyBlock({block: {}, precommits: 'Hello world'})).to.equal(false);
+            expect(Exonum.verifyBlock({block: {}, precommits: {}})).to.equal(false);
+            expect(Exonum.verifyBlock({block: {}, precommits: 42})).to.equal(false);
+            expect(Exonum.verifyBlock({block: {}, precommits: new Date()})).to.equal(false);
         });
 
         it('Invalid block with body field of wrong type in precommit', function() {
@@ -4302,22 +4302,49 @@ describe('Client for Exonum blockchain platform: ', function() {
         //     })).to.equal(false);
         // });
 
-        it('Invalid block with invalid signature of precommit', function() {
-            expect(Exonum.verifyBlock({
-                block: {
-                    height: 1
-                },
-                precommits: [{
-                    body: {
-                        height: 1,
-                        validator: 0,
-                        round: 1,
-                        block_hash: '5401c3c0f5ae4505d70fb3df8648b03e29d682cc369dc63236469899397a171e'
-                    },
-                    signature: '63b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d263b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d2'
-                }]
-            })).to.equal(false);
-        });
+        // TODO check
+        // it('Invalid block with invalid signature of precommit', function() {
+        //     expect(Exonum.verifyBlock({
+        //         block: {
+        //             height: 1
+        //         },
+        //         precommits: [{
+        //             body: {
+        //                 height: 1,
+        //                 validator: 0,
+        //                 round: 1,
+        //                 block_hash: '5401c3c0f5ae4505d70fb3df8648b03e29d682cc369dc63236469899397a171e'
+        //             },
+        //             signature: '63b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d263b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d2'
+        //         }]
+        //     })).to.equal(false);
+        // });
+
+        // TODO check
+        // it('Invalid block with insufficient precommits from unique validators', function() {
+        //     expect(Exonum.verifyBlock({
+        //         block: {
+        //             height: 1
+        //         },
+        //         precommits: [{
+        //             body: {
+        //                 height: 1,
+        //                 validator: 0,
+        //                 round: 1,
+        //                 block_hash: '5401c3c0f5ae4505d70fb3df8648b03e29d682cc369dc63236469899397a171e'
+        //             },
+        //             signature: '63b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d263b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d2'
+        //         }, {
+        //             body: {
+        //                 height: 1,
+        //                 validator: 0,
+        //                 round: 1,
+        //                 block_hash: '5401c3c0f5ae4505d70fb3df8648b03e29d682cc369dc63236469899397a171e'
+        //             },
+        //             signature: '63b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d263b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d2'
+        //         }]
+        //     })).to.equal(false);
+        // });
 
     });
 
