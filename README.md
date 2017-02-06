@@ -12,6 +12,7 @@ Pure JavaScript toolkit to work with Exonum blockchain in both of browser and No
    * [newType](#exonumnewtype)
    * [merkleProof](#exonummerkleproof)
    * [merklePatriciaProof](#exonummerklepatriciaproof)
+   * [verifyBlock](#exonumverifyblock)
 4. [Built-in types](#built-in-types)
    * [I8](#exonumi8)
    * [I16](#exonumi16)
@@ -207,6 +208,14 @@ Returns `null` if tree is valid but element is not found.
 
 Returns `undefined` if tree is not valid.
 
+### Exonum.verifyBlock(...)
+
+This methods can verify block with precommits.
+
+The `data` is a custom data in JSON format.
+
+Returns `true` if verification succeeded or `false` if it failed.
+
 ## Built-in types
 
 #### Exonum.I8
@@ -245,7 +254,9 @@ Please note that JavaScript limits minimum and maximum integer number.
 
 Minimum safe integer in JavaScript is `-(2^53-1)` which is equal to `-9007199254740991`
 
-Maximum safe integer in JavaScript is `2^53-1` which is equal to `9007199254740991`. 
+Maximum safe integer in JavaScript is `2^53-1` which is equal to `9007199254740991`.
+
+To use bigger or smaller value use it not as `Number` but as `String`.
 
 #### Exonum.U8
 
@@ -281,7 +292,9 @@ Values range from `0` to `18446744073709551615`.
 
 Please note that JavaScript limits maximum integer number.
 
-Maximum safe integer in JavaScript is `2^53-1` which is equal to `9007199254740991`. 
+Maximum safe integer in JavaScript is `2^53-1` which is equal to `9007199254740991`.
+
+To use bigger value use it not as `Number` but as `String`.
 
 #### Exonum.String
 
@@ -312,6 +325,8 @@ Unsigned integer value of the length of `8` bytes. Represents Unix time in nanos
 `fixed: true` should be used.
 
 Maximum safe integer in JavaScript is `2^53-1` which is equal to `9007199254740991`.
+
+To use bigger value use it not as `Number` but as `String`.
 
 #### Exonum.Bool
 

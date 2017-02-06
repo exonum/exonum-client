@@ -4087,4 +4087,238 @@ describe('Client for Exonum blockchain platform: ', function() {
 
     });
 
+    /*
+     Exonum.verifyBlock
+     */
+    describe('Verify block of precommits:', function() {
+
+        it('Invalid block with data of wrong type', function() {
+            expect(Exonum.verifyBlock(null)).to.equal(false);
+            expect(Exonum.verifyBlock(undefined)).to.equal(false);
+            expect(Exonum.verifyBlock(42)).to.equal(false);
+            expect(Exonum.verifyBlock('Hello world')).to.equal(false);
+            expect(Exonum.verifyBlock([])).to.equal(false);
+            expect(Exonum.verifyBlock(new Date())).to.equal(false);
+        });
+
+        it('Invalid block with block info of wrong type', function() {
+            expect(Exonum.verifyBlock({})).to.equal(false);
+            expect(Exonum.verifyBlock({block: null})).to.equal(false);
+            expect(Exonum.verifyBlock({block: undefined})).to.equal(false);
+            expect(Exonum.verifyBlock({block: 'Hello world'})).to.equal(false);
+            expect(Exonum.verifyBlock({block: []})).to.equal(false);
+            expect(Exonum.verifyBlock({block: 42})).to.equal(false);
+            expect(Exonum.verifyBlock({block: new Date()})).to.equal(false);
+        });
+
+        it('Invalid block with precommits info of wrong type', function() {
+            expect(Exonum.verifyBlock({})).to.equal(false);
+            expect(Exonum.verifyBlock({precommits: null})).to.equal(false);
+            expect(Exonum.verifyBlock({precommits: undefined})).to.equal(false);
+            expect(Exonum.verifyBlock({precommits: 'Hello world'})).to.equal(false);
+            expect(Exonum.verifyBlock({precommits: {}})).to.equal(false);
+            expect(Exonum.verifyBlock({precommits: 42})).to.equal(false);
+            expect(Exonum.verifyBlock({precommits: new Date()})).to.equal(false);
+        });
+
+        it('Invalid block with body field of wrong type in precommit', function() {
+            expect(Exonum.verifyBlock({
+                block: {},
+                precommits: [{
+                    body: null
+                }]
+            })).to.equal(false);
+
+            expect(Exonum.verifyBlock({
+                block: {},
+                precommits: [{
+                    body: undefined
+                }]
+            })).to.equal(false);
+
+            expect(Exonum.verifyBlock({
+                block: {},
+                precommits: [{
+                    body: 42
+                }]
+            })).to.equal(false);
+
+            expect(Exonum.verifyBlock({
+                block: {},
+                precommits: [{
+                    body: 'Hello world'
+                }]
+            })).to.equal(false);
+
+            expect(Exonum.verifyBlock({
+                block: {},
+                precommits: [{
+                    body: []
+                }]
+            })).to.equal(false);
+
+            expect(Exonum.verifyBlock({
+                block: {},
+                precommits: [{
+                    body: new Date()
+                }]
+            })).to.equal(false);
+        });
+
+        it('Invalid block with signature field of wrong type in precommit', function() {
+            expect(Exonum.verifyBlock({
+                block: {},
+                precommits: [{
+                    body: {},
+                    signature: null
+                }]
+            })).to.equal(false);
+
+            expect(Exonum.verifyBlock({
+                block: {},
+                precommits: [{
+                    body: {},
+                    signature: undefined
+                }]
+            })).to.equal(false);
+
+            expect(Exonum.verifyBlock({
+                block: {},
+                precommits: [{
+                    body: {},
+                    signature: 42
+                }]
+            })).to.equal(false);
+
+            expect(Exonum.verifyBlock({
+                block: {},
+                precommits: [{
+                    body: {},
+                    signature: []
+                }]
+            })).to.equal(false);
+
+            expect(Exonum.verifyBlock({
+                block: {},
+                precommits: [{
+                    body: {},
+                    signature: {}
+                }]
+            })).to.equal(false);
+
+            expect(Exonum.verifyBlock({
+                block: {},
+                precommits: [{
+                    body: {},
+                    signature: new Date()
+                }]
+            })).to.equal(false);
+        });
+
+        it('Invalid block with invalid signature field in precommit', function() {
+            expect(Exonum.verifyBlock({
+                block: {},
+                precommits: [{
+                    body: {},
+                    signature: '22635e36303ff3ef4c86b855e57356f41483e6637136d1d2ec46ba2ec8f69fb9'
+                }]
+            })).to.equal(false);
+
+            expect(Exonum.verifyBlock({
+                block: {},
+                precommits: [{
+                    body: {},
+                    signature: '22635e36303ff3ef4c86b855e57356f41483e6637136d1d2ec46ba2ec8f69fb922635e36303ff3ef4c86b855e57356f41483e6637136d1d2ec46ba2ec8f69fbz'
+                }]
+            })).to.equal(false);
+        });
+
+        it('Invalid block with precommit from non existed validtor', function() {
+            expect(Exonum.verifyBlock({
+                block: {},
+                precommits: [{
+                    body: {
+                        validator: 999999999
+                    },
+                    signature: '63b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d263b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d2'
+                }]
+            })).to.equal(false);
+        });
+
+        it('Invalid block with wrong height of block in precommit', function() {
+            expect(Exonum.verifyBlock({
+                block: {
+                    height: 1
+                },
+                precommits: [{
+                    body: {
+                        height: 5,
+                        validator: 0
+                    },
+                    signature: '63b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d263b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d2'
+                }]
+            })).to.equal(false);
+        });
+
+        it('Invalid block with wrong hash of block in precommit', function() {
+            expect(Exonum.verifyBlock({
+                block: {
+                    height: 1
+                },
+                precommits: [{
+                    body: {
+                        height: 1,
+                        validator: 0,
+                        block_hash: '63b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d2'
+                    },
+                    signature: '63b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d263b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d2'
+                }]
+            })).to.equal(false);
+        });
+
+        // TODO rework
+        // it('Invalid block with wrong round in precommit', function() {
+        //     expect(Exonum.verifyBlock({
+        //         block: {
+        //             height: 1
+        //         },
+        //         precommits: [{
+        //             body: {
+        //                 height: 1,
+        //                 validator: 0,
+        //                 round: 1,
+        //                 block_hash: '5401c3c0f5ae4505d70fb3df8648b03e29d682cc369dc63236469899397a171e'
+        //             },
+        //             signature: '63b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d263b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d2'
+        //         }, {
+        //             body: {
+        //                 height: 1,
+        //                 validator: 0,
+        //                 round: 2,
+        //                 block_hash: '5401c3c0f5ae4505d70fb3df8648b03e29d682cc369dc63236469899397a171e'
+        //             },
+        //             signature: '63b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d263b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d2'
+        //         }]
+        //     })).to.equal(false);
+        // });
+
+        it('Invalid block with invalid signature of precommit', function() {
+            expect(Exonum.verifyBlock({
+                block: {
+                    height: 1
+                },
+                precommits: [{
+                    body: {
+                        height: 1,
+                        validator: 0,
+                        round: 1,
+                        block_hash: '5401c3c0f5ae4505d70fb3df8648b03e29d682cc369dc63236469899397a171e'
+                    },
+                    signature: '63b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d263b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d2'
+                }]
+            })).to.equal(false);
+        });
+
+    });
+
 });

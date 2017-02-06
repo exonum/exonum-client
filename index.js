@@ -1306,13 +1306,13 @@ var ThinClient = (function() {
     function verifyBlock(data) {
         if (!isObject(data)) {
             console.error('Wrong type of data parameter. Object is expected.');
-            return undefined;
+            return false;
         } else if (!isObject(data.block)) {
-            console.error('Wrong type of block value. Object is expected.');
-            return undefined;
+            console.error('Wrong type of block field in data parameter. Object is expected.');
+            return false;
         } else if (!Array.isArray(data.precommits)) {
-            console.error('Wrong type of precommits value. Array is expected.');
-            return undefined;
+            console.error('Wrong type of precommits field in data parameter. Array is expected.');
+            return false;
         }
 
         var validatorsTotalNumber = CONFIG.validators.length;
@@ -1331,21 +1331,33 @@ var ThinClient = (function() {
 
             var precommit = data.precommits[i];
 
+            if (!isObject(precommit.body)) {
+                console.error('Wrong type of precommits body. Object is expected.');
+                return false;
+            } else if (!validateHexHash(precommit.signature, 64)) {
+                console.error('Wrong type of precommits signature. Hexadecimal of 64 length is expected.');
+                return false;
+            }
+
             if (precommit.body.validator >= validatorsTotalNumber) {
+                console.error('Wrong index passed. Validator does not exist.');
                 return false;
             }
 
             validatorsCounters[precommit.body.validator]++;
 
             if (precommit.body.height !== data.block.height) {
+                console.error('Wrong height of block in precommit.');
                 return false;
             } else if (precommit.body.block_hash !== blockHash) {
+                console.error('Wrong hash of block in precommit.');
                 return false;
             }
 
             if (typeof round === 'undefined') {
                 round = precommit.body.round;
             } else if (precommit.body.round !== round) {
+                console.error('Wrong round in precommit.');
                 return false;
             }
 
@@ -1361,6 +1373,7 @@ var ThinClient = (function() {
             var publicKey = CONFIG.validators[precommit.body.validator].publicKey;
 
             if (!verifySignature(buffer, precommit.signature, publicKey)) {
+                console.error('Wrong signature of precommit.');
                 return false;
             }
         }
@@ -1374,6 +1387,8 @@ var ThinClient = (function() {
         if (uniqueValidators <= validatorsTotalNumber * 2 / 3) {
             return false;
         }
+
+        return true;
     }
 
     return {
