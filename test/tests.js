@@ -561,10 +561,32 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(buffer).to.deep.equal([120]);
         });
 
+        it('Input correct number to serialize in little endian', function() {
+            var Type = Exonum.newType({
+                size: 1,
+                fields: {balance: {type: Exonum.I8, size: 1, from: 0, to: 1, fixed: true, littleEndian: true}}
+            });
+            var data = {balance: 120};
+            var buffer = Type.serialize(data);
+
+            expect(buffer).to.deep.equal([120]);
+        });
+
         it('Input correct negative number', function() {
             var Type = Exonum.newType({
                 size: 1,
                 fields: {balance: {type: Exonum.I8, size: 1, from: 0, to: 1, fixed: true}}
+            });
+            var data = {balance: -120};
+            var buffer = Type.serialize(data);
+
+            expect(buffer).to.deep.equal([136]);
+        });
+
+        it('Input correct negative number to serialize in little endian', function() {
+            var Type = Exonum.newType({
+                size: 1,
+                fields: {balance: {type: Exonum.I8, size: 1, from: 0, to: 1, fixed: true, littleEndian: true}}
             });
             var data = {balance: -120};
             var buffer = Type.serialize(data);
@@ -656,6 +678,17 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(buffer).to.deep.equal([120, 47]);
         });
 
+        it('Input correct number to serialize in little endian', function() {
+            var Type = Exonum.newType({
+                size: 2,
+                fields: {balance: {type: Exonum.I16, size: 2, from: 0, to: 2, fixed: true, littleEndian: true}}
+            });
+            var data = {balance: 30767};
+            var buffer = Type.serialize(data);
+
+            expect(buffer).to.deep.equal([47, 120]);
+        });
+
         it('Input correct negative number', function() {
             var Type = Exonum.newType({
                 size: 2,
@@ -665,6 +698,17 @@ describe('Client for Exonum blockchain platform: ', function() {
             var buffer = Type.serialize(data);
 
             expect(buffer).to.deep.equal([135, 209]);
+        });
+
+        it('Input correct negative number to serialize in little endian', function() {
+            var Type = Exonum.newType({
+                size: 2,
+                fields: {balance: {type: Exonum.I16, size: 2, from: 0, to: 2, fixed: true, littleEndian: true}}
+            });
+            var data = {balance: -30767};
+            var buffer = Type.serialize(data);
+
+            expect(buffer).to.deep.equal([209, 135]);
         });
 
         it('Input wrong segment range', function() {
@@ -751,6 +795,17 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(buffer).to.deep.equal([68, 101, 53, 255]);
         });
 
+        it('Input correct number to serialize in little endian', function() {
+            var Type = Exonum.newType({
+                size: 4,
+                fields: {balance: {type: Exonum.I32, size: 4, from: 0, to: 4, fixed: true, littleEndian: true}}
+            });
+            var data = {balance: 1147483647};
+            var buffer = Type.serialize(data);
+
+            expect(buffer).to.deep.equal([255, 53, 101, 68]);
+        });
+
         it('Input correct negative number', function() {
             var Type = Exonum.newType({
                 size: 4,
@@ -760,6 +815,17 @@ describe('Client for Exonum blockchain platform: ', function() {
             var buffer = Type.serialize(data);
 
             expect(buffer).to.deep.equal([187, 154, 202, 0]);
+        });
+
+        it('Input correct negative number to serialize in little endian', function() {
+            var Type = Exonum.newType({
+                size: 4,
+                fields: {balance: {type: Exonum.I32, size: 4, from: 0, to: 4, fixed: true, littleEndian: true}}
+            });
+            var data = {balance: -1147483648};
+            var buffer = Type.serialize(data);
+
+            expect(buffer).to.deep.equal([0, 202, 154, 187]);
         });
 
         it('Input wrong segment range', function() {
@@ -846,6 +912,17 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(buffer).to.deep.equal([0, 3, 51, 51, 51, 51, 50, 208]);
         });
 
+        it('Input correct number to serialize in little endian', function() {
+            var Type = Exonum.newType({
+                size: 8,
+                fields: {balance: {type: Exonum.I64, size: 8, from: 0, to: 8, fixed: true, littleEndian: true}}
+            });
+            var data = {balance: 900719925474000};
+            var buffer = Type.serialize(data);
+
+            expect(buffer).to.deep.equal([208, 50, 51, 51, 51, 51, 3, 0]);
+        });
+
         it('Input correct potentially unsafe number', function() {
             var Type = Exonum.newType({
                 size: 8,
@@ -866,6 +943,17 @@ describe('Client for Exonum blockchain platform: ', function() {
             var buffer = Type.serialize(data);
 
             expect(buffer).to.deep.equal([128, 0, 0, 0, 0, 0, 0, 0]);
+        });
+
+        it('Input correct negative number to serialize in little endian', function() {
+            var Type = Exonum.newType({
+                size: 8,
+                fields: {balance: {type: Exonum.I64, size: 8, from: 0, to: 8, fixed: true, littleEndian: true}}
+            });
+            var data = {balance: '-9223372036854775808'};
+            var buffer = Type.serialize(data);
+
+            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 128]);
         });
 
         it('Input wrong segment range', function() {
@@ -945,6 +1033,17 @@ describe('Client for Exonum blockchain platform: ', function() {
             var Type = Exonum.newType({
                 size: 1,
                 fields: {balance: {type: Exonum.U8, size: 1, from: 0, to: 1, fixed: true}}
+            });
+            var data = {balance: 230};
+            var buffer = Type.serialize(data);
+
+            expect(buffer).to.deep.equal([230]);
+        });
+
+        it('Input correct number to serialize in little endian', function() {
+            var Type = Exonum.newType({
+                size: 1,
+                fields: {balance: {type: Exonum.U8, size: 1, from: 0, to: 1, fixed: true, littleEndian: true}}
             });
             var data = {balance: 230};
             var buffer = Type.serialize(data);
@@ -1036,6 +1135,17 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(buffer).to.deep.equal([236, 119]);
         });
 
+        it('Input correct number to serialize in little endian', function() {
+            var Type = Exonum.newType({
+                size: 2,
+                fields: {balance: {type: Exonum.U16, size: 2, from: 0, to: 2, fixed: true, littleEndian: true}}
+            });
+            var data = {balance: 60535};
+            var buffer = Type.serialize(data);
+
+            expect(buffer).to.deep.equal([119, 236]);
+        });
+
         it('Input wrong segment range', function() {
             var Type = Exonum.newType({
                 size: 2,
@@ -1118,6 +1228,17 @@ describe('Client for Exonum blockchain platform: ', function() {
             var buffer = Type.serialize(data);
 
             expect(buffer).to.deep.equal([0, 9, 91, 108]);
+        });
+
+        it('Input correct number to serialize in little endian', function() {
+            var Type = Exonum.newType({
+                size: 4,
+                fields: {balance: {type: Exonum.U32, size: 4, from: 0, to: 4, fixed: true, littleEndian: true}}
+            });
+            var data = {balance: 613228};
+            var buffer = Type.serialize(data);
+
+            expect(buffer).to.deep.equal([108, 91, 9, 0]);
         });
 
         it('Input wrong segment range', function() {
@@ -1213,6 +1334,17 @@ describe('Client for Exonum blockchain platform: ', function() {
             var buffer = Type.serialize(data);
 
             expect(buffer).to.deep.equal([0, 32, 0, 0, 0, 0, 0, 1]);
+        });
+
+        it('Input correct number to serialize in little endian', function() {
+            var Type = Exonum.newType({
+                size: 8,
+                fields: {balance: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true, littleEndian: true}}
+            });
+            var data = {balance: 613228};
+            var buffer = Type.serialize(data);
+
+            expect(buffer).to.deep.equal([108, 91, 9, 0, 0, 0, 0, 0]);
         });
 
         it('Input wrong segment range', function() {
@@ -4346,7 +4478,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         //     })).to.equal(false);
         // });
 
-        it('TODO remove', function() {
+        it('temp', function() {
             expect(Exonum.verifyBlock({
                 "block": {
                     "height": '500',
@@ -4356,38 +4488,16 @@ describe('Client for Exonum blockchain platform: ', function() {
                     "tx_hash": "dbc1b4c900ffe48d575b5da5c638040125f65db0fe3e24494b76ea986457d986",
                     "state_hash": "084fed08b978af4d7d196a7446a86b58009e636b611db16211b65a9aadff29c5"
                 },
-                "precommits": [
-                    {
-                        "body": {
-                            "validator": 123,
-                            "height": '15',
-                            "round": 25,
-                            "propose_hash": "039058c6f2c0cb492c533b0a4d14ef77cc0f78abccced5287d84a1a2011cfb81",
-                            "block_hash": "b11546c0ad0e7659284b3e575dcaf1bca271a87afe8a5a6fbdf9e398a8af1edf"
-                        },
-                        "signature": "3effc5ce635cd55d1f223741c619376ffbf0f59ff1526576404c748acfae4840edd59851fd06e39cd6e34e219541f7775dd9df4ed736b6b1a85594d508523504"
+                "precommits": [{
+                    "body": {
+                        "validator": 123,
+                        "height": '15',
+                        "round": 25,
+                        "propose_hash": "039058c6f2c0cb492c533b0a4d14ef77cc0f78abccced5287d84a1a2011cfb81",
+                        "block_hash": "b11546c0ad0e7659284b3e575dcaf1bca271a87afe8a5a6fbdf9e398a8af1edf"
                     },
-                    // {
-                    //     "body": {
-                    //         "validator": 13,
-                    //         "height": 25,
-                    //         "round": 35,
-                    //         "propose_hash": "2be62b34fc3f1526a6a2a978b5c02187c20a9e1f1e7834b34e320cb500f91e64",
-                    //         "block_hash": "3482f35776b3ef5e563ce66a048f530b2bbbf9fae03ec00aa3c9e3ad2531461c"
-                    //     },
-                    //     "signature": "83655196c247815310f702088bafb628da6d47613696ac9497d35b180b1c9de280edeac1cbf078587b4c5e8a804eb3e105adc81763682be8db13beb17439de0f"
-                    // },
-                    // {
-                    //     "body": {
-                    //         "validator": 323,
-                    //         "height": 15,
-                    //         "round": 25,
-                    //         "propose_hash": "45c04f355207740cd6f585aecad426ffa81de2fbd52b226114f3afd541d9ab83",
-                    //         "block_hash": "8e664eaa30278348fccc139a3beb033e05b5d41b483d80ad6102d18b0618ecf7"
-                    //     },
-                    //     "signature": "611269a9db08a85b6e6e3dc7dcf1fc3455d4febe5c3bf73b3983d5888d280e46a6e330381f0ac4b32854ee40136dea9cd976ebd6b56cd72b833692d0098c270a"
-                    // }
-                ]
+                    "signature": "3effc5ce635cd55d1f223741c619376ffbf0f59ff1526576404c748acfae4840edd59851fd06e39cd6e34e219541f7775dd9df4ed736b6b1a85594d508523504"
+                }]
             })).to.equal(true);
         });
 

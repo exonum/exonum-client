@@ -131,7 +131,7 @@ var ThinClient = (function() {
         serialize(buffer, MessageHead.size, data, this);
 
         // calculate payload and insert it into buffer
-        insertNumberToByteArray(buffer.length + CONST.SIGNATURE_LENGTH, buffer, MessageHead.fields.payload.from, MessageHead.fields.payload.to, MessageHead.fields.payload.littleEndian);
+        U32(buffer.length + CONST.SIGNATURE_LENGTH, buffer, MessageHead.fields.payload.from, MessageHead.fields.payload.to, MessageHead.fields.payload.littleEndian);
 
         return buffer;
     };
@@ -149,12 +149,12 @@ var ThinClient = (function() {
      * @param {Boolean} littleEndian
      */
     function I8(value, buffer, from, to, littleEndian) {
-        if (validateNumber(value, CONST.MIN_I8, CONST.MAX_I8, from, to, 1)) {
-            if (bigInt(value).isNegative()) {
-                value = bigInt(CONST.MAX_U8).plus(1).plus(value);
+        if (validateInteger(value, CONST.MIN_I8, CONST.MAX_I8, from, to, 1)) {
+            if (value < 0) {
+                value = CONST.MAX_U8 + value + 1
             }
 
-            insertNumberToByteArray(value, buffer, from, to, littleEndian);
+            insertIntegerToByteArray(value, buffer, from, to, littleEndian);
         }
     }
 
@@ -167,12 +167,12 @@ var ThinClient = (function() {
      * @param {Boolean} littleEndian
      */
     function I16(value, buffer, from, to, littleEndian) {
-        if (validateNumber(value, CONST.MIN_I16, CONST.MAX_I16, from, to, 2)) {
-            if (bigInt(value).isNegative()) {
-                value = bigInt(CONST.MAX_U16).plus(1).plus(value);
+        if (validateInteger(value, CONST.MIN_I16, CONST.MAX_I16, from, to, 2)) {
+            if (value < 0) {
+                value = CONST.MAX_U16 + value + 1;
             }
 
-            insertNumberToByteArray(value, buffer, from, to, littleEndian);
+            insertIntegerToByteArray(value, buffer, from, to, littleEndian);
         }
     }
 
@@ -185,12 +185,12 @@ var ThinClient = (function() {
      * @param {Boolean} littleEndian
      */
     function I32(value, buffer, from, to, littleEndian) {
-        if (validateNumber(value, CONST.MIN_I32, CONST.MAX_I32, from, to, 4)) {
-            if (bigInt(value).isNegative()) {
-                value = bigInt(CONST.MAX_U32).plus(1).plus(value);
+        if (validateInteger(value, CONST.MIN_I32, CONST.MAX_I32, from, to, 4)) {
+            if (value < 0) {
+                value = CONST.MAX_U32 + value + 1;
             }
 
-            insertNumberToByteArray(value, buffer, from, to, littleEndian);
+            insertIntegerToByteArray(value, buffer, from, to, littleEndian);
         }
     }
 
@@ -203,12 +203,13 @@ var ThinClient = (function() {
      * @param {Boolean} littleEndian
      */
     function I64(value, buffer, from, to, littleEndian) {
-        if (validateNumber(value, CONST.MIN_I64, CONST.MAX_I64, from, to, 8)) {
-            if (bigInt(value).isNegative()) {
-                value = bigInt(CONST.MAX_U64).plus(1).plus(value);
+        var val = validateBigInteger(value, CONST.MIN_I64, CONST.MAX_I64, from, to, 8);
+        if (bigInt.isInstance(val)) {
+            if (val.isNegative()) {
+                val = bigInt(CONST.MAX_U64).plus(1).plus(val);
             }
 
-            insertNumberToByteArray(value, buffer, from, to, littleEndian);
+            insertBigIntegerToByteArray(val, buffer, from, to, littleEndian);
         }
     }
 
@@ -221,8 +222,8 @@ var ThinClient = (function() {
      * @param {Boolean} littleEndian
      */
     function U8(value, buffer, from, to, littleEndian) {
-        if (validateNumber(value, 0, CONST.MAX_U8, from, to, 1)) {
-            insertNumberToByteArray(value, buffer, from, to, littleEndian);
+        if (validateInteger(value, 0, CONST.MAX_U8, from, to, 1)) {
+            insertIntegerToByteArray(value, buffer, from, to, littleEndian);
         }
     }
 
@@ -235,8 +236,8 @@ var ThinClient = (function() {
      * @param {Boolean} littleEndian
      */
     function U16(value, buffer, from, to, littleEndian) {
-        if (validateNumber(value, 0, CONST.MAX_U16, from, to, 2)) {
-            insertNumberToByteArray(value, buffer, from, to, littleEndian);
+        if (validateInteger(value, 0, CONST.MAX_U16, from, to, 2)) {
+            insertIntegerToByteArray(value, buffer, from, to, littleEndian);
         }
     }
 
@@ -249,8 +250,8 @@ var ThinClient = (function() {
      * @param {Boolean} littleEndian
      */
     function U32(value, buffer, from, to, littleEndian) {
-        if (validateNumber(value, 0, CONST.MAX_U32, from, to, 4)) {
-            insertNumberToByteArray(value, buffer, from, to, littleEndian);
+        if (validateInteger(value, 0, CONST.MAX_U32, from, to, 4)) {
+            insertIntegerToByteArray(value, buffer, from, to, littleEndian);
         }
     }
 
@@ -263,8 +264,9 @@ var ThinClient = (function() {
      * @param {Boolean} littleEndian
      */
     function U64(value, buffer, from, to, littleEndian) {
-        if (validateNumber(value, 0, CONST.MAX_U64, from, to, 8)) {
-            insertNumberToByteArray(value, buffer, from, to, littleEndian);
+        var val = validateBigInteger(value, 0, CONST.MAX_U64, from, to, 8);
+        if (bigInt.isInstance(val)) {
+            insertBigIntegerToByteArray(val, buffer, from, to, littleEndian);
         }
     }
 
@@ -285,10 +287,9 @@ var ThinClient = (function() {
             return;
         }
 
-        insertNumberToByteArray(buffer.length, buffer, from, from + 4, littleEndian); // index where string content starts in buffer
-        insertNumberToByteArray(string.length, buffer, from + 4, from + 8, littleEndian); // string length
+        U32(buffer.length, buffer, from, from + 4, littleEndian); // index where string content starts in buffer
+        U32(string.length, buffer, from + 4, from + 8, littleEndian); // string length
         insertStringToByteArray(string, buffer, buffer.length, buffer.length + string.length - 1); // string content
-
     }
 
     /**
@@ -354,8 +355,9 @@ var ThinClient = (function() {
      * @param {Boolean} littleEndian
      */
     function Timespec(nanoseconds, buffer, from, to, littleEndian) {
-        if (validateNumber(nanoseconds, 0, CONST.MAX_U64, from, to, 8)) {
-            insertNumberToByteArray(nanoseconds, buffer, from, to, littleEndian);
+        var val = validateBigInteger(nanoseconds, 0, CONST.MAX_U64, from, to, 8);
+        if (bigInt.isInstance(val)) {
+            insertBigIntegerToByteArray(val, buffer, from, to, littleEndian);
         }
     }
 
@@ -375,12 +377,12 @@ var ThinClient = (function() {
             return;
         }
 
-        insertNumberToByteArray(value ? 1 : 0, buffer, from, to);
+        insertIntegerToByteArray(value ? 1 : 0, buffer, from, to);
     }
 
     /**
-     * Check number validity
-     * @param {Number || String} value
+     * Check integer number validity
+     * @param {Number} value
      * @param {Number} min
      * @param {Number} max
      * @param {Number} from
@@ -388,14 +390,14 @@ var ThinClient = (function() {
      * @param {Number} length
      * @returns {Boolean}
      */
-    function validateNumber(value, min, max, from, to, length) {
-        if (typeof value !== 'number' && typeof value !== 'string') {
+    function validateInteger(value, min, max, from, to, length) {
+        if (typeof value !== 'number') {
             console.error('Wrong data type is passed as number. Should be of type Number or String.');
             return false;
-        } else if (bigInt(value).lt(min)) {
+        } else if (value < min) {
             console.error('Number should be more or equal to ' + min + '.');
             return false;
-        } else if (bigInt(value).gt(max)) {
+        } else if (value > max) {
             console.error('Number should be less or equal to ' + max + '.');
             return false;
         } else if ((to - from) !== length) {
@@ -404,6 +406,40 @@ var ThinClient = (function() {
         }
 
         return true;
+    }
+
+    /**
+     * Check bit integer number validity
+     * @param {Number || String} value
+     * @param {Number} min
+     * @param {Number} max
+     * @param {Number} from
+     * @param {Number} to
+     * @param {Number} length
+     * @returns {bigInt || Boolean}
+     */
+    function validateBigInteger(value, min, max, from, to, length) {
+        var val;
+
+        try {
+            val = bigInt(value);
+
+            if (val.lt(min)) {
+                console.error('Number should be more or equal to ' + min + '.');
+                return false;
+            } else if (val.gt(max)) {
+                console.error('Number should be less or equal to ' + max + '.');
+                return false;
+            } else if ((to - from) !== length) {
+                console.error('Number segment is of wrong length. ' + length + ' bytes long is required to store transmitted value.');
+                return false;
+            }
+
+            return val;
+        } catch (e) {
+            console.error('Wrong data type is passed as number. Should be of type Number or String.');
+            return false;
+        }
     }
 
     /**
@@ -527,9 +563,9 @@ var ThinClient = (function() {
                     serialize(buffer, from, fieldData, fieldType.type);
                 } else {
                     var end = buffer.length;
-                    insertNumberToByteArray(end, buffer, from, from + 4);
+                    U32(end, buffer, from, from + 4);
                     serialize(buffer, end, fieldData, fieldType.type);
-                    insertNumberToByteArray(buffer.length - end, buffer, from + 4, from + 8);
+                    U32(buffer.length - end, buffer, from + 4, from + 8);
                 }
             } else {
                 fieldType.type(fieldData, buffer, from, shift + fieldType.to, fieldType.littleEndian);
@@ -565,24 +601,50 @@ var ThinClient = (function() {
      * @param {Number} to
      * @param {Boolean} littleEndian
      */
-    function insertNumberToByteArray(number, buffer, from, to, littleEndian) {
-        var str = bigInt(number).toString(16);
+    function insertIntegerToByteArray(number, buffer, from, to, littleEndian) {
+        var str = number.toString(16);
 
+        insertNumberInHexToByteArray(str, buffer, from, to, littleEndian);
+    }
+
+    /**
+     * Convert big integer into array of 8-bit integers and insert into buffer
+     * @param {bigInt} number
+     * @param {Array} buffer
+     * @param {Number} from
+     * @param {Number} to
+     * @param {Boolean} littleEndian
+     */
+    function insertBigIntegerToByteArray(number, buffer, from, to, littleEndian) {
+        var str = number.toString(16);
+
+        insertNumberInHexToByteArray(str, buffer, from, to, littleEndian);
+    }
+
+    /**
+     * Insert number in hex into buffer
+     * @param {String} number
+     * @param {Array} buffer
+     * @param {Number} from
+     * @param {Number} to
+     * @param {Boolean} littleEndian
+     */
+    function insertNumberInHexToByteArray(number, buffer, from, to, littleEndian) {
         if (littleEndian === true) {
             // store Number as little-endian
-            if (str.length < 3) {
-                buffer[from] = parseInt(str, 16);
+            if (number.length < 3) {
+                buffer[from] = parseInt(number, 16);
                 return true;
             }
 
-            for (var i = 0; i < str.length; i += 2) {
-                from++;
-
+            for (var i = number.length; i > 0; i -= 2) {
                 if (i > 1) {
-                    buffer[from] = parseInt(str.substr(i, 2), 16);
+                    buffer[from] = parseInt(number.substr(i - 2, 2), 16);
                 } else {
-                    buffer[from] = parseInt(str.substr(0, 1), 16);
+                    buffer[from] = parseInt(number.substr(0, 1), 16);
                 }
+
+                from++;
 
                 if (from >= to) {
                     break;
@@ -590,18 +652,18 @@ var ThinClient = (function() {
             }
         } else {
             // store Number as big-endian
-            if (str.length < 3) {
-                buffer[to - 1] = parseInt(str, 16);
+            if (number.length < 3) {
+                buffer[to - 1] = parseInt(number, 16);
                 return true;
             }
 
-            for (var i = str.length; i > 0; i -= 2) {
+            for (var i = number.length; i > 0; i -= 2) {
                 to--;
 
                 if (i > 1) {
-                    buffer[to] = parseInt(str.substr(i - 2, 2), 16);
+                    buffer[to] = parseInt(number.substr(i - 2, 2), 16);
                 } else {
-                    buffer[to] = parseInt(str.substr(0, 1), 16);
+                    buffer[to] = parseInt(number.substr(0, 1), 16);
                 }
 
                 if (to <= from) {
