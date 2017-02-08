@@ -6,28 +6,28 @@ Pure JavaScript toolkit to work with Exonum blockchain in both of browser and No
 1. [Use in browser](#use-in-browser)
 2. [Use in Node.js](#use-in-nodejs)
 3. [API methods](#api-methods)
-   * [hash](#exonumhash)
-   * [sign](#exonumsign)
-   * [verifySignature](#exonumverifysignature)
-   * [newType](#exonumnewtype)
-   * [merkleProof](#exonummerkleproof)
-   * [merklePatriciaProof](#exonummerklepatriciaproof)
-   * [verifyBlock](#exonumverifyblock)
+   * [hash](#hash)
+   * [sign](#sign)
+   * [verifySignature](#verifysignature)
+   * [newType](#newtype)
+   * [merkleProof](#merkleproof)
+   * [merklePatriciaProof](#merklepatriciaproof)
+   * [verifyBlock](#verifyblock)
 4. [Built-in types](#built-in-types)
-   * [I8](#exonumi8)
-   * [I16](#exonumi16)
-   * [I32](#exonumi32)
-   * [I64](#exonumi64)
-   * [U8](#exonumu8)
-   * [U16](#exonumu16)
-   * [U32](#exonumu32)
-   * [U64](#exonumu64)
-   * [String](#exonumstring)
-   * [Hash](#exonumhash-1)
-   * [PublicKey](#exonumpublickey)
-   * [Digest](#exonumdigest)
-   * [Timespec](#exonumtimespec)
-   * [Bool](#exonumbool)
+   * [I8](#i8)
+   * [I16](#i16)
+   * [I32](#i32)
+   * [I64](#i64)
+   * [U8](#u8)
+   * [U16](#u16)
+   * [U32](#u32)
+   * [U64](#u64)
+   * [String](#string)
+   * [Hash](#hash-1)
+   * [PublicKey](#publickey)
+   * [Digest](#digest)
+   * [Timespec](#timespec)
+   * [Bool](#bool)
 5. [Tests](#tests)
 5. [Build](#build)
 5. [License](#license)
@@ -50,129 +50,214 @@ Exonum.hash(buffer);
 
 ## API methods
 
-### Exonum.hash(...)
+### hash
 
 Returns SHA256 hash of the data as hexadecimal string.
 
 Accept two combinations of an arguments:
 
-##### Exonum.hash(data, type)
+##### hash(data, type)
 
 The `data` is a custom data in JSON format.
 
 The `type` is a format of data in a special format.
-
-##### Exonum.hash(buffer)
-
-The `buffer` is a data serialized according to its type (array of 8-bit integers).
-
-### Exonum.sign(...)
-
-Returns ED25519 signature of the data as hexadecimal string.
-
-Accept two combinations of an arguments:
-
-##### Exonum.sign(data, type, secretKey)
-
-The `data` is a custom data in JSON format.
-
-The `type` is a format of data in a special format.
-
-The `secretKey` is a 64 bit secret key.
-
-##### Exonum.sign(buffer, secretKey)
-
-The `buffer` is a data serialized according to its type (array of 8-bit integers).
-
-The `secretKey` is a 64 bit secret key.
-
-### Exonum.verifySignature(...)
-
-Returns `true` if verification succeeded or `false` if it failed.
-
-Accept two combinations of an arguments:
-
-##### Exonum.verifySignature(data, type, signature, publicKey)
-
-The `data` is a custom data in JSON format.
-
-The `type` is a format of data in a special format.
-
-The `signature` is a 64 bit hexadecimal string.
-
-The `publicKey` is a 32 bit secret key.
-
-##### Exonum.verifySignature(buffer, signature, publicKey)
-
-The `buffer` is a data serialized according to its type (array of 8-bit integers).
-
-The `signature` is a 64 bit hexadecimal string.
-
-The `publicKey` is a 32 bit secret key.
-
-### Exonum.newType({...})
-
-This methods create custom data format based on built-in formats and other custom formats:
-
-Receive a declarative format of the data.
-
-Returns an object of format type.
-
-Object of `newType` has method `serialize` which can be used to retrieve representation of data of type newType as array of 8-bit integers.
-
-### Example of usage of Exonum.newType
-
-Lets declare custom format called `User` with two fields `firstName` and `lastName` of string type:
 
 ```javascript
 var User = Exonum.newType({
     size: 16,
     fields: {
-        firstName: {type: Exonum.String, size: 8, from: 0, to: 8},
-        lastName: {type: Exonum.String, size: 8, from: 8, to: 16}
+        id: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true},
+        name: {type: Exonum.String, size: 8, from: 8, to: 16}
     }
 });
 
 var userData = {
-    firstName: 'John',
-    lastName: 'Doe'
+    id: 1,
+    name: 'John Doe'
 };
 
-var buffer = User.serialize(userData); // [0,0,0,67,0,0,0,4,0,0,0,71,0,0,0,3,74,111,104,110,68,111,101]
-
-Exonum.hash(buffer); // 22635e36303ff3ef4c86b855e57356f41483e6637136d1d2ec46ba2ec8f69fb9
+var hash = Exonum.hash(userData, User);
 ```
 
-Lets declare custom type `Transfer` that will use custom type `User` as one of the fields: 
+##### hash(buffer)
+
+The `buffer` is an array of 8-bit integers.
 
 ```javascript
-var Transfer = Exonum.newType({
-    size: 24,
+var buffer = [218, 0, 3, 12, 33, 68, 105, 0];
+
+var hash = Exonum.hash(buffer);
+```
+
+### sign
+
+Returns ED25519 signature of the data as hexadecimal string.
+
+Accept two combinations of an arguments:
+
+##### sign(data, type, secretKey)
+
+The `data` is a custom data in JSON format.
+
+The `type` is a format of data in a special format.
+
+The `secretKey` is a 64 bit secret key.
+
+```javascript
+var User = Exonum.newType({
+    size: 16,
     fields: {
-        amount: {type: Exonum.I64, size: 8, from: 0, to: 8, fixed: true},
-        from: {type: User, size: 8, from: 8, to: 16},
-        to: {type: User, size: 8, from: 16, to: 24}
+        id: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true},
+        name: {type: Exonum.String, size: 8, from: 8, to: 16}
     }
 });
 
-var transerData = {
+var userData = {
+    id: 1,
+    name: 'John Doe'
+};
+
+var secretKey = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36';
+
+var signature = Exonum.sign(userData, User, secretKey);
+```
+
+##### sign(buffer, secretKey)
+
+The `buffer` is an array of 8-bit integers.
+
+The `secretKey` is a 64 bit secret key.
+
+```javascript
+var buffer = [218, 0, 3, 12, 33, 68, 105, 0];
+
+var secretKey = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36';
+
+var signature = Exonum.sign(buffer, secretKey);
+```
+
+### verifySignature(...)
+
+Returns `true` if verification succeeded or `false` if it failed.
+
+Accept two combinations of an arguments:
+
+##### verifySignature(data, type, signature, publicKey)
+
+The `data` is a custom data in JSON format.
+
+The `type` is a format of data in a special format.
+
+The `signature` is a 64 bit hexadecimal string.
+
+The `publicKey` is a 32 bit secret key.
+
+```javascript
+var User = Exonum.newType({
+    size: 16,
+    fields: {
+        id: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true},
+        name: {type: Exonum.String, size: 8, from: 8, to: 16}
+    }
+});
+
+var userData = {
+    id: 1,
+    name: 'John Doe'
+};
+
+var signature = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36';
+
+var publicKey = '280a704efafae9410d7b07140bb130e4995eeb381ba90939b4eaefcaf740ca25';
+
+Exonum.verifySignature(userData, User, signature, publicKey);
+```
+
+##### verifySignature(buffer, signature, publicKey)
+
+The `buffer` is an array of 8-bit integers.
+
+The `signature` is a 64 bit hexadecimal string.
+
+The `publicKey` is a 32 bit secret key.
+
+```javascript
+var buffer = [218, 0, 3, 12, 33, 68, 105, 0];
+
+var signature = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36';
+
+var publicKey = '280a704efafae9410d7b07140bb130e4995eeb381ba90939b4eaefcaf740ca25';
+
+Exonum.verifySignature(buffer, signature, publicKey);
+```
+
+### newType
+
+This methods create custom data format based on built-in formats and/or other custom formats:
+
+Receive a declarative format of the data.
+
+Returns an object of format type.
+
+##### newType.serialize(data)
+
+Can be used to retrieve representation of data of type newType as array of 8-bit integers.
+
+Lets declare simple type `User`:
+
+```javascript
+var User = Exonum.newType({
+    size: 16,
+    fields: {
+        id: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true},
+        name: {type: Exonum.String, size: 8, from: 8, to: 16}
+    }
+});
+
+var userData = {
+    id: 1,
+    name: 'John Doe'
+};
+
+var buffer = User.serialize(userData);
+```
+
+Lets declare custom type `Payment` that will use custom type `User` as one of the fields: 
+
+```javascript
+var User = Exonum.newType({
+    size: 16,
+    fields: {
+        id: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true},
+        name: {type: Exonum.String, size: 8, from: 8, to: 16}
+    }
+});
+
+var Payment = Exonum.newType({
+    size: 40,
+    fields: {
+        amount: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true},
+        from: {type: User, size: 16, from: 8, to: 24},
+        to: {type: User, size: 16, from: 24, to: 40}
+    }
+});
+
+var paymentData = {
     amount: 500,
     from: {
-        firstName: 'Vasya',
-        lastName: 'Pupkin'
+        id: 1,
+        name: 'John Doe'
     },
     to: {
-        firstName: 'John',
-        lastName: 'Doe'
+        id: 2,
+        name: 'Jenifer Lee'
     }
 };
 
-var buffer = Transfer.serialize(transerData);
-
-Exonum.hash(buffer) // 63b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d2
+var buffer = Payment.serialize(paymentData);
 ```
 
-### Exonum.merkleProof(rootHash, count, proofNode, range, type)
+### merkleProof(rootHash, count, proofNode, range, type)
 
 This methods can check proof of Merkle tree. 
 
@@ -190,7 +275,7 @@ Returns an array of elements if tree is valid.
 
 Returns `undefined` if tree is not valid.
 
-### Exonum.merklePatriciaProof(rootHash, proof, key)
+### merklePatriciaProof(rootHash, proof, key)
 
 This methods can check proof of Merkle Patricia tree.
 
@@ -208,7 +293,7 @@ Returns `null` if tree is valid but element is not found.
 
 Returns `undefined` if tree is not valid.
 
-### Exonum.verifyBlock(data)
+### verifyBlock(data)
 
 This methods can verify block with precommits.
 
@@ -218,7 +303,7 @@ Returns `true` if verification succeeded or `false` if it failed.
 
 ## Built-in types
 
-#### Exonum.I8
+#### I8
 
 A Signed integer value of the length of `1` byte.
 
@@ -235,7 +320,7 @@ var CustomType = Exonum.newType({
 });
 ```
 
-#### Exonum.I16
+#### I16
 
 A Signed integer value of the length of `2` bytes.
 
@@ -252,7 +337,7 @@ var CustomType = Exonum.newType({
 });
 ```
 
-#### Exonum.I32
+#### I32
 
 A Signed integer value of the length of `4` bytes.
 
@@ -269,7 +354,7 @@ var CustomType = Exonum.newType({
 });
 ```
 
-#### Exonum.I64
+#### I64
 
 A Signed integer value of the length of `8` bytes.
 
@@ -294,7 +379,7 @@ var CustomType = Exonum.newType({
 });
 ```
 
-#### Exonum.U8
+#### U8
 
 Unsigned integer value of the length of `1` byte.
 
@@ -311,7 +396,7 @@ var CustomType = Exonum.newType({
 });
 ```
 
-#### Exonum.U16
+#### U16
 
 Unsigned integer value of the length of `2` bytes.
 
@@ -328,7 +413,7 @@ var CustomType = Exonum.newType({
 });
 ```
 
-#### Exonum.U32
+#### U32
 
 Unsigned integer value of the length of `4` bytes.
 
@@ -345,7 +430,7 @@ var CustomType = Exonum.newType({
 });
 ```
 
-#### Exonum.U64
+#### U64
 
 Unsigned integer value of the length of `8` bytes.
 
@@ -368,7 +453,7 @@ var CustomType = Exonum.newType({
 });
 ```
 
-#### Exonum.String
+#### String
 
 String value of the length of `8` bytes.
 
@@ -381,7 +466,7 @@ var CustomType = Exonum.newType({
 });
 ```
 
-#### Exonum.Hash
+#### Hash
 
 Hexadecimal value of the length of `32` bytes.
 
@@ -396,7 +481,7 @@ var CustomType = Exonum.newType({
 });
 ```
 
-#### Exonum.PublicKey
+#### PublicKey
 
 Hexadecimal value of the length of `32` bytes.
 
@@ -411,7 +496,7 @@ var CustomType = Exonum.newType({
 });
 ```
 
-#### Exonum.Digest
+#### Digest
 
 Hexadecimal value of the length of `64` bytes.
 
@@ -427,7 +512,7 @@ var CustomType = Exonum.newType({
 });
 ```
 
-#### Exonum.Timespec
+#### Timespec
 
 Unsigned integer value of the length of `8` bytes. Represents Unix time in nanosecond.
 
@@ -446,7 +531,7 @@ var CustomType = Exonum.newType({
 });
 ```
 
-#### Exonum.Bool
+#### Bool
 
 A Boolean value of the length of `1` byte.
 
