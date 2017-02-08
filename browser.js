@@ -1,3 +1,3 @@
-var ThinClient = require('./index.js');
+var Exonum = require('./index.js');
 
-window.ThinClient = window.ThinClient || ThinClient;
+window.Exonum = window.Exonum || Exonum;

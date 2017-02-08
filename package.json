@@ -7,8 +7,7 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "publish": "browserify browser.js | uglifyjs -o exonum-client.min.js",
-    "build": "browserify browser.js | uglifyjs -o exonum-client.min.js",
+    "build": "browserify browser.js | ./node_modules/uglifyjs/bin/uglifyjs -o exonum-client.min.js",
     "build-debug": "browserify browser.js -o exonum-client.js -d",
     "test": "./node_modules/.bin/mocha --reporter spec",
     "test-coverage": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha"

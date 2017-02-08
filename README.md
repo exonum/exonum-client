@@ -190,7 +190,7 @@ Returns an array of elements if tree is valid.
 
 Returns `undefined` if tree is not valid.
 
-### Exonum.merklePatriciaProof(...)
+### Exonum.merklePatriciaProof(rootHash, proof, key)
 
 This methods can check proof of Merkle Patricia tree.
 
@@ -208,7 +208,7 @@ Returns `null` if tree is valid but element is not found.
 
 Returns `undefined` if tree is not valid.
 
-### Exonum.verifyBlock(...)
+### Exonum.verifyBlock(data)
 
 This methods can verify block with precommits.
 
@@ -222,33 +222,60 @@ Returns `true` if verification succeeded or `false` if it failed.
 
 A Signed integer value of the length of `1` byte.
 
-`fixed: true` should be used.
+Parameter `fixed: true` should be used.
 
-Values range from `-128` to `127`.
+Values range is from `-128` to `127`.
+
+```
+var CustomType = Exonum.newType({
+    size: 1,
+    fields: {
+        someNumber: {type: Exonum.I8, size: 1, from: 0, to: 1, fixed: true}
+    }
+});
+```
 
 #### Exonum.I16
 
 A Signed integer value of the length of `2` bytes.
 
-`fixed: true` should be used.
+Parameter `fixed: true` should be used.
 
-Values range from `-32768` to `32767`.
+Values range is from `-32768` to `32767`.
+
+```
+var CustomType = Exonum.newType({
+    size: 2,
+    fields: {
+        someNumber: {type: Exonum.I16, size: 2, from: 0, to: 2, fixed: true}
+    }
+});
+```
 
 #### Exonum.I32
 
 A Signed integer value of the length of `4` bytes.
 
-`fixed: true` should be used.
+Parameter `fixed: true` should be used.
 
-Values range from `-2147483648` to `2147483647`.
+Values range is from `-2147483648` to `2147483647`.
+
+```
+var CustomType = Exonum.newType({
+    size: 4,
+    fields: {
+        someNumber: {type: Exonum.I32, size: 4, from: 0, to: 4, fixed: true}
+    }
+});
+```
 
 #### Exonum.I64
 
 A Signed integer value of the length of `8` bytes.
 
-`fixed: true` should be used.
+Parameter `fixed: true` should be used.
 
-Values range from `-9223372036854775808` to `9223372036854775807`.
+Values range is from `-9223372036854775808` to `9223372036854775807`.
 
 Please note that JavaScript limits minimum and maximum integer number.
 
@@ -256,83 +283,183 @@ Minimum safe integer in JavaScript is `-(2^53-1)` which is equal to `-9007199254
 
 Maximum safe integer in JavaScript is `2^53-1` which is equal to `9007199254740991`.
 
-To use bigger or smaller value use it not as `Number` but as `String`.
+Work around is to use value not as `Number` but as `String`.
+
+```
+var CustomType = Exonum.newType({
+    size: 8,
+    fields: {
+        someNumber: {type: Exonum.I64, size: 8, from: 0, to: 8, fixed: true}
+    }
+});
+```
 
 #### Exonum.U8
 
 Unsigned integer value of the length of `1` byte.
 
-`fixed: true` should be used.
+Parameter `fixed: true` should be used.
 
-Values range from `0` to `255`.
+Values range is from `0` to `255`.
+
+```
+var CustomType = Exonum.newType({
+    size: 1,
+    fields: {
+        someNumber: {type: Exonum.U8, size: 1, from: 0, to: 1, fixed: true}
+    }
+});
+```
 
 #### Exonum.U16
 
 Unsigned integer value of the length of `2` bytes.
 
-`fixed: true` should be used.
+Parameter `fixed: true` should be used.
 
-Values range from `0` to `65535`.
+Values range is from `0` to `65535`.
+
+```
+var CustomType = Exonum.newType({
+    size: 2,
+    fields: {
+        someNumber: {type: Exonum.U16, size: 2, from: 0, to: 2, fixed: true}
+    }
+});
+```
 
 #### Exonum.U32
 
 Unsigned integer value of the length of `4` bytes.
 
-`fixed: true` should be used.
+Parameter `fixed: true` should be used.
 
-Values range from `0` to `4294967295`.
+Values range is from `0` to `4294967295`.
+
+```
+var CustomType = Exonum.newType({
+    size: 4,
+    fields: {
+        someNumber: {type: Exonum.U32, size: 4, from: 0, to: 4, fixed: true}
+    }
+});
+```
 
 #### Exonum.U64
 
 Unsigned integer value of the length of `8` bytes.
 
-`fixed: true` should be used.
+Parameter `fixed: true` should be used.
 
-Values range from `0` to `18446744073709551615`.
+Values range is from `0` to `18446744073709551615`.
 
 Please note that JavaScript limits maximum integer number.
 
 Maximum safe integer in JavaScript is `2^53-1` which is equal to `9007199254740991`.
 
-To use bigger value use it not as `Number` but as `String`.
+Work around is to use value not as `Number` but as `String`.
+
+```
+var CustomType = Exonum.newType({
+    size: 8,
+    fields: {
+        someNumber: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true}
+    }
+});
+```
 
 #### Exonum.String
 
 String value of the length of `8` bytes.
 
+```
+var CustomType = Exonum.newType({
+    size: 8,
+    fields: {
+        someString: {type: Exonum.String, size: 8, from: 0, to: 8}
+    }
+});
+```
+
 #### Exonum.Hash
 
 Hexadecimal value of the length of `32` bytes.
 
-`fixed: true` should be used.
+Parameter `fixed: true` should be used.
+
+```
+var CustomType = Exonum.newType({
+    size: 32,
+    fields: {
+        someHash: {type: Exonum.Hash, size: 32, from: 0, to: 32, fixed: true}
+    }
+});
+```
 
 #### Exonum.PublicKey
 
 Hexadecimal value of the length of `32` bytes.
 
-`fixed: true` should be used.
+Parameter `fixed: true` should be used.
+
+```
+var CustomType = Exonum.newType({
+    size: 32,
+    fields: {
+        somePublicKey: {type: Exonum.PublicKey, size: 32, from: 0, to: 32, fixed: true}
+    }
+});
+```
 
 #### Exonum.Digest
 
 Hexadecimal value of the length of `64` bytes.
 
-`fixed: true` should be used.
+Parameter `fixed: true` should be used.
+
+
+```
+var CustomType = Exonum.newType({
+    size: 64,
+    fields: {
+        someDigest: {type: Exonum.Digest, size: 64, from: 0, to: 64, fixed: true}
+    }
+});
+```
 
 #### Exonum.Timespec
 
 Unsigned integer value of the length of `8` bytes. Represents Unix time in nanosecond.
 
-`fixed: true` should be used.
+Parameter `fixed: true` should be used.
 
 Maximum safe integer in JavaScript is `2^53-1` which is equal to `9007199254740991`.
 
-To use bigger value use it not as `Number` but as `String`.
+Work around is to use value not as `Number` but as `String`.
+
+```
+var CustomType = Exonum.newType({
+    size: 8,
+    fields: {
+        someTimespec: {type: Exonum.Timespec, size: 8, from: 0, to: 8, fixed: true}
+    }
+});
+```
 
 #### Exonum.Bool
 
 A Boolean value of the length of `1` byte.
 
-`fixed: true` should be used.
+Parameter `fixed: true` should be used.
+
+```
+var CustomType = Exonum.newType({
+    size: 1,
+    fields: {
+        someBool: {type: Exonum.Bool, size: 1, from: 0, to: 1, fixed: true}
+    }
+});
+```
 
 ## Tests
 
