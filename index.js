@@ -23,7 +23,7 @@ var ThinClient = (function() {
         MAX_U32: 4294967295,
         MAX_U64: '18446744073709551615',
         MERKLE_PATRICIA_KEY_LENGTH: 32,
-        PRECOMMIT_SIGNATURE_LENGTH: 64
+        SIGNATURE_LENGTH: 64
     };
     var DBKey = createNewType({
         size: 34,
@@ -60,7 +60,7 @@ var ThinClient = (function() {
             state_hash: {type: Hash, size: 32, from: 84, to: 116, fixed: true}
         }
     });
-    var PrecommitHead = createNewType({
+    var MessageHead = createNewType({
         size: 10,
         fields: {
             network_id: {type: U8, size: 1, from: 0, to: 1, fixed: true, littleEndian: true},
@@ -70,8 +70,10 @@ var ThinClient = (function() {
             payload: {type: U32, size: 4, from: 6, to: 10, fixed: true, littleEndian: true}
         }
     });
-    var PrecommitBody = createNewType({
+    var Precommit = createNewMessage({
         size: 84,
+        service_id: 0,
+        message_type: 4,
         fields: {
             validator: {type: U32, size: 4, from: 0, to: 4, fixed: true, littleEndian: true},
             height: {type: U64, size: 8, from: 8, to: 16, fixed: true, littleEndian: true},
@@ -80,7 +82,6 @@ var ThinClient = (function() {
             block_hash: {type: Hash, size: 32, from: 52, to: 84, fixed: true}
         }
     });
-    // TODO should it be more versatile discuss with II
 
     /**
      * @constructor
@@ -109,6 +110,34 @@ var ThinClient = (function() {
      */
     function createNewType(type) {
         return new NewType(type);
+    }
+
+    function NewMessage(type) {
+        this.size = type.size;
+        this.message_type = type.message_type;
+        this.service_id = type.service_id;
+        this.fields = type.fields;
+    }
+
+    NewMessage.prototype.serialize = function(data, signature) {
+        var buffer = MessageHead.serialize({
+            network_id: CONFIG.networkId,
+            version: 0,
+            message_type: this.message_type,
+            service_id: this.service_id
+        });
+
+        // serialize and append message body
+        serialize(buffer, MessageHead.size, data, this);
+
+        // calculate payload and insert it into buffer
+        insertNumberToByteArray(buffer.length + CONST.SIGNATURE_LENGTH, buffer, MessageHead.fields.payload.from, MessageHead.fields.payload.to, MessageHead.fields.payload.littleEndian);
+
+        return buffer;
+    };
+
+    function createNewMessage(type) {
+        return new NewMessage(type);
     }
 
     /**
@@ -469,7 +498,7 @@ var ThinClient = (function() {
     /**
      * Serialize data into array of 8-bit integers and insert into buffer
      * @param {Array} buffer
-     * @param {Number} shift
+     * @param {Number} shift - the index to start write into buffer
      * @param {Object} data
      * @param type - can be {NewType} or one of built-in types
      */
@@ -1353,7 +1382,7 @@ var ThinClient = (function() {
         var uniqueValidators = [];
 
         var round;
-        var blockHash = hash(data.block, Block); // TODO smthng wrong with 'time' field, should be string, discuss with II
+        var blockHash = hash(data.block, Block);
 
         for (var i in data.precommits) {
             if (!data.precommits.hasOwnProperty(i)) {
@@ -1394,19 +1423,7 @@ var ThinClient = (function() {
             //     return false;
             // }
 
-            var headBuffer = PrecommitHead.serialize({
-                // network_id: CONFIG.networkId,
-                // version: 1,
-                // service_id: 2,
-                // message_type: 40,
-                network_id: 0,
-                version: 0,
-                service_id: 0,
-                message_type: 4,
-                payload: PrecommitHead.size + PrecommitBody.size + CONST.PRECOMMIT_SIGNATURE_LENGTH
-            });
-            var bodyBuffer = PrecommitBody.serialize(precommit.body);
-            var buffer = headBuffer.concat(bodyBuffer);
+            var buffer = Precommit.serialize(precommit.body);
             // var publicKey = CONFIG.validators[precommit.body.validator].publicKey;
             var publicKey = '5dc6af58396d5fb9cfbfbb1ea0b8d7d535d20884eb983ced22b1206ef021c1f1';
 
@@ -1416,9 +1433,9 @@ var ThinClient = (function() {
             }
         }
 
-        if (uniqueValidators.length <= validatorsTotalNumber * 2 / 3) {
-            return false;
-        }
+        // if (uniqueValidators.length <= validatorsTotalNumber * 2 / 3) {
+        //     return false;
+        // }
 
         return true;
     }
