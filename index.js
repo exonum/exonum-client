@@ -98,9 +98,7 @@ var ThinClient = (function() {
      * @returns {Array}
      */
     NewType.prototype.serialize = function(data) {
-        var buffer = [];
-        serialize(buffer, 0, data, this);
-        return buffer;
+        return serialize([], 0, data, this);
     };
 
     /**
@@ -149,13 +147,17 @@ var ThinClient = (function() {
      * @param {Boolean} littleEndian
      */
     function I8(value, buffer, from, to, littleEndian) {
-        if (validateInteger(value, CONST.MIN_I8, CONST.MAX_I8, from, to, 1)) {
-            if (value < 0) {
-                value = CONST.MAX_U8 + value + 1
-            }
-
-            insertIntegerToByteArray(value, buffer, from, to, littleEndian);
+        if (!validateInteger(value, CONST.MIN_I8, CONST.MAX_I8, from, to, 1)) {
+            return;
         }
+
+        if (value < 0) {
+            value = CONST.MAX_U8 + value + 1
+        }
+
+        insertIntegerToByteArray(value, buffer, from, to, littleEndian);
+
+        return buffer;
     }
 
     /**
@@ -167,13 +169,17 @@ var ThinClient = (function() {
      * @param {Boolean} littleEndian
      */
     function I16(value, buffer, from, to, littleEndian) {
-        if (validateInteger(value, CONST.MIN_I16, CONST.MAX_I16, from, to, 2)) {
-            if (value < 0) {
-                value = CONST.MAX_U16 + value + 1;
-            }
-
-            insertIntegerToByteArray(value, buffer, from, to, littleEndian);
+        if (!validateInteger(value, CONST.MIN_I16, CONST.MAX_I16, from, to, 2)) {
+            return;
         }
+
+        if (value < 0) {
+            value = CONST.MAX_U16 + value + 1;
+        }
+
+        insertIntegerToByteArray(value, buffer, from, to, littleEndian);
+
+        return buffer;
     }
 
     /**
@@ -185,13 +191,17 @@ var ThinClient = (function() {
      * @param {Boolean} littleEndian
      */
     function I32(value, buffer, from, to, littleEndian) {
-        if (validateInteger(value, CONST.MIN_I32, CONST.MAX_I32, from, to, 4)) {
-            if (value < 0) {
-                value = CONST.MAX_U32 + value + 1;
-            }
-
-            insertIntegerToByteArray(value, buffer, from, to, littleEndian);
+        if (!validateInteger(value, CONST.MIN_I32, CONST.MAX_I32, from, to, 4)) {
+            return;
         }
+
+        if (value < 0) {
+            value = CONST.MAX_U32 + value + 1;
+        }
+
+        insertIntegerToByteArray(value, buffer, from, to, littleEndian);
+
+        return buffer;
     }
 
     /**
@@ -204,13 +214,20 @@ var ThinClient = (function() {
      */
     function I64(value, buffer, from, to, littleEndian) {
         var val = validateBigInteger(value, CONST.MIN_I64, CONST.MAX_I64, from, to, 8);
-        if (bigInt.isInstance(val)) {
-            if (val.isNegative()) {
-                val = bigInt(CONST.MAX_U64).plus(1).plus(val);
-            }
 
-            insertBigIntegerToByteArray(val, buffer, from, to, littleEndian);
+        if (val === false) {
+            return;
+        } else if (!bigInt.isInstance(val)) {
+            return;
         }
+
+        if (val.isNegative()) {
+            val = bigInt(CONST.MAX_U64).plus(1).plus(val);
+        }
+
+        insertBigIntegerToByteArray(val, buffer, from, to, littleEndian);
+
+        return buffer;
     }
 
     /**
@@ -222,9 +239,13 @@ var ThinClient = (function() {
      * @param {Boolean} littleEndian
      */
     function U8(value, buffer, from, to, littleEndian) {
-        if (validateInteger(value, 0, CONST.MAX_U8, from, to, 1)) {
-            insertIntegerToByteArray(value, buffer, from, to, littleEndian);
+        if (!validateInteger(value, 0, CONST.MAX_U8, from, to, 1)) {
+            return;
         }
+
+        insertIntegerToByteArray(value, buffer, from, to, littleEndian);
+
+        return buffer;
     }
 
     /**
@@ -236,9 +257,13 @@ var ThinClient = (function() {
      * @param {Boolean} littleEndian
      */
     function U16(value, buffer, from, to, littleEndian) {
-        if (validateInteger(value, 0, CONST.MAX_U16, from, to, 2)) {
-            insertIntegerToByteArray(value, buffer, from, to, littleEndian);
+        if (!validateInteger(value, 0, CONST.MAX_U16, from, to, 2)) {
+            return;
         }
+
+        insertIntegerToByteArray(value, buffer, from, to, littleEndian);
+
+        return buffer;
     }
 
     /**
@@ -250,9 +275,13 @@ var ThinClient = (function() {
      * @param {Boolean} littleEndian
      */
     function U32(value, buffer, from, to, littleEndian) {
-        if (validateInteger(value, 0, CONST.MAX_U32, from, to, 4)) {
-            insertIntegerToByteArray(value, buffer, from, to, littleEndian);
+        if (!validateInteger(value, 0, CONST.MAX_U32, from, to, 4)) {
+            return;
         }
+
+        insertIntegerToByteArray(value, buffer, from, to, littleEndian);
+
+        return buffer;
     }
 
     /**
@@ -265,9 +294,16 @@ var ThinClient = (function() {
      */
     function U64(value, buffer, from, to, littleEndian) {
         var val = validateBigInteger(value, 0, CONST.MAX_U64, from, to, 8);
-        if (bigInt.isInstance(val)) {
-            insertBigIntegerToByteArray(val, buffer, from, to, littleEndian);
+
+        if (val === false) {
+            return;
+        } else if (!bigInt.isInstance(val)) {
+            return;
         }
+
+        insertBigIntegerToByteArray(val, buffer, from, to, littleEndian);
+
+        return buffer;
     }
 
     /**
@@ -290,6 +326,8 @@ var ThinClient = (function() {
         U32(buffer.length, buffer, from, from + 4, littleEndian); // index where string content starts in buffer
         U32(string.length, buffer, from + 4, from + 8, littleEndian); // string length
         insertStringToByteArray(string, buffer, buffer.length, buffer.length + string.length - 1); // string content
+
+        return buffer;
     }
 
     /**
@@ -308,6 +346,8 @@ var ThinClient = (function() {
         }
 
         insertHexadecimalToArray(hash, buffer, from, to);
+
+        return buffer;
     }
 
     /**
@@ -326,6 +366,8 @@ var ThinClient = (function() {
         }
 
         insertHexadecimalToArray(digest, buffer, from, to);
+
+        return buffer;
     }
 
     /**
@@ -344,6 +386,8 @@ var ThinClient = (function() {
         }
 
         insertHexadecimalToArray(publicKey, buffer, from, to);
+
+        return buffer;
     }
 
     /**
@@ -356,9 +400,16 @@ var ThinClient = (function() {
      */
     function Timespec(nanoseconds, buffer, from, to, littleEndian) {
         var val = validateBigInteger(nanoseconds, 0, CONST.MAX_U64, from, to, 8);
-        if (bigInt.isInstance(val)) {
-            insertBigIntegerToByteArray(val, buffer, from, to, littleEndian);
+
+        if (val === false) {
+            return;
+        } else if (!bigInt.isInstance(val)) {
+            return;
         }
+
+        insertBigIntegerToByteArray(val, buffer, from, to, littleEndian);
+
+        return buffer;
     }
 
     /**
@@ -378,6 +429,8 @@ var ThinClient = (function() {
         }
 
         insertIntegerToByteArray(value ? 1 : 0, buffer, from, to);
+
+        return buffer;
     }
 
     /**
@@ -392,7 +445,7 @@ var ThinClient = (function() {
      */
     function validateInteger(value, min, max, from, to, length) {
         if (typeof value !== 'number') {
-            console.error('Wrong data type is passed as number. Should be of type Number or String.');
+            console.error('Wrong data type is passed as number. Should be of type Number.');
             return false;
         } else if (value < min) {
             console.error('Number should be more or equal to ' + min + '.');
@@ -420,6 +473,14 @@ var ThinClient = (function() {
      */
     function validateBigInteger(value, min, max, from, to, length) {
         var val;
+
+        if (!(typeof value === 'number' || typeof value === 'string')) {
+            console.error('Wrong data type is passed as number. Should be of type Number or String.');
+            return false;
+        } else if ((to - from) !== length) {
+            console.error('Number segment is of wrong length. ' + length + ' bytes long is required to store transmitted value.');
+            return false;
+        }
 
         try {
             val = bigInt(value);
@@ -522,16 +583,6 @@ var ThinClient = (function() {
     }
 
     /**
-     * Convert data into array of 8-bit integers
-     * @param {Object} data
-     * @param type - can be {NewType} or one of built-in types
-     * @returns {Array}
-     */
-    function getBuffer(data, type) {
-        return serialize([], 0, data, type) || null;
-    }
-
-    /**
      * Serialize data into array of 8-bit integers and insert into buffer
      * @param {Array} buffer
      * @param {Number} shift - the index to start write into buffer
@@ -551,8 +602,9 @@ var ThinClient = (function() {
             var fieldType = type.fields[fieldName];
 
             if (typeof fieldType === 'undefined') {
-                console.error(fieldName + ' field was not found in type config.');
-                return;
+                console.error(fieldName + ' field was not found in configuration of type.');
+                buffer = undefined;
+                return buffer;
             }
 
             var fieldData = data[fieldName];
@@ -568,7 +620,10 @@ var ThinClient = (function() {
                     U32(buffer.length - end, buffer, from + 4, from + 8);
                 }
             } else {
-                fieldType.type(fieldData, buffer, from, shift + fieldType.to, fieldType.littleEndian);
+                if (typeof fieldType.type(fieldData, buffer, from, shift + fieldType.to, fieldType.littleEndian) === 'undefined') {
+                    buffer = undefined;
+                    return buffer;
+                }
             }
         }
 
@@ -812,8 +867,8 @@ var ThinClient = (function() {
         var buffer;
         if (type instanceof NewType) {
             if (isObject(data)) {
-                buffer = getBuffer(data, type);
-                if (buffer === null) {
+                buffer = type.serialize(data);
+                if (typeof buffer === 'undefined') {
                     return;
                 }
             } else {
@@ -846,11 +901,13 @@ var ThinClient = (function() {
 
         if (typeof secretKey !== 'undefined') {
             if (type instanceof NewType) {
-                buffer = getBuffer(data, type);
-                if (buffer === null) {
+                buffer = type.serialize(data);
+                if (typeof buffer === 'undefined') {
                     console.error('Invalid data parameter.');
                     return;
                 }
+            } else if (type instanceof NewMessage) {
+                // TODO
             } else {
                 console.error('Invalid type parameter.');
                 return;
@@ -895,8 +952,8 @@ var ThinClient = (function() {
                 return;
             }
 
-            buffer = getBuffer(data, type);
-            if (buffer === null) {
+            buffer = type.serialize(data);
+            if (typeof buffer === 'undefined') {
                 console.error('Invalid data parameter.');
                 return;
             }
@@ -975,8 +1032,8 @@ var ThinClient = (function() {
             } else if (NewType.prototype.isPrototypeOf(type)) {
                 if (isObject(data)) {
                     element = objectAssign(data); // deep copy
-                    buffer = getBuffer(data, type);
-                    if (buffer === null) {
+                    buffer = type.serialize(data);
+                    if (typeof buffer === 'undefined') {
                         return null;
                     }
                 } else {

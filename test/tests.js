@@ -34,7 +34,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {hash: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input invalid string', function() {
@@ -45,7 +45,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {hash: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3z'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input too long string', function() {
@@ -56,7 +56,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {hash: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input too short string', function() {
@@ -67,7 +67,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {hash: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input data of wrong type', function() {
@@ -80,31 +80,31 @@ describe('Client for Exonum blockchain platform: ', function() {
 
             data = {hash: true};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {hash: null};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {hash: undefined};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {hash: 57};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {hash: []};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {hash: {}};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {hash: new Date()};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
     });
@@ -133,7 +133,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input invalid string', function() {
@@ -144,7 +144,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3z'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input too long string', function() {
@@ -155,7 +155,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input too short string', function() {
@@ -166,7 +166,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input data of wrong type', function() {
@@ -179,31 +179,31 @@ describe('Client for Exonum blockchain platform: ', function() {
 
             data = {key: true};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {key: null};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {key: undefined};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {key: 57};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {key: []};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {key: {}};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {key: new Date()};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
     });
@@ -232,7 +232,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input invalid string', function() {
@@ -243,7 +243,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3zf5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3z'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input too long string', function() {
@@ -254,7 +254,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input too short string', function() {
@@ -265,7 +265,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input data of wrong type', function() {
@@ -278,31 +278,25 @@ describe('Client for Exonum blockchain platform: ', function() {
 
             data = {key: true};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
-
+            expect(buffer).to.equal(undefined);
             data = {key: null};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
-
+            expect(buffer).to.equal(undefined);
             data = {key: undefined};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
-
+            expect(buffer).to.equal(undefined);
             data = {key: 57};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
-
+            expect(buffer).to.equal(undefined);
             data = {key: []};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
-
+            expect(buffer).to.equal(undefined);
             data = {key: {}};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
-
+            expect(buffer).to.equal(undefined);
             data = {key: new Date()};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
     });
@@ -342,7 +336,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {since: -1483979894237};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input wrong segment range', function() {
@@ -353,7 +347,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {since: 1483979894237};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input too big number', function() {
@@ -364,7 +358,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {since: '18446744073709551616'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input data of wrong type', function() {
@@ -377,27 +371,27 @@ describe('Client for Exonum blockchain platform: ', function() {
 
             data = {since:  true};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {since:  null};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {since:  undefined};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {since:  []};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {since:  {}};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {since:  new Date()};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
     });
@@ -437,7 +431,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {active: true};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input data of wrong type', function() {
@@ -450,31 +444,31 @@ describe('Client for Exonum blockchain platform: ', function() {
 
             data = {active: 'Hello world'};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0]);
+            expect(buffer).to.equal(undefined);
 
             data = {active: null};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0]);
+            expect(buffer).to.equal(undefined);
 
             data = {active: undefined};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0]);
+            expect(buffer).to.equal(undefined);
 
             data = {active: 57};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0]);
+            expect(buffer).to.equal(undefined);
 
             data = {active: []};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0]);
+            expect(buffer).to.equal(undefined);
 
             data = {active: {}};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0]);
+            expect(buffer).to.equal(undefined);
 
             data = {active: new Date()};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0]);
+            expect(buffer).to.equal(undefined);
         });
 
     });
@@ -503,7 +497,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {text: 'Hello world'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input data of wrong type', function() {
@@ -516,31 +510,31 @@ describe('Client for Exonum blockchain platform: ', function() {
 
             data = {text: true};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {text: null};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {text: undefined};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {text: 57};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {text: []};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {text: {}};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {text: new Date()};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
     });
@@ -602,7 +596,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {balance: 120};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input too big number', function() {
@@ -613,7 +607,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {balance: 130};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input too small number', function() {
@@ -624,7 +618,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {balance: -130};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input data of wrong type', function() {
@@ -637,27 +631,27 @@ describe('Client for Exonum blockchain platform: ', function() {
 
             data = {balance:  true};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  null};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  undefined};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  []};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  {}};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  new Date()};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0]);
+            expect(buffer).to.equal(undefined);
         });
 
     });
@@ -719,7 +713,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {balance: 30767};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input too big number', function() {
@@ -730,7 +724,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {balance: 32769};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input too small number', function() {
@@ -741,7 +735,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {balance: -32770};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input data of wrong type', function() {
@@ -754,27 +748,27 @@ describe('Client for Exonum blockchain platform: ', function() {
 
             data = {balance:  true};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  null};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  undefined};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  []};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  {}};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  new Date()};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
     });
@@ -836,7 +830,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {balance: 613228};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input too big number', function() {
@@ -847,7 +841,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {balance: 2147483649};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input too small number', function() {
@@ -858,7 +852,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {balance: -2147483650};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input data of wrong type', function() {
@@ -871,27 +865,27 @@ describe('Client for Exonum blockchain platform: ', function() {
 
             data = {balance:  true};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  null};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  undefined};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  []};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  {}};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  new Date()};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
     });
@@ -964,7 +958,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {balance: 613228};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input too big number', function() {
@@ -975,7 +969,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {balance: '9223372036854775808'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input too small number', function() {
@@ -986,7 +980,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {balance: '-9223372036854775809'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input data of wrong type', function() {
@@ -999,27 +993,27 @@ describe('Client for Exonum blockchain platform: ', function() {
 
             data = {balance:  true};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  null};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  undefined};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  []};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  {}};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  new Date()};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
     });
@@ -1059,7 +1053,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {balance: 230};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input negative number', function() {
@@ -1070,7 +1064,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {balance: -1};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input unsafe number', function() {
@@ -1081,7 +1075,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {balance: 256};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input data of wrong type', function() {
@@ -1094,27 +1088,27 @@ describe('Client for Exonum blockchain platform: ', function() {
 
             data = {balance:  true};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  null};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  undefined};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  []};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  {}};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  new Date()};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0]);
+            expect(buffer).to.equal(undefined);
         });
 
     });
@@ -1154,7 +1148,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {balance: 60535};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input negative number', function() {
@@ -1165,7 +1159,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {balance: -1};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input unsafe number', function() {
@@ -1176,7 +1170,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {balance: 65536};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input data of wrong type', function() {
@@ -1189,27 +1183,27 @@ describe('Client for Exonum blockchain platform: ', function() {
 
             data = {balance:  true};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  null};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  undefined};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  []};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  {}};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  new Date()};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
     });
@@ -1249,7 +1243,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {balance: 613228};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input negative number', function() {
@@ -1260,7 +1254,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {balance: -1};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input unsafe number', function() {
@@ -1271,7 +1265,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {balance: 4294967296};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input data of wrong type', function() {
@@ -1284,27 +1278,27 @@ describe('Client for Exonum blockchain platform: ', function() {
 
             data = {balance:  true};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  null};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  undefined};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  []};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  {}};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  new Date()};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
     });
@@ -1355,7 +1349,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {balance: 613228};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input negative number', function() {
@@ -1366,7 +1360,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {balance: -613228};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input too big number', function() {
@@ -1377,7 +1371,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {balance: '18446744073709551616'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
         it('Input data of wrong type', function() {
@@ -1390,27 +1384,27 @@ describe('Client for Exonum blockchain platform: ', function() {
 
             data = {balance:  true};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  null};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
-            data = {balance:  undefined};
+            data = {balance: undefined};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  []};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  {}};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
 
             data = {balance:  new Date()};
             buffer = Type.serialize(data);
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
     });
@@ -1563,7 +1557,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var walletData = {fake: 123};
             var buffer = Wallet.serialize(walletData);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            expect(buffer).to.equal(undefined);
         });
 
     });
@@ -1687,6 +1681,8 @@ describe('Client for Exonum blockchain platform: ', function() {
 
             expect(signature).to.equal('9e0f0122c2963b76ba10842951cd1b67c8197b3f964c34f8b667aa655a7b4a8d844d567698d99de30590fc5002ddb4b9b5927ec05cd73572b972cb6b034cd40b');
         });
+
+        // TODO Get signature of the data of NewMessage type
 
         it('Input data parameter of wrong type', function() {
             var secretKey = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
