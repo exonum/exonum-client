@@ -1461,33 +1461,32 @@ var ThinClient = (function() {
                 return false;
             }
 
-            // if (precommit.body.validator >= validatorsTotalNumber) {
-            //     console.error('Wrong index passed. Validator does not exist.');
-            //     return false;
-            // }
+            if (precommit.body.validator >= validatorsTotalNumber) {
+                console.error('Wrong index passed. Validator does not exist.');
+                return false;
+            }
 
-            // if (uniqueValidators.indexOf(precommit.body.validator) === -1) {
-            //     uniqueValidators.push(precommit.body.validator);
-            // }
+            if (uniqueValidators.indexOf(precommit.body.validator) === -1) {
+                uniqueValidators.push(precommit.body.validator);
+            }
 
-            // if (precommit.body.height !== data.block.height) {
-            //     console.error('Wrong height of block in precommit.');
-            //     return false;
-            // } else if (precommit.body.block_hash !== blockHash) {
-            //     console.error('Wrong hash of block in precommit.');
-            //     return false;
-            // }
-            //
-            // if (typeof round === 'undefined') {
-            //     round = precommit.body.round;
-            // } else if (precommit.body.round !== round) {
-            //     console.error('Wrong round in precommit.');
-            //     return false;
-            // }
+            if (precommit.body.height !== data.block.height) {
+                console.error('Wrong height of block in precommit.');
+                return false;
+            } else if (precommit.body.block_hash !== blockHash) {
+                console.error('Wrong hash of block in precommit.');
+                return false;
+            }
+
+            if (typeof round === 'undefined') {
+                round = precommit.body.round;
+            } else if (precommit.body.round !== round) {
+                console.error('Wrong round in precommit.');
+                return false;
+            }
 
             var buffer = Precommit.serialize(precommit.body);
-            // var publicKey = CONFIG.validators[precommit.body.validator].publicKey;
-            var publicKey = '5dc6af58396d5fb9cfbfbb1ea0b8d7d535d20884eb983ced22b1206ef021c1f1';
+            var publicKey = CONFIG.validators[precommit.body.validator].publicKey;
 
             if (!verifySignature(buffer, precommit.signature, publicKey)) {
                 console.error('Wrong signature of precommit.');
@@ -1495,9 +1494,10 @@ var ThinClient = (function() {
             }
         }
 
-        // if (uniqueValidators.length <= validatorsTotalNumber * 2 / 3) {
-        //     return false;
-        // }
+        if (uniqueValidators.length <= validatorsTotalNumber * 2 / 3) {
+            console.error('Not enough precommits from unique validators.');
+            return false;
+        }
 
         return true;
     }
