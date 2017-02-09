@@ -1688,7 +1688,39 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(signature).to.equal('9e0f0122c2963b76ba10842951cd1b67c8197b3f964c34f8b667aa655a7b4a8d844d567698d99de30590fc5002ddb4b9b5927ec05cd73572b972cb6b034cd40b');
         });
 
-        it('Input secretKey of wrong length', function() {
+        it('Input data parameter of wrong type', function() {
+            var secretKey = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
+            var User = Exonum.newType({
+                size: 16,
+                fields: {
+                    firstName: {type: Exonum.String, size: 8, from: 0, to: 8},
+                    lastName: {type: Exonum.String, size: 8, from: 8, to: 16}
+                }
+            });
+            var userData = {
+                sum: 500,
+                hash: 'Hello world'
+            };
+            var signature = Exonum.sign(userData, User, secretKey);
+
+            expect(signature).to.equal(undefined);
+        });
+
+        it('Input type parameter of wrong type', function() {
+            var secretKey = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
+            var User = {
+                alpha: 5
+            };
+            var userData = {
+                firstName: 'John',
+                lastName: 'Doe'
+            };
+            var signature = Exonum.sign(userData, User, secretKey);
+
+            expect(signature).to.equal(undefined);
+        });
+
+        it('Input secretKey parameter of wrong length', function() {
             var secretKey = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C';
             var User = Exonum.newType({
                 size: 16,
@@ -1707,7 +1739,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(signature).to.equal(undefined);
         });
 
-        it('Input invalid secretKey', function() {
+        it('Input invalid secretKey parameter', function() {
             var secretKey = '6752ZE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
             var User = Exonum.newType({
                 size: 16,
@@ -1726,7 +1758,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(signature).to.equal(undefined);
         });
 
-        it('Input secretKey of wrong type', function() {
+        it('Input secretKey parameter of wrong type', function() {
             var User = Exonum.newType({
                 size: 16,
                 fields: {
@@ -1799,9 +1831,9 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(Exonum.verifySignature(buffer, signature, publicKey)).to.equal(true);
         });
 
-        it('Input publicKey of wrong length', function() {
-            var publicKey = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C';
-            var signature = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C';
+        it('Input data parameter of wrong type', function() {
+            var publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
+            var signature = '9e0f0122c2963b76ba10842951cd1b67c8197b3f964c34f8b667aa655a7b4a8d844d567698d99de30590fc5002ddb4b9b5927ec05cd73572b972cb6b034cd40b';
             var User = Exonum.newType({
                 size: 16,
                 fields: {
@@ -1810,64 +1842,28 @@ describe('Client for Exonum blockchain platform: ', function() {
                 }
             });
             var userData = {
-                firstName: 'John',
-                lastName: 'Doe'
+                sum: 500,
+                hash: 'Hello world'
             };
-            var buffer = User.serialize(userData);
 
-            expect(Exonum.verifySignature(buffer, signature, publicKey)).to.equal(undefined);
+            expect(Exonum.verifySignature(userData, User, signature, publicKey)).to.equal(undefined);
         });
 
-        it('Input invalid publicKey', function() {
-            var publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C3Z';
-            var signature = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C';
-            var User = Exonum.newType({
-                size: 16,
-                fields: {
-                    firstName: {type: Exonum.String, size: 8, from: 0, to: 8},
-                    lastName: {type: Exonum.String, size: 8, from: 8, to: 16}
-                }
-            });
+        it('Input type parameter of wrong type', function() {
+            var publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
+            var signature = '9e0f0122c2963b76ba10842951cd1b67c8197b3f964c34f8b667aa655a7b4a8d844d567698d99de30590fc5002ddb4b9b5927ec05cd73572b972cb6b034cd40b';
+            var User = {
+                alpha: 3
+            };
             var userData = {
-                firstName: 'John',
-                lastName: 'Doe'
+                sum: 500,
+                hash: 'Hello world'
             };
-            var buffer = User.serialize(userData);
 
-            expect(Exonum.verifySignature(buffer, signature, publicKey)).to.equal(undefined);
+            expect(Exonum.verifySignature(userData, User, signature, publicKey)).to.equal(undefined);
         });
 
-        it('Input publicKey of wrong type', function() {
-            var signature = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C';
-            var User = Exonum.newType({
-                size: 16,
-                fields: {
-                    firstName: {type: Exonum.String, size: 8, from: 0, to: 8},
-                    lastName: {type: Exonum.String, size: 8, from: 8, to: 16}
-                }
-            });
-            var userData = {
-                firstName: 'John',
-                lastName: 'Doe'
-            };
-            var buffer = User.serialize(userData);
-
-            expect(Exonum.verifySignature(buffer, signature, true)).to.equal(undefined);
-
-            expect(Exonum.verifySignature(buffer, signature, null)).to.equal(undefined);
-
-            expect(Exonum.verifySignature(buffer, signature, undefined)).to.equal(undefined);
-
-            expect(Exonum.verifySignature(buffer, signature, [])).to.equal(undefined);
-
-            expect(Exonum.verifySignature(buffer, signature, {})).to.equal(undefined);
-
-            expect(Exonum.verifySignature(buffer, signature, 51)).to.equal(undefined);
-
-            expect(Exonum.verifySignature(buffer, signature, new Date())).to.equal(undefined);
-        });
-
-        it('Input signature of wrong length', function() {
+        it('Input signature parameter of wrong length', function() {
             var publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
             var signature = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
             var User = Exonum.newType({
@@ -1886,7 +1882,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(Exonum.verifySignature(buffer, signature, publicKey)).to.equal(undefined);
         });
 
-        it('Input invalid signature', function() {
+        it('Input invalid signature parameter', function() {
             var publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
             var signature = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7Z';
             var User = Exonum.newType({
@@ -1905,7 +1901,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(Exonum.verifySignature(buffer, signature, publicKey)).to.equal(undefined);
         });
 
-        it('Input signature of wrong type', function() {
+        it('Input signature parameter of wrong type', function() {
             var publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
             var User = Exonum.newType({
                 size: 16,
@@ -1933,6 +1929,74 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(Exonum.verifySignature(buffer, 51, publicKey)).to.equal(undefined);
 
             expect(Exonum.verifySignature(buffer, new Date(), publicKey)).to.equal(undefined);
+        });
+
+        it('Input publicKey parameter of wrong length', function() {
+            var publicKey = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C';
+            var signature = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C';
+            var User = Exonum.newType({
+                size: 16,
+                fields: {
+                    firstName: {type: Exonum.String, size: 8, from: 0, to: 8},
+                    lastName: {type: Exonum.String, size: 8, from: 8, to: 16}
+                }
+            });
+            var userData = {
+                firstName: 'John',
+                lastName: 'Doe'
+            };
+            var buffer = User.serialize(userData);
+
+            expect(Exonum.verifySignature(buffer, signature, publicKey)).to.equal(undefined);
+        });
+
+        it('Input invalid publicKey parameter', function() {
+            var publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C3Z';
+            var signature = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C';
+            var User = Exonum.newType({
+                size: 16,
+                fields: {
+                    firstName: {type: Exonum.String, size: 8, from: 0, to: 8},
+                    lastName: {type: Exonum.String, size: 8, from: 8, to: 16}
+                }
+            });
+            var userData = {
+                firstName: 'John',
+                lastName: 'Doe'
+            };
+            var buffer = User.serialize(userData);
+
+            expect(Exonum.verifySignature(buffer, signature, publicKey)).to.equal(undefined);
+        });
+
+        it('Input publicKey parameter of wrong type', function() {
+            var signature = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C';
+            var User = Exonum.newType({
+                size: 16,
+                fields: {
+                    firstName: {type: Exonum.String, size: 8, from: 0, to: 8},
+                    lastName: {type: Exonum.String, size: 8, from: 8, to: 16}
+                }
+            });
+            var userData = {
+                firstName: 'John',
+                lastName: 'Doe'
+            };
+            var buffer = User.serialize(userData);
+
+            expect(Exonum.verifySignature(buffer, signature, true)).to.equal(undefined);
+
+            expect(Exonum.verifySignature(buffer, signature, null)).to.equal(undefined);
+
+            expect(Exonum.verifySignature(buffer, signature, undefined)).to.equal(undefined);
+
+            expect(Exonum.verifySignature(buffer, signature, [])).to.equal(undefined);
+
+            expect(Exonum.verifySignature(buffer, signature, {})).to.equal(undefined);
+
+            expect(Exonum.verifySignature(buffer, signature, 51)).to.equal(undefined);
+
+            expect(Exonum.verifySignature(buffer, signature, new Date())).to.equal(undefined);
         });
 
     });

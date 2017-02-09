@@ -845,7 +845,16 @@ var ThinClient = (function() {
         var signature;
 
         if (typeof secretKey !== 'undefined') {
-            buffer = getBuffer(data, type);
+            if (type instanceof NewType) {
+                buffer = getBuffer(data, type);
+                if (buffer === null) {
+                    console.error('Invalid data parameter.');
+                    return;
+                }
+            } else {
+                console.error('Invalid type parameter.');
+                return;
+            }
         } else {
             if (!validateBytesArray(data)) {
                 console.error('Invalid data parameter.');
@@ -881,7 +890,16 @@ var ThinClient = (function() {
         var publicKey = publicKey;
 
         if (typeof publicKey !== 'undefined') {
+            if (!(type instanceof NewType)) {
+                console.error('Invalid type parameter.');
+                return;
+            }
+
             buffer = getBuffer(data, type);
+            if (buffer === null) {
+                console.error('Invalid data parameter.');
+                return;
+            }
         } else {
             if (!validateBytesArray(data)) {
                 console.error('Invalid data parameter.');
