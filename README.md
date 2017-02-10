@@ -61,10 +61,10 @@ Accept two combinations of an arguments:
 
 The `data` is a custom data in JSON format.
 
-The `type` is a format of data in a special format.
+The `type` is a description of type in the one of the internal data formats: `newType` or `newMessage`.
 
 ```javascript
-var User = Exonum.newType({
+var CustomType = Exonum.newType({
     size: 16,
     fields: {
         id: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true},
@@ -72,9 +72,25 @@ var User = Exonum.newType({
     }
 });
 
-var userData = {id: 1, name: 'John Doe'};
+var data = {id: 1, name: 'John Doe'};
 
-var hash = Exonum.hash(userData, User);
+var hash = Exonum.hash(data, CustomType);
+```
+
+```javascript
+var CustomMessage = Exonum.newMessage({
+    size: 16,
+    service_id: 8,
+    message_type: 12,
+    fields: {
+        id: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true},
+        name: {type: Exonum.String, size: 8, from: 8, to: 16}
+    }
+});
+
+var data = {id: 1, name: 'John Doe'};
+
+var hash = Exonum.hash(data, CustomMessage);
 ```
 
 ##### hash(buffer)
@@ -97,12 +113,12 @@ Accept two combinations of an arguments:
 
 The `data` is a custom data in JSON format.
 
-The `type` is a format of data in a special format.
+The `type` is a description of type in the one of the internal data formats: `newType` or `newMessage`.
 
 The `secretKey` is a 64 bit secret key.
 
 ```javascript
-var User = Exonum.newType({
+var CustomType = Exonum.newType({
     size: 16,
     fields: {
         id: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true},
@@ -110,11 +126,29 @@ var User = Exonum.newType({
     }
 });
 
-var userData = {id: 1, name: 'John Doe'};
+var data = {id: 1, name: 'John Doe'};
 
 var secretKey = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36';
 
-var signature = Exonum.sign(userData, User, secretKey);
+var signature = Exonum.sign(CustomType, data, secretKey);
+```
+
+```javascript
+var CustomMessage = Exonum.newMessage({
+    size: 16,
+    service_id: 8,
+    message_type: 12,
+    fields: {
+        id: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true},
+        name: {type: Exonum.String, size: 8, from: 8, to: 16}
+    }
+});
+
+var data = {id: 1, name: 'John Doe'};
+
+var secretKey = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36';
+
+var signature = Exonum.sign(data, CustomMessage, secretKey);
 ```
 
 ##### sign(buffer, secretKey)
@@ -141,14 +175,14 @@ Accept two combinations of an arguments:
 
 The `data` is a custom data in JSON format.
 
-The `type` is a format of data in a special format.
+The `type` is a description of type in the one of the internal data formats: `newType` or `newMessage`.
 
 The `signature` is a 64 bit hexadecimal string.
 
 The `publicKey` is a 32 bit secret key.
 
 ```javascript
-var User = Exonum.newType({
+var CustomType = Exonum.newType({
     size: 16,
     fields: {
         id: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true},
@@ -156,13 +190,33 @@ var User = Exonum.newType({
     }
 });
 
-var userData = {id: 1, name: 'John Doe'};
+var data = {id: 1, name: 'John Doe'};
 
 var signature = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36';
 
 var publicKey = '280a704efafae9410d7b07140bb130e4995eeb381ba90939b4eaefcaf740ca25';
 
-Exonum.verifySignature(userData, User, signature, publicKey);
+Exonum.verifySignature(data, CustomType, signature, publicKey);
+```
+
+```javascript
+var CustomMessage = Exonum.newMessage({
+    size: 16,
+    service_id: 8,
+    message_type: 12,
+    fields: {
+        id: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true},
+        name: {type: Exonum.String, size: 8, from: 8, to: 16}
+    }
+});
+
+var data = {id: 1, name: 'John Doe'};
+
+var signature = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36';
+
+var publicKey = '280a704efafae9410d7b07140bb130e4995eeb381ba90939b4eaefcaf740ca25';
+
+Exonum.verifySignature(data, CustomMessage, signature, publicKey);
 ```
 
 ##### verifySignature(buffer, signature, publicKey)
@@ -185,7 +239,9 @@ Exonum.verifySignature(buffer, signature, publicKey);
 
 ### newType
 
-This methods create custom data format based on built-in formats and/or other custom formats:
+Used to create describe custom data format.
+
+Allowed to contain fields of built-in types (such as String, Hash, U64 etc.) and fields on `newType` type.
 
 Receive a declarative format of the data.
 
@@ -193,9 +249,9 @@ Returns an object of format type.
 
 ##### newType.serialize(data)
 
-Can be used to retrieve representation of data of type newType as array of 8-bit integers.
+Can be used to retrieve representation of data of type `newType` as array of 8-bit integers.
 
-Lets declare simple type `User`:
+Lets declare simple type `User` with field `id` of Integer type and field `name` of String type:
 
 ```javascript
 var User = Exonum.newType({
@@ -242,11 +298,23 @@ var buffer = Payment.serialize(paymentData);
 
 ### newMessage
 
-TODO
+Used to create describe custom data format.
+
+Allowed to contain fields of built-in types (such as String, Hash, U64 etc.) and fields on `newMessage` type.
+
+This method is designed to represent messages. So method `newMessage` also contains header with fields that are specific for messages only.
+
+Receive a declarative format of the data.
+
+Returns an object of format type.
+
+##### newMessage.serialize(data)
+
+Can be used to retrieve representation of data of type `newMessage` as array of 8-bit integers.
 
 ### merkleProof(rootHash, count, proofNode, range, type)
 
-This methods can check proof of Merkle tree. 
+This methods can check proof of Merkle tree.
 
 The `rootHash` is a hash of root node as hexadecimal string.
 
