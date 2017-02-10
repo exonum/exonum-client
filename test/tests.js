@@ -1567,7 +1567,7 @@ describe('Client for Exonum blockchain platform: ', function() {
      */
     describe('Get SHA256 hash:', function() {
 
-        it('Get hash of the data of type Wallet', function() {
+        it('Get hash of the data of NewType type', function() {
             var Wallet = Exonum.newType({
                 size: 80,
                 fields: {
@@ -1586,6 +1586,29 @@ describe('Client for Exonum blockchain platform: ', function() {
             var hash = Exonum.hash(walletData, Wallet);
 
             expect(hash).to.equal('7ba0c9544176ce7e079da9c7869fc91dca2cfa4b8dc1c6098f74d96b75542e12');
+        });
+
+        it('Get hash of the data of NewMessage type', function() {
+            var CustomMessage = Exonum.newMessage({
+                size: 18,
+                service_id: 1,
+                message_type: 2,
+                fields: {
+                    name: {type: Exonum.String, size: 8, from: 0, to: 8},
+                    age: {type: Exonum.U8, size: 1, from: 8, to: 9, fixed: true},
+                    balance: {type: Exonum.U64, size: 8, from: 9, to: 17, fixed: true, littleEndian: true},
+                    status: {type: Exonum.Bool, size: 1, from: 17, to: 18, fixed: true}
+                }
+            });
+            var messageData = {
+                name: 'John Doe',
+                age: 34,
+                balance: 173008,
+                status: true
+            };
+            var hash = Exonum.hash(messageData, CustomMessage);
+
+            expect(hash).to.equal('5b1e9cde2d62940d44f5b07bfcaf6802b1b794f16ba353757bdbabfcc0227aa6');
         });
 
         it('Get hash of the array of 8-bit integers', function() {
@@ -1610,7 +1633,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(hash).to.equal('7ba0c9544176ce7e079da9c7869fc91dca2cfa4b8dc1c6098f74d96b75542e12');
         });
 
-        it('Insert data of wrong type', function() {
+        it('Insert data of wrong NewType type', function() {
             var Wallet = Exonum.newType({
                 size: 80,
                 fields: {
@@ -1638,6 +1661,36 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(hash).to.equal(undefined);
         });
 
+        it('Insert data of wrong NewMessage type', function() {
+            var CustomMessage = Exonum.newMessage({
+                size: 18,
+                service_id: 1,
+                message_type: 2,
+                fields: {
+                    name: {type: Exonum.String, size: 8, from: 0, to: 8},
+                    age: {type: Exonum.U8, size: 1, from: 8, to: 9, fixed: true},
+                    balance: {type: Exonum.U64, size: 8, from: 9, to: 17, fixed: true, littleEndian: true},
+                    status: {type: Exonum.Bool, size: 1, from: 17, to: 18, fixed: true}
+                }
+            });
+            var hash;
+
+            hash = Exonum.hash(undefined, CustomMessage);
+            expect(hash).to.equal(undefined);
+
+            hash = Exonum.hash(false, CustomMessage);
+            expect(hash).to.equal(undefined);
+
+            hash = Exonum.hash(42, CustomMessage);
+            expect(hash).to.equal(undefined);
+
+            hash = Exonum.hash(new Date(), CustomMessage);
+            expect(hash).to.equal(undefined);
+
+            hash = Exonum.hash([], CustomMessage);
+            expect(hash).to.equal(undefined);
+        });
+
     });
 
     /*
@@ -1645,7 +1698,7 @@ describe('Client for Exonum blockchain platform: ', function() {
      */
     describe('Get ED25519 signature:', function() {
 
-        it('Get signature of the data of type User', function() {
+        it('Get signature of the data of NewType type', function() {
             var secretKey = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
             var User = Exonum.newType({
                 size: 16,
@@ -1661,6 +1714,30 @@ describe('Client for Exonum blockchain platform: ', function() {
             var signature = Exonum.sign(userData, User, secretKey);
 
             expect(signature).to.equal('9e0f0122c2963b76ba10842951cd1b67c8197b3f964c34f8b667aa655a7b4a8d844d567698d99de30590fc5002ddb4b9b5927ec05cd73572b972cb6b034cd40b');
+        });
+
+        it('Get signature of the data of NewMessage type', function() {
+            var secretKey = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
+            var CustomMessage = Exonum.newMessage({
+                size: 18,
+                service_id: 1,
+                message_type: 2,
+                fields: {
+                    name: {type: Exonum.String, size: 8, from: 0, to: 8},
+                    age: {type: Exonum.U8, size: 1, from: 8, to: 9, fixed: true},
+                    balance: {type: Exonum.U64, size: 8, from: 9, to: 17, fixed: true, littleEndian: true},
+                    status: {type: Exonum.Bool, size: 1, from: 17, to: 18, fixed: true}
+                }
+            });
+            var messageData = {
+                name: 'John Doe',
+                age: 34,
+                balance: 173008,
+                status: true
+            };
+            var signature = Exonum.sign(messageData, CustomMessage, secretKey);
+
+            expect(signature).to.equal('24a5224702d670c95a78ef1f753c9e6e698da5b2a2c52dcc51b5bf9e556e717fb763b1a5e78bd39e5369a139ab68ae50dd19a129038e8da3af30985f09549500');
         });
 
         it('Get signature of the array of 8-bit integers', function() {
@@ -1682,9 +1759,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(signature).to.equal('9e0f0122c2963b76ba10842951cd1b67c8197b3f964c34f8b667aa655a7b4a8d844d567698d99de30590fc5002ddb4b9b5927ec05cd73572b972cb6b034cd40b');
         });
 
-        // TODO Get signature of the data of NewMessage type
-
-        it('Input data parameter of wrong type', function() {
+        it('Input data parameter of wrong NewType type', function() {
             var secretKey = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
             var User = Exonum.newType({
                 size: 16,
@@ -1698,6 +1773,28 @@ describe('Client for Exonum blockchain platform: ', function() {
                 hash: 'Hello world'
             };
             var signature = Exonum.sign(userData, User, secretKey);
+
+            expect(signature).to.equal(undefined);
+        });
+
+        it('Input data parameter of wrong NewMessage type', function() {
+            var secretKey = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
+            var CustomMessage = Exonum.newMessage({
+                size: 18,
+                service_id: 1,
+                message_type: 2,
+                fields: {
+                    name: {type: Exonum.String, size: 8, from: 0, to: 8},
+                    age: {type: Exonum.U8, size: 1, from: 8, to: 9, fixed: true},
+                    balance: {type: Exonum.U64, size: 8, from: 9, to: 17, fixed: true, littleEndian: true},
+                    status: {type: Exonum.Bool, size: 1, from: 17, to: 18, fixed: true}
+                }
+            });
+            var someData = {
+                sum: 500,
+                hash: 'Hello world'
+            };
+            var signature = Exonum.sign(someData, CustomMessage, secretKey);
 
             expect(signature).to.equal(undefined);
         });
@@ -1790,7 +1887,7 @@ describe('Client for Exonum blockchain platform: ', function() {
      */
     describe('Verify signature:', function() {
 
-        it('Verify signature of the data of type User', function() {
+        it('Verify signature of the data of NewType type', function() {
             var publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
             var signature = '9e0f0122c2963b76ba10842951cd1b67c8197b3f964c34f8b667aa655a7b4a8d844d567698d99de30590fc5002ddb4b9b5927ec05cd73572b972cb6b034cd40b';
             var User = Exonum.newType({
@@ -1806,6 +1903,30 @@ describe('Client for Exonum blockchain platform: ', function() {
             };
 
             expect(Exonum.verifySignature(userData, User, signature, publicKey)).to.equal(true);
+        });
+
+        it('Verify signature of the data of NewMessage type', function() {
+            var publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
+            var signature = '24a5224702d670c95a78ef1f753c9e6e698da5b2a2c52dcc51b5bf9e556e717fb763b1a5e78bd39e5369a139ab68ae50dd19a129038e8da3af30985f09549500';
+            var CustomMessage = Exonum.newMessage({
+                size: 18,
+                service_id: 1,
+                message_type: 2,
+                fields: {
+                    name: {type: Exonum.String, size: 8, from: 0, to: 8},
+                    age: {type: Exonum.U8, size: 1, from: 8, to: 9, fixed: true},
+                    balance: {type: Exonum.U64, size: 8, from: 9, to: 17, fixed: true, littleEndian: true},
+                    status: {type: Exonum.Bool, size: 1, from: 17, to: 18, fixed: true}
+                }
+            });
+            var messageData = {
+                name: 'John Doe',
+                age: 34,
+                balance: 173008,
+                status: true
+            };
+
+            expect(Exonum.verifySignature(messageData, CustomMessage, signature, publicKey)).to.equal(true);
         });
 
         it('Verify signature of the array of 8-bit integers', function() {
@@ -1827,7 +1948,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(Exonum.verifySignature(buffer, signature, publicKey)).to.equal(true);
         });
 
-        it('Input data parameter of wrong type', function() {
+        it('Input data parameter of wrong NewType type', function() {
             var publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
             var signature = '9e0f0122c2963b76ba10842951cd1b67c8197b3f964c34f8b667aa655a7b4a8d844d567698d99de30590fc5002ddb4b9b5927ec05cd73572b972cb6b034cd40b';
             var User = Exonum.newType({
@@ -1843,6 +1964,28 @@ describe('Client for Exonum blockchain platform: ', function() {
             };
 
             expect(Exonum.verifySignature(userData, User, signature, publicKey)).to.equal(undefined);
+        });
+
+        it('Input data parameter of wrong NewMessage type', function() {
+            var publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
+            var signature = '24a5224702d670c95a78ef1f753c9e6e698da5b2a2c52dcc51b5bf9e556e717fb763b1a5e78bd39e5369a139ab68ae50dd19a129038e8da3af30985f09549500';
+            var CustomMessage = Exonum.newMessage({
+                size: 18,
+                service_id: 1,
+                message_type: 2,
+                fields: {
+                    name: {type: Exonum.String, size: 8, from: 0, to: 8},
+                    age: {type: Exonum.U8, size: 1, from: 8, to: 9, fixed: true},
+                    balance: {type: Exonum.U64, size: 8, from: 9, to: 17, fixed: true, littleEndian: true},
+                    status: {type: Exonum.Bool, size: 1, from: 17, to: 18, fixed: true}
+                }
+            });
+            var someData = {
+                sum: 500,
+                hash: 'Hello world'
+            };
+
+            expect(Exonum.verifySignature(someData, CustomMessage, signature, publicKey)).to.equal(undefined);
         });
 
         it('Input type parameter of wrong type', function() {

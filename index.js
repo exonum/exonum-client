@@ -126,7 +126,10 @@ var ThinClient = (function() {
         });
 
         // serialize and append message body
-        serialize(buffer, MessageHead.size, data, this);
+        buffer = serialize(buffer, MessageHead.size, data, this);
+        if (typeof buffer === 'undefined') {
+            return;
+        }
 
         // calculate payload and insert it into buffer
         U32(buffer.length + CONST.SIGNATURE_LENGTH, buffer, MessageHead.fields.payload.from, MessageHead.fields.payload.to, MessageHead.fields.payload.littleEndian);
@@ -491,9 +494,6 @@ var ThinClient = (function() {
             } else if (val.gt(max)) {
                 console.error('Number should be less or equal to ' + max + '.');
                 return false;
-            } else if ((to - from) !== length) {
-                console.error('Number segment is of wrong length. ' + length + ' bytes long is required to store transmitted value.');
-                return false;
             }
 
             return val;
@@ -603,8 +603,7 @@ var ThinClient = (function() {
 
             if (typeof fieldType === 'undefined') {
                 console.error(fieldName + ' field was not found in configuration of type.');
-                buffer = undefined;
-                return buffer;
+                return;
             }
 
             var fieldData = data[fieldName];
@@ -620,9 +619,9 @@ var ThinClient = (function() {
                     U32(buffer.length - end, buffer, from + 4, from + 8);
                 }
             } else {
-                if (typeof fieldType.type(fieldData, buffer, from, shift + fieldType.to, fieldType.littleEndian) === 'undefined') {
-                    buffer = undefined;
-                    return buffer;
+                buffer = fieldType.type(fieldData, buffer, from, shift + fieldType.to, fieldType.littleEndian);
+                if (typeof buffer === 'undefined') {
+                    return;
                 }
             }
         }
@@ -869,6 +868,18 @@ var ThinClient = (function() {
             if (isObject(data)) {
                 buffer = type.serialize(data);
                 if (typeof buffer === 'undefined') {
+                    console.error('Invalid data parameter. Instance of NewType is expected.');
+                    return;
+                }
+            } else {
+                console.error('Wrong type of data. Should be object.');
+                return;
+            }
+        } else if (type instanceof NewMessage) {
+            if (isObject(data)) {
+                buffer = type.serialize(data);
+                if (typeof buffer === 'undefined') {
+                    console.error('Invalid data parameter. Instance of NewMessage is expected.');
                     return;
                 }
             } else {
@@ -880,7 +891,7 @@ var ThinClient = (function() {
         } else if (Array.isArray(data)) {
             buffer = new Uint8Array(data);
         } else {
-            console.error('Wrong type of data. Should be array of 8-bit integers.');
+            console.error('Invalid type parameter.');
             return;
         }
 
@@ -890,7 +901,7 @@ var ThinClient = (function() {
     /**
      * Get ED25519 signature
      * Method with overloading. Accept two combinations of arguments:
-     * 1) {Object} data, {NewType} type, {String} secretKey
+     * 1) {Object} data, {NewType || NewMessage} type, {String} secretKey
      * 2) {Array} buffer, {String} secretKey
      * @return {String}
      */
@@ -903,11 +914,15 @@ var ThinClient = (function() {
             if (type instanceof NewType) {
                 buffer = type.serialize(data);
                 if (typeof buffer === 'undefined') {
-                    console.error('Invalid data parameter.');
+                    console.error('Invalid data parameter. Instance of NewType is expected.');
                     return;
                 }
             } else if (type instanceof NewMessage) {
-                // TODO
+                buffer = type.serialize(data);
+                if (typeof buffer === 'undefined') {
+                    console.error('Invalid data parameter. Instance of NewMessage is expected.');
+                    return;
+                }
             } else {
                 console.error('Invalid type parameter.');
                 return;
@@ -937,7 +952,7 @@ var ThinClient = (function() {
     /**
      * Verifies ED25519 signature
      * Method with overloading. Accept two combinations of arguments:
-     * 1) {Object} data, {NewType} type, {String} signature, {String} publicKey
+     * 1) {Object} data, {NewType || NewMessage} type, {String} signature, {String} publicKey
      * 2) {Array} buffer, {String} signature, {String} publicKey
      * @return {Boolean}
      */
@@ -947,14 +962,20 @@ var ThinClient = (function() {
         var publicKey = publicKey;
 
         if (typeof publicKey !== 'undefined') {
-            if (!(type instanceof NewType)) {
+            if (type instanceof NewType) {
+                buffer = type.serialize(data);
+                if (typeof buffer === 'undefined') {
+                    console.error('Invalid data parameter. Instance of NewType is expected.');
+                    return;
+                }
+            } else if (type instanceof NewMessage) {
+                buffer = type.serialize(data);
+                if (typeof buffer === 'undefined') {
+                    console.error('Invalid data parameter. Instance of NewMessage is expected.');
+                    return;
+                }
+            } else {
                 console.error('Invalid type parameter.');
-                return;
-            }
-
-            buffer = type.serialize(data);
-            if (typeof buffer === 'undefined') {
-                console.error('Invalid data parameter.');
                 return;
             }
         } else {
@@ -1560,10 +1581,9 @@ var ThinClient = (function() {
                 return false;
             }
 
-            var buffer = Precommit.serialize(precommit.body);
             var publicKey = CONFIG.validators[precommit.body.validator].publicKey;
 
-            if (!verifySignature(buffer, precommit.signature, publicKey)) {
+            if (!verifySignature(precommit.body, Precommit, precommit.signature, publicKey)) {
                 console.error('Wrong signature of precommit.');
                 return false;
             }
@@ -1581,6 +1601,7 @@ var ThinClient = (function() {
 
         // API methods
         newType: createNewType,
+        newMessage: createNewMessage,
         hash: hash,
         sign: sign,
         verifySignature: verifySignature,
