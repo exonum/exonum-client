@@ -1,6 +1,6 @@
 # Client for Exonum blockchain platform
 
-Pure JavaScript toolkit to work with Exonum blockchain in both of browser and Node.js.
+JavaScript toolkit to work with Exonum blockchain in both of browser and Node.js.
 
 #### Table of Contents:
 1. [Use in browser](#use-in-browser)
@@ -10,9 +10,10 @@ Pure JavaScript toolkit to work with Exonum blockchain in both of browser and No
    * [sign](#sign)
    * [verifySignature](#verifysignature)
    * [newType](#newtype)
-   * [merkleProof](#merkleproof)
-   * [merklePatriciaProof](#merklepatriciaproof)
-   * [verifyBlock](#verifyblock)
+   * [newMessage](#newmessage)
+   * [merkleProof](#merkleproofroothash-count-proofnode-range-type)
+   * [merklePatriciaProof](#merklepatriciaproofroothash-proof-key)
+   * [verifyBlock](#verifyblockdata)
 4. [Built-in types](#built-in-types)
    * [I8](#i8)
    * [I16](#i16)
@@ -71,10 +72,7 @@ var User = Exonum.newType({
     }
 });
 
-var userData = {
-    id: 1,
-    name: 'John Doe'
-};
+var userData = {id: 1, name: 'John Doe'};
 
 var hash = Exonum.hash(userData, User);
 ```
@@ -112,10 +110,7 @@ var User = Exonum.newType({
     }
 });
 
-var userData = {
-    id: 1,
-    name: 'John Doe'
-};
+var userData = {id: 1, name: 'John Doe'};
 
 var secretKey = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36';
 
@@ -136,7 +131,7 @@ var secretKey = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc03
 var signature = Exonum.sign(buffer, secretKey);
 ```
 
-### verifySignature(...)
+### verifySignature
 
 Returns `true` if verification succeeded or `false` if it failed.
 
@@ -161,10 +156,7 @@ var User = Exonum.newType({
     }
 });
 
-var userData = {
-    id: 1,
-    name: 'John Doe'
-};
+var userData = {id: 1, name: 'John Doe'};
 
 var signature = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36';
 
@@ -214,10 +206,7 @@ var User = Exonum.newType({
     }
 });
 
-var userData = {
-    id: 1,
-    name: 'John Doe'
-};
+var userData = {id: 1, name: 'John Doe'};
 
 var buffer = User.serialize(userData);
 ```
@@ -244,18 +233,16 @@ var Payment = Exonum.newType({
 
 var paymentData = {
     amount: 500,
-    from: {
-        id: 1,
-        name: 'John Doe'
-    },
-    to: {
-        id: 2,
-        name: 'Jenifer Lee'
-    }
+    from: {id: 1, name: 'John Doe'},
+    to: {id: 2, name: 'Jenifer Lee'}
 };
 
 var buffer = Payment.serialize(paymentData);
 ```
+
+### newMessage
+
+TODO
 
 ### merkleProof(rootHash, count, proofNode, range, type)
 
