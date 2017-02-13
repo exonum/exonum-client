@@ -558,7 +558,8 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input correct number to serialize in little endian', function() {
             var Type = Exonum.newType({
                 size: 1,
-                fields: {balance: {type: Exonum.I8, size: 1, from: 0, to: 1, fixed: true, littleEndian: true}}
+                littleEndian: true,
+                fields: {balance: {type: Exonum.I8, size: 1, from: 0, to: 1, fixed: true}}
             });
             var data = {balance: 120};
             var buffer = Type.serialize(data);
@@ -580,7 +581,8 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input correct negative number to serialize in little endian', function() {
             var Type = Exonum.newType({
                 size: 1,
-                fields: {balance: {type: Exonum.I8, size: 1, from: 0, to: 1, fixed: true, littleEndian: true}}
+                littleEndian: true,
+                fields: {balance: {type: Exonum.I8, size: 1, from: 0, to: 1, fixed: true}}
             });
             var data = {balance: -120};
             var buffer = Type.serialize(data);
@@ -675,7 +677,8 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input correct number to serialize in little endian', function() {
             var Type = Exonum.newType({
                 size: 2,
-                fields: {balance: {type: Exonum.I16, size: 2, from: 0, to: 2, fixed: true, littleEndian: true}}
+                littleEndian: true,
+                fields: {balance: {type: Exonum.I16, size: 2, from: 0, to: 2, fixed: true}}
             });
             var data = {balance: 30767};
             var buffer = Type.serialize(data);
@@ -697,7 +700,8 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input correct negative number to serialize in little endian', function() {
             var Type = Exonum.newType({
                 size: 2,
-                fields: {balance: {type: Exonum.I16, size: 2, from: 0, to: 2, fixed: true, littleEndian: true}}
+                littleEndian: true,
+                fields: {balance: {type: Exonum.I16, size: 2, from: 0, to: 2, fixed: true}}
             });
             var data = {balance: -30767};
             var buffer = Type.serialize(data);
@@ -792,7 +796,8 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input correct number to serialize in little endian', function() {
             var Type = Exonum.newType({
                 size: 4,
-                fields: {balance: {type: Exonum.I32, size: 4, from: 0, to: 4, fixed: true, littleEndian: true}}
+                littleEndian: true,
+                fields: {balance: {type: Exonum.I32, size: 4, from: 0, to: 4, fixed: true}}
             });
             var data = {balance: 1147483647};
             var buffer = Type.serialize(data);
@@ -814,7 +819,8 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input correct negative number to serialize in little endian', function() {
             var Type = Exonum.newType({
                 size: 4,
-                fields: {balance: {type: Exonum.I32, size: 4, from: 0, to: 4, fixed: true, littleEndian: true}}
+                littleEndian: true,
+                fields: {balance: {type: Exonum.I32, size: 4, from: 0, to: 4, fixed: true}}
             });
             var data = {balance: -1147483648};
             var buffer = Type.serialize(data);
@@ -909,7 +915,8 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input correct number to serialize in little endian', function() {
             var Type = Exonum.newType({
                 size: 8,
-                fields: {balance: {type: Exonum.I64, size: 8, from: 0, to: 8, fixed: true, littleEndian: true}}
+                littleEndian: true,
+                fields: {balance: {type: Exonum.I64, size: 8, from: 0, to: 8, fixed: true}}
             });
             var data = {balance: 900719925474000};
             var buffer = Type.serialize(data);
@@ -942,7 +949,8 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input correct negative number to serialize in little endian', function() {
             var Type = Exonum.newType({
                 size: 8,
-                fields: {balance: {type: Exonum.I64, size: 8, from: 0, to: 8, fixed: true, littleEndian: true}}
+                littleEndian: true,
+                fields: {balance: {type: Exonum.I64, size: 8, from: 0, to: 8, fixed: true}}
             });
             var data = {balance: '-9223372036854775808'};
             var buffer = Type.serialize(data);
@@ -1037,7 +1045,8 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input correct number to serialize in little endian', function() {
             var Type = Exonum.newType({
                 size: 1,
-                fields: {balance: {type: Exonum.U8, size: 1, from: 0, to: 1, fixed: true, littleEndian: true}}
+                littleEndian: true,
+                fields: {balance: {type: Exonum.U8, size: 1, from: 0, to: 1, fixed: true}}
             });
             var data = {balance: 230};
             var buffer = Type.serialize(data);
@@ -1132,7 +1141,8 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input correct number to serialize in little endian', function() {
             var Type = Exonum.newType({
                 size: 2,
-                fields: {balance: {type: Exonum.U16, size: 2, from: 0, to: 2, fixed: true, littleEndian: true}}
+                littleEndian: true,
+                fields: {balance: {type: Exonum.U16, size: 2, from: 0, to: 2, fixed: true}}
             });
             var data = {balance: 60535};
             var buffer = Type.serialize(data);
@@ -1227,7 +1237,8 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input correct number to serialize in little endian', function() {
             var Type = Exonum.newType({
                 size: 4,
-                fields: {balance: {type: Exonum.U32, size: 4, from: 0, to: 4, fixed: true, littleEndian: true}}
+                littleEndian: true,
+                fields: {balance: {type: Exonum.U32, size: 4, from: 0, to: 4, fixed: true}}
             });
             var data = {balance: 613228};
             var buffer = Type.serialize(data);
@@ -1333,7 +1344,8 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input correct number to serialize in little endian', function() {
             var Type = Exonum.newType({
                 size: 8,
-                fields: {balance: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true, littleEndian: true}}
+                littleEndian: true,
+                fields: {balance: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true}}
             });
             var data = {balance: 613228};
             var buffer = Type.serialize(data);
@@ -1596,19 +1608,19 @@ describe('Client for Exonum blockchain platform: ', function() {
                 fields: {
                     name: {type: Exonum.String, size: 8, from: 0, to: 8},
                     age: {type: Exonum.U8, size: 1, from: 8, to: 9, fixed: true},
-                    balance: {type: Exonum.U64, size: 8, from: 9, to: 17, fixed: true, littleEndian: true},
+                    balance: {type: Exonum.U64, size: 8, from: 9, to: 17, fixed: true},
                     status: {type: Exonum.Bool, size: 1, from: 17, to: 18, fixed: true}
                 }
             });
             var messageData = {
                 name: 'John Doe',
                 age: 34,
-                balance: 173008,
+                balance: 17,
                 status: true
             };
             var hash = Exonum.hash(messageData, CustomMessage);
 
-            expect(hash).to.equal('5b1e9cde2d62940d44f5b07bfcaf6802b1b794f16ba353757bdbabfcc0227aa6');
+            expect(hash).to.equal('21fea5e2dbd068fc51efb7ac26ad9a84b6bdd91e80c104e58e93af1ea39fc5d7');
         });
 
         it('Get hash of the array of 8-bit integers', function() {
@@ -1669,7 +1681,7 @@ describe('Client for Exonum blockchain platform: ', function() {
                 fields: {
                     name: {type: Exonum.String, size: 8, from: 0, to: 8},
                     age: {type: Exonum.U8, size: 1, from: 8, to: 9, fixed: true},
-                    balance: {type: Exonum.U64, size: 8, from: 9, to: 17, fixed: true, littleEndian: true},
+                    balance: {type: Exonum.U64, size: 8, from: 9, to: 17, fixed: true},
                     status: {type: Exonum.Bool, size: 1, from: 17, to: 18, fixed: true}
                 }
             });
@@ -1725,7 +1737,7 @@ describe('Client for Exonum blockchain platform: ', function() {
                 fields: {
                     name: {type: Exonum.String, size: 8, from: 0, to: 8},
                     age: {type: Exonum.U8, size: 1, from: 8, to: 9, fixed: true},
-                    balance: {type: Exonum.U64, size: 8, from: 9, to: 17, fixed: true, littleEndian: true},
+                    balance: {type: Exonum.U64, size: 8, from: 9, to: 17, fixed: true},
                     status: {type: Exonum.Bool, size: 1, from: 17, to: 18, fixed: true}
                 }
             });
@@ -1737,7 +1749,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             };
             var signature = Exonum.sign(messageData, CustomMessage, secretKey);
 
-            expect(signature).to.equal('24a5224702d670c95a78ef1f753c9e6e698da5b2a2c52dcc51b5bf9e556e717fb763b1a5e78bd39e5369a139ab68ae50dd19a129038e8da3af30985f09549500');
+            expect(signature).to.equal('4006cef1884941850a6b97a64ed7f12d1e1053188618ef71b8c9f87438b943b1969e08011e45db8299bb738fec60c9dcd1936ab9ba44392cacc7f0385f18dd09');
         });
 
         it('Get signature of the array of 8-bit integers', function() {
@@ -1786,7 +1798,7 @@ describe('Client for Exonum blockchain platform: ', function() {
                 fields: {
                     name: {type: Exonum.String, size: 8, from: 0, to: 8},
                     age: {type: Exonum.U8, size: 1, from: 8, to: 9, fixed: true},
-                    balance: {type: Exonum.U64, size: 8, from: 9, to: 17, fixed: true, littleEndian: true},
+                    balance: {type: Exonum.U64, size: 8, from: 9, to: 17, fixed: true},
                     status: {type: Exonum.Bool, size: 1, from: 17, to: 18, fixed: true}
                 }
             });
@@ -1907,7 +1919,7 @@ describe('Client for Exonum blockchain platform: ', function() {
 
         it('Verify signature of the data of NewMessage type', function() {
             var publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
-            var signature = '24a5224702d670c95a78ef1f753c9e6e698da5b2a2c52dcc51b5bf9e556e717fb763b1a5e78bd39e5369a139ab68ae50dd19a129038e8da3af30985f09549500';
+            var signature = '4006cef1884941850a6b97a64ed7f12d1e1053188618ef71b8c9f87438b943b1969e08011e45db8299bb738fec60c9dcd1936ab9ba44392cacc7f0385f18dd09';
             var CustomMessage = Exonum.newMessage({
                 size: 18,
                 service_id: 1,
@@ -1915,7 +1927,7 @@ describe('Client for Exonum blockchain platform: ', function() {
                 fields: {
                     name: {type: Exonum.String, size: 8, from: 0, to: 8},
                     age: {type: Exonum.U8, size: 1, from: 8, to: 9, fixed: true},
-                    balance: {type: Exonum.U64, size: 8, from: 9, to: 17, fixed: true, littleEndian: true},
+                    balance: {type: Exonum.U64, size: 8, from: 9, to: 17, fixed: true},
                     status: {type: Exonum.Bool, size: 1, from: 17, to: 18, fixed: true}
                 }
             });
@@ -1976,7 +1988,7 @@ describe('Client for Exonum blockchain platform: ', function() {
                 fields: {
                     name: {type: Exonum.String, size: 8, from: 0, to: 8},
                     age: {type: Exonum.U8, size: 1, from: 8, to: 9, fixed: true},
-                    balance: {type: Exonum.U64, size: 8, from: 9, to: 17, fixed: true, littleEndian: true},
+                    balance: {type: Exonum.U64, size: 8, from: 9, to: 17, fixed: true},
                     status: {type: Exonum.Bool, size: 1, from: 17, to: 18, fixed: true}
                 }
             });

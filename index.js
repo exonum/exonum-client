@@ -62,12 +62,13 @@ var ThinClient = (function() {
     });
     var MessageHead = createNewType({
         size: 10,
+        littleEndian: true,
         fields: {
-            network_id: {type: U8, size: 1, from: 0, to: 1, fixed: true, littleEndian: true},
-            version: {type: U8, size: 1, from: 1, to: 2, fixed: true, littleEndian: true},
-            message_type: {type: U16, size: 2, from: 2, to: 4, fixed: true, littleEndian: true},
-            service_id: {type: U16, size: 2, from: 4, to: 6, fixed: true, littleEndian: true},
-            payload: {type: U32, size: 4, from: 6, to: 10, fixed: true, littleEndian: true}
+            network_id: {type: U8, size: 1, from: 0, to: 1, fixed: true},
+            version: {type: U8, size: 1, from: 1, to: 2, fixed: true},
+            message_type: {type: U16, size: 2, from: 2, to: 4, fixed: true},
+            service_id: {type: U16, size: 2, from: 4, to: 6, fixed: true},
+            payload: {type: U32, size: 4, from: 6, to: 10, fixed: true}
         }
     });
     var Precommit = createNewMessage({
@@ -75,9 +76,9 @@ var ThinClient = (function() {
         service_id: 0,
         message_type: 4,
         fields: {
-            validator: {type: U32, size: 4, from: 0, to: 4, fixed: true, littleEndian: true},
-            height: {type: U64, size: 8, from: 8, to: 16, fixed: true, littleEndian: true},
-            round: {type: U32, size: 4, from: 16, to: 20, fixed: true, littleEndian: true},
+            validator: {type: U32, size: 4, from: 0, to: 4, fixed: true},
+            height: {type: U64, size: 8, from: 8, to: 16, fixed: true},
+            round: {type: U32, size: 4, from: 16, to: 20, fixed: true},
             propose_hash: {type: Hash, size: 32, from: 20, to: 52, fixed: true},
             block_hash: {type: Hash, size: 32, from: 52, to: 84, fixed: true}
         }
@@ -89,6 +90,7 @@ var ThinClient = (function() {
      */
     function NewType(type) {
         this.size = type.size;
+        this.littleEndian = type.littleEndian;
         this.fields = type.fields;
     }
 
@@ -112,6 +114,7 @@ var ThinClient = (function() {
 
     function NewMessage(type) {
         this.size = type.size;
+        this.littleEndian = true;
         this.message_type = type.message_type;
         this.service_id = type.service_id;
         this.fields = type.fields;
@@ -132,7 +135,7 @@ var ThinClient = (function() {
         }
 
         // calculate payload and insert it into buffer
-        U32(buffer.length + CONST.SIGNATURE_LENGTH, buffer, MessageHead.fields.payload.from, MessageHead.fields.payload.to, MessageHead.fields.payload.littleEndian);
+        U32(buffer.length + CONST.SIGNATURE_LENGTH, buffer, MessageHead.fields.payload.from, MessageHead.fields.payload.to, true);
 
         return buffer;
     };
@@ -619,7 +622,7 @@ var ThinClient = (function() {
                     U32(buffer.length - end, buffer, from + 4, from + 8);
                 }
             } else {
-                buffer = fieldType.type(fieldData, buffer, from, shift + fieldType.to, fieldType.littleEndian);
+                buffer = fieldType.type(fieldData, buffer, from, shift + fieldType.to, type.littleEndian);
                 if (typeof buffer === 'undefined') {
                     return;
                 }

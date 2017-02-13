@@ -296,6 +296,18 @@ var paymentData = {
 var buffer = Payment.serialize(paymentData);
 ```
 
+All numeric fields of `newType` object are serialized as big endian by-default. To serialize them as little andian use `littleEndian: true` flag:
+
+```
+var SomeType = Exonum.newType({
+    size: 16,
+    littleEndian: true,
+    fields: {
+        ...
+    }
+});
+```
+
 ### newMessage
 
 Used to create describe custom data format.
@@ -311,6 +323,29 @@ Returns an object of format type.
 ##### newMessage.serialize(data)
 
 Can be used to retrieve representation of data of type `newMessage` as array of 8-bit integers.
+
+Lets declare custom type `CreateUser`:
+
+```javascript
+var CreateUser = Exonum.newMessage({
+    size: 16,
+    service_id: 7,
+    message_type: 15,
+    fields: {
+        name: {type: Exonum.String, size: 8, from: 0, to: 8},
+        balance: {type: Exonum.U64, size: 8, from: 8, to: 16, fixed: true}
+    }
+});
+
+var userData = {
+    name: 'John Doe',
+    balance: 500
+};
+
+var buffer = CreateUser.serialize(userData);
+```
+
+All numeric fields of `newMessage` object are serialized as little endian.
 
 ### merkleProof(rootHash, count, proofNode, range, type)
 
