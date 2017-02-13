@@ -6,13 +6,13 @@ JavaScript toolkit to work with Exonum blockchain in both of browser and Node.js
 * [Use in browser](#use-in-browser)
 * [Use in Node.js](#use-in-nodejs)
 * [API methods](#api-methods)
+   * Custom data formats:
+      * [newType](#newtype)
+      * [newMessage](#newmessage)
    * [Get hash](#hash)
    * [Sign](#sign)
    * [Verify signature](#verifysignature)
    * [Verify block of precommits](#verifyblockdata)
-   * Custom data formats:
-      * [newType](#newtype)
-      * [newMessage](#newmessage)
    * Proofs of existence:
       * [merkleProof](#merkleproofroothash-count-proofnode-range-type)
       * [merklePatriciaProof](#merklepatriciaproofroothash-proof-key)
@@ -52,6 +52,124 @@ Exonum.hash(buffer);
 ```
 
 ## API methods
+
+### newType
+
+Used to describe custom data format to make it possible to serialize data of this format into array of 8-bit integers.
+
+Allowed to contain fields of built-in types (such as String, Hash, U64 etc.) and fields on `newType` type.
+
+The `size` parameter contains full length of listed fields.
+
+The `fields` parameter is a list of fields.
+
+Returns an object of format type.
+
+##### newType.serialize(data)
+
+Can be used to retrieve representation of data of type `newType` as array of 8-bit integers.
+
+Lets declare simple type `User` with field `id` of Integer type and field `name` of String type:
+
+```javascript
+var User = Exonum.newType({
+    size: 16,
+    fields: {
+        id: {type: Exonum.U64, size: 8, from: 0, to: 8},
+        name: {type: Exonum.String, size: 8, from: 8, to: 16}
+    }
+});
+
+var userData = {id: 1, name: 'John Doe'};
+
+var buffer = User.serialize(userData);
+```
+
+Lets declare custom type `Payment` that will use custom type `User` as one of the fields: 
+
+```javascript
+var User = Exonum.newType({
+    size: 16,
+    fields: {
+        id: {type: Exonum.U64, size: 8, from: 0, to: 8},
+        name: {type: Exonum.String, size: 8, from: 8, to: 16}
+    }
+});
+
+var Payment = Exonum.newType({
+    size: 40,
+    fields: {
+        amount: {type: Exonum.U64, size: 8, from: 0, to: 8},
+        from: {type: User, size: 16, from: 8, to: 24},
+        to: {type: User, size: 16, from: 24, to: 40}
+    }
+});
+
+var paymentData = {
+    amount: 500,
+    from: {id: 1, name: 'John Doe'},
+    to: {id: 2, name: 'Jenifer Lee'}
+};
+
+var buffer = Payment.serialize(paymentData);
+```
+
+All numeric fields of `newType` object are serialized as big endian by-default. To serialize them as little andian use `littleEndian: true` flag:
+
+```
+var SomeType = Exonum.newType({
+    size: 16,
+    littleEndian: true,
+    fields: {
+        ...
+    }
+});
+```
+
+### newMessage
+
+Used to describe custom data format to make it possible to serialize data of this format into array of 8-bit integers.
+
+Allowed to contain fields of built-in types (such as String, Hash, U64 etc.) and fields of `newType` type.
+
+This method is designed to represent messages. So method `newMessage` also contains header with fields that are specific for messages only.
+
+The `size` parameter contains full length of listed fields.
+
+The `service_id` is a numeric parameter.
+
+The `message_type_id` is a numeric parameter.
+
+The `fields` parameter is a list of fields.
+
+Returns an object of format type.
+
+##### newMessage.serialize(data)
+
+Can be used to retrieve representation of data of type `newMessage` as array of 8-bit integers.
+
+Lets declare custom type `CreateUser`:
+
+```javascript
+var CreateUser = Exonum.newMessage({
+    size: 16,
+    service_id: 7,
+    message_type: 15,
+    fields: {
+        name: {type: Exonum.String, size: 8, from: 0, to: 8},
+        balance: {type: Exonum.U64, size: 8, from: 8, to: 16}
+    }
+});
+
+var userData = {
+    name: 'John Doe',
+    balance: 500
+};
+
+var buffer = CreateUser.serialize(userData);
+```
+
+All numeric fields of `newMessage` object are serialized as little endian.
 
 ### hash
 
@@ -246,116 +364,6 @@ This methods can verify block of precommits.
 The `data` is a custom data in JSON format.
 
 Returns `true` if verification succeeded or `false` if it failed.
-
-### newType
-
-Used to describe custom data format to make it possible to serialize data of this format into array of 8-bit integers.
-
-Allowed to contain fields of built-in types (such as String, Hash, U64 etc.) and fields on `newType` type.
-
-Receive a declarative format of the data.
-
-Returns an object of format type.
-
-##### newType.serialize(data)
-
-Can be used to retrieve representation of data of type `newType` as array of 8-bit integers.
-
-Lets declare simple type `User` with field `id` of Integer type and field `name` of String type:
-
-```javascript
-var User = Exonum.newType({
-    size: 16,
-    fields: {
-        id: {type: Exonum.U64, size: 8, from: 0, to: 8},
-        name: {type: Exonum.String, size: 8, from: 8, to: 16}
-    }
-});
-
-var userData = {id: 1, name: 'John Doe'};
-
-var buffer = User.serialize(userData);
-```
-
-Lets declare custom type `Payment` that will use custom type `User` as one of the fields: 
-
-```javascript
-var User = Exonum.newType({
-    size: 16,
-    fields: {
-        id: {type: Exonum.U64, size: 8, from: 0, to: 8},
-        name: {type: Exonum.String, size: 8, from: 8, to: 16}
-    }
-});
-
-var Payment = Exonum.newType({
-    size: 40,
-    fields: {
-        amount: {type: Exonum.U64, size: 8, from: 0, to: 8},
-        from: {type: User, size: 16, from: 8, to: 24},
-        to: {type: User, size: 16, from: 24, to: 40}
-    }
-});
-
-var paymentData = {
-    amount: 500,
-    from: {id: 1, name: 'John Doe'},
-    to: {id: 2, name: 'Jenifer Lee'}
-};
-
-var buffer = Payment.serialize(paymentData);
-```
-
-All numeric fields of `newType` object are serialized as big endian by-default. To serialize them as little andian use `littleEndian: true` flag:
-
-```
-var SomeType = Exonum.newType({
-    size: 16,
-    littleEndian: true,
-    fields: {
-        ...
-    }
-});
-```
-
-### newMessage
-
-Used to describe custom data format to make it possible to serialize data of this format into array of 8-bit integers.
-
-Allowed to contain fields of built-in types (such as String, Hash, U64 etc.) and fields of `newType` type.
-
-This method is designed to represent messages. So method `newMessage` also contains header with fields that are specific for messages only.
-
-Receive a declarative format of the data.
-
-Returns an object of format type.
-
-##### newMessage.serialize(data)
-
-Can be used to retrieve representation of data of type `newMessage` as array of 8-bit integers.
-
-Lets declare custom type `CreateUser`:
-
-```javascript
-var CreateUser = Exonum.newMessage({
-    size: 16,
-    service_id: 7,
-    message_type: 15,
-    fields: {
-        name: {type: Exonum.String, size: 8, from: 0, to: 8},
-        balance: {type: Exonum.U64, size: 8, from: 8, to: 16}
-    }
-});
-
-var userData = {
-    name: 'John Doe',
-    balance: 500
-};
-
-var buffer = CreateUser.serialize(userData);
-```
-
-All numeric fields of `newMessage` object are serialized as little endian.
 
 ### merkleProof(rootHash, count, proofNode, range, type)
 
