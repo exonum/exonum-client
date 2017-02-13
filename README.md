@@ -67,7 +67,7 @@ The `type` is a description of type in the one of the internal data formats: `ne
 var CustomType = Exonum.newType({
     size: 16,
     fields: {
-        id: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true},
+        id: {type: Exonum.U64, size: 8, from: 0, to: 8},
         name: {type: Exonum.String, size: 8, from: 8, to: 16}
     }
 });
@@ -83,7 +83,7 @@ var CustomMessage = Exonum.newMessage({
     service_id: 8,
     message_type: 12,
     fields: {
-        id: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true},
+        id: {type: Exonum.U64, size: 8, from: 0, to: 8},
         name: {type: Exonum.String, size: 8, from: 8, to: 16}
     }
 });
@@ -121,7 +121,7 @@ The `secretKey` is a 64 bit secret key.
 var CustomType = Exonum.newType({
     size: 16,
     fields: {
-        id: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true},
+        id: {type: Exonum.U64, size: 8, from: 0, to: 8},
         name: {type: Exonum.String, size: 8, from: 8, to: 16}
     }
 });
@@ -139,7 +139,7 @@ var CustomMessage = Exonum.newMessage({
     service_id: 8,
     message_type: 12,
     fields: {
-        id: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true},
+        id: {type: Exonum.U64, size: 8, from: 0, to: 8},
         name: {type: Exonum.String, size: 8, from: 8, to: 16}
     }
 });
@@ -185,7 +185,7 @@ The `publicKey` is a 32 bit secret key.
 var CustomType = Exonum.newType({
     size: 16,
     fields: {
-        id: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true},
+        id: {type: Exonum.U64, size: 8, from: 0, to: 8},
         name: {type: Exonum.String, size: 8, from: 8, to: 16}
     }
 });
@@ -205,7 +205,7 @@ var CustomMessage = Exonum.newMessage({
     service_id: 8,
     message_type: 12,
     fields: {
-        id: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true},
+        id: {type: Exonum.U64, size: 8, from: 0, to: 8},
         name: {type: Exonum.String, size: 8, from: 8, to: 16}
     }
 });
@@ -257,7 +257,7 @@ Lets declare simple type `User` with field `id` of Integer type and field `name`
 var User = Exonum.newType({
     size: 16,
     fields: {
-        id: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true},
+        id: {type: Exonum.U64, size: 8, from: 0, to: 8},
         name: {type: Exonum.String, size: 8, from: 8, to: 16}
     }
 });
@@ -273,7 +273,7 @@ Lets declare custom type `Payment` that will use custom type `User` as one of th
 var User = Exonum.newType({
     size: 16,
     fields: {
-        id: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true},
+        id: {type: Exonum.U64, size: 8, from: 0, to: 8},
         name: {type: Exonum.String, size: 8, from: 8, to: 16}
     }
 });
@@ -281,7 +281,7 @@ var User = Exonum.newType({
 var Payment = Exonum.newType({
     size: 40,
     fields: {
-        amount: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true},
+        amount: {type: Exonum.U64, size: 8, from: 0, to: 8},
         from: {type: User, size: 16, from: 8, to: 24},
         to: {type: User, size: 16, from: 24, to: 40}
     }
@@ -333,7 +333,7 @@ var CreateUser = Exonum.newMessage({
     message_type: 15,
     fields: {
         name: {type: Exonum.String, size: 8, from: 0, to: 8},
-        balance: {type: Exonum.U64, size: 8, from: 8, to: 16, fixed: true}
+        balance: {type: Exonum.U64, size: 8, from: 8, to: 16}
     }
 });
 
@@ -397,15 +397,13 @@ Returns `true` if verification succeeded or `false` if it failed.
 
 A Signed integer value of the length of `1` byte.
 
-Parameter `fixed: true` should be used.
-
 Values range is from `-128` to `127`.
 
 ```
 var CustomType = Exonum.newType({
     size: 1,
     fields: {
-        someNumber: {type: Exonum.I8, size: 1, from: 0, to: 1, fixed: true}
+        someNumber: {type: Exonum.I8, size: 1, from: 0, to: 1}
     }
 });
 ```
@@ -414,15 +412,13 @@ var CustomType = Exonum.newType({
 
 A Signed integer value of the length of `2` bytes.
 
-Parameter `fixed: true` should be used.
-
 Values range is from `-32768` to `32767`.
 
 ```
 var CustomType = Exonum.newType({
     size: 2,
     fields: {
-        someNumber: {type: Exonum.I16, size: 2, from: 0, to: 2, fixed: true}
+        someNumber: {type: Exonum.I16, size: 2, from: 0, to: 2}
     }
 });
 ```
@@ -431,15 +427,13 @@ var CustomType = Exonum.newType({
 
 A Signed integer value of the length of `4` bytes.
 
-Parameter `fixed: true` should be used.
-
 Values range is from `-2147483648` to `2147483647`.
 
 ```
 var CustomType = Exonum.newType({
     size: 4,
     fields: {
-        someNumber: {type: Exonum.I32, size: 4, from: 0, to: 4, fixed: true}
+        someNumber: {type: Exonum.I32, size: 4, from: 0, to: 4}
     }
 });
 ```
@@ -447,8 +441,6 @@ var CustomType = Exonum.newType({
 #### I64
 
 A Signed integer value of the length of `8` bytes.
-
-Parameter `fixed: true` should be used.
 
 Values range is from `-9223372036854775808` to `9223372036854775807`.
 
@@ -464,7 +456,7 @@ Work around is to use value not as `Number` but as `String`.
 var CustomType = Exonum.newType({
     size: 8,
     fields: {
-        someNumber: {type: Exonum.I64, size: 8, from: 0, to: 8, fixed: true}
+        someNumber: {type: Exonum.I64, size: 8, from: 0, to: 8}
     }
 });
 ```
@@ -473,15 +465,13 @@ var CustomType = Exonum.newType({
 
 Unsigned integer value of the length of `1` byte.
 
-Parameter `fixed: true` should be used.
-
 Values range is from `0` to `255`.
 
 ```
 var CustomType = Exonum.newType({
     size: 1,
     fields: {
-        someNumber: {type: Exonum.U8, size: 1, from: 0, to: 1, fixed: true}
+        someNumber: {type: Exonum.U8, size: 1, from: 0, to: 1}
     }
 });
 ```
@@ -490,15 +480,13 @@ var CustomType = Exonum.newType({
 
 Unsigned integer value of the length of `2` bytes.
 
-Parameter `fixed: true` should be used.
-
 Values range is from `0` to `65535`.
 
 ```
 var CustomType = Exonum.newType({
     size: 2,
     fields: {
-        someNumber: {type: Exonum.U16, size: 2, from: 0, to: 2, fixed: true}
+        someNumber: {type: Exonum.U16, size: 2, from: 0, to: 2}
     }
 });
 ```
@@ -507,15 +495,13 @@ var CustomType = Exonum.newType({
 
 Unsigned integer value of the length of `4` bytes.
 
-Parameter `fixed: true` should be used.
-
 Values range is from `0` to `4294967295`.
 
 ```
 var CustomType = Exonum.newType({
     size: 4,
     fields: {
-        someNumber: {type: Exonum.U32, size: 4, from: 0, to: 4, fixed: true}
+        someNumber: {type: Exonum.U32, size: 4, from: 0, to: 4}
     }
 });
 ```
@@ -523,8 +509,6 @@ var CustomType = Exonum.newType({
 #### U64
 
 Unsigned integer value of the length of `8` bytes.
-
-Parameter `fixed: true` should be used.
 
 Values range is from `0` to `18446744073709551615`.
 
@@ -538,7 +522,7 @@ Work around is to use value not as `Number` but as `String`.
 var CustomType = Exonum.newType({
     size: 8,
     fields: {
-        someNumber: {type: Exonum.U64, size: 8, from: 0, to: 8, fixed: true}
+        someNumber: {type: Exonum.U64, size: 8, from: 0, to: 8}
     }
 });
 ```
@@ -560,13 +544,11 @@ var CustomType = Exonum.newType({
 
 Hexadecimal value of the length of `32` bytes.
 
-Parameter `fixed: true` should be used.
-
 ```
 var CustomType = Exonum.newType({
     size: 32,
     fields: {
-        someHash: {type: Exonum.Hash, size: 32, from: 0, to: 32, fixed: true}
+        someHash: {type: Exonum.Hash, size: 32, from: 0, to: 32}
     }
 });
 ```
@@ -575,13 +557,11 @@ var CustomType = Exonum.newType({
 
 Hexadecimal value of the length of `32` bytes.
 
-Parameter `fixed: true` should be used.
-
 ```
 var CustomType = Exonum.newType({
     size: 32,
     fields: {
-        somePublicKey: {type: Exonum.PublicKey, size: 32, from: 0, to: 32, fixed: true}
+        somePublicKey: {type: Exonum.PublicKey, size: 32, from: 0, to: 32}
     }
 });
 ```
@@ -590,14 +570,12 @@ var CustomType = Exonum.newType({
 
 Hexadecimal value of the length of `64` bytes.
 
-Parameter `fixed: true` should be used.
-
 
 ```
 var CustomType = Exonum.newType({
     size: 64,
     fields: {
-        someDigest: {type: Exonum.Digest, size: 64, from: 0, to: 64, fixed: true}
+        someDigest: {type: Exonum.Digest, size: 64, from: 0, to: 64}
     }
 });
 ```
@@ -605,8 +583,6 @@ var CustomType = Exonum.newType({
 #### Timespec
 
 Unsigned integer value of the length of `8` bytes. Represents Unix time in nanosecond.
-
-Parameter `fixed: true` should be used.
 
 Maximum safe integer in JavaScript is `2^53-1` which is equal to `9007199254740991`.
 
@@ -616,7 +592,7 @@ Work around is to use value not as `Number` but as `String`.
 var CustomType = Exonum.newType({
     size: 8,
     fields: {
-        someTimespec: {type: Exonum.Timespec, size: 8, from: 0, to: 8, fixed: true}
+        someTimespec: {type: Exonum.Timespec, size: 8, from: 0, to: 8}
     }
 });
 ```
@@ -625,13 +601,11 @@ var CustomType = Exonum.newType({
 
 A Boolean value of the length of `1` byte.
 
-Parameter `fixed: true` should be used.
-
 ```
 var CustomType = Exonum.newType({
     size: 1,
     fields: {
-        someBool: {type: Exonum.Bool, size: 1, from: 0, to: 1, fixed: true}
+        someBool: {type: Exonum.Bool, size: 1, from: 0, to: 1}
     }
 });
 ```

@@ -28,47 +28,47 @@ var ThinClient = (function() {
     var DBKey = createNewType({
         size: 34,
         fields: {
-            variant: {type: U8, size: 1, from: 0, to: 1, fixed: true},
-            key: {type: Hash, size: 32, from: 1, to: 33, fixed: true},
-            length: {type: U8, size: 1, from: 33, to: 34, fixed: true}
+            variant: {type: U8, size: 1, from: 0, to: 1},
+            key: {type: Hash, size: 32, from: 1, to: 33},
+            length: {type: U8, size: 1, from: 33, to: 34}
         }
     });
     var Branch = createNewType({
         size: 132,
         fields: {
-            left_hash: {type: Hash, size: 32, from: 0, to: 32, fixed: true},
-            right_hash: {type: Hash, size: 32, from: 32, to: 64, fixed: true},
-            left_key: {type: DBKey, size: 34, from: 64, to: 98, fixed: true},
-            right_key: {type: DBKey, size: 34, from: 98, to: 132, fixed: true}
+            left_hash: {type: Hash, size: 32, from: 0, to: 32},
+            right_hash: {type: Hash, size: 32, from: 32, to: 64},
+            left_key: {type: DBKey, size: 34, from: 64, to: 98},
+            right_key: {type: DBKey, size: 34, from: 98, to: 132}
         }
     });
     var RootBranch = createNewType({
         size: 66,
         fields: {
-            key: {type: DBKey, size: 34, from: 0, to: 34, fixed: true},
-            hash: {type: Hash, size: 32, from: 34, to: 66, fixed: true}
+            key: {type: DBKey, size: 34, from: 0, to: 34},
+            hash: {type: Hash, size: 32, from: 34, to: 66}
         }
     });
     var Block = createNewType({
         size: 116,
         fields: {
-            height: {type: U64, size: 8, from: 0, to: 8, fixed: true},
-            propose_round: {type: U32, size: 4, from: 8, to: 12, fixed: true},
-            time: {type: Timespec, size: 8, from: 12, to: 20, fixed: true},
-            prev_hash: {type: Hash, size: 32, from: 20, to: 52, fixed: true},
-            tx_hash: {type: Hash, size: 32, from: 52, to: 84, fixed: true},
-            state_hash: {type: Hash, size: 32, from: 84, to: 116, fixed: true}
+            height: {type: U64, size: 8, from: 0, to: 8},
+            propose_round: {type: U32, size: 4, from: 8, to: 12},
+            time: {type: Timespec, size: 8, from: 12, to: 20},
+            prev_hash: {type: Hash, size: 32, from: 20, to: 52},
+            tx_hash: {type: Hash, size: 32, from: 52, to: 84},
+            state_hash: {type: Hash, size: 32, from: 84, to: 116}
         }
     });
     var MessageHead = createNewType({
         size: 10,
         littleEndian: true,
         fields: {
-            network_id: {type: U8, size: 1, from: 0, to: 1, fixed: true},
-            version: {type: U8, size: 1, from: 1, to: 2, fixed: true},
-            message_type: {type: U16, size: 2, from: 2, to: 4, fixed: true},
-            service_id: {type: U16, size: 2, from: 4, to: 6, fixed: true},
-            payload: {type: U32, size: 4, from: 6, to: 10, fixed: true}
+            network_id: {type: U8, size: 1, from: 0, to: 1},
+            version: {type: U8, size: 1, from: 1, to: 2},
+            message_type: {type: U16, size: 2, from: 2, to: 4},
+            service_id: {type: U16, size: 2, from: 4, to: 6},
+            payload: {type: U32, size: 4, from: 6, to: 10}
         }
     });
     var Precommit = createNewMessage({
@@ -76,11 +76,11 @@ var ThinClient = (function() {
         service_id: 0,
         message_type: 4,
         fields: {
-            validator: {type: U32, size: 4, from: 0, to: 4, fixed: true},
-            height: {type: U64, size: 8, from: 8, to: 16, fixed: true},
-            round: {type: U32, size: 4, from: 16, to: 20, fixed: true},
-            propose_hash: {type: Hash, size: 32, from: 20, to: 52, fixed: true},
-            block_hash: {type: Hash, size: 32, from: 52, to: 84, fixed: true}
+            validator: {type: U32, size: 4, from: 0, to: 4},
+            height: {type: U64, size: 8, from: 8, to: 16},
+            round: {type: U32, size: 4, from: 16, to: 20},
+            propose_hash: {type: Hash, size: 32, from: 20, to: 52},
+            block_hash: {type: Hash, size: 32, from: 52, to: 84}
         }
     });
 
@@ -613,7 +613,22 @@ var ThinClient = (function() {
             var from = shift + fieldType.from;
 
             if (fieldType.type instanceof NewType) {
-                if (fieldType.fixed === true) {
+                var isFixed = (function checkIfIsFixed(fields) {
+                    for (var fieldName in fields) {
+                        if (!fields.hasOwnProperty(fieldName)) {
+                            continue;
+                        }
+
+                        if (fields[fieldName].type instanceof NewType) {
+                            checkIfIsFixed(fields[fieldName].type.fields);
+                        } else if (fields[fieldName].type === String) {
+                            return false;
+                        }
+                    }
+                    return true;
+                })(fieldType.type.fields);
+
+                if (isFixed === true) {
                     serialize(buffer, from, fieldData, fieldType.type);
                 } else {
                     var end = buffer.length;
