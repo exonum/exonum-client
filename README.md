@@ -3,18 +3,20 @@
 JavaScript toolkit to work with Exonum blockchain in both of browser and Node.js.
 
 #### Table of Contents:
-1. [Use in browser](#use-in-browser)
-2. [Use in Node.js](#use-in-nodejs)
-3. [API methods](#api-methods)
-   * [hash](#hash)
-   * [sign](#sign)
-   * [verifySignature](#verifysignature)
-   * [newType](#newtype)
-   * [newMessage](#newmessage)
-   * [merkleProof](#merkleproofroothash-count-proofnode-range-type)
-   * [merklePatriciaProof](#merklepatriciaproofroothash-proof-key)
-   * [verifyBlock](#verifyblockdata)
-4. [Built-in types](#built-in-types)
+* [Use in browser](#use-in-browser)
+* [Use in Node.js](#use-in-nodejs)
+* [API methods](#api-methods)
+   * [Get hash](#hash)
+   * [Sign](#sign)
+   * [Verify signature](#verifysignature)
+   * [Verify block of precommits](#verifyblockdata)
+   * Custom data formats:
+      * [newType](#newtype)
+      * [newMessage](#newmessage)
+   * Proofs of existence:
+      * [merkleProof](#merkleproofroothash-count-proofnode-range-type)
+      * [merklePatriciaProof](#merklepatriciaproofroothash-proof-key)
+* Built-in types:
    * [I8](#i8)
    * [I16](#i16)
    * [I32](#i32)
@@ -29,9 +31,9 @@ JavaScript toolkit to work with Exonum blockchain in both of browser and Node.js
    * [Digest](#digest)
    * [Timespec](#timespec)
    * [Bool](#bool)
-5. [Tests](#tests)
-5. [Build](#build)
-5. [License](#license)
+* [Tests](#tests)
+* [Build](#build)
+* [License](#license)
 
 #### Use in browser:
 
@@ -237,9 +239,17 @@ var publicKey = '280a704efafae9410d7b07140bb130e4995eeb381ba90939b4eaefcaf740ca2
 Exonum.verifySignature(buffer, signature, publicKey);
 ```
 
+### verifyBlock(data)
+
+This methods can verify block of precommits.
+
+The `data` is a custom data in JSON format.
+
+Returns `true` if verification succeeded or `false` if it failed.
+
 ### newType
 
-Used to create describe custom data format.
+Used to describe custom data format to make it possible to serialize data of this format into array of 8-bit integers.
 
 Allowed to contain fields of built-in types (such as String, Hash, U64 etc.) and fields on `newType` type.
 
@@ -310,9 +320,9 @@ var SomeType = Exonum.newType({
 
 ### newMessage
 
-Used to create describe custom data format.
+Used to describe custom data format to make it possible to serialize data of this format into array of 8-bit integers.
 
-Allowed to contain fields of built-in types (such as String, Hash, U64 etc.) and fields on `newMessage` type.
+Allowed to contain fields of built-in types (such as String, Hash, U64 etc.) and fields of `newType` type.
 
 This method is designed to represent messages. So method `newMessage` also contains header with fields that are specific for messages only.
 
@@ -382,14 +392,6 @@ Returns elements data in JSON format if tree is valid and element is found.
 Returns `null` if tree is valid but element is not found.
 
 Returns `undefined` if tree is not valid.
-
-### verifyBlock(data)
-
-This methods can verify block with precommits.
-
-The `data` is a custom data in JSON format.
-
-Returns `true` if verification succeeded or `false` if it failed.
 
 ## Built-in types
 
