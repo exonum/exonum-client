@@ -5,12 +5,11 @@
   "license": "",
   "author": "BitFury Group Limited",
   "private": true,
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "build": "browserify browser.js | ./node_modules/uglifyjs/bin/uglifyjs -o exonum-client.min.js",
-    "build-debug": "browserify browser.js -o exonum-client.js -d",
-    "test": "./node_modules/.bin/mocha --reporter spec",
-    "test-coverage": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha"
+    "build": "browserify src/browser.js | uglifyjs -o dist/exonum-client.min.js",
+    "build-debug": "browserify src/browser.js -o dist/exonum-client.js -d",
+    "test": "nyc --reporter=html --reporter=text mocha"
   },
   "dependencies": {
     "big-integer": "^1.6.17",
@@ -22,7 +21,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "istanbul": "^0.4.5",
-    "mocha": "^3.2.0"
+    "mocha": "^3.2.0",
+    "nyc": "^10.1.2"
   }
 }

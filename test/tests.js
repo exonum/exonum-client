@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var Exonum = require('../index');
+var Exonum = require('../src/index');
 var fs = require('fs');
 
 describe('Client for Exonum blockchain platform: ', function() {

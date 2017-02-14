@@ -31,8 +31,8 @@ JavaScript toolkit to work with Exonum blockchain in both of browser and Node.js
    * [Digest](#digest)
    * [Timespec](#timespec)
    * [Bool](#bool)
-* [Tests](#tests)
 * [Build](#build)
+* [Tests](#tests)
 * [License](#license)
 
 #### Use in browser:
@@ -620,32 +620,38 @@ var CustomType = Exonum.newType({
 });
 ```
 
-## Tests
-
-To run tests execute:
-
-```
-npm run test
-```
-
-To check test coverage execute:
-
-```
-npm run test-coverage
-```
-
 ## Build
+
+Install npm packages required for development:
+
+```
+$ npm install
+```
 
 To build minimised version of library execute:
 
 ```
-npm run build
+$ npm run build
 ```
 
 To build development version of library execute:
 
 ```
-npm run build-debug
+$ npm run build-debug
+```
+
+## Tests
+
+To run tests execute:
+
+```
+$ npm run test
+```
+
+To check test coverage execute:
+
+```
+$ npm run test-coverage
 ```
 
 ## License
