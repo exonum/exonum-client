@@ -17,14 +17,14 @@ JavaScript toolkit to work with Exonum blockchain in both of browser and Node.js
       * [merkleProof](#merkleproofroothash-count-proofnode-range-type)
       * [merklePatriciaProof](#merklepatriciaproofroothash-proof-key)
 * Built-in types:
-   * [I8](#i8)
-   * [I16](#i16)
-   * [I32](#i32)
-   * [I64](#i64)
-   * [U8](#u8)
-   * [U16](#u16)
-   * [U32](#u32)
-   * [U64](#u64)
+   * [Int8](#int8)
+   * [Int16](#int16)
+   * [Int32](#int32)
+   * [Int64](#int64)
+   * [Uint8](#uint8)
+   * [Uint16](#uint16)
+   * [Uint32](#uint32)
+   * [Uint64](#uint64)
    * [String](#string)
    * [Hash](#hash-1)
    * [PublicKey](#publickey)
@@ -57,7 +57,7 @@ Exonum.hash(buffer);
 
 Used to describe custom data format to make it possible to serialize data of this format into array of 8-bit integers.
 
-Allowed to contain fields of built-in types (such as String, Hash, U64 etc.) and fields on `newType` type.
+Allowed to contain fields of built-in types (such as String, Hash, Uint64 etc.) and fields on `newType` type.
 
 The `size` parameter contains full length of listed fields.
 
@@ -75,7 +75,7 @@ Lets declare simple type `User` with field `id` of Integer type and field `name`
 var User = Exonum.newType({
     size: 16,
     fields: {
-        id: {type: Exonum.U64, size: 8, from: 0, to: 8},
+        id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
         name: {type: Exonum.String, size: 8, from: 8, to: 16}
     }
 });
@@ -91,7 +91,7 @@ Lets declare custom type `Payment` that will use custom type `User` as one of th
 var User = Exonum.newType({
     size: 16,
     fields: {
-        id: {type: Exonum.U64, size: 8, from: 0, to: 8},
+        id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
         name: {type: Exonum.String, size: 8, from: 8, to: 16}
     }
 });
@@ -99,7 +99,7 @@ var User = Exonum.newType({
 var Payment = Exonum.newType({
     size: 40,
     fields: {
-        amount: {type: Exonum.U64, size: 8, from: 0, to: 8},
+        amount: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
         from: {type: User, size: 16, from: 8, to: 24},
         to: {type: User, size: 16, from: 24, to: 40}
     }
@@ -130,7 +130,7 @@ var SomeType = Exonum.newType({
 
 Used to describe custom data format to make it possible to serialize data of this format into array of 8-bit integers.
 
-Allowed to contain fields of built-in types (such as String, Hash, U64 etc.) and fields of `newType` type.
+Allowed to contain fields of built-in types (such as String, Hash, Uint64 etc.) and fields of `newType` type.
 
 This method is designed to represent messages. So method `newMessage` also contains header with fields that are specific for messages only.
 
@@ -157,7 +157,7 @@ var CreateUser = Exonum.newMessage({
     message_type: 15,
     fields: {
         name: {type: Exonum.String, size: 8, from: 0, to: 8},
-        balance: {type: Exonum.U64, size: 8, from: 8, to: 16}
+        balance: {type: Exonum.Uint64, size: 8, from: 8, to: 16}
     }
 });
 
@@ -187,7 +187,7 @@ The `type` is a description of type in the one of the internal data formats: `ne
 var CustomType = Exonum.newType({
     size: 16,
     fields: {
-        id: {type: Exonum.U64, size: 8, from: 0, to: 8},
+        id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
         name: {type: Exonum.String, size: 8, from: 8, to: 16}
     }
 });
@@ -203,7 +203,7 @@ var CustomMessage = Exonum.newMessage({
     service_id: 8,
     message_type: 12,
     fields: {
-        id: {type: Exonum.U64, size: 8, from: 0, to: 8},
+        id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
         name: {type: Exonum.String, size: 8, from: 8, to: 16}
     }
 });
@@ -241,7 +241,7 @@ The `secretKey` is a 64 bit secret key.
 var CustomType = Exonum.newType({
     size: 16,
     fields: {
-        id: {type: Exonum.U64, size: 8, from: 0, to: 8},
+        id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
         name: {type: Exonum.String, size: 8, from: 8, to: 16}
     }
 });
@@ -259,7 +259,7 @@ var CustomMessage = Exonum.newMessage({
     service_id: 8,
     message_type: 12,
     fields: {
-        id: {type: Exonum.U64, size: 8, from: 0, to: 8},
+        id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
         name: {type: Exonum.String, size: 8, from: 8, to: 16}
     }
 });
@@ -305,7 +305,7 @@ The `publicKey` is a 32 bit secret key.
 var CustomType = Exonum.newType({
     size: 16,
     fields: {
-        id: {type: Exonum.U64, size: 8, from: 0, to: 8},
+        id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
         name: {type: Exonum.String, size: 8, from: 8, to: 16}
     }
 });
@@ -325,7 +325,7 @@ var CustomMessage = Exonum.newMessage({
     service_id: 8,
     message_type: 12,
     fields: {
-        id: {type: Exonum.U64, size: 8, from: 0, to: 8},
+        id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
         name: {type: Exonum.String, size: 8, from: 8, to: 16}
     }
 });
@@ -403,7 +403,7 @@ Returns `undefined` if tree is not valid.
 
 ## Built-in types
 
-#### I8
+#### Int8
 
 A Signed integer value of the length of `1` byte.
 
@@ -413,12 +413,12 @@ Values range is from `-128` to `127`.
 var CustomType = Exonum.newType({
     size: 1,
     fields: {
-        someNumber: {type: Exonum.I8, size: 1, from: 0, to: 1}
+        someNumber: {type: Exonum.Int8, size: 1, from: 0, to: 1}
     }
 });
 ```
 
-#### I16
+#### Int16
 
 A Signed integer value of the length of `2` bytes.
 
@@ -428,12 +428,12 @@ Values range is from `-32768` to `32767`.
 var CustomType = Exonum.newType({
     size: 2,
     fields: {
-        someNumber: {type: Exonum.I16, size: 2, from: 0, to: 2}
+        someNumber: {type: Exonum.Int16, size: 2, from: 0, to: 2}
     }
 });
 ```
 
-#### I32
+#### Int32
 
 A Signed integer value of the length of `4` bytes.
 
@@ -443,12 +443,12 @@ Values range is from `-2147483648` to `2147483647`.
 var CustomType = Exonum.newType({
     size: 4,
     fields: {
-        someNumber: {type: Exonum.I32, size: 4, from: 0, to: 4}
+        someNumber: {type: Exonum.Int32, size: 4, from: 0, to: 4}
     }
 });
 ```
 
-#### I64
+#### Int64
 
 A Signed integer value of the length of `8` bytes.
 
@@ -466,12 +466,12 @@ Work around is to use value not as `Number` but as `String`.
 var CustomType = Exonum.newType({
     size: 8,
     fields: {
-        someNumber: {type: Exonum.I64, size: 8, from: 0, to: 8}
+        someNumber: {type: Exonum.Int64, size: 8, from: 0, to: 8}
     }
 });
 ```
 
-#### U8
+#### Uint8
 
 Unsigned integer value of the length of `1` byte.
 
@@ -481,12 +481,12 @@ Values range is from `0` to `255`.
 var CustomType = Exonum.newType({
     size: 1,
     fields: {
-        someNumber: {type: Exonum.U8, size: 1, from: 0, to: 1}
+        someNumber: {type: Exonum.Uint8, size: 1, from: 0, to: 1}
     }
 });
 ```
 
-#### U16
+#### Uint16
 
 Unsigned integer value of the length of `2` bytes.
 
@@ -496,12 +496,12 @@ Values range is from `0` to `65535`.
 var CustomType = Exonum.newType({
     size: 2,
     fields: {
-        someNumber: {type: Exonum.U16, size: 2, from: 0, to: 2}
+        someNumber: {type: Exonum.Uint16, size: 2, from: 0, to: 2}
     }
 });
 ```
 
-#### U32
+#### Uint32
 
 Unsigned integer value of the length of `4` bytes.
 
@@ -511,12 +511,12 @@ Values range is from `0` to `4294967295`.
 var CustomType = Exonum.newType({
     size: 4,
     fields: {
-        someNumber: {type: Exonum.U32, size: 4, from: 0, to: 4}
+        someNumber: {type: Exonum.Uint32, size: 4, from: 0, to: 4}
     }
 });
 ```
 
-#### U64
+#### Uint64
 
 Unsigned integer value of the length of `8` bytes.
 
@@ -532,7 +532,7 @@ Work around is to use value not as `Number` but as `String`.
 var CustomType = Exonum.newType({
     size: 8,
     fields: {
-        someNumber: {type: Exonum.U64, size: 8, from: 0, to: 8}
+        someNumber: {type: Exonum.Uint64, size: 8, from: 0, to: 8}
     }
 });
 ```
