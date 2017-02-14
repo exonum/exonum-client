@@ -542,7 +542,7 @@ describe('Client for Exonum blockchain platform: ', function() {
     /*
      Exonum.Int8
      */
-    describe('Process I8:', function() {
+    describe('Process Int8:', function() {
 
         it('Input correct number', function() {
             var Type = Exonum.newType({
@@ -661,7 +661,7 @@ describe('Client for Exonum blockchain platform: ', function() {
     /*
      Exonum.Int16
      */
-    describe('Process I16:', function() {
+    describe('Process Int16:', function() {
 
         it('Input correct number', function() {
             var Type = Exonum.newType({
@@ -780,7 +780,7 @@ describe('Client for Exonum blockchain platform: ', function() {
     /*
      Exonum.Int32
      */
-    describe('Process I32:', function() {
+    describe('Process Int32:', function() {
 
         it('Input correct number', function() {
             var Type = Exonum.newType({
@@ -899,7 +899,7 @@ describe('Client for Exonum blockchain platform: ', function() {
     /*
      Exonum.Int64
      */
-    describe('Process I64:', function() {
+    describe('Process Int64:', function() {
 
         it('Input correct number', function() {
             var Type = Exonum.newType({
@@ -1029,7 +1029,7 @@ describe('Client for Exonum blockchain platform: ', function() {
     /*
      Exonum.Uint8
      */
-    describe('Process U8:', function() {
+    describe('Process Uint8:', function() {
 
         it('Input correct number', function() {
             var Type = Exonum.newType({
@@ -1125,7 +1125,7 @@ describe('Client for Exonum blockchain platform: ', function() {
     /*
      Exonum.Uint16
      */
-    describe('Process U16:', function() {
+    describe('Process Uint16:', function() {
 
         it('Input correct number', function() {
             var Type = Exonum.newType({
@@ -1221,7 +1221,7 @@ describe('Client for Exonum blockchain platform: ', function() {
     /*
      Exonum.Uint32
      */
-    describe('Process U32:', function() {
+    describe('Process Uint32:', function() {
 
         it('Input correct number', function() {
             var Type = Exonum.newType({
@@ -1317,7 +1317,7 @@ describe('Client for Exonum blockchain platform: ', function() {
     /*
      Exonum.Uint64
      */
-    describe('Process U64:', function() {
+    describe('Process Uint64:', function() {
 
         it('Input correct number', function() {
             var Type = Exonum.newType({
@@ -4439,6 +4439,11 @@ describe('Client for Exonum blockchain platform: ', function() {
      */
     describe('Verify block of precommits:', function() {
 
+        it('Valid block', function() {
+            var data = require('./common_data/valid-block-with-precommits.json');
+            expect(Exonum.verifyBlock(data)).to.equal(true);
+        });
+
         it('Invalid block with data of wrong type', function() {
             expect(Exonum.verifyBlock(null)).to.equal(false);
             expect(Exonum.verifyBlock(undefined)).to.equal(false);
@@ -4609,85 +4614,146 @@ describe('Client for Exonum blockchain platform: ', function() {
 
         it('Invalid block with wrong hash of block in precommit', function() {
             expect(Exonum.verifyBlock({
-                block: {
-                    height: 1
-                },
-                precommits: [{
-                    body: {
-                        height: 1,
-                        validator: 0,
-                        block_hash: '63b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d2'
+                    "block": {
+                        "height": "5",
+                        "propose_round": 3,
+                        "time": "1487008150005000000",
+                        "prev_hash": "fe5c606da552b2a3ad0ff8ef400a7071e9e72ab3b5f5c2996416ceb86c7f2c1e",
+                        "tx_hash": "136c7952ed9f26b477797c23cf3d02faa46863ecc70d595b0b227027aacd0f94",
+                        "state_hash": "bea2a1defd3b2ab410a1f501805d10ad94d30a5b5a1240574cade1553a60e189"
                     },
-                    signature: '63b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d263b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d2'
-                }]
-            })).to.equal(false);
+                    "precommits": [
+                        {
+                            "body": {
+                                "validator": 0,
+                                "height": "5",
+                                "round": 3,
+                                "propose_hash": "1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a",
+                                "block_hash": "1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a"
+                            },
+                            "signature": "4616ef4bfac86c8ded9aa9c7e84958574e3f9df4f7aadea8b37dcdb40ebedd8ac009f8a9b54bd907bf4f43289bfec72e47e6338912f282a6b5a5ce8c558ef50b"
+                        },
+                        {
+                            "body": {
+                                "validator": 2,
+                                "height": "5",
+                                "round": 3,
+                                "propose_hash": "1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a",
+                                "block_hash": "1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a"
+                            },
+                            "signature": "5253cba87af1abac95c7c92f06b2b286af84353fd060ea1069f107094d97298473fe6431613c3e2d02d92624c82394b86cec047cd681e0f3fc98f0f877383a04"
+                        },
+                        {
+                            "body": {
+                                "validator": 3,
+                                "height": "5",
+                                "round": 3,
+                                "propose_hash": "1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a",
+                                "block_hash": "1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a"
+                            },
+                            "signature": "e35a3cb1ca834cce77d67d5945ef1d7021488a357a35e973cd1ef17099d4db55a28123d95f9c5dcedf34c86a12c20e91cc47622612039115f2a376d7e5f7ab00"
+                        }
+                    ]
+                }
+            )).to.equal(false);
         });
 
         it('Invalid block with wrong round in precommit', function() {
             expect(Exonum.verifyBlock({
-                block: {
-                    height: 1
-                },
-                precommits: [{
-                    body: {
-                        height: 1,
-                        validator: 0,
-                        round: 1,
-                        block_hash: '5401c3c0f5ae4505d70fb3df8648b03e29d682cc369dc63236469899397a171e'
+                    "block": {
+                        "height": "5",
+                        "propose_round": 3,
+                        "time": "1487008150005000000",
+                        "prev_hash": "fe5c606da552b2a3ad0ff8ef400a7071e9e72ab3b5f5c2996416ceb86c7f2c1e",
+                        "tx_hash": "136c7952ed9f26b477797c23cf3d02faa46863ecc70d595b0b227027aacd0f94",
+                        "state_hash": "bea2a1defd3b2ab410a1f501805d10ad94d30a5b5a1240574cade1553a60e189"
                     },
-                    signature: '63b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d263b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d2'
-                }, {
-                    body: {
-                        height: 1,
-                        validator: 0,
-                        round: 2,
-                        block_hash: '5401c3c0f5ae4505d70fb3df8648b03e29d682cc369dc63236469899397a171e'
-                    },
-                    signature: '63b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d263b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d2'
-                }]
-            })).to.equal(false);
+                    "precommits": [
+                        {
+                            "body": {
+                                "validator": 0,
+                                "height": "5",
+                                "round": 3,
+                                "propose_hash": "1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a",
+                                "block_hash": "c2513f88478a32767c3cf7c068d60523212a005374d8d7398473c9601bf3d369"
+                            },
+                            "signature": "4616ef4bfac86c8ded9aa9c7e84958574e3f9df4f7aadea8b37dcdb40ebedd8ac009f8a9b54bd907bf4f43289bfec72e47e6338912f282a6b5a5ce8c558ef50b"
+                        },
+                        {
+                            "body": {
+                                "validator": 2,
+                                "height": "5",
+                                "round": 3,
+                                "propose_hash": "1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a",
+                                "block_hash": "c2513f88478a32767c3cf7c068d60523212a005374d8d7398473c9601bf3d369"
+                            },
+                            "signature": "5253cba87af1abac95c7c92f06b2b286af84353fd060ea1069f107094d97298473fe6431613c3e2d02d92624c82394b86cec047cd681e0f3fc98f0f877383a04"
+                        },
+                        {
+                            "body": {
+                                "validator": 1,
+                                "height": "5",
+                                "round": 7,
+                                "propose_hash": "1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a",
+                                "block_hash": "c2513f88478a32767c3cf7c068d60523212a005374d8d7398473c9601bf3d369"
+                            },
+                            "signature": "fc7d8d9150db263f03cb8a141b6a372a0bed1fa21128907b52485ad37ea19e71342ebbd8f80e76c81e42d125e3a2e4e15189212f6f78a307005c63c0eade6c06"
+                        }
+                    ]
+                }
+            )).to.equal(false);
         });
 
         it('Invalid block with wrong signature of precommit', function() {
             expect(Exonum.verifyBlock({
-                block: {
-                    height: 1
-                },
-                precommits: [{
-                    body: {
-                        height: 1,
-                        validator: 0,
-                        round: 1,
-                        block_hash: '5401c3c0f5ae4505d70fb3df8648b03e29d682cc369dc63236469899397a171e'
+                    "block": {
+                        "height": "5",
+                        "propose_round": 3,
+                        "time": "1487008150005000000",
+                        "prev_hash": "fe5c606da552b2a3ad0ff8ef400a7071e9e72ab3b5f5c2996416ceb86c7f2c1e",
+                        "tx_hash": "136c7952ed9f26b477797c23cf3d02faa46863ecc70d595b0b227027aacd0f94",
+                        "state_hash": "bea2a1defd3b2ab410a1f501805d10ad94d30a5b5a1240574cade1553a60e189"
                     },
-                    signature: '63b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d263b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d2'
-                }]
-            })).to.equal(false);
+                    "precommits": [
+                        {
+                            "body": {
+                                "validator": 0,
+                                "height": "5",
+                                "round": 3,
+                                "propose_hash": "1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a",
+                                "block_hash": "c2513f88478a32767c3cf7c068d60523212a005374d8d7398473c9601bf3d369"
+                            },
+                            "signature": "5616ef4bfac86c8ded9aa9c7e84958574e3f9df4f7aadea8b37dcdb40ebedd8ac009f8a9b54bd907bf4f43289bfec72e47e6338912f282a6b5a5ce8c558ef50b"
+                        }
+                    ]
+                }
+            )).to.equal(false);
         });
 
         it('Invalid block with insufficient precommits from unique validators', function() {
             expect(Exonum.verifyBlock({
-                block: {
-                    height: 1
-                },
-                precommits: [{
-                    body: {
-                        height: 1,
-                        validator: 0,
-                        round: 1,
-                        block_hash: '5401c3c0f5ae4505d70fb3df8648b03e29d682cc369dc63236469899397a171e'
+                    "block": {
+                        "height": "5",
+                        "propose_round": 3,
+                        "time": "1487008150005000000",
+                        "prev_hash": "fe5c606da552b2a3ad0ff8ef400a7071e9e72ab3b5f5c2996416ceb86c7f2c1e",
+                        "tx_hash": "136c7952ed9f26b477797c23cf3d02faa46863ecc70d595b0b227027aacd0f94",
+                        "state_hash": "bea2a1defd3b2ab410a1f501805d10ad94d30a5b5a1240574cade1553a60e189"
                     },
-                    signature: '63b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d263b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d2'
-                }, {
-                    body: {
-                        height: 1,
-                        validator: 0,
-                        round: 1,
-                        block_hash: '5401c3c0f5ae4505d70fb3df8648b03e29d682cc369dc63236469899397a171e'
-                    },
-                    signature: '63b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d263b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d2'
-                }]
-            })).to.equal(false);
+                    "precommits": [
+                        {
+                            "body": {
+                                "validator": 0,
+                                "height": "5",
+                                "round": 3,
+                                "propose_hash": "1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a",
+                                "block_hash": "c2513f88478a32767c3cf7c068d60523212a005374d8d7398473c9601bf3d369"
+                            },
+                            "signature": "4616ef4bfac86c8ded9aa9c7e84958574e3f9df4f7aadea8b37dcdb40ebedd8ac009f8a9b54bd907bf4f43289bfec72e47e6338912f282a6b5a5ce8c558ef50b"
+                        }
+                    ]
+                }
+            )).to.equal(false);
         });
 
     });

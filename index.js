@@ -51,6 +51,7 @@ var ThinClient = (function() {
     });
     var Block = createNewType({
         size: 116,
+        littleEndian: true,
         fields: {
             height: {type: Uint64, size: 8, from: 0, to: 8},
             propose_round: {type: Uint32, size: 4, from: 8, to: 12},
