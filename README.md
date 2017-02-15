@@ -5,17 +5,20 @@ JavaScript toolkit to work with Exonum blockchain in both of browser and Node.js
 #### Table of Contents:
 * [Use in browser](#use-in-browser)
 * [Use in Node.js](#use-in-nodejs)
-* [API methods](#api-methods)
+* API
    * Custom data formats:
       * [newType](#newtype)
       * [newMessage](#newmessage)
    * [Get hash](#hash)
-   * [Sign](#sign)
+   * [Sign data](#sign)
    * [Verify signature](#verifysignature)
    * [Verify block of precommits](#verifyblockdata)
    * Proofs of existence:
       * [merkleProof](#merkleproofroothash-count-proofnode-range-type)
       * [merklePatriciaProof](#merklepatriciaproofroothash-proof-key)
+   * Helpers
+      * [Generate key pair](#keypair)
+      * [Generate random number](#randomuint64)
 * Built-in types:
    * [Int8](#int8)
    * [Int16](#int16)
@@ -400,6 +403,21 @@ Returns elements data in JSON format if tree is valid and element is found.
 Returns `null` if tree is valid but element is not found.
 
 Returns `undefined` if tree is not valid.
+
+### keyPair
+
+Returns random pair of `publicKey` and `secretKey` as hexadecimal strings.
+
+```javascript
+{
+    publicKey: ...,
+    secretKey: ...
+}
+```
+
+### randomUint64
+
+Returns random integer in range from `0` to `18446744073709551615`.
 
 ## Built-in types
 

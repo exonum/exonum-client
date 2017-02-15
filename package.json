@@ -13,15 +13,15 @@
   },
   "dependencies": {
     "big-integer": "^1.6.17",
-    "browserify": "^13.1.1",
     "object-assign": "^4.1.0",
     "sha.js": "^2.4.8",
-    "tweetnacl": "^0.14.5",
-    "uglifyjs": "^2.4.10"
+    "tweetnacl": "^0.14.5"
   },
   "devDependencies": {
+    "browserify": "^13.1.1",
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
-    "nyc": "^10.1.2"
+    "nyc": "^10.1.2",
+    "uglifyjs": "^2.4.10"
   }
 }

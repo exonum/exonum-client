@@ -6,7 +6,7 @@ var objectAssign = require('object-assign');
 var fs = require('fs');
 var bigInt = require("big-integer");
 
-var ThinClient = (function() {
+var ExonumClient = (function() {
 
     var CONFIG = require('./config.json');
     var CONST = {
@@ -1616,6 +1616,30 @@ var ThinClient = (function() {
         return true;
     }
 
+    /**
+     * Generate random pair of publicKey and secretKey
+     * @return {Object}
+     *  publicKey {String}
+     *  secretKey {String}
+     */
+    function keyPair() {
+        var pair = nacl.box.keyPair();
+        var publicKey = uint8ArrayToHexadecimal(pair.publicKey);
+        var secretKey = uint8ArrayToHexadecimal(pair.secretKey);
+
+        return {
+            publicKey: publicKey,
+            secretKey: secretKey
+        }
+    }
+
+    /** Generate random number of type of Uint64
+     * @return {String}
+     */
+    function randomUint64() {
+        return bigInt.randBetween(0, CONST.MAX_UINT64);
+    }
+
     return {
 
         // API methods
@@ -1627,6 +1651,8 @@ var ThinClient = (function() {
         merkleProof: merkleProof,
         merklePatriciaProof: merklePatriciaProof,
         verifyBlock: verifyBlock,
+        keyPair: keyPair,
+        randomUint64: randomUint64,
 
         // built-in types
         Int8: Int8,
@@ -1648,4 +1674,4 @@ var ThinClient = (function() {
 
 })();
 
-module.exports = ThinClient;
+module.exports = ExonumClient;
