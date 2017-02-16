@@ -2206,6 +2206,23 @@ describe('Client for Exonum blockchain platform: ', function() {
             ]);
         });
 
+        it('Valid tree with hashes in values', function() {
+            var data = require('./common_data/valid-merkle-tree-with-hashes-as-values.json');
+            var elements = Exonum.merkleProof(
+                data.root_hash,
+                data.list_length,
+                data.proof,
+                [data.range_st, data.range_end - 1]
+            );
+            expect(elements).to.deep.equal([
+                '6b12e527ec9c6c0254a64bee9e6bbcc46b42c28d822cd84f052d0fc188b74f2b',
+                'a51c09752dbbd672aa9bb1c1741bcf225027e8826065295418b141937f3e72f4',
+                '0848c44013f082dced067c631550b8ba91764582f82aef6b63a8f2203ae488b2',
+                '36c5278cecf57e032089a258185bec2bd924a98a8807750c3ef0d40dae60f8df',
+                '8a817f5d86a7c16ae2dc5bbf12d20e0df7d3cf5f10af8a3a8ab8196889d13059'
+            ]);
+        });
+
         it('Invalid tree with invalid rootHash', function() {
             var elements;
 
@@ -3222,6 +3239,16 @@ describe('Client for Exonum blockchain platform: ', function() {
                 data.searched_key
             );
             expect(element).to.deep.equal([36, 49, 15, 31, 163, 171, 247, 217]);
+        });
+
+        it('Valid tree with hashes in values', function() {
+            var data = require('./common_data/valid-merkle-patricia-tree-with-hashes-as-values.json');
+            var element = Exonum.merklePatriciaProof(
+                data.root_hash,
+                data.proof,
+                data.searched_key
+            );
+            expect(element).to.equal('d7897e2f9d336f6ef53315f26c720193c5c22854850c6d66c380d05172e92acd');
         });
 
         it('Invalid tree with invalid rootHash parameter', function() {

@@ -20,6 +20,7 @@
   "devDependencies": {
     "browserify": "^13.1.1",
     "chai": "^3.5.0",
+    "coveralls": "^2.11.16",
     "mocha": "^3.2.0",
     "nyc": "^10.1.2",
     "uglifyjs": "^2.4.10"

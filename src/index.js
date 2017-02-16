@@ -1040,57 +1040,56 @@ var ExonumClient = (function() {
          * @param {Number} index
          * @returns {String}
          */
-        function getNodeValue(data, depth, index) {
+        function getHash(data, depth, index) {
             var element;
-            var buffer;
             var elementsHash;
 
             if ((depth + 1) !== height) {
                 console.error('Value node is on wrong height in tree.');
-                return null;
+                return;
             } else if (index < start || index > end) {
                 console.error('Wrong index of value node.');
-                return null;
+                return;
             } else if ((start + elements.length) !== index) {
                 console.error('Value node is on wrong position in tree.');
-                return null;
+                return;
             }
 
-            if (typeof type === 'undefined') {
-                if (Array.isArray(data)) {
-                    if (validateBytesArray(data)) {
-                        element = data.slice(0); // clone array of 8-bit integers
-                        buffer = element;
-                    } else {
-                        console.error('Invalid array of 8-bit integers in tree.');
-                        return null;
-                    }
+            if (typeof data === 'string') {
+                if (validateHexHash(data)) {
+                    element = data;
+                    elementsHash = hash(hexadecimalToUint8Array(element));
                 } else {
-                    console.error('Invalid value of type parameter. Array of 8-bit integers expected.');
-                    return null;
+                    console.error('Invalid hexadecimal string is passed as value in tree.');
+                    return;
                 }
-            } else if (NewType.prototype.isPrototypeOf(type)) {
-                if (isObject(data)) {
+            } else if (Array.isArray(data)) {
+                if (validateBytesArray(data)) {
+                    element = data.slice(0); // clone array of 8-bit integers
+                    elementsHash = hash(element);
+                } else {
+                    console.error('Invalid array of 8-bit integers in tree.');
+                    return;
+                }
+            } else if (isObject(data)) {
+                if (NewType.prototype.isPrototypeOf(type)) {
                     element = objectAssign(data); // deep copy
-                    buffer = type.serialize(data);
-                    if (typeof buffer === 'undefined') {
-                        return null;
-                    }
+                    elementsHash = hash(element, type);
                 } else {
-                    console.error('Invalid value node in tree. Object expected.');
-                    return null;
+                    console.error('Invalid type of type parameter.');
+                    return;
                 }
-
             } else {
-                console.error('Invalid type of type parameter.');
-                return null;
+                console.error('Invalid value of data parameter.');
+                return;
+            }
+
+            if (typeof elementsHash === 'undefined') {
+                return;
             }
 
             elements.push(element);
-
-            elementsHash = hash(buffer);
-
-            return elementsHash || null;
+            return elementsHash;
         }
 
         /**
@@ -1098,7 +1097,7 @@ var ExonumClient = (function() {
          * @param {Object} node
          * @param {Number} depth
          * @param {Number} index
-         * @returns {null}
+         * @returns {String}
          */
         function recursive(node, depth, index) {
             var hashLeft;
@@ -1113,11 +1112,11 @@ var ExonumClient = (function() {
                     hashLeft = node.left;
                 } else if (isObject(node.left)) {
                     if (typeof node.left.val !== 'undefined') {
-                        hashLeft = getNodeValue(node.left.val, depth, index * 2);
+                        hashLeft = getHash(node.left.val, depth, index * 2);
                     } else {
                         hashLeft = recursive(node.left, depth + 1, index * 2);
                     }
-                    if (hashLeft === null) {
+                    if (typeof hashLeft === 'undefined') {
                         return null;
                     }
                 } else {
@@ -1141,11 +1140,11 @@ var ExonumClient = (function() {
                     hashRight = node.right;
                 } else if (isObject(node.right)) {
                     if (typeof node.right.val !== 'undefined') {
-                        hashRight = getNodeValue(node.right.val, depth, index * 2 + 1);
+                        hashRight = getHash(node.right.val, depth, index * 2 + 1);
                     } else {
                         hashRight = recursive(node.right, depth + 1, index * 2 + 1);
                     }
-                    if (hashRight === null) {
+                    if (typeof hashRight === 'undefined') {
                         return null;
                     }
                 } else {
@@ -1163,7 +1162,7 @@ var ExonumClient = (function() {
                 summingBuffer = hexadecimalToUint8Array(hashLeft);
             }
 
-            return hash(summingBuffer) || null;
+            return hash(summingBuffer);
         }
 
         var elements = [];
@@ -1198,7 +1197,7 @@ var ExonumClient = (function() {
         var end = (range[1] < count) ? range[1] : (count - 1);
         var actualHash = recursive(proofNode, 0, 0);
 
-        if (actualHash === null) { // tree is invalid
+        if (typeof actualHash === 'undefined') { // tree is invalid
             return undefined;
         } else if (rootHash.toLowerCase() !== actualHash) {
             console.error('rootHash parameter is not equal to actual hash.');
@@ -1223,21 +1222,39 @@ var ExonumClient = (function() {
         /**
          * Get value from node
          * @param data
-         * @returns {Array}
+         * @returns {String || Array || Object}
          */
-        function getNodeValue(data) {
-            if (Array.isArray(data)) {
-                if (validateBytesArray(data)) {
-                    return data.slice(0); // clone array of 8-bit integers
+        function getHash(data) {
+            var elementsHash;
+
+            if (typeof data === 'string') {
+                if (validateHexHash(data)) {
+                    element = data;
+                    elementsHash = hash(hexadecimalToUint8Array(element));
                 } else {
-                    return null;
+                    console.error('Invalid hexadecimal string is passed as value in tree.');
+                    return;
+                }
+            } else if (Array.isArray(data)) {
+                if (validateBytesArray(data)) {
+                    element = data.slice(0); // clone array of 8-bit integers
+                    elementsHash = hash(element);
+                } else {
+                    return;
                 }
             } else if (isObject(data)) {
-                return objectAssign(data); // deep copy
+                element = objectAssign(data); // deep copy
+                elementsHash = hash(element, type);
             } else {
                 console.error('Invalid value node in tree. Object expected.');
-                return null;
+                return;
             }
+
+            if (typeof elementsHash === 'undefined') {
+                return;
+            }
+
+            return elementsHash;
         }
 
         /**
@@ -1255,7 +1272,7 @@ var ExonumClient = (function() {
          * Recursive tree traversal function
          * @param {Object} node
          * @param {String} keyPrefix
-         * @returns {null}
+         * @returns {String}
          */
         function recursive(node, keyPrefix) {
             if (getObjectLength(node) !== 2) {
@@ -1298,12 +1315,7 @@ var ExonumClient = (function() {
                             return null;
                         }
 
-                        element = getNodeValue(nodeValue.val);
-                        if (element === null) {
-                            return null;
-                        }
-
-                        branchValueHash = hash(element, type);
+                        branchValueHash = getHash(nodeValue.val);
                         if (typeof branchValueHash === 'undefined') {
                             return null;
                         }
@@ -1478,7 +1490,7 @@ var ExonumClient = (function() {
 
                     if (rootHash === nodeHash) {
                         if (key !== nodeKey) {
-                            return null; // element was not found in tree
+                            return null; // no element with data in tree
                         } else {
                             console.error('Invalid key with hash is in the root of proofNode parameter.');
                             return undefined;
@@ -1488,12 +1500,7 @@ var ExonumClient = (function() {
                         return undefined;
                     }
                 } else if (isObject(data)) {
-                    element = getNodeValue(data.val);
-                    if (element === null) {
-                        return undefined;
-                    }
-
-                    var elementsHash = hash(element, type);
+                    var elementsHash = getHash(data.val);
                     if (typeof elementsHash === 'undefined') {
                         return undefined;
                     }
@@ -1532,9 +1539,11 @@ var ExonumClient = (function() {
             } else if (rootHash !== actualHash) {
                 console.error('rootHash parameter is not equal to actual hash.');
                 return undefined;
+            } else if (typeof element === 'undefined') {
+                return null; // no element with data in tree
             }
 
-            return element || null;
+            return element;
         }
     }
 
