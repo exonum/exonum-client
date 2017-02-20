@@ -117,18 +117,6 @@ var paymentData = {
 var buffer = Payment.serialize(paymentData);
 ```
 
-All numeric fields of `newType` object are serialized as big endian by-default. To serialize them as little andian use `littleEndian: true` flag:
-
-```
-var SomeType = Exonum.newType({
-    size: 16,
-    littleEndian: true,
-    fields: {
-        ...
-    }
-});
-```
-
 ### newMessage
 
 Used to describe custom data format to make it possible to serialize data of this format into array of 8-bit integers.
@@ -171,8 +159,6 @@ var userData = {
 
 var buffer = CreateUser.serialize(userData);
 ```
-
-All numeric fields of `newMessage` object are serialized as little endian.
 
 ### hash
 

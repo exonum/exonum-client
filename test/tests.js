@@ -314,7 +314,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {since: 1483979894237};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0, 1, 89, 132, 24, 45, 221]);
+            expect(buffer).to.deep.equal([221, 45, 24, 132, 89, 1, 0, 0]);
         });
 
         it('Input correct timestamp in nanoseconds as string', function() {
@@ -486,7 +486,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {text: 'Hello world'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 8, 0, 0, 0, 11, 72, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100]);
+            expect(buffer).to.deep.equal([8, 0, 0, 0, 11, 0, 0, 0, 72, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100]);
         });
 
         it('Input wrong segment range', function() {
@@ -555,33 +555,9 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(buffer).to.deep.equal([120]);
         });
 
-        it('Input correct number to serialize in little endian', function() {
-            var Type = Exonum.newType({
-                size: 1,
-                littleEndian: true,
-                fields: {balance: {type: Exonum.Int8, size: 1, from: 0, to: 1}}
-            });
-            var data = {balance: 120};
-            var buffer = Type.serialize(data);
-
-            expect(buffer).to.deep.equal([120]);
-        });
-
         it('Input correct negative number', function() {
             var Type = Exonum.newType({
                 size: 1,
-                fields: {balance: {type: Exonum.Int8, size: 1, from: 0, to: 1}}
-            });
-            var data = {balance: -120};
-            var buffer = Type.serialize(data);
-
-            expect(buffer).to.deep.equal([136]);
-        });
-
-        it('Input correct negative number to serialize in little endian', function() {
-            var Type = Exonum.newType({
-                size: 1,
-                littleEndian: true,
                 fields: {balance: {type: Exonum.Int8, size: 1, from: 0, to: 1}}
             });
             var data = {balance: -120};
@@ -671,36 +647,12 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {balance: 30767};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([120, 47]);
-        });
-
-        it('Input correct number to serialize in little endian', function() {
-            var Type = Exonum.newType({
-                size: 2,
-                littleEndian: true,
-                fields: {balance: {type: Exonum.Int16, size: 2, from: 0, to: 2}}
-            });
-            var data = {balance: 30767};
-            var buffer = Type.serialize(data);
-
             expect(buffer).to.deep.equal([47, 120]);
         });
 
         it('Input correct negative number', function() {
             var Type = Exonum.newType({
                 size: 2,
-                fields: {balance: {type: Exonum.Int16, size: 2, from: 0, to: 2}}
-            });
-            var data = {balance: -30767};
-            var buffer = Type.serialize(data);
-
-            expect(buffer).to.deep.equal([135, 209]);
-        });
-
-        it('Input correct negative number to serialize in little endian', function() {
-            var Type = Exonum.newType({
-                size: 2,
-                littleEndian: true,
                 fields: {balance: {type: Exonum.Int16, size: 2, from: 0, to: 2}}
             });
             var data = {balance: -30767};
@@ -790,36 +742,12 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {balance: 1147483647};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([68, 101, 53, 255]);
-        });
-
-        it('Input correct number to serialize in little endian', function() {
-            var Type = Exonum.newType({
-                size: 4,
-                littleEndian: true,
-                fields: {balance: {type: Exonum.Int32, size: 4, from: 0, to: 4}}
-            });
-            var data = {balance: 1147483647};
-            var buffer = Type.serialize(data);
-
             expect(buffer).to.deep.equal([255, 53, 101, 68]);
         });
 
         it('Input correct negative number', function() {
             var Type = Exonum.newType({
                 size: 4,
-                fields: {balance: {type: Exonum.Int32, size: 4, from: 0, to: 4}}
-            });
-            var data = {balance: -1147483648};
-            var buffer = Type.serialize(data);
-
-            expect(buffer).to.deep.equal([187, 154, 202, 0]);
-        });
-
-        it('Input correct negative number to serialize in little endian', function() {
-            var Type = Exonum.newType({
-                size: 4,
-                littleEndian: true,
                 fields: {balance: {type: Exonum.Int32, size: 4, from: 0, to: 4}}
             });
             var data = {balance: -1147483648};
@@ -909,18 +837,6 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {balance: 900719925474000};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 3, 51, 51, 51, 51, 50, 208]);
-        });
-
-        it('Input correct number to serialize in little endian', function() {
-            var Type = Exonum.newType({
-                size: 8,
-                littleEndian: true,
-                fields: {balance: {type: Exonum.Int64, size: 8, from: 0, to: 8}}
-            });
-            var data = {balance: 900719925474000};
-            var buffer = Type.serialize(data);
-
             expect(buffer).to.deep.equal([208, 50, 51, 51, 51, 51, 3, 0]);
         });
 
@@ -932,24 +848,12 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {balance: '9223372036854775807'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([127, 255, 255, 255, 255, 255, 255, 255]);
+            expect(buffer).to.deep.equal([255, 255, 255, 255, 255, 255, 255, 127]);
         });
 
         it('Input correct negative number', function() {
             var Type = Exonum.newType({
                 size: 8,
-                fields: {balance: {type: Exonum.Int64, size: 8, from: 0, to: 8}}
-            });
-            var data = {balance: '-9223372036854775808'};
-            var buffer = Type.serialize(data);
-
-            expect(buffer).to.deep.equal([128, 0, 0, 0, 0, 0, 0, 0]);
-        });
-
-        it('Input correct negative number to serialize in little endian', function() {
-            var Type = Exonum.newType({
-                size: 8,
-                littleEndian: true,
                 fields: {balance: {type: Exonum.Int64, size: 8, from: 0, to: 8}}
             });
             var data = {balance: '-9223372036854775808'};
@@ -1042,18 +946,6 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(buffer).to.deep.equal([230]);
         });
 
-        it('Input correct number to serialize in little endian', function() {
-            var Type = Exonum.newType({
-                size: 1,
-                littleEndian: true,
-                fields: {balance: {type: Exonum.Uint8, size: 1, from: 0, to: 1}}
-            });
-            var data = {balance: 230};
-            var buffer = Type.serialize(data);
-
-            expect(buffer).to.deep.equal([230]);
-        });
-
         it('Input wrong segment range', function() {
             var Type = Exonum.newType({
                 size: 1,
@@ -1130,18 +1022,6 @@ describe('Client for Exonum blockchain platform: ', function() {
         it('Input correct number', function() {
             var Type = Exonum.newType({
                 size: 2,
-                fields: {balance: {type: Exonum.Uint16, size: 2, from: 0, to: 2}}
-            });
-            var data = {balance: 60535};
-            var buffer = Type.serialize(data);
-
-            expect(buffer).to.deep.equal([236, 119]);
-        });
-
-        it('Input correct number to serialize in little endian', function() {
-            var Type = Exonum.newType({
-                size: 2,
-                littleEndian: true,
                 fields: {balance: {type: Exonum.Uint16, size: 2, from: 0, to: 2}}
             });
             var data = {balance: 60535};
@@ -1231,18 +1111,6 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {balance: 613228};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 9, 91, 108]);
-        });
-
-        it('Input correct number to serialize in little endian', function() {
-            var Type = Exonum.newType({
-                size: 4,
-                littleEndian: true,
-                fields: {balance: {type: Exonum.Uint32, size: 4, from: 0, to: 4}}
-            });
-            var data = {balance: 613228};
-            var buffer = Type.serialize(data);
-
             expect(buffer).to.deep.equal([108, 91, 9, 0]);
         });
 
@@ -1319,7 +1187,7 @@ describe('Client for Exonum blockchain platform: ', function() {
      */
     describe('Process Uint64:', function() {
 
-        it('Input correct number', function() {
+        it('Input correct number to serialize in little endian', function() {
             var Type = Exonum.newType({
                 size: 8,
                 fields: {balance: {type: Exonum.Uint64, size: 8, from: 0, to: 8}}
@@ -1327,7 +1195,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {balance: 613228};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 9, 91, 108]);
+            expect(buffer).to.deep.equal([108, 91, 9, 0, 0, 0, 0, 0]);
         });
 
         it('Input correct potentially unsafe number', function() {
@@ -1338,19 +1206,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var data = {balance: '9007199254740993'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.deep.equal([0, 32, 0, 0, 0, 0, 0, 1]);
-        });
-
-        it('Input correct number to serialize in little endian', function() {
-            var Type = Exonum.newType({
-                size: 8,
-                littleEndian: true,
-                fields: {balance: {type: Exonum.Uint64, size: 8, from: 0, to: 8}}
-            });
-            var data = {balance: 613228};
-            var buffer = Type.serialize(data);
-
-            expect(buffer).to.deep.equal([108, 91, 9, 0, 0, 0, 0, 0]);
+            expect(buffer).to.deep.equal([1, 0, 0, 0, 0, 0, 32, 0]);
         });
 
         it('Input wrong segment range', function() {
@@ -1451,7 +1307,7 @@ describe('Client for Exonum blockchain platform: ', function() {
 
             var buffer = Wallet.serialize(walletData);
 
-            expect(buffer).to.deep.equal([245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161, 242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54, 0, 0, 0, 80, 0, 0, 0, 12, 0, 0, 0, 0, 0, 5, 122, 208, 103, 82, 190, 136, 35, 20, 245, 187, 188, 154, 106, 242, 174, 99, 79, 192, 112, 56, 88, 74, 74, 119, 81, 14, 165, 236, 237, 69, 245, 77, 192, 48, 83, 109, 97, 114, 116, 32, 119, 97, 108, 108, 101, 116]);
+            expect(buffer).to.deep.equal([245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161, 242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54, 80, 0, 0, 0, 12, 0, 0, 0, 208, 122, 5, 0, 0, 0, 0, 0, 103, 82, 190, 136, 35, 20, 245, 187, 188, 154, 106, 242, 174, 99, 79, 192, 112, 56, 88, 74, 74, 119, 81, 14, 165, 236, 237, 69, 245, 77, 192, 48, 83, 109, 97, 114, 116, 32, 119, 97, 108, 108, 101, 116]);
         });
 
         it('Check array of 8-bit integers of the data of type complicated non-fixed type Transaction', function() {
@@ -1484,7 +1340,7 @@ describe('Client for Exonum blockchain platform: ', function() {
 
             var buffer = Transaction.serialize(transactionData);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 40, 0, 0, 0, 23, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 0, 27, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 200, 0, 0, 0, 56, 0, 0, 0, 4, 0, 0, 0, 60, 0, 0, 0, 3, 74, 111, 104, 110, 68, 111, 101, 0, 0, 0, 79, 0, 0, 0, 6, 0, 0, 0, 85, 0, 0, 0, 5, 83, 116, 101, 118, 101, 110, 66, 108, 97, 99, 107]);
+            expect(buffer).to.deep.equal([40, 0, 0, 0, 23, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 0, 27, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 200, 0, 0, 0, 0, 0, 0, 0, 56, 0, 0, 0, 4, 0, 0, 0, 60, 0, 0, 0, 3, 0, 0, 0, 74, 111, 104, 110, 68, 111, 101, 79, 0, 0, 0, 6, 0, 0, 0, 85, 0, 0, 0, 5, 0, 0, 0, 83, 116, 101, 118, 101, 110, 66, 108, 97, 99, 107]);
         });
 
         it('Check array of 8-bit integers of the data of type complicated fixed type Transaction', function() {
@@ -1517,7 +1373,7 @@ describe('Client for Exonum blockchain platform: ', function() {
 
             var buffer = Transaction.serialize(transactionData);
 
-            expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 57, 0, 0, 0, 0, 0, 0, 1, 244, 0, 0, 0, 0, 0, 0, 3, 153, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 200]);
+            expect(buffer).to.deep.equal([57, 0, 0, 0, 0, 0, 0, 0, 244, 1, 0, 0, 0, 0, 0, 0, 153, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 200, 0, 0, 0, 0, 0, 0, 0]);
         });
 
         it('Send data with inherited properties that should be ignored', function() {
@@ -1553,7 +1409,7 @@ describe('Client for Exonum blockchain platform: ', function() {
 
             var buffer = Wallet.serialize(walletData);
 
-            expect(buffer).to.deep.equal([245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161, 242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54, 0, 0, 0, 80, 0, 0, 0, 12, 0, 0, 0, 0, 0, 5, 122, 208, 103, 82, 190, 136, 35, 20, 245, 187, 188, 154, 106, 242, 174, 99, 79, 192, 112, 56, 88, 74, 74, 119, 81, 14, 165, 236, 237, 69, 245, 77, 192, 48, 83, 109, 97, 114, 116, 32, 119, 97, 108, 108, 101, 116]);
+            expect(buffer).to.deep.equal([245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161, 242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54, 80, 0, 0, 0, 12, 0, 0, 0, 208, 122, 5, 0, 0, 0, 0, 0, 103, 82, 190, 136, 35, 20, 245, 187, 188, 154, 106, 242, 174, 99, 79, 192, 112, 56, 88, 74, 74, 119, 81, 14, 165, 236, 237, 69, 245, 77, 192, 48, 83, 109, 97, 114, 116, 32, 119, 97, 108, 108, 101, 116]);
         });
 
         it('Break on missed data parameters', function() {
@@ -1597,7 +1453,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             };
             var hash = Exonum.hash(walletData, Wallet);
 
-            expect(hash).to.equal('7ba0c9544176ce7e079da9c7869fc91dca2cfa4b8dc1c6098f74d96b75542e12');
+            expect(hash).to.equal('86b47510fbcbc83f9926d8898a57c53662518c97502625a6d131842f2003f974');
         });
 
         it('Get hash of the data of NewMessage type', function() {
@@ -1642,7 +1498,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var buffer = Wallet.serialize(walletData);
             var hash = Exonum.hash(buffer);
 
-            expect(hash).to.equal('7ba0c9544176ce7e079da9c7869fc91dca2cfa4b8dc1c6098f74d96b75542e12');
+            expect(hash).to.equal('86b47510fbcbc83f9926d8898a57c53662518c97502625a6d131842f2003f974');
         });
 
         it('Insert data of wrong NewType type', function() {
@@ -1725,7 +1581,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             };
             var signature = Exonum.sign(userData, User, secretKey);
 
-            expect(signature).to.equal('9e0f0122c2963b76ba10842951cd1b67c8197b3f964c34f8b667aa655a7b4a8d844d567698d99de30590fc5002ddb4b9b5927ec05cd73572b972cb6b034cd40b');
+            expect(signature).to.equal('7ccad21d76359c8c3ed1161eb8231edd44a91d53ea468d23f8528e2985e5547f72f98ccc61d96ecad173bdc29627abbf6d46908807f6dd0a0d767ae3887d040e');
         });
 
         it('Get signature of the data of NewMessage type', function() {
@@ -1768,7 +1624,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var buffer = User.serialize(userData);
             var signature = Exonum.sign(buffer, secretKey);
 
-            expect(signature).to.equal('9e0f0122c2963b76ba10842951cd1b67c8197b3f964c34f8b667aa655a7b4a8d844d567698d99de30590fc5002ddb4b9b5927ec05cd73572b972cb6b034cd40b');
+            expect(signature).to.equal('7ccad21d76359c8c3ed1161eb8231edd44a91d53ea468d23f8528e2985e5547f72f98ccc61d96ecad173bdc29627abbf6d46908807f6dd0a0d767ae3887d040e');
         });
 
         it('Input data parameter of wrong NewType type', function() {
@@ -1901,7 +1757,7 @@ describe('Client for Exonum blockchain platform: ', function() {
 
         it('Verify signature of the data of NewType type', function() {
             var publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
-            var signature = '9e0f0122c2963b76ba10842951cd1b67c8197b3f964c34f8b667aa655a7b4a8d844d567698d99de30590fc5002ddb4b9b5927ec05cd73572b972cb6b034cd40b';
+            var signature = '7ccad21d76359c8c3ed1161eb8231edd44a91d53ea468d23f8528e2985e5547f72f98ccc61d96ecad173bdc29627abbf6d46908807f6dd0a0d767ae3887d040e';
             var User = Exonum.newType({
                 size: 16,
                 fields: {
@@ -1943,7 +1799,7 @@ describe('Client for Exonum blockchain platform: ', function() {
 
         it('Verify signature of the array of 8-bit integers', function() {
             var publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
-            var signature = '9e0f0122c2963b76ba10842951cd1b67c8197b3f964c34f8b667aa655a7b4a8d844d567698d99de30590fc5002ddb4b9b5927ec05cd73572b972cb6b034cd40b';
+            var signature = '7ccad21d76359c8c3ed1161eb8231edd44a91d53ea468d23f8528e2985e5547f72f98ccc61d96ecad173bdc29627abbf6d46908807f6dd0a0d767ae3887d040e';
             var User = Exonum.newType({
                 size: 16,
                 fields: {

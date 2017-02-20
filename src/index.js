@@ -51,7 +51,6 @@ var ExonumClient = (function() {
     });
     var Block = createNewType({
         size: 116,
-        littleEndian: true,
         fields: {
             height: {type: Uint64, size: 8, from: 0, to: 8},
             propose_round: {type: Uint32, size: 4, from: 8, to: 12},
@@ -63,7 +62,6 @@ var ExonumClient = (function() {
     });
     var MessageHead = createNewType({
         size: 10,
-        littleEndian: true,
         fields: {
             network_id: {type: Uint8, size: 1, from: 0, to: 1},
             version: {type: Uint8, size: 1, from: 1, to: 2},
@@ -91,7 +89,6 @@ var ExonumClient = (function() {
      */
     function NewType(type) {
         this.size = type.size;
-        this.littleEndian = type.littleEndian;
         this.fields = type.fields;
     }
 
@@ -115,7 +112,6 @@ var ExonumClient = (function() {
 
     function NewMessage(type) {
         this.size = type.size;
-        this.littleEndian = true;
         this.message_type = type.message_type;
         this.service_id = type.service_id;
         this.fields = type.fields;
@@ -151,9 +147,8 @@ var ExonumClient = (function() {
      * @param {Array} buffer
      * @param {Number} from
      * @param {Number} to
-     * @param {Boolean} littleEndian
      */
-    function Int8(value, buffer, from, to, littleEndian) {
+    function Int8(value, buffer, from, to) {
         if (!validateInteger(value, CONST.MIN_INT8, CONST.MAX_INT8, from, to, 1)) {
             return;
         }
@@ -162,7 +157,7 @@ var ExonumClient = (function() {
             value = CONST.MAX_UINT8 + value + 1
         }
 
-        insertIntegerToByteArray(value, buffer, from, to, littleEndian);
+        insertIntegerToByteArray(value, buffer, from, to);
 
         return buffer;
     }
@@ -173,9 +168,8 @@ var ExonumClient = (function() {
      * @param {Array} buffer
      * @param {Number} from
      * @param {Number} to
-     * @param {Boolean} littleEndian
      */
-    function Int16(value, buffer, from, to, littleEndian) {
+    function Int16(value, buffer, from, to) {
         if (!validateInteger(value, CONST.MIN_INT16, CONST.MAX_INT16, from, to, 2)) {
             return;
         }
@@ -184,7 +178,7 @@ var ExonumClient = (function() {
             value = CONST.MAX_UINT16 + value + 1;
         }
 
-        insertIntegerToByteArray(value, buffer, from, to, littleEndian);
+        insertIntegerToByteArray(value, buffer, from, to);
 
         return buffer;
     }
@@ -195,9 +189,8 @@ var ExonumClient = (function() {
      * @param {Array} buffer
      * @param {Number} from
      * @param {Number} to
-     * @param {Boolean} littleEndian
      */
-    function Int32(value, buffer, from, to, littleEndian) {
+    function Int32(value, buffer, from, to) {
         if (!validateInteger(value, CONST.MIN_INT32, CONST.MAX_INT32, from, to, 4)) {
             return;
         }
@@ -206,7 +199,7 @@ var ExonumClient = (function() {
             value = CONST.MAX_UINT32 + value + 1;
         }
 
-        insertIntegerToByteArray(value, buffer, from, to, littleEndian);
+        insertIntegerToByteArray(value, buffer, from, to);
 
         return buffer;
     }
@@ -217,9 +210,8 @@ var ExonumClient = (function() {
      * @param {Array} buffer
      * @param {Number} from
      * @param {Number} to
-     * @param {Boolean} littleEndian
      */
-    function Int64(value, buffer, from, to, littleEndian) {
+    function Int64(value, buffer, from, to) {
         var val = validateBigInteger(value, CONST.MIN_INT64, CONST.MAX_INT64, from, to, 8);
 
         if (val === false) {
@@ -232,7 +224,7 @@ var ExonumClient = (function() {
             val = bigInt(CONST.MAX_UINT64).plus(1).plus(val);
         }
 
-        insertBigIntegerToByteArray(val, buffer, from, to, littleEndian);
+        insertBigIntegerToByteArray(val, buffer, from, to);
 
         return buffer;
     }
@@ -243,14 +235,13 @@ var ExonumClient = (function() {
      * @param {Array} buffer
      * @param {Number} from
      * @param {Number} to
-     * @param {Boolean} littleEndian
      */
-    function Uint8(value, buffer, from, to, littleEndian) {
+    function Uint8(value, buffer, from, to) {
         if (!validateInteger(value, 0, CONST.MAX_UINT8, from, to, 1)) {
             return;
         }
 
-        insertIntegerToByteArray(value, buffer, from, to, littleEndian);
+        insertIntegerToByteArray(value, buffer, from, to);
 
         return buffer;
     }
@@ -261,14 +252,13 @@ var ExonumClient = (function() {
      * @param {Array} buffer
      * @param {Number} from
      * @param {Number} to
-     * @param {Boolean} littleEndian
      */
-    function Uint16(value, buffer, from, to, littleEndian) {
+    function Uint16(value, buffer, from, to) {
         if (!validateInteger(value, 0, CONST.MAX_UINT16, from, to, 2)) {
             return;
         }
 
-        insertIntegerToByteArray(value, buffer, from, to, littleEndian);
+        insertIntegerToByteArray(value, buffer, from, to);
 
         return buffer;
     }
@@ -279,14 +269,13 @@ var ExonumClient = (function() {
      * @param {Array} buffer
      * @param {Number} from
      * @param {Number} to
-     * @param {Boolean} littleEndian
      */
-    function Uint32(value, buffer, from, to, littleEndian) {
+    function Uint32(value, buffer, from, to) {
         if (!validateInteger(value, 0, CONST.MAX_UINT32, from, to, 4)) {
             return;
         }
 
-        insertIntegerToByteArray(value, buffer, from, to, littleEndian);
+        insertIntegerToByteArray(value, buffer, from, to);
 
         return buffer;
     }
@@ -297,9 +286,8 @@ var ExonumClient = (function() {
      * @param {Array} buffer
      * @param {Number} from
      * @param {Number} to
-     * @param {Boolean} littleEndian
      */
-    function Uint64(value, buffer, from, to, littleEndian) {
+    function Uint64(value, buffer, from, to) {
         var val = validateBigInteger(value, 0, CONST.MAX_UINT64, from, to, 8);
 
         if (val === false) {
@@ -308,7 +296,7 @@ var ExonumClient = (function() {
             return;
         }
 
-        insertBigIntegerToByteArray(val, buffer, from, to, littleEndian);
+        insertBigIntegerToByteArray(val, buffer, from, to);
 
         return buffer;
     }
@@ -319,9 +307,8 @@ var ExonumClient = (function() {
      * @param {Array} buffer
      * @param {Number} from
      * @param {Number} to
-     * @param {Boolean} littleEndian
      */
-    function String(string, buffer, from, to, littleEndian) {
+    function String(string, buffer, from, to) {
         if (typeof string !== 'string') {
             console.error('Wrong data type is passed as String. String is required');
             return;
@@ -330,9 +317,10 @@ var ExonumClient = (function() {
             return;
         }
 
-        Uint32(buffer.length, buffer, from, from + 4, littleEndian); // index where string content starts in buffer
-        Uint32(string.length, buffer, from + 4, from + 8, littleEndian); // string length
-        insertStringToByteArray(string, buffer, buffer.length, buffer.length + string.length - 1); // string content
+        var bufferLength = buffer.length;
+        Uint32(bufferLength, buffer, from, from + 4); // index where string content starts in buffer
+        insertStringToByteArray(string, buffer, bufferLength); // string content
+        Uint32(buffer.length - bufferLength, buffer, from + 4, from + 8); // string length
 
         return buffer;
     }
@@ -403,9 +391,8 @@ var ExonumClient = (function() {
      * @param {Array} buffer
      * @param {Number} from
      * @param {Number} to
-     * @param {Boolean} littleEndian
      */
-    function Timespec(nanoseconds, buffer, from, to, littleEndian) {
+    function Timespec(nanoseconds, buffer, from, to) {
         var val = validateBigInteger(nanoseconds, 0, CONST.MAX_UINT64, from, to, 8);
 
         if (val === false) {
@@ -414,7 +401,7 @@ var ExonumClient = (function() {
             return;
         }
 
-        insertBigIntegerToByteArray(val, buffer, from, to, littleEndian);
+        insertBigIntegerToByteArray(val, buffer, from, to);
 
         return buffer;
     }
@@ -638,7 +625,7 @@ var ExonumClient = (function() {
                     Uint32(buffer.length - end, buffer, from + 4, from + 8);
                 }
             } else {
-                buffer = fieldType.type(fieldData, buffer, from, shift + fieldType.to, type.littleEndian);
+                buffer = fieldType.type(fieldData, buffer, from, shift + fieldType.to);
                 if (typeof buffer === 'undefined') {
                     return;
                 }
@@ -672,12 +659,11 @@ var ExonumClient = (function() {
      * @param {Array} buffer
      * @param {Number} from
      * @param {Number} to
-     * @param {Boolean} littleEndian
      */
-    function insertIntegerToByteArray(number, buffer, from, to, littleEndian) {
+    function insertIntegerToByteArray(number, buffer, from, to) {
         var str = number.toString(16);
 
-        insertNumberInHexToByteArray(str, buffer, from, to, littleEndian);
+        insertNumberInHexToByteArray(str, buffer, from, to);
     }
 
     /**
@@ -686,12 +672,11 @@ var ExonumClient = (function() {
      * @param {Array} buffer
      * @param {Number} from
      * @param {Number} to
-     * @param {Boolean} littleEndian
      */
-    function insertBigIntegerToByteArray(number, buffer, from, to, littleEndian) {
+    function insertBigIntegerToByteArray(number, buffer, from, to) {
         var str = number.toString(16);
 
-        insertNumberInHexToByteArray(str, buffer, from, to, littleEndian);
+        insertNumberInHexToByteArray(str, buffer, from, to);
     }
 
     /**
@@ -700,48 +685,25 @@ var ExonumClient = (function() {
      * @param {Array} buffer
      * @param {Number} from
      * @param {Number} to
-     * @param {Boolean} littleEndian
      */
-    function insertNumberInHexToByteArray(number, buffer, from, to, littleEndian) {
-        if (littleEndian === true) {
-            // store Number as little-endian
-            if (number.length < 3) {
-                buffer[from] = parseInt(number, 16);
-                return true;
+    function insertNumberInHexToByteArray(number, buffer, from, to) {
+        // store Number as little-endian
+        if (number.length < 3) {
+            buffer[from] = parseInt(number, 16);
+            return true;
+        }
+
+        for (var i = number.length; i > 0; i -= 2) {
+            if (i > 1) {
+                buffer[from] = parseInt(number.substr(i - 2, 2), 16);
+            } else {
+                buffer[from] = parseInt(number.substr(0, 1), 16);
             }
 
-            for (var i = number.length; i > 0; i -= 2) {
-                if (i > 1) {
-                    buffer[from] = parseInt(number.substr(i - 2, 2), 16);
-                } else {
-                    buffer[from] = parseInt(number.substr(0, 1), 16);
-                }
+            from++;
 
-                from++;
-
-                if (from >= to) {
-                    break;
-                }
-            }
-        } else {
-            // store Number as big-endian
-            if (number.length < 3) {
-                buffer[to - 1] = parseInt(number, 16);
-                return true;
-            }
-
-            for (var i = number.length; i > 0; i -= 2) {
-                to--;
-
-                if (i > 1) {
-                    buffer[to] = parseInt(number.substr(i - 2, 2), 16);
-                } else {
-                    buffer[to] = parseInt(number.substr(0, 1), 16);
-                }
-
-                if (to <= from) {
-                    break;
-                }
+            if (from >= to) {
+                break;
             }
         }
     }
@@ -751,16 +713,27 @@ var ExonumClient = (function() {
      * @param {String} str
      * @param {Array} buffer
      * @param {Number} from
-     * @param {Number} to
      */
-    function insertStringToByteArray(str, buffer, from, to) {
-        var strBuffer = str.split('');
-        for (var i = 0, len = strBuffer.length; i < len; i++) {
-            buffer[from] = str[i].charCodeAt(0);
-            from++;
+    function insertStringToByteArray(str, buffer, from) {
+        for (var i = 0; i < str.length; i++) {
+            var c = str.charCodeAt(i);
 
-            if (from > to) {
-                break;
+            if (c < 128) {
+                buffer[from++] = c;
+            } else if (c < 2048) {
+                buffer[from++] = (c >> 6) | 192;
+                buffer[from++] = (c & 63) | 128;
+            } else if (((c & 0xFC00) == 0xD800) && (i + 1) < str.length && ((str.charCodeAt(i + 1) & 0xFC00) == 0xDC00)) {
+                // Surrogate Pair
+                c = 0x10000 + ((c & 0x03FF) << 10) + (str.charCodeAt(++i) & 0x03FF);
+                buffer[from++] = (c >> 18) | 240;
+                buffer[from++] = ((c >> 12) & 63) | 128;
+                buffer[from++] = ((c >> 6) & 63) | 128;
+                buffer[from++] = (c & 63) | 128;
+            } else {
+                buffer[from++] = (c >> 12) | 224;
+                buffer[from++] = ((c >> 6) & 63) | 128;
+                buffer[from++] = (c & 63) | 128;
             }
         }
     }
