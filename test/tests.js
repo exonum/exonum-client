@@ -2014,7 +2014,7 @@ describe('Client for Exonum blockchain platform: ', function() {
     describe('Check proof of Merkle tree:', function() {
 
         it('Valid tree', function() {
-            var data = require('./common_data/valid-merkle-tree.json');
+            var data = require('./common_data/merkle-tree/valid-merkle-tree.json');
             var elements = Exonum.merkleProof(
                 data.root_hash,
                 data.list_length,
@@ -2032,7 +2032,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         });
 
         it('Valid tree but range end is out of range', function() {
-            var data = require('./common_data/valid-merkle-tree-with-single-node.json');
+            var data = require('./common_data/merkle-tree/valid-merkle-tree-with-single-node.json');
             var elements = Exonum.merkleProof(
                 data.root_hash,
                 data.list_length,
@@ -2043,7 +2043,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         });
 
         it('Valid fully balanced tree with all values', function() {
-            var data = require('./common_data/valid-merkle-tree-fully-balanced-with-all-values.json');
+            var data = require('./common_data/merkle-tree/valid-merkle-tree-fully-balanced-with-all-values.json');
             var elements = Exonum.merkleProof(
                 data.root_hash,
                 data.list_length,
@@ -2063,7 +2063,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         });
 
         it('Valid tree with hashes in values', function() {
-            var data = require('./common_data/valid-merkle-tree-with-hashes-as-values.json');
+            var data = require('./common_data/merkle-tree/valid-merkle-tree-with-hashes-as-values.json');
             var elements = Exonum.merkleProof(
                 data.root_hash,
                 data.list_length,
@@ -2460,7 +2460,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         });
 
         it('Invalid tree with leaf on wrong height', function() {
-            var data = require('./common_data/invalid-merkle-tree-with-leaf-on-wrong-height.json');
+            var data = require('./common_data/merkle-tree/invalid-merkle-tree-with-leaf-on-wrong-height.json');
             var elements = Exonum.merkleProof(
                 data.root_hash,
                 data.list_length,
@@ -3008,7 +3008,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         });
 
         it('Invalid tree with missed right leaf inside right tree branch', function() {
-            var data = require('./common_data/invalid-merkle-tree-missed-right-leaf-on-left-branch.json');
+            var data = require('./common_data/merkle-tree/invalid-merkle-tree-missed-right-leaf-on-left-branch.json');
             var elements = Exonum.merkleProof(
                 data.root_hash,
                 data.list_length,
@@ -3048,7 +3048,7 @@ describe('Client for Exonum blockchain platform: ', function() {
     describe('Check proof of Merkle Patricia tree:', function() {
 
         it('Valid empty tree', function() {
-            var data = require('./common_data/valid-merkle-patricia-tree-empty-tree.json');
+            var data = require('./common_data/merkle-patricia-tree/valid-merkle-patricia-tree-empty-tree.json');
             var element = Exonum.merklePatriciaProof(
                 data.root_hash,
                 data.proof,
@@ -3058,7 +3058,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         });
 
         it('Valid tree with leaf exclusive', function() {
-            var data = require('./common_data/valid-merkle-patricia-tree-leaf-exclusive.json');
+            var data = require('./common_data/merkle-patricia-tree/valid-merkle-patricia-tree-leaf-exclusive.json');
             var element = Exonum.merklePatriciaProof(
                 data.root_hash,
                 data.proof,
@@ -3068,7 +3068,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         });
 
         it('Valid tree with leaf inclusive', function() {
-            var data = require('./common_data/valid-merkle-patricia-tree-leaf-inclusive.json');
+            var data = require('./common_data/merkle-patricia-tree/valid-merkle-patricia-tree-leaf-inclusive.json');
             var element = Exonum.merklePatriciaProof(
                 data.root_hash,
                 data.proof,
@@ -3078,7 +3078,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         });
 
         it('Valid tree with nested node exclusive', function() {
-            var data = require('./common_data/valid-merkle-patricia-tree-nested-exclusive.json');
+            var data = require('./common_data/merkle-patricia-tree/valid-merkle-patricia-tree-nested-exclusive.json');
             var element = Exonum.merklePatriciaProof(
                 data.root_hash,
                 data.proof,
@@ -3088,7 +3088,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         });
 
         it('Valid tree with nested node inclusive', function() {
-            var data = require('./common_data/valid-merkle-patricia-tree-nested-inclusive.json');
+            var data = require('./common_data/merkle-patricia-tree/valid-merkle-patricia-tree-nested-inclusive.json');
             var element = Exonum.merklePatriciaProof(
                 data.root_hash,
                 data.proof,
@@ -3098,7 +3098,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         });
 
         it('Valid tree with hashes in values', function() {
-            var data = require('./common_data/valid-merkle-patricia-tree-with-hashes-as-values.json');
+            var data = require('./common_data/merkle-patricia-tree/valid-merkle-patricia-tree-with-hashes-as-values.json');
             var element = Exonum.merklePatriciaProof(
                 data.root_hash,
                 data.proof,
@@ -4323,7 +4323,7 @@ describe('Client for Exonum blockchain platform: ', function() {
     describe('Verify block of precommits:', function() {
 
         it('Valid block', function() {
-            var data = require('./common_data/valid-block-with-precommits.json');
+            var data = require('./common_data/block-with-precommits/valid-block-with-precommits.json');
             expect(Exonum.verifyBlock(data)).to.equal(true);
         });
 
@@ -4637,6 +4637,248 @@ describe('Client for Exonum blockchain platform: ', function() {
                     ]
                 }
             )).to.equal(false);
+        });
+
+    });
+
+    /*
+     -------------------------------------------------------------------------------------------------------------------
+     Cryptocurrency tests
+     -------------------------------------------------------------------------------------------------------------------
+     */
+
+    describe('Check cryptocurrency wallet', function() {
+
+        it('Valid wallet #1', function() {
+            var data = require('./common_data/cryptocurrency-wallet/valid-wallet-1.json');
+            var Wallet = Exonum.newType({
+                size: 88,
+                fields: {
+                    pub_key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
+                    name: {type: Exonum.String, size: 8, from: 32, to: 40},
+                    balance: {type: Exonum.Uint64, size: 8, from: 40, to: 48},
+                    history_len: {type: Exonum.Uint64, size: 8, from: 48, to: 56},
+                    history_hash: {type: Exonum.Hash, size: 32, from: 56, to: 88}
+                }
+            });
+
+            expect(Exonum.hash(data.wallet, Wallet)).to.equal(data.hash);
+        });
+
+        it('Valid wallet #2', function() {
+            var data = require('./common_data/cryptocurrency-wallet/valid-wallet-2.json');
+            var Wallet = Exonum.newType({
+                size: 88,
+                fields: {
+                    pub_key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
+                    name: {type: Exonum.String, size: 8, from: 32, to: 40},
+                    balance: {type: Exonum.Uint64, size: 8, from: 40, to: 48},
+                    history_len: {type: Exonum.Uint64, size: 8, from: 48, to: 56},
+                    history_hash: {type: Exonum.Hash, size: 32, from: 56, to: 88}
+                }
+            });
+
+            expect(Exonum.hash(data.wallet, Wallet)).to.equal(data.hash);
+        });
+
+        it('Valid wallet #3', function() {
+            var data = require('./common_data/cryptocurrency-wallet/valid-wallet-3.json');
+            var Wallet = Exonum.newType({
+                size: 88,
+                fields: {
+                    pub_key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
+                    name: {type: Exonum.String, size: 8, from: 32, to: 40},
+                    balance: {type: Exonum.Uint64, size: 8, from: 40, to: 48},
+                    history_len: {type: Exonum.Uint64, size: 8, from: 48, to: 56},
+                    history_hash: {type: Exonum.Hash, size: 32, from: 56, to: 88}
+                }
+            });
+
+            expect(Exonum.hash(data.wallet, Wallet)).to.equal(data.hash);
+        });
+
+        it('Valid wallet #4', function() {
+            var data = require('./common_data/cryptocurrency-wallet/valid-wallet-with-raw-1.json');
+            var Wallet = Exonum.newType({
+                size: 88,
+                fields: {
+                    pub_key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
+                    name: {type: Exonum.String, size: 8, from: 32, to: 40},
+                    balance: {type: Exonum.Uint64, size: 8, from: 40, to: 48},
+                    history_len: {type: Exonum.Uint64, size: 8, from: 48, to: 56},
+                    history_hash: {type: Exonum.Hash, size: 32, from: 56, to: 88}
+                }
+            });
+
+            expect(Wallet.serialize(data.wallet)).to.deep.equal(data.raw);
+
+            expect(Exonum.hash(data.wallet, Wallet)).to.equal(data.hash);
+        });
+
+        it('Valid wallet #5', function() {
+            var data = require('./common_data/cryptocurrency-wallet/valid-wallet-with-raw-2.json');
+            var Wallet = Exonum.newType({
+                size: 88,
+                fields: {
+                    pub_key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
+                    name: {type: Exonum.String, size: 8, from: 32, to: 40},
+                    balance: {type: Exonum.Uint64, size: 8, from: 40, to: 48},
+                    history_len: {type: Exonum.Uint64, size: 8, from: 48, to: 56},
+                    history_hash: {type: Exonum.Hash, size: 32, from: 56, to: 88}
+                }
+            });
+
+            expect(Wallet.serialize(data.wallet)).to.deep.equal(data.raw);
+
+            expect(Exonum.hash(data.wallet, Wallet)).to.equal(data.hash);
+        });
+
+        it('Valid wallet with utf8', function() {
+            var data = require('./common_data/cryptocurrency-wallet/valid-wallet-with-utf8-and-raw.json');
+            var Wallet = Exonum.newType({
+                size: 88,
+                fields: {
+                    pub_key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
+                    name: {type: Exonum.String, size: 8, from: 32, to: 40},
+                    balance: {type: Exonum.Uint64, size: 8, from: 40, to: 48},
+                    history_len: {type: Exonum.Uint64, size: 8, from: 48, to: 56},
+                    history_hash: {type: Exonum.Hash, size: 32, from: 56, to: 88}
+                }
+            });
+
+            expect(Wallet.serialize(data.wallet)).to.deep.equal(data.raw);
+
+            expect(Exonum.hash(data.wallet, Wallet)).to.equal(data.hash);
+        });
+
+    });
+
+    describe('Check cryptocurrency transactions', function() {
+
+        it('Create wallet', function() {
+            var data = require('./common_data/cryptocurrency-transaction/create-wallet-with-raw.json');
+            var TxCreateWallet = Exonum.newMessage({
+                size: 40,
+                service_id: 128,
+                message_type: data.transaction.id,
+                signature: data.transaction.signature,
+                fields: {
+                    pub_key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
+                    name: {type: Exonum.String, size: 8, from: 32, to: 40}
+                }
+            });
+
+            expect(TxCreateWallet.serialize(data.transaction.body)).to.deep.equal(data.raw);
+
+            expect(Exonum.hash(data.transaction.body, TxCreateWallet)).to.equal(data.hash);
+
+            expect(Exonum.verifySignature(data.transaction.body, TxCreateWallet, data.transaction.signature, data.transaction.body.pub_key)).to.equal(true);
+        });
+
+        it('Create wallet with name in UTF-8', function() {
+            var data = require('./common_data/cryptocurrency-transaction/create-wallet-with-utf8-and-raw.json');
+            var TxCreateWallet = Exonum.newMessage({
+                size: 40,
+                service_id: 128,
+                message_type: data.transaction.id,
+                signature: data.transaction.signature,
+                fields: {
+                    pub_key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
+                    name: {type: Exonum.String, size: 8, from: 32, to: 40}
+                }
+            });
+
+            expect(TxCreateWallet.serialize(data.transaction.body)).to.deep.equal(data.raw);
+
+            expect(Exonum.hash(data.transaction.body, TxCreateWallet)).to.equal(data.hash);
+
+            expect(Exonum.verifySignature(data.transaction.body, TxCreateWallet, data.transaction.signature, data.transaction.body.pub_key)).to.equal(true);
+        });
+
+        it('Charge balance #1', function() {
+            var data = require('./common_data/cryptocurrency-transaction/charge-with-raw-1.json');
+            var TxIssue = Exonum.newMessage({
+                size: 48,
+                service_id: 128,
+                message_type: data.transaction.id,
+                signature: data.transaction.signature,
+                fields: {
+                    wallet: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
+                    amount: {type: Exonum.Int64, size: 8, from: 32, to: 40},
+                    seed: {type: Exonum.Uint64, size: 8, from: 40, to: 48}
+                }
+            });
+
+            expect(TxIssue.serialize(data.transaction.body)).to.deep.equal(data.raw);
+
+            expect(Exonum.hash(data.transaction.body, TxIssue)).to.equal(data.hash);
+
+            expect(Exonum.verifySignature(data.transaction.body, TxIssue, data.transaction.signature, data.transaction.body.wallet)).to.equal(true);
+        });
+
+        it('Charge balance #2', function() {
+            var data = require('./common_data/cryptocurrency-transaction/charge-with-raw-2.json');
+            var TxIssue = Exonum.newMessage({
+                size: 48,
+                service_id: 128,
+                message_type: data.transaction.id,
+                signature: data.transaction.signature,
+                fields: {
+                    wallet: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
+                    amount: {type: Exonum.Int64, size: 8, from: 32, to: 40},
+                    seed: {type: Exonum.Uint64, size: 8, from: 40, to: 48}
+                }
+            });
+
+            expect(TxIssue.serialize(data.transaction.body)).to.deep.equal(data.raw);
+
+            expect(Exonum.hash(data.transaction.body, TxIssue)).to.equal(data.hash);
+
+            expect(Exonum.verifySignature(data.transaction.body, TxIssue, data.transaction.signature, data.transaction.body.wallet)).to.equal(true);
+        });
+
+        it('Transfer #1', function() {
+            var data = require('./common_data/cryptocurrency-transaction/transfer-with-raw-1.json');
+            var TxTransfer = Exonum.newMessage({
+                size: 80,
+                service_id: 128,
+                message_type: data.transaction.id,
+                signature: data.transaction.signature,
+                fields: {
+                    from: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
+                    to: {type: Exonum.PublicKey, size: 32, from: 32, to: 64},
+                    amount: {type: Exonum.Int64, size: 8, from: 64, to: 72},
+                    seed: {type: Exonum.Uint64, size: 8, from: 72, to: 80}
+                }
+            });
+
+            expect(TxTransfer.serialize(data.transaction.body)).to.deep.equal(data.raw);
+
+            expect(Exonum.hash(data.transaction.body, TxTransfer)).to.equal(data.hash);
+
+            expect(Exonum.verifySignature(data.transaction.body, TxTransfer, data.transaction.signature, data.transaction.body.from)).to.equal(true);
+        });
+
+        it('Transfer #2', function() {
+            var data = require('./common_data/cryptocurrency-transaction/transfer-with-raw-2.json');
+            var TxTransfer = Exonum.newMessage({
+                size: 80,
+                service_id: 128,
+                message_type: data.transaction.id,
+                signature: data.transaction.signature,
+                fields: {
+                    from: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
+                    to: {type: Exonum.PublicKey, size: 32, from: 32, to: 64},
+                    amount: {type: Exonum.Int64, size: 8, from: 64, to: 72},
+                    seed: {type: Exonum.Uint64, size: 8, from: 72, to: 80}
+                }
+            });
+
+            expect(TxTransfer.serialize(data.transaction.body)).to.deep.equal(data.raw);
+
+            expect(Exonum.hash(data.transaction.body, TxTransfer)).to.equal(data.hash);
+
+            expect(Exonum.verifySignature(data.transaction.body, TxTransfer, data.transaction.signature, data.transaction.body.from)).to.equal(true);
         });
 
     });

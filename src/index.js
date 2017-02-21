@@ -110,14 +110,25 @@ var ExonumClient = (function() {
         return new NewType(type);
     }
 
+    /**
+     * @constructor
+     * @param {Object} type
+     */
     function NewMessage(type) {
         this.size = type.size;
         this.message_type = type.message_type;
         this.service_id = type.service_id;
+        this.signature = type.signature;
         this.fields = type.fields;
     }
 
-    NewMessage.prototype.serialize = function(data, signature) {
+    /**
+     * Built-in method to serialize data into array of 8-bit integers
+     * @param {Object} data
+     * @param {Boolean} cutSignature
+     * @returns {Array}
+     */
+    NewMessage.prototype.serialize = function(data, cutSignature) {
         var buffer = MessageHead.serialize({
             network_id: CONFIG.networkId,
             version: 0,
@@ -132,11 +143,21 @@ var ExonumClient = (function() {
         }
 
         // calculate payload and insert it into buffer
-        Uint32(buffer.length + CONST.SIGNATURE_LENGTH, buffer, MessageHead.fields.payload.from, MessageHead.fields.payload.to, true);
+        Uint32(buffer.length + CONST.SIGNATURE_LENGTH, buffer, MessageHead.fields.payload.from, MessageHead.fields.payload.to);
+
+        if (cutSignature !== true) {
+            // append signature
+            Digest(this.signature, buffer, buffer.length, buffer.length + CONST.SIGNATURE_LENGTH);
+        }
 
         return buffer;
     };
 
+    /**
+     * Create element of NewMessage class
+     * @param {Object} type
+     * @returns {NewMessage}
+     */
     function createNewMessage(type) {
         return new NewMessage(type);
     }
@@ -724,7 +745,7 @@ var ExonumClient = (function() {
                 buffer[from++] = (c >> 6) | 192;
                 buffer[from++] = (c & 63) | 128;
             } else if (((c & 0xFC00) == 0xD800) && (i + 1) < str.length && ((str.charCodeAt(i + 1) & 0xFC00) == 0xDC00)) {
-                // Surrogate Pair
+                // surrogate pair
                 c = 0x10000 + ((c & 0x03FF) << 10) + (str.charCodeAt(++i) & 0x03FF);
                 buffer[from++] = (c >> 18) | 240;
                 buffer[from++] = ((c >> 12) & 63) | 128;
@@ -910,7 +931,7 @@ var ExonumClient = (function() {
                     return;
                 }
             } else if (type instanceof NewMessage) {
-                buffer = type.serialize(data);
+                buffer = type.serialize(data, true);
                 if (typeof buffer === 'undefined') {
                     console.error('Invalid data parameter. Instance of NewMessage is expected.');
                     return;
@@ -961,7 +982,7 @@ var ExonumClient = (function() {
                     return;
                 }
             } else if (type instanceof NewMessage) {
-                buffer = type.serialize(data);
+                buffer = type.serialize(data, true);
                 if (typeof buffer === 'undefined') {
                     console.error('Invalid data parameter. Instance of NewMessage is expected.');
                     return;

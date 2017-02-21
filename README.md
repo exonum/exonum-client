@@ -72,6 +72,8 @@ Returns an object of format type.
 
 Can be used to retrieve representation of data of type `newType` as array of 8-bit integers.
 
+The `data` is a custom data in JSON format.
+
 Lets declare simple type `User` with field `id` of Integer type and field `name` of String type:
 
 ```javascript
@@ -135,9 +137,13 @@ The `fields` parameter is a list of fields.
 
 Returns an object of format type.
 
-##### newMessage.serialize(data)
+##### newMessage.serialize(data, cutSignature)
 
 Can be used to retrieve representation of data of type `newMessage` as array of 8-bit integers.
+
+The `data` is a custom data in JSON format.
+
+The `cutSignature` parameter is an optional boolean flag. If set to `true` signature will not be appended to serialized data.
 
 Lets declare custom type `CreateUser`:
 
@@ -146,6 +152,7 @@ var CreateUser = Exonum.newMessage({
     size: 16,
     service_id: 7,
     message_type: 15,
+    signature: 'aa77e9f37671ab2e85851e518aca2288f61662816bce15cfc03a8e094e7f9ecd',
     fields: {
         name: {type: Exonum.String, size: 8, from: 0, to: 8},
         balance: {type: Exonum.Uint64, size: 8, from: 8, to: 16}
@@ -191,6 +198,7 @@ var CustomMessage = Exonum.newMessage({
     size: 16,
     service_id: 8,
     message_type: 12,
+    signature: 'aa77e9f37671ab2e85851e518aca2288f61662816bce15cfc03a8e094e7f9ecd',
     fields: {
         id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
         name: {type: Exonum.String, size: 8, from: 8, to: 16}
@@ -247,6 +255,7 @@ var CustomMessage = Exonum.newMessage({
     size: 16,
     service_id: 8,
     message_type: 12,
+    signature: 'aa77e9f37671ab2e85851e518aca2288f61662816bce15cfc03a8e094e7f9ecd',
     fields: {
         id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
         name: {type: Exonum.String, size: 8, from: 8, to: 16}
@@ -313,6 +322,7 @@ var CustomMessage = Exonum.newMessage({
     size: 16,
     service_id: 8,
     message_type: 12,
+    signature: 'aa77e9f37671ab2e85851e518aca2288f61662816bce15cfc03a8e094e7f9ecd',
     fields: {
         id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
         name: {type: Exonum.String, size: 8, from: 8, to: 16}
