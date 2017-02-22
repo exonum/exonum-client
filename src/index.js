@@ -8,7 +8,6 @@ var bigInt = require("big-integer");
 
 var ExonumClient = (function() {
 
-    var CONFIG = require('./config.json');
     var CONST = {
         MIN_INT8: -128,
         MAX_INT8: 127,
@@ -23,7 +22,8 @@ var ExonumClient = (function() {
         MAX_UINT32: 4294967295,
         MAX_UINT64: '18446744073709551615',
         MERKLE_PATRICIA_KEY_LENGTH: 32,
-        SIGNATURE_LENGTH: 64
+        SIGNATURE_LENGTH: 64,
+        NETWORK_ID: 0
     };
     var DBKey = createNewType({
         size: 34,
@@ -130,7 +130,7 @@ var ExonumClient = (function() {
      */
     NewMessage.prototype.serialize = function(data, cutSignature) {
         var buffer = MessageHead.serialize({
-            network_id: CONFIG.networkId,
+            network_id: CONST.NETWORK_ID,
             version: 0,
             message_type: this.message_type,
             service_id: this.service_id
@@ -1028,6 +1028,19 @@ var ExonumClient = (function() {
      */
     function merkleProof(rootHash, count, proofNode, range, type) {
         /**
+         * Calculate height of merkle tree
+         * @param {bigInt} count
+         * @return {Number}
+         */
+        function calcHeight(count) {
+            var i = 0;
+            while (bigInt(2).pow(i).lt(count)) {
+                i++;
+            }
+            return i;
+        }
+
+        /**
          * Get value from node, insert into elements array and return its hash
          * @param data
          * @param {Number} depth
@@ -1041,7 +1054,7 @@ var ExonumClient = (function() {
             if ((depth + 1) !== height) {
                 console.error('Value node is on wrong height in tree.');
                 return;
-            } else if (index < start || index > end) {
+            } else if (index < start || end.lt(index)) {
                 console.error('Wrong index of value node.');
                 return;
             } else if ((start + elements.length) !== index) {
@@ -1162,33 +1175,72 @@ var ExonumClient = (function() {
         var elements = [];
         var rootBranch = 'left';
 
-        // validate parameters
+        // validate rootHash
         if (!validateHexHash(rootHash)) {
-            return undefined;
-        } else if (typeof count !== 'number') {
-            console.error('Invalid value is passed as count parameter. Number expected.');
-            return undefined;
-        } else if (!isObject(proofNode)) {
-            console.error('Invalid type of proofNode parameter. Object expected.');
-            return undefined;
-        } else if (!Array.isArray(range) || range.length !== 2) {
-            console.error('Invalid type of range parameter. Array of two elements expected.');
-            return undefined;
-        } else if (typeof range[0] !== 'number' || typeof range[1] !== 'number') {
-            console.error('Invalid value is passed as range parameter. Number expected.');
-            return undefined;
-        } else if (range[0] > range[1]) {
-            console.error('Invalid range parameter. Start index can\'t be out of range.');
             return undefined;
         }
 
-        if (range[0] > (count - 1)) {
+        // validate count
+        if (!(typeof count === 'number' || typeof count === 'string')) {
+            console.error('Invalid value is passed as count parameter. Number or string is expected.');
+            return undefined;
+        }
+        try {
+            count = bigInt(count);
+        } catch (e) {
+            console.error('Invalid value is passed as count parameter.');
+            return undefined;
+        }
+        if (count.lt(0)) {
+            console.error('Invalid count parameter. Count can\'t be below zero.');
+            return undefined;
+        }
+
+        // validate range
+        if (!Array.isArray(range) || range.length !== 2) {
+            console.error('Invalid type of range parameter. Array of two elements expected.');
+            return undefined;
+        } else if (!(typeof range[0] === 'number' || typeof range[0] === 'string')) {
+            console.error('Invalid value is passed as start of range parameter.');
+            return undefined;
+        } else if (!(typeof range[1] === 'number' || typeof range[1] === 'string')) {
+            console.error('Invalid value is passed as end of range parameter.');
+            return undefined;
+        }
+        try {
+            var rangeStart = bigInt(range[0]);
+        } catch (e) {
+            console.error('Invalid value is passed as start of range parameter. Number or string is expected.');
+            return undefined;
+        }
+        try {
+            var rangeEnd = bigInt(range[1]);
+        } catch (e) {
+            console.error('Invalid value is passed as end of range parameter. Number or string is expected.');
+            return undefined;
+        }
+        if (rangeStart.gt(rangeEnd)) {
+            console.error('Invalid range parameter. Start index can\'t be out of range.');
+            return undefined;
+        } else if (rangeStart.lt(0)) {
+            console.error('Invalid range parameter. Start index can\'t be below zero.');
+            return undefined;
+        } else if (rangeEnd.lt(0)) {
+            console.error('Invalid range parameter. End index can\'t be below zero.');
+            return undefined;
+        } else if (rangeStart.gt(count.minus(1))) {
             return [];
         }
 
-        var height = Math.ceil(Math.log2(count));
-        var start = range[0];
-        var end = (range[1] < count) ? range[1] : (count - 1);
+        // validate proofNode
+        if (!isObject(proofNode)) {
+            console.error('Invalid type of proofNode parameter. Object expected.');
+            return undefined;
+        }
+
+        var height = calcHeight(count);
+        var start = rangeStart;
+        var end = rangeEnd.lt(count) ? rangeEnd : count.minus(1);
         var actualHash = recursive(proofNode, 0, 0);
 
         if (typeof actualHash === 'undefined') { // tree is invalid
@@ -1196,7 +1248,7 @@ var ExonumClient = (function() {
         } else if (rootHash.toLowerCase() !== actualHash) {
             console.error('rootHash parameter is not equal to actual hash.');
             return undefined;
-        } else if (elements.length !== ((start === end) ? 1 : (end - start + 1))) {
+        } else if (bigInt(elements.length).neq(end.eq(start) ? 1 : end.minus(start).plus(1))) {
             console.error('Actual elements in tree amount is not equal to requested.');
             return undefined;
         }
@@ -1544,9 +1596,10 @@ var ExonumClient = (function() {
     /**
      * Verifies block
      * @param {Object} data
+     * @param {Array} validators
      * @return {Boolean}
      */
-    function verifyBlock(data) {
+    function verifyBlock(data, validators) {
         if (!isObject(data)) {
             console.error('Wrong type of data parameter. Object is expected.');
             return false;
@@ -1556,9 +1609,22 @@ var ExonumClient = (function() {
         } else if (!Array.isArray(data.precommits)) {
             console.error('Wrong type of precommits field in data parameter. Array is expected.');
             return false;
+        } else if (!Array.isArray(validators)) {
+            console.error('Wrong type of validatorsparameter. Array is expected.');
+            return false;
         }
 
-        var validatorsTotalNumber = CONFIG.validators.length;
+        for (var i in validators) {
+            if (!validators.hasOwnProperty(i)) {
+                continue;
+            }
+
+            if (!validateHexHash(validators[i])) {
+                return false;
+            }
+        }
+
+        var validatorsTotalNumber = validators.length;
         var uniqueValidators = [];
 
         var round;
@@ -1603,7 +1669,7 @@ var ExonumClient = (function() {
                 return false;
             }
 
-            var publicKey = CONFIG.validators[precommit.body.validator].publicKey;
+            var publicKey = validators[precommit.body.validator];
 
             if (!verifySignature(precommit.body, Precommit, precommit.signature, publicKey)) {
                 console.error('Wrong signature of precommit.');

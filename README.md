@@ -356,11 +356,22 @@ var publicKey = '280a704efafae9410d7b07140bb130e4995eeb381ba90939b4eaefcaf740ca2
 Exonum.verifySignature(buffer, signature, publicKey);
 ```
 
-### verifyBlock(data)
+### verifyBlock(data, validators)
 
 This methods can verify block of precommits.
 
 The `data` is a custom data in JSON format.
+
+The `validators` is an array of validators public keys. Each public key is hexadecimal string of a 32 bytes.
+
+```
+[
+    "eb7e3ad55f97e5d5693fe0e69f4c26bd1173077dbffb5fff5b69f213f71bee3f",
+    "3d17702a3f260ccf0d171279ceee74dc7309049e11bfd13d839f66f867f2d504",
+    "612bc36d1de16541b40ee468157f1aeb3cf709347e32654b730e1f970dc20edd",
+    "3016901f539f794dcc4c2466be14678b30c5d503107a2fc8bbed4680a306b177"
+]
+```
 
 Returns `true` if verification succeeded or `false` if it failed.
 

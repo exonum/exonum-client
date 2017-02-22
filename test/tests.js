@@ -2216,7 +2216,15 @@ describe('Client for Exonum blockchain platform: ', function() {
 
             elements = Exonum.merkleProof(
                 '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                '42',
+                -42,
+                {},
+                [0, 8]
+            );
+            expect(elements).to.equal(undefined);
+
+            elements = Exonum.merkleProof(
+                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+                '-42',
                 {},
                 [0, 8]
             );
@@ -2283,7 +2291,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(elements).to.equal(undefined);
         });
 
-        it('Invalid tree with invalidrange', function() {
+        it('Invalid tree with invalid range', function() {
             var elements;
 
             elements = Exonum.merkleProof(
@@ -2435,6 +2443,38 @@ describe('Client for Exonum blockchain platform: ', function() {
                 8,
                 {},
                 [9, 8]
+            );
+            expect(elements).to.equal(undefined);
+
+            elements = Exonum.merkleProof(
+                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+                8,
+                {},
+                ['9', 8]
+            );
+            expect(elements).to.equal(undefined);
+
+            elements = Exonum.merkleProof(
+                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+                8,
+                {},
+                [9, '8']
+            );
+            expect(elements).to.equal(undefined);
+
+            elements = Exonum.merkleProof(
+                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+                8,
+                {},
+                [-1, '8']
+            );
+            expect(elements).to.equal(undefined);
+
+            elements = Exonum.merkleProof(
+                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+                8,
+                {},
+                [0, -5]
             );
             expect(elements).to.equal(undefined);
         });
@@ -4322,38 +4362,45 @@ describe('Client for Exonum blockchain platform: ', function() {
      */
     describe('Verify block of precommits:', function() {
 
+        var validators = [
+            "eb7e3ad55f97e5d5693fe0e69f4c26bd1173077dbffb5fff5b69f213f71bee3f",
+            "3d17702a3f260ccf0d171279ceee74dc7309049e11bfd13d839f66f867f2d504",
+            "612bc36d1de16541b40ee468157f1aeb3cf709347e32654b730e1f970dc20edd",
+            "3016901f539f794dcc4c2466be14678b30c5d503107a2fc8bbed4680a306b177"
+        ];
+
         it('Valid block', function() {
             var data = require('./common_data/block-with-precommits/valid-block-with-precommits.json');
-            expect(Exonum.verifyBlock(data)).to.equal(true);
+            expect(Exonum.verifyBlock(data, validators)).to.equal(true);
         });
 
         it('Invalid block with data of wrong type', function() {
-            expect(Exonum.verifyBlock(null)).to.equal(false);
-            expect(Exonum.verifyBlock(undefined)).to.equal(false);
-            expect(Exonum.verifyBlock(42)).to.equal(false);
-            expect(Exonum.verifyBlock('Hello world')).to.equal(false);
-            expect(Exonum.verifyBlock([])).to.equal(false);
-            expect(Exonum.verifyBlock(new Date())).to.equal(false);
+            expect(Exonum.verifyBlock(null, validators)).to.equal(false);
+            expect(Exonum.verifyBlock(undefined, validators)).to.equal(false);
+            expect(Exonum.verifyBlock(42, validators)).to.equal(false);
+            expect(Exonum.verifyBlock('Hello world', validators)).to.equal(false);
+            expect(Exonum.verifyBlock([], validators)).to.equal(false);
+            expect(Exonum.verifyBlock(new Date(), validators)).to.equal(false);
         });
 
         it('Invalid block with block info of wrong type', function() {
-            expect(Exonum.verifyBlock({})).to.equal(false);
-            expect(Exonum.verifyBlock({block: null})).to.equal(false);
-            expect(Exonum.verifyBlock({block: undefined})).to.equal(false);
-            expect(Exonum.verifyBlock({block: 'Hello world'})).to.equal(false);
-            expect(Exonum.verifyBlock({block: []})).to.equal(false);
-            expect(Exonum.verifyBlock({block: 42})).to.equal(false);
-            expect(Exonum.verifyBlock({block: new Date()})).to.equal(false);
+            expect(Exonum.verifyBlock({}, validators)).to.equal(false);
+            expect(Exonum.verifyBlock({block: null}, validators)).to.equal(false);
+            expect(Exonum.verifyBlock({block: undefined}, validators)).to.equal(false);
+            expect(Exonum.verifyBlock({block: 'Hello world'}, validators)).to.equal(false);
+            expect(Exonum.verifyBlock({block: []}, validators)).to.equal(false);
+            expect(Exonum.verifyBlock({block: 42}, validators)).to.equal(false);
+            expect(Exonum.verifyBlock({block: new Date()}, validators)).to.equal(false);
         });
 
         it('Invalid block with precommits info of wrong type', function() {
-            expect(Exonum.verifyBlock({block: {}})).to.equal(false);
-            expect(Exonum.verifyBlock({block: {}, precommits: null})).to.equal(false);
-            expect(Exonum.verifyBlock({block: {}, precommits: undefined})).to.equal(false);
-            expect(Exonum.verifyBlock({block: {}, precommits: 'Hello world'})).to.equal(false);
-            expect(Exonum.verifyBlock({block: {}, precommits: {}})).to.equal(false);
-            expect(Exonum.verifyBlock({block: {}, precommits: 42})).to.equal(false);
-            expect(Exonum.verifyBlock({block: {}, precommits: new Date()})).to.equal(false);
+            expect(Exonum.verifyBlock({block: {}}, validators)).to.equal(false);
+            expect(Exonum.verifyBlock({block: {}, precommits: null}, validators)).to.equal(false);
+            expect(Exonum.verifyBlock({block: {}, precommits: undefined}, validators)).to.equal(false);
+            expect(Exonum.verifyBlock({block: {}, precommits: 'Hello world'}, validators)).to.equal(false);
+            expect(Exonum.verifyBlock({block: {}, precommits: {}}, validators)).to.equal(false);
+            expect(Exonum.verifyBlock({block: {}, precommits: 42}, validators)).to.equal(false);
+            expect(Exonum.verifyBlock({block: {}, precommits: new Date()}, validators)).to.equal(false);
         });
 
         it('Invalid block with body field of wrong type in precommit', function() {
@@ -4362,42 +4409,42 @@ describe('Client for Exonum blockchain platform: ', function() {
                 precommits: [{
                     body: null
                 }]
-            })).to.equal(false);
+            }, validators)).to.equal(false);
 
             expect(Exonum.verifyBlock({
                 block: {},
                 precommits: [{
                     body: undefined
                 }]
-            })).to.equal(false);
+            }, validators)).to.equal(false);
 
             expect(Exonum.verifyBlock({
                 block: {},
                 precommits: [{
                     body: 42
                 }]
-            })).to.equal(false);
+            }, validators)).to.equal(false);
 
             expect(Exonum.verifyBlock({
                 block: {},
                 precommits: [{
                     body: 'Hello world'
                 }]
-            })).to.equal(false);
+            }, validators)).to.equal(false);
 
             expect(Exonum.verifyBlock({
                 block: {},
                 precommits: [{
                     body: []
                 }]
-            })).to.equal(false);
+            }, validators)).to.equal(false);
 
             expect(Exonum.verifyBlock({
                 block: {},
                 precommits: [{
                     body: new Date()
                 }]
-            })).to.equal(false);
+            }, validators)).to.equal(false);
         });
 
         it('Invalid block with signature field of wrong type in precommit', function() {
@@ -4407,7 +4454,7 @@ describe('Client for Exonum blockchain platform: ', function() {
                     body: {},
                     signature: null
                 }]
-            })).to.equal(false);
+            }, validators)).to.equal(false);
 
             expect(Exonum.verifyBlock({
                 block: {},
@@ -4415,7 +4462,7 @@ describe('Client for Exonum blockchain platform: ', function() {
                     body: {},
                     signature: undefined
                 }]
-            })).to.equal(false);
+            }, validators)).to.equal(false);
 
             expect(Exonum.verifyBlock({
                 block: {},
@@ -4423,7 +4470,7 @@ describe('Client for Exonum blockchain platform: ', function() {
                     body: {},
                     signature: 42
                 }]
-            })).to.equal(false);
+            }, validators)).to.equal(false);
 
             expect(Exonum.verifyBlock({
                 block: {},
@@ -4431,7 +4478,7 @@ describe('Client for Exonum blockchain platform: ', function() {
                     body: {},
                     signature: []
                 }]
-            })).to.equal(false);
+            }, validators)).to.equal(false);
 
             expect(Exonum.verifyBlock({
                 block: {},
@@ -4439,7 +4486,7 @@ describe('Client for Exonum blockchain platform: ', function() {
                     body: {},
                     signature: {}
                 }]
-            })).to.equal(false);
+            }, validators)).to.equal(false);
 
             expect(Exonum.verifyBlock({
                 block: {},
@@ -4447,7 +4494,7 @@ describe('Client for Exonum blockchain platform: ', function() {
                     body: {},
                     signature: new Date()
                 }]
-            })).to.equal(false);
+            }, validators)).to.equal(false);
         });
 
         it('Invalid block with invalid signature field in precommit', function() {
@@ -4457,7 +4504,7 @@ describe('Client for Exonum blockchain platform: ', function() {
                     body: {},
                     signature: '22635e36303ff3ef4c86b855e57356f41483e6637136d1d2ec46ba2ec8f69fb9'
                 }]
-            })).to.equal(false);
+            }, validators)).to.equal(false);
 
             expect(Exonum.verifyBlock({
                 block: {},
@@ -4465,7 +4512,7 @@ describe('Client for Exonum blockchain platform: ', function() {
                     body: {},
                     signature: '22635e36303ff3ef4c86b855e57356f41483e6637136d1d2ec46ba2ec8f69fb922635e36303ff3ef4c86b855e57356f41483e6637136d1d2ec46ba2ec8f69fbz'
                 }]
-            })).to.equal(false);
+            }, validators)).to.equal(false);
         });
 
         it('Invalid block with precommit from non existed validtor', function() {
@@ -4477,7 +4524,7 @@ describe('Client for Exonum blockchain platform: ', function() {
                     },
                     signature: '63b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d263b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d2'
                 }]
-            })).to.equal(false);
+            }, validators)).to.equal(false);
         });
 
         it('Invalid block with wrong height of block in precommit', function() {
@@ -4492,7 +4539,7 @@ describe('Client for Exonum blockchain platform: ', function() {
                     },
                     signature: '63b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d263b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d2'
                 }]
-            })).to.equal(false);
+            }, validators)).to.equal(false);
         });
 
         it('Invalid block with wrong hash of block in precommit', function() {
@@ -4537,7 +4584,7 @@ describe('Client for Exonum blockchain platform: ', function() {
                             "signature": "e35a3cb1ca834cce77d67d5945ef1d7021488a357a35e973cd1ef17099d4db55a28123d95f9c5dcedf34c86a12c20e91cc47622612039115f2a376d7e5f7ab00"
                         }
                     ]
-                }
+                }, validators
             )).to.equal(false);
         });
 
@@ -4583,7 +4630,7 @@ describe('Client for Exonum blockchain platform: ', function() {
                             "signature": "fc7d8d9150db263f03cb8a141b6a372a0bed1fa21128907b52485ad37ea19e71342ebbd8f80e76c81e42d125e3a2e4e15189212f6f78a307005c63c0eade6c06"
                         }
                     ]
-                }
+                }, validators
             )).to.equal(false);
         });
 
@@ -4609,7 +4656,7 @@ describe('Client for Exonum blockchain platform: ', function() {
                             "signature": "5616ef4bfac86c8ded9aa9c7e84958574e3f9df4f7aadea8b37dcdb40ebedd8ac009f8a9b54bd907bf4f43289bfec72e47e6338912f282a6b5a5ce8c558ef50b"
                         }
                     ]
-                }
+                }, validators
             )).to.equal(false);
         });
 
@@ -4635,8 +4682,73 @@ describe('Client for Exonum blockchain platform: ', function() {
                             "signature": "4616ef4bfac86c8ded9aa9c7e84958574e3f9df4f7aadea8b37dcdb40ebedd8ac009f8a9b54bd907bf4f43289bfec72e47e6338912f282a6b5a5ce8c558ef50b"
                         }
                     ]
-                }
+                }, validators
             )).to.equal(false);
+        });
+
+        it('Invalid block with validators of wrong type', function() {
+            var block = {
+                "block": {
+                    "height": "5",
+                    "propose_round": 3,
+                    "time": "1487008150005000000",
+                    "prev_hash": "fe5c606da552b2a3ad0ff8ef400a7071e9e72ab3b5f5c2996416ceb86c7f2c1e",
+                    "tx_hash": "136c7952ed9f26b477797c23cf3d02faa46863ecc70d595b0b227027aacd0f94",
+                    "state_hash": "bea2a1defd3b2ab410a1f501805d10ad94d30a5b5a1240574cade1553a60e189"
+                },
+                "precommits": [
+                    {
+                        "body": {
+                            "validator": 0,
+                            "height": "5",
+                            "round": 3,
+                            "propose_hash": "1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a",
+                            "block_hash": "c2513f88478a32767c3cf7c068d60523212a005374d8d7398473c9601bf3d369"
+                        },
+                        "signature": "4616ef4bfac86c8ded9aa9c7e84958574e3f9df4f7aadea8b37dcdb40ebedd8ac009f8a9b54bd907bf4f43289bfec72e47e6338912f282a6b5a5ce8c558ef50b"
+                    },
+                    {
+                        "body": {
+                            "validator": 2,
+                            "height": "5",
+                            "round": 3,
+                            "propose_hash": "1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a",
+                            "block_hash": "c2513f88478a32767c3cf7c068d60523212a005374d8d7398473c9601bf3d369"
+                        },
+                        "signature": "5253cba87af1abac95c7c92f06b2b286af84353fd060ea1069f107094d97298473fe6431613c3e2d02d92624c82394b86cec047cd681e0f3fc98f0f877383a04"
+                    },
+                    {
+                        "body": {
+                            "validator": 3,
+                            "height": "5",
+                            "round": 3,
+                            "propose_hash": "1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a",
+                            "block_hash": "c2513f88478a32767c3cf7c068d60523212a005374d8d7398473c9601bf3d369"
+                        },
+                        "signature": "e35a3cb1ca834cce77d67d5945ef1d7021488a357a35e973cd1ef17099d4db55a28123d95f9c5dcedf34c86a12c20e91cc47622612039115f2a376d7e5f7ab00"
+                    }
+                ]
+            };
+
+            expect(Exonum.verifyBlock(block, [])).to.equal(false);
+
+            expect(Exonum.verifyBlock(block, [true])).to.equal(false);
+
+            expect(Exonum.verifyBlock(block, [undefined])).to.equal(false);
+
+            expect(Exonum.verifyBlock(block, [null])).to.equal(false);
+
+            expect(Exonum.verifyBlock(block, [42])).to.equal(false);
+
+            expect(Exonum.verifyBlock(block, [{}])).to.equal(false);
+
+            expect(Exonum.verifyBlock(block, [[]])).to.equal(false);
+
+            expect(Exonum.verifyBlock(block, [new Date()])).to.equal(false);
+
+            expect(Exonum.verifyBlock(block, ['asda123'])).to.equal(false);
+
+            expect(Exonum.verifyBlock(block, ['eb7e3ad55f97e5d5693fe0e69f4c26bd1173077dbffb5fff5b69f213f71bee3f'])).to.equal(false);
         });
 
     });
@@ -4879,6 +4991,231 @@ describe('Client for Exonum blockchain platform: ', function() {
             expect(Exonum.hash(data.transaction.body, TxTransfer)).to.equal(data.hash);
 
             expect(Exonum.verifySignature(data.transaction.body, TxTransfer, data.transaction.signature, data.transaction.body.from)).to.equal(true);
+        });
+
+    });
+
+    describe('Check wallet query', function() {
+
+        var validators = [
+            "8db92e93847f66f62f7c0f9f6516ede8c466bf316d78cea23481857c0706823c",
+            "9bf83e5fc18432ea36aa222674677f38da1fcf72fc8a5111d382a8b9bc318b6f",
+            "b60daa6973aa0f1992d669ed3b7a0c17d6fc315c711f4c8bbe250d5ae1f09f33",
+            "2ac0bf3cf5c6a27b0e9705f7890b2f50bc8ad8c304a468f04427aca2086db480"
+        ];
+
+        function getTransactionType(transaction) {
+            switch (transaction.id) {
+                case 128:
+                    return Exonum.newMessage({
+                        size: 80,
+                        service_id: 128,
+                        message_type: 128,
+                        signature: transaction.signature,
+                        fields: {
+                            from: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
+                            to: {type: Exonum.PublicKey, size: 32, from: 32, to: 64},
+                            amount: {type: Exonum.Int64, size: 8, from: 64, to: 72},
+                            seed: {type: Exonum.Uint64, size: 8, from: 72, to: 80}
+                        }
+                    });
+                    break;
+                case 129:
+                    return Exonum.newMessage({
+                        size: 48,
+                        service_id: 128,
+                        message_type: 129,
+                        signature: transaction.signature,
+                        fields: {
+                            wallet: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
+                            amount: {type: Exonum.Int64, size: 8, from: 32, to: 40},
+                            seed: {type: Exonum.Uint64, size: 8, from: 40, to: 48}
+                        }
+                    });
+                case 130:
+                    return Exonum.newMessage({
+                        size: 40,
+                        service_id: 128,
+                        message_type: 130,
+                        signature: transaction.signature,
+                        fields: {
+                            pub_key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
+                            name: {type: Exonum.String, size: 8, from: 32, to: 40}
+                        }
+                    });
+                    break;
+            }
+        }
+
+        function getTransationPublicKey(transaction) {
+            switch (transaction.id) {
+                case 128:
+                    return transaction.body.from;
+                    break;
+                case 129:
+                    return transaction.body.wallet;
+                    break;
+                case 130:
+                    return transaction.body.pub_key;
+                    break;
+            }
+        }
+
+        function verifyTransaction(transaction, hash) {
+            var Type = getTransactionType(transaction);
+            var publicKey = getTransationPublicKey(transaction);
+
+            if (Exonum.hash(transaction.body, Type) !== hash) {
+                console.error('Wrong transaction hash.');
+                return false;
+            } else if (!Exonum.verifySignature(transaction.body, Type, transaction.signature, publicKey)) {
+                console.error('Wrong transaction signature.');
+                return false;
+            }
+
+            return true;
+        }
+
+        function getObjectLength(obj) {
+            var l = 0;
+            for (var prop in obj) {
+                if (obj.hasOwnProperty(prop)) {
+                    l++;
+                }
+            }
+            return l;
+        }
+
+        function getWallet(query, publicKey) {
+            if (!Exonum.verifyBlock(query.block_info, validators)) {
+                return undefined;
+            }
+
+            var TableKey = Exonum.newType({
+                size: 4,
+                fields: {
+                    service_id: {type: Exonum.Uint16, size: 2, from: 0, to: 2},
+                    table_index: {type: Exonum.Uint16, size: 2, from: 2, to: 4}
+                }
+            });
+            var walletsTableData = {
+                service_id: 128,
+                table_index: 0
+            };
+            var walletsTableKey = Exonum.hash(walletsTableData, TableKey);
+            var walletsTableRootHash = Exonum.merklePatriciaProof(query.block_info.block.state_hash, query.wallet.mpt_proof, walletsTableKey);
+
+            if (walletsTableRootHash === null) {
+                console.error('Wallets can not exist.');
+                return undefined;
+            }
+
+            var Wallet = Exonum.newType({
+                size: 88,
+                fields: {
+                    pub_key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
+                    name: {type: Exonum.String, size: 8, from: 32, to: 40},
+                    balance: {type: Exonum.Uint64, size: 8, from: 40, to: 48},
+                    history_len: {type: Exonum.Uint64, size: 8, from: 48, to: 56},
+                    history_hash: {type: Exonum.Hash, size: 32, from: 56, to: 88}
+                }
+            });
+
+            var wallet = Exonum.merklePatriciaProof(walletsTableRootHash, query.wallet.value, publicKey, Wallet);
+
+            if (wallet === null) {
+                // wallet not found
+                return null;
+            }
+
+            var HashesOftransactions = Exonum.merkleProof(wallet.history_hash, wallet.history_len, query.wallet_history.mt_proof, [0, wallet.history_len]);
+            var transactions = query.wallet_history.values;
+
+            if (getObjectLength(transactions) !== getObjectLength(HashesOftransactions)) {
+                console.error('Number of transaction hashes is not equal to transactions number.');
+                return undefined;
+            }
+
+            for (var i in HashesOftransactions) {
+                if (!HashesOftransactions.hasOwnProperty(i)) {
+                    continue;
+                } if (!verifyTransaction(transactions[i], HashesOftransactions[i])) {
+                    return undefined;
+                }
+            }
+
+            return {
+                wallet: wallet,
+                transactions: transactions
+            }
+        }
+
+        it('Empty wallets table', function() {
+            var data = require('./common_data/wallet-query/empty-table.json');
+            var publicKey = '8f115f2a0d78f1eb102976e62dc8aa3ca7f64329f19331ed346c3d817e51fe52';
+
+            expect(getWallet(data, publicKey)).to.equal(null);
+        });
+
+        it('Wallet not found', function() {
+            var data = require('./common_data/wallet-query/not-found.json');
+            var publicKey = '8f115f2a0d78f1eb102976e62dc8aa3ca7f64329f19331ed346c3d817e51fe52';
+
+            expect(getWallet(data, publicKey)).to.equal(null);
+        });
+
+        it('Wallet is found', function() {
+            var data = require('./common_data/wallet-query/found.json');
+            var publicKey = 'd51a7976869da2b397580b8a709dba0f23e6333960143b022d947a6f09ba56a3';
+
+            expect(getWallet(data, publicKey)).to.deep.equal({
+                wallet: {
+                    "balance": "4000",
+                    "history_hash": "bb3b712721225155810f142f017c42039529b84911f4f08cb61fce2f9063d3ba",
+                    "history_len": "4",
+                    "name": "Василий Васильевич",
+                    "pub_key": "d51a7976869da2b397580b8a709dba0f23e6333960143b022d947a6f09ba56a3"
+                },
+                transactions: [
+                    {
+                        "body": {
+                            "name": "Василий Васильевич",
+                            "pub_key": "d51a7976869da2b397580b8a709dba0f23e6333960143b022d947a6f09ba56a3"
+                        },
+                        "id": 130,
+                        "signature": "ddc71ec1d77c49722d4a289a5e44b416607995ed69a94361f2a0522cbfabfbd0800249d49332605d7046274388a0d419a7d57c056f581d2eca183c4c02344408"
+                    },
+                    {
+                        "body": {
+                            "amount": "6000",
+                            "seed": "15776710045565509997",
+                            "wallet": "d51a7976869da2b397580b8a709dba0f23e6333960143b022d947a6f09ba56a3"
+                        },
+                        "id": 129,
+                        "signature": "cb7bb326432d7e4224e30449f0c44e8e7d9a9630d59bdade0a4fb744f1136609cda56ed4c88001941c49f800156f0f4308e7ae2efef203c6aeb160c755828909"
+                    },
+                    {
+                        "body": {
+                            "amount": "3000",
+                            "from": "d51a7976869da2b397580b8a709dba0f23e6333960143b022d947a6f09ba56a3",
+                            "seed": "14077233761219583473",
+                            "to": "a2cbbf9a067ed4c5bc73f3dc8417bc4cfdf46aaae79548d5b797efe578f56bb4"
+                        },
+                        "id": 128,
+                        "signature": "6465366bedbf52abd89706fbde85075938c211a664112fe1d3dc728a41184887fb8f2c4cf5d4ce7496fb874c9d54e90fd7799c1f0a9d227ecffcd8ead81bc404"
+                    },
+                    {
+                        "body": {
+                            "amount": "1000",
+                            "from": "a2cbbf9a067ed4c5bc73f3dc8417bc4cfdf46aaae79548d5b797efe578f56bb4",
+                            "seed": "6951267718330218840",
+                            "to": "d51a7976869da2b397580b8a709dba0f23e6333960143b022d947a6f09ba56a3"
+                        },
+                        "id": 128,
+                        "signature": "bf66f40cf041011e7dd53259578dfa3849c1eb62d45191ef96571ccf753750af66c6ebc3fadc88b9943477daeedb022e0012df4716223af68f26f8c064075d04"
+                    }
+                ]
+            });
         });
 
     });
