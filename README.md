@@ -131,7 +131,7 @@ The `size` parameter contains full length of listed fields.
 
 The `service_id` is a numeric parameter.
 
-The `message_type_id` is a numeric parameter.
+The `message_id` is a numeric parameter.
 
 The `fields` parameter is a list of fields.
 
@@ -151,7 +151,7 @@ Lets declare custom type `CreateUser`:
 var CreateUser = Exonum.newMessage({
     size: 16,
     service_id: 7,
-    message_type: 15,
+    message_id: 15,
     signature: 'aa77e9f37671ab2e85851e518aca2288f61662816bce15cfc03a8e094e7f9ecd',
     fields: {
         name: {type: Exonum.String, size: 8, from: 0, to: 8},
@@ -197,7 +197,7 @@ var hash = Exonum.hash(data, CustomType);
 var CustomMessage = Exonum.newMessage({
     size: 16,
     service_id: 8,
-    message_type: 12,
+    message_id: 12,
     signature: 'aa77e9f37671ab2e85851e518aca2288f61662816bce15cfc03a8e094e7f9ecd',
     fields: {
         id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
@@ -254,7 +254,7 @@ var signature = Exonum.sign(CustomType, data, secretKey);
 var CustomMessage = Exonum.newMessage({
     size: 16,
     service_id: 8,
-    message_type: 12,
+    message_id: 12,
     signature: 'aa77e9f37671ab2e85851e518aca2288f61662816bce15cfc03a8e094e7f9ecd',
     fields: {
         id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
@@ -321,7 +321,7 @@ Exonum.verifySignature(data, CustomType, signature, publicKey);
 var CustomMessage = Exonum.newMessage({
     size: 16,
     service_id: 8,
-    message_type: 12,
+    message_id: 12,
     signature: 'aa77e9f37671ab2e85851e518aca2288f61662816bce15cfc03a8e094e7f9ecd',
     fields: {
         id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},

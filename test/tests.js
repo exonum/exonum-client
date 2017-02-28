@@ -1460,7 +1460,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var CustomMessage = Exonum.newMessage({
                 size: 18,
                 service_id: 1,
-                message_type: 2,
+                message_id: 2,
                 fields: {
                     name: {type: Exonum.String, size: 8, from: 0, to: 8},
                     age: {type: Exonum.Uint8, size: 1, from: 8, to: 9},
@@ -1533,7 +1533,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var CustomMessage = Exonum.newMessage({
                 size: 18,
                 service_id: 1,
-                message_type: 2,
+                message_id: 2,
                 fields: {
                     name: {type: Exonum.String, size: 8, from: 0, to: 8},
                     age: {type: Exonum.Uint8, size: 1, from: 8, to: 9},
@@ -1589,7 +1589,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var CustomMessage = Exonum.newMessage({
                 size: 18,
                 service_id: 1,
-                message_type: 2,
+                message_id: 2,
                 fields: {
                     name: {type: Exonum.String, size: 8, from: 0, to: 8},
                     age: {type: Exonum.Uint8, size: 1, from: 8, to: 9},
@@ -1650,7 +1650,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var CustomMessage = Exonum.newMessage({
                 size: 18,
                 service_id: 1,
-                message_type: 2,
+                message_id: 2,
                 fields: {
                     name: {type: Exonum.String, size: 8, from: 0, to: 8},
                     age: {type: Exonum.Uint8, size: 1, from: 8, to: 9},
@@ -1779,7 +1779,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var CustomMessage = Exonum.newMessage({
                 size: 18,
                 service_id: 1,
-                message_type: 2,
+                message_id: 2,
                 fields: {
                     name: {type: Exonum.String, size: 8, from: 0, to: 8},
                     age: {type: Exonum.Uint8, size: 1, from: 8, to: 9},
@@ -1840,7 +1840,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var CustomMessage = Exonum.newMessage({
                 size: 18,
                 service_id: 1,
-                message_type: 2,
+                message_id: 2,
                 fields: {
                     name: {type: Exonum.String, size: 8, from: 0, to: 8},
                     age: {type: Exonum.Uint8, size: 1, from: 8, to: 9},
@@ -4872,7 +4872,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var TxCreateWallet = Exonum.newMessage({
                 size: 40,
                 service_id: 128,
-                message_type: data.transaction.id,
+                message_id: data.transaction.id,
                 signature: data.transaction.signature,
                 fields: {
                     pub_key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
@@ -4892,7 +4892,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var TxCreateWallet = Exonum.newMessage({
                 size: 40,
                 service_id: 128,
-                message_type: data.transaction.id,
+                message_id: data.transaction.id,
                 signature: data.transaction.signature,
                 fields: {
                     pub_key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
@@ -4912,7 +4912,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var TxIssue = Exonum.newMessage({
                 size: 48,
                 service_id: 128,
-                message_type: data.transaction.id,
+                message_id: data.transaction.id,
                 signature: data.transaction.signature,
                 fields: {
                     wallet: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
@@ -4933,7 +4933,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var TxIssue = Exonum.newMessage({
                 size: 48,
                 service_id: 128,
-                message_type: data.transaction.id,
+                message_id: data.transaction.id,
                 signature: data.transaction.signature,
                 fields: {
                     wallet: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
@@ -4954,7 +4954,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var TxTransfer = Exonum.newMessage({
                 size: 80,
                 service_id: 128,
-                message_type: data.transaction.id,
+                message_id: data.transaction.id,
                 signature: data.transaction.signature,
                 fields: {
                     from: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
@@ -4976,7 +4976,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var TxTransfer = Exonum.newMessage({
                 size: 80,
                 service_id: 128,
-                message_type: data.transaction.id,
+                message_id: data.transaction.id,
                 signature: data.transaction.signature,
                 fields: {
                     from: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
@@ -5010,7 +5010,7 @@ describe('Client for Exonum blockchain platform: ', function() {
                     return Exonum.newMessage({
                         size: 80,
                         service_id: 128,
-                        message_type: 128,
+                        message_id: 128,
                         signature: transaction.signature,
                         fields: {
                             from: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
@@ -5024,7 +5024,7 @@ describe('Client for Exonum blockchain platform: ', function() {
                     return Exonum.newMessage({
                         size: 48,
                         service_id: 128,
-                        message_type: 129,
+                        message_id: 129,
                         signature: transaction.signature,
                         fields: {
                             wallet: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
@@ -5036,7 +5036,7 @@ describe('Client for Exonum blockchain platform: ', function() {
                     return Exonum.newMessage({
                         size: 40,
                         service_id: 128,
-                        message_type: 130,
+                        message_id: 130,
                         signature: transaction.signature,
                         fields: {
                             pub_key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},

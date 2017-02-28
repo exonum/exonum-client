@@ -65,7 +65,7 @@ var ExonumClient = (function() {
         fields: {
             network_id: {type: Uint8, size: 1, from: 0, to: 1},
             version: {type: Uint8, size: 1, from: 1, to: 2},
-            message_type: {type: Uint16, size: 2, from: 2, to: 4},
+            message_id: {type: Uint16, size: 2, from: 2, to: 4},
             service_id: {type: Uint16, size: 2, from: 4, to: 6},
             payload: {type: Uint32, size: 4, from: 6, to: 10}
         }
@@ -73,7 +73,7 @@ var ExonumClient = (function() {
     var Precommit = createNewMessage({
         size: 84,
         service_id: 0,
-        message_type: 4,
+        message_id: 4,
         fields: {
             validator: {type: Uint32, size: 4, from: 0, to: 4},
             height: {type: Uint64, size: 8, from: 8, to: 16},
@@ -116,7 +116,7 @@ var ExonumClient = (function() {
      */
     function NewMessage(type) {
         this.size = type.size;
-        this.message_type = type.message_type;
+        this.message_id = type.message_id;
         this.service_id = type.service_id;
         this.signature = type.signature;
         this.fields = type.fields;
@@ -132,7 +132,7 @@ var ExonumClient = (function() {
         var buffer = MessageHead.serialize({
             network_id: CONST.NETWORK_ID,
             version: 0,
-            message_type: this.message_type,
+            message_id: this.message_id,
             service_id: this.service_id
         });
 
