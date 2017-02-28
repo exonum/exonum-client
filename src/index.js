@@ -1051,13 +1051,13 @@ var ExonumClient = (function() {
             var element;
             var elementsHash;
 
-            if ((depth + 1) !== height) {
+            if (depth !== 0 && (depth + 1) !== height) {
                 console.error('Value node is on wrong height in tree.');
                 return;
-            } else if (index < start || end.lt(index)) {
+            } else if (start.gt(index)  || end.lt(index)) {
                 console.error('Wrong index of value node.');
                 return;
-            } else if ((start + elements.length) !== index) {
+            } else if (start.plus(elements.length).neq(index)) {
                 console.error('Value node is on wrong position in tree.');
                 return;
             }
@@ -1110,6 +1110,11 @@ var ExonumClient = (function() {
             var hashLeft;
             var hashRight;
             var summingBuffer;
+
+            // case with single node in tree
+            if (depth === 0 && typeof node.val !== 'undefined') {
+                return getHash(node.val, depth, index * 2);
+            }
 
             if (typeof node.left !== 'undefined') {
                 if (typeof node.left === 'string') {
