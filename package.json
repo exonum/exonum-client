@@ -7,8 +7,8 @@
   "private": true,
   "main": "src/index.js",
   "scripts": {
-    "build": "browserify src/browser.js | uglifyjs -o dist/exonum-client.min.js",
-    "build-debug": "browserify src/browser.js -o dist/exonum-client.js -d",
+    "build": "mkdir -p dist && browserify src/browser.js | uglifyjs -o dist/exonum-client.min.js",
+    "build-debug": "mkdir -p dist && browserify src/browser.js -o dist/exonum-client.js -d",
     "test": "nyc --reporter=html --reporter=text mocha"
   },
   "dependencies": {

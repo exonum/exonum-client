@@ -1692,7 +1692,7 @@ var ExonumClient = (function() {
      *  secretKey {String}
      */
     function keyPair() {
-        var pair = nacl.box.keyPair();
+        var pair = nacl.sign.keyPair();
         var publicKey = uint8ArrayToHexadecimal(pair.publicKey);
         var secretKey = uint8ArrayToHexadecimal(pair.secretKey);
 
