@@ -1,6 +1,7 @@
 {
     "transaction": {
-        "id": 128,
+        "message_id": 128,
+        "service_id": 128,
         "body": {
             "amount": "8040926974714435319",
             "from": "b47329c2d9baf26236b09b598f175b113250a530455682da9852b108cf479845",

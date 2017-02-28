@@ -1,6 +1,7 @@
 {
     "transaction": {
-        "id": 129,
+        "message_id": 129,
+        "service_id": 128,
         "body": {
             "amount": "324324637417896152",
             "seed": "13236866833579813572",

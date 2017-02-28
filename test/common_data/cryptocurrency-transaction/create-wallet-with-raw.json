@@ -1,6 +1,7 @@
 {
     "transaction": {
-        "id": 130,
+        "message_id": 130,
+        "service_id": 128,
         "body": {
             "name": "eD56pWSc35PagC9571bMqtGq6ixMYczeuyikTpnQqVnQZOh2fiOAZR0Y0us3xVZQz0bcpD78zJL3q3eazdI5g7rQRTGIPRoOxYOUX7ZchOqY6D3XqZPtpc9tV5tS2L64aMAJYh02V8x42SEfs1yrExh5VjfeqYvEVyEHpOEEAt6f1G6DysAhx1iJtLm78qU1RqMGsy5h7apUc0tuPxj",
             "pub_key": "69c2a35dcd162f92d466f541ef305fd6b6ddc545bc489b1b8f32a67a587d9146"

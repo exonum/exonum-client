@@ -2080,9 +2080,6 @@ describe('Client for Exonum blockchain platform: ', function() {
         });
 
         it('Valid tree with single value in table', function() {
-            var data = {
-                "val": "fae96592ccc79963e15f22b7036b4a688224e5127592f6ea8ddd2355a33e4162"
-            };
             var elements = Exonum.merkleProof(
                 '0fcee0b2e0e62b423048578861e7a14d7a3191289ef68ce8e72abbdc53b3c677',
                 1,
@@ -4889,7 +4886,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var TxCreateWallet = Exonum.newMessage({
                 size: 40,
                 service_id: 128,
-                message_id: data.transaction.id,
+                message_id: data.transaction.message_id,
                 signature: data.transaction.signature,
                 fields: {
                     pub_key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
@@ -4909,7 +4906,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var TxCreateWallet = Exonum.newMessage({
                 size: 40,
                 service_id: 128,
-                message_id: data.transaction.id,
+                message_id: data.transaction.message_id,
                 signature: data.transaction.signature,
                 fields: {
                     pub_key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
@@ -4929,7 +4926,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var TxIssue = Exonum.newMessage({
                 size: 48,
                 service_id: 128,
-                message_id: data.transaction.id,
+                message_id: data.transaction.message_id,
                 signature: data.transaction.signature,
                 fields: {
                     wallet: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
@@ -4950,7 +4947,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var TxIssue = Exonum.newMessage({
                 size: 48,
                 service_id: 128,
-                message_id: data.transaction.id,
+                message_id: data.transaction.message_id,
                 signature: data.transaction.signature,
                 fields: {
                     wallet: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
@@ -4971,7 +4968,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var TxTransfer = Exonum.newMessage({
                 size: 80,
                 service_id: 128,
-                message_id: data.transaction.id,
+                message_id: data.transaction.message_id,
                 signature: data.transaction.signature,
                 fields: {
                     from: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
@@ -4993,7 +4990,7 @@ describe('Client for Exonum blockchain platform: ', function() {
             var TxTransfer = Exonum.newMessage({
                 size: 80,
                 service_id: 128,
-                message_id: data.transaction.id,
+                message_id: data.transaction.message_id,
                 signature: data.transaction.signature,
                 fields: {
                     from: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
@@ -5022,7 +5019,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         ];
 
         function getTransactionType(transaction) {
-            switch (transaction.id) {
+            switch (transaction.message_id) {
                 case 128:
                     return Exonum.newMessage({
                         size: 80,
@@ -5065,7 +5062,7 @@ describe('Client for Exonum blockchain platform: ', function() {
         }
 
         function getTransationPublicKey(transaction) {
-            switch (transaction.id) {
+            switch (transaction.message_id) {
                 case 128:
                     return transaction.body.from;
                     break;
@@ -5199,7 +5196,8 @@ describe('Client for Exonum blockchain platform: ', function() {
                             "name": "Василий Васильевич",
                             "pub_key": "d51a7976869da2b397580b8a709dba0f23e6333960143b022d947a6f09ba56a3"
                         },
-                        "id": 130,
+                        "message_id": 130,
+                        "service_id": 128,
                         "signature": "ddc71ec1d77c49722d4a289a5e44b416607995ed69a94361f2a0522cbfabfbd0800249d49332605d7046274388a0d419a7d57c056f581d2eca183c4c02344408"
                     },
                     {
@@ -5208,7 +5206,8 @@ describe('Client for Exonum blockchain platform: ', function() {
                             "seed": "15776710045565509997",
                             "wallet": "d51a7976869da2b397580b8a709dba0f23e6333960143b022d947a6f09ba56a3"
                         },
-                        "id": 129,
+                        "message_id": 129,
+                        "service_id": 128,
                         "signature": "cb7bb326432d7e4224e30449f0c44e8e7d9a9630d59bdade0a4fb744f1136609cda56ed4c88001941c49f800156f0f4308e7ae2efef203c6aeb160c755828909"
                     },
                     {
@@ -5218,7 +5217,8 @@ describe('Client for Exonum blockchain platform: ', function() {
                             "seed": "14077233761219583473",
                             "to": "a2cbbf9a067ed4c5bc73f3dc8417bc4cfdf46aaae79548d5b797efe578f56bb4"
                         },
-                        "id": 128,
+                        "message_id": 128,
+                        "service_id": 128,
                         "signature": "6465366bedbf52abd89706fbde85075938c211a664112fe1d3dc728a41184887fb8f2c4cf5d4ce7496fb874c9d54e90fd7799c1f0a9d227ecffcd8ead81bc404"
                     },
                     {
@@ -5228,7 +5228,8 @@ describe('Client for Exonum blockchain platform: ', function() {
                             "seed": "6951267718330218840",
                             "to": "d51a7976869da2b397580b8a709dba0f23e6333960143b022d947a6f09ba56a3"
                         },
-                        "id": 128,
+                        "message_id": 128,
+                        "service_id": 128,
                         "signature": "bf66f40cf041011e7dd53259578dfa3849c1eb62d45191ef96571ccf753750af66c6ebc3fadc88b9943477daeedb022e0012df4716223af68f26f8c064075d04"
                     }
                 ]

@@ -1,6 +1,7 @@
 {
     "transaction": {
-        "id": 130,
+        "message_id": 130,
+        "service_id": 128,
         "body": {
             "name": "babd, Юникод еще работает",
             "pub_key": "e58595101fd1daca7e25dbaf8e5e53caad610b3f34148d2a9626f7c4fb6e0078"
