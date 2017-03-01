@@ -1711,7 +1711,7 @@ var ExonumClient = (function() {
      * @return {String}
      */
     function randomUint64() {
-        return bigInt.randBetween(0, CONST.MAX_UINT64);
+        return bigInt.randBetween(0, CONST.MAX_UINT64).toString();
     }
 
     return {

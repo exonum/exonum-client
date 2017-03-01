@@ -4768,6 +4768,45 @@ describe('Client for Exonum blockchain platform: ', function() {
     });
 
     /*
+     Exonum.keyPair
+     */
+    describe('Generate key pair:', function() {
+
+        it('Key pair validity', function() {
+            var Type = Exonum.newType({
+                size: 96,
+                fields: {
+                    publicKey: {type: Exonum.Hash, size: 32, from: 0, to: 32},
+                    secretKey: {type: Exonum.Digest, size: 64, from: 32, to: 96}
+                }
+            });
+            var data = Exonum.keyPair();
+            var buffer = Type.serialize(data);
+
+            expect(buffer.length).to.equal(96);
+        });
+
+    });
+
+    /*
+     Exonum.randomUint64
+     */
+    describe('Generate random Uint64:', function() {
+
+        it('Random Uint64 validity', function() {
+            var Type = Exonum.newType({
+                size: 8,
+                fields: {balance: {type: Exonum.Uint64, size: 8, from: 0, to: 8}}
+            });
+            var data = {balance: Exonum.randomUint64()};
+            var buffer = Type.serialize(data);
+
+            expect(buffer.length).to.equal(8);
+        });
+
+    });
+
+    /*
      -------------------------------------------------------------------------------------------------------------------
      Cryptocurrency tests
      -------------------------------------------------------------------------------------------------------------------
