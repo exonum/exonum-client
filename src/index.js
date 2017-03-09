@@ -101,6 +101,18 @@ var ExonumClient = (function() {
         return serialize([], 0, data, this);
     };
 
+    NewType.prototype.hash = function(data) {
+        return hash(data, this);
+    };
+
+    NewType.prototype.sign = function(data, secretKey) {
+        return sign(data, this, secretKey)
+    };
+
+    NewType.prototype.verifySignature = function(data, signature, publicKey) {
+        return verifySignature(data, this, signature, publicKey)
+    };
+
     /**
      * Create element of NewType class
      * @param {Object} type
@@ -151,6 +163,18 @@ var ExonumClient = (function() {
         }
 
         return buffer;
+    };
+
+    NewMessage.prototype.hash = function(data) {
+        return hash(data, this);
+    };
+
+    NewMessage.prototype.sign = function(data, secretKey) {
+        return sign(data, this, secretKey)
+    };
+
+    NewMessage.prototype.verifySignature = function(data, signature, publicKey) {
+        return verifySignature(data, this, signature, publicKey)
     };
 
     /**
