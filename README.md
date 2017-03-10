@@ -653,16 +653,10 @@ Install npm packages required for development:
 $ npm install
 ```
 
-To build minimised version of library execute:
+To build minimised and development versions of library execute:
 
 ```
-$ npm run build
-```
-
-To build development version of library execute:
-
-```
-$ npm run build-debug
+$ grunt
 ```
 
 ## Tests

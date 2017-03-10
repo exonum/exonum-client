@@ -7,8 +7,6 @@
   "private": true,
   "main": "src/index.js",
   "scripts": {
-    "build": "mkdir -p dist && browserify src/browser.js | uglifyjs -o dist/exonum-client.min.js",
-    "build-debug": "mkdir -p dist && browserify src/browser.js -o dist/exonum-client.js -d",
     "test": "nyc --reporter=html --reporter=text mocha"
   },
   "dependencies": {
@@ -18,11 +16,13 @@
     "tweetnacl": "^0.14.5"
   },
   "devDependencies": {
-    "browserify": "^13.1.1",
     "chai": "^3.5.0",
     "coveralls": "^2.11.16",
+    "grunt": "^1.0.1",
+    "grunt-browserify": "^5.0.0",
+    "grunt-contrib-jshint": "^1.1.0",
+    "grunt-contrib-uglify": "^2.2.0",
     "mocha": "^3.2.0",
-    "nyc": "^10.1.2",
-    "uglifyjs": "^2.4.10"
+    "nyc": "^10.1.2"
   }
 }

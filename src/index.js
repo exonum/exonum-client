@@ -4,7 +4,7 @@ var sha = require('sha.js');
 var nacl = require('tweetnacl');
 var objectAssign = require('object-assign');
 var fs = require('fs');
-var bigInt = require("big-integer");
+var bigInt = require('big-integer');
 
 var ExonumClient = (function() {
 
@@ -106,11 +106,11 @@ var ExonumClient = (function() {
     };
 
     NewType.prototype.sign = function(data, secretKey) {
-        return sign(data, this, secretKey)
+        return sign(data, this, secretKey);
     };
 
     NewType.prototype.verifySignature = function(data, signature, publicKey) {
-        return verifySignature(data, this, signature, publicKey)
+        return verifySignature(data, this, signature, publicKey);
     };
 
     /**
@@ -170,11 +170,11 @@ var ExonumClient = (function() {
     };
 
     NewMessage.prototype.sign = function(data, secretKey) {
-        return sign(data, this, secretKey)
+        return sign(data, this, secretKey);
     };
 
     NewMessage.prototype.verifySignature = function(data, signature, publicKey) {
-        return verifySignature(data, this, signature, publicKey)
+        return verifySignature(data, this, signature, publicKey);
     };
 
     /**
@@ -199,7 +199,7 @@ var ExonumClient = (function() {
         }
 
         if (value < 0) {
-            value = CONST.MAX_UINT8 + value + 1
+            value = CONST.MAX_UINT8 + value + 1;
         }
 
         insertIntegerToByteArray(value, buffer, from, to);
@@ -546,7 +546,7 @@ var ExonumClient = (function() {
      * @returns {Boolean}
      */
     function validateHexHash(hash, bytes) {
-        var bytes = bytes || 32;
+        bytes = bytes || 32;
 
         if (typeof hash !== 'string') {
             console.error('Wrong data type is passed as hexadecimal string. String is required');
@@ -626,6 +626,21 @@ var ExonumClient = (function() {
      * @param type - can be {NewType} or one of built-in types
      */
     function serialize(buffer, shift, data, type) {
+        function checkIfIsFixed(fields) {
+            for (var fieldName in fields) {
+                if (!fields.hasOwnProperty(fieldName)) {
+                    continue;
+                }
+
+                if (fields[fieldName].type instanceof NewType) {
+                    checkIfIsFixed(fields[fieldName].type.fields);
+                } else if (fields[fieldName].type === String) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         for (var i = 0, len = type.size; i < len; i++) {
             buffer[shift + i] = 0;
         }
@@ -646,20 +661,7 @@ var ExonumClient = (function() {
             var from = shift + fieldType.from;
 
             if (fieldType.type instanceof NewType) {
-                var isFixed = (function checkIfIsFixed(fields) {
-                    for (var fieldName in fields) {
-                        if (!fields.hasOwnProperty(fieldName)) {
-                            continue;
-                        }
-
-                        if (fields[fieldName].type instanceof NewType) {
-                            checkIfIsFixed(fields[fieldName].type.fields);
-                        } else if (fields[fieldName].type === String) {
-                            return false;
-                        }
-                    }
-                    return true;
-                })(fieldType.type.fields);
+                var isFixed = checkIfIsFixed(fieldType.type.fields);
 
                 if (isFixed === true) {
                     serialize(buffer, from, fieldData, fieldType.type);
@@ -944,7 +946,6 @@ var ExonumClient = (function() {
      */
     function sign(data, type, secretKey) {
         var buffer;
-        var secretKey = secretKey;
         var signature;
 
         if (typeof secretKey !== 'undefined') {
@@ -995,8 +996,6 @@ var ExonumClient = (function() {
      */
     function verifySignature(data, type, signature, publicKey) {
         var buffer;
-        var signature = signature;
-        var publicKey = publicKey;
 
         if (typeof publicKey !== 'undefined') {
             if (type instanceof NewType) {
@@ -1236,14 +1235,16 @@ var ExonumClient = (function() {
             console.error('Invalid value is passed as end of range parameter.');
             return undefined;
         }
+        var rangeStart;
         try {
-            var rangeStart = bigInt(range[0]);
+            rangeStart = bigInt(range[0]);
         } catch (e) {
             console.error('Invalid value is passed as start of range parameter. Number or string is expected.');
             return undefined;
         }
+        var rangeEnd;
         try {
-            var rangeEnd = bigInt(range[1]);
+            rangeEnd = bigInt(range[1]);
         } catch (e) {
             console.error('Invalid value is passed as end of range parameter. Number or string is expected.');
             return undefined;
@@ -1500,7 +1501,7 @@ var ExonumClient = (function() {
         if (!validateHexHash(rootHash)) {
             return undefined;
         }
-        var rootHash = rootHash.toLowerCase();
+        rootHash = rootHash.toLowerCase();
 
         // validate proofNode parameter
         if (!isObject(proofNode)) {
@@ -1509,7 +1510,6 @@ var ExonumClient = (function() {
         }
 
         // validate key parameter
-        var key = key;
         if (Array.isArray(key)) {
             if (validateBytesArray(key, CONST.MERKLE_PATRICIA_KEY_LENGTH)) {
                 key = uint8ArrayToHexadecimal(key);
@@ -1594,7 +1594,7 @@ var ExonumClient = (function() {
                             return element;
                         } else {
                             console.error('Invalid key with value is in the root of proofNode parameter.');
-                            return undefined
+                            return undefined;
                         }
                     } else {
                         console.error('rootHash parameter is not equal to actual hash.');
@@ -1643,11 +1643,7 @@ var ExonumClient = (function() {
             return false;
         }
 
-        for (var i in validators) {
-            if (!validators.hasOwnProperty(i)) {
-                continue;
-            }
-
+        for (var i = 0; i < validators.length; i++) {
             if (!validateHexHash(validators[i])) {
                 return false;
             }
@@ -1659,11 +1655,7 @@ var ExonumClient = (function() {
         var round;
         var blockHash = hash(data.block, Block);
 
-        for (var i in data.precommits) {
-            if (!data.precommits.hasOwnProperty(i)) {
-                continue;
-            }
-
+        for (i = 0; i < data.precommits.length; i++) {
             var precommit = data.precommits[i];
 
             if (!isObject(precommit.body)) {
@@ -1728,7 +1720,7 @@ var ExonumClient = (function() {
         return {
             publicKey: publicKey,
             secretKey: secretKey
-        }
+        };
     }
 
     /** Generate random number of type of Uint64
