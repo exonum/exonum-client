@@ -1521,7 +1521,7 @@ var ExonumClient = (function() {
                 return undefined;
             }
         } else {
-            console.error('Invalid type of key parameter. Aarray of 8-bit integers or hexadecimal string is expected.');
+            console.error('Invalid type of key parameter. Array of 8-bit integers or hexadecimal string is expected.');
             return undefined;
         }
         var keyBinary = hexadecimalToBinaryString(key);
