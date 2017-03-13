@@ -75,36 +75,16 @@ describe('Client for Exonum blockchain platform', function() {
                 size: 32,
                 fields: {hash: {type: Exonum.Hash, size: 32, from: 0, to: 32}}
             });
-            var data;
-            var buffer;
+            var args = [true, null, undefined, 57, [], {}, new Date()];
 
-            data = {hash: true};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
+            function test(hash) {
+                var buffer = Type.serialize({hash: hash});
+                expect(buffer).to.equal(undefined);
+            }
 
-            data = {hash: null};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {hash: undefined};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {hash: 57};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {hash: []};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {hash: {}};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {hash: new Date()};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
+            for (var i in args) {
+                test(args[i])
+            }
         });
 
     });
@@ -174,36 +154,16 @@ describe('Client for Exonum blockchain platform', function() {
                 size: 32,
                 fields: {key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32}}
             });
-            var data;
-            var buffer;
+            var args = [true, null, undefined, 57, [], {}, new Date()];
 
-            data = {key: true};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
+            function test(key) {
+                var buffer = Type.serialize({key: key});
+                expect(buffer).to.equal(undefined);
+            }
 
-            data = {key: null};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {key: undefined};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {key: 57};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {key: []};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {key: {}};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {key: new Date()};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
+            for (var i in args) {
+                test(args[i])
+            }
         });
 
     });
@@ -273,30 +233,16 @@ describe('Client for Exonum blockchain platform', function() {
                 size: 64,
                 fields: {key: {type: Exonum.Digest, size: 64, from: 0, to: 64}}
             });
-            var data;
-            var buffer;
+            var args = [true, null, undefined, 57, [], {}, new Date()];
 
-            data = {key: true};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-            data = {key: null};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-            data = {key: undefined};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-            data = {key: 57};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-            data = {key: []};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-            data = {key: {}};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-            data = {key: new Date()};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
+            function test(key) {
+                var buffer = Type.serialize({key: key});
+                expect(buffer).to.equal(undefined);
+            }
+
+            for (var i in args) {
+                test(args[i])
+            }
         });
 
     });
@@ -366,32 +312,16 @@ describe('Client for Exonum blockchain platform', function() {
                 size: 8,
                 fields: {since: {type: Exonum.Timespec, size: 8, from: 0, to: 8}}
             });
-            var data;
-            var buffer;
+            var args = [true, null, undefined, [], {}, new Date()];
 
-            data = {since:  true};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
+            function test(since) {
+                var buffer = Type.serialize({since: since});
+                expect(buffer).to.equal(undefined);
+            }
 
-            data = {since:  null};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {since:  undefined};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {since:  []};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {since:  {}};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {since:  new Date()};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
+            for (var i in args) {
+                test(args[i])
+            }
         });
 
     });
@@ -439,36 +369,16 @@ describe('Client for Exonum blockchain platform', function() {
                 size: 1,
                 fields: {active: {type: Exonum.Bool, size: 1, from: 0, to: 1}}
             });
-            var data;
-            var buffer;
+            var args = ['Hello world', null, undefined, 57, [], {}, new Date()];
 
-            data = {active: 'Hello world'};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
+            function test(since) {
+                var buffer = Type.serialize({since: since});
+                expect(buffer).to.equal(undefined);
+            }
 
-            data = {active: null};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {active: undefined};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {active: 57};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {active: []};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {active: {}};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {active: new Date()};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
+            for (var i in args) {
+                test(args[i])
+            }
         });
 
     });
@@ -505,36 +415,16 @@ describe('Client for Exonum blockchain platform', function() {
                 size: 8,
                 fields: {text: {type: Exonum.String, size: 8, from: 0, to: 8}}
             });
-            var data;
-            var buffer;
+            var args = [true, null, undefined, 57, [], {}, new Date()];
 
-            data = {text: true};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
+            function test(text) {
+                var buffer = Type.serialize({text: text});
+                expect(buffer).to.equal(undefined);
+            }
 
-            data = {text: null};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {text: undefined};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {text: 57};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {text: []};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {text: {}};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {text: new Date()};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
+            for (var i in args) {
+                test(args[i])
+            }
         });
 
     });
@@ -604,32 +494,16 @@ describe('Client for Exonum blockchain platform', function() {
                 size: 1,
                 fields: {balance: {type: Exonum.Int8, size: 1, from: 0, to: 1}}
             });
-            var data;
-            var buffer;
+            var args = [true, null, undefined, [], {}, new Date()];
 
-            data = {balance:  true};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
+            function test(balance) {
+                var buffer = Type.serialize({balance: balance});
+                expect(buffer).to.equal(undefined);
+            }
 
-            data = {balance:  null};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {balance:  undefined};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {balance:  []};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {balance:  {}};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {balance:  new Date()};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
+            for (var i in args) {
+                test(args[i])
+            }
         });
 
     });
@@ -699,32 +573,16 @@ describe('Client for Exonum blockchain platform', function() {
                 size: 2,
                 fields: {balance: {type: Exonum.Int16, size: 2, from: 0, to: 2}}
             });
-            var data;
-            var buffer;
+            var args = [true, null, undefined, [], {}, new Date()];
 
-            data = {balance:  true};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
+            function test(balance) {
+                var buffer = Type.serialize({balance: balance});
+                expect(buffer).to.equal(undefined);
+            }
 
-            data = {balance:  null};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {balance:  undefined};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {balance:  []};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {balance:  {}};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {balance:  new Date()};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
+            for (var i in args) {
+                test(args[i])
+            }
         });
 
     });
@@ -794,32 +652,16 @@ describe('Client for Exonum blockchain platform', function() {
                 size: 4,
                 fields: {balance: {type: Exonum.Int32, size: 4, from: 0, to: 4}}
             });
-            var data;
-            var buffer;
+            var args = [true, null, undefined, [], {}, new Date()];
 
-            data = {balance:  true};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
+            function test(balance) {
+                var buffer = Type.serialize({balance: balance});
+                expect(buffer).to.equal(undefined);
+            }
 
-            data = {balance:  null};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {balance:  undefined};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {balance:  []};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {balance:  {}};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {balance:  new Date()};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
+            for (var i in args) {
+                test(args[i])
+            }
         });
 
     });
@@ -911,32 +753,16 @@ describe('Client for Exonum blockchain platform', function() {
                 size: 8,
                 fields: {balance: {type: Exonum.Int64, size: 8, from: 0, to: 8}}
             });
-            var data;
-            var buffer;
+            var args = [true, null, undefined, [], {}, new Date()];
 
-            data = {balance:  true};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
+            function test(balance) {
+                var buffer = Type.serialize({balance: balance});
+                expect(buffer).to.equal(undefined);
+            }
 
-            data = {balance:  null};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {balance:  undefined};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {balance:  []};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {balance:  {}};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {balance:  new Date()};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
+            for (var i in args) {
+                test(args[i])
+            }
         });
 
     });
@@ -995,32 +821,16 @@ describe('Client for Exonum blockchain platform', function() {
                 size: 1,
                 fields: {balance: {type: Exonum.Uint8, size: 1, from: 0, to: 1}}
             });
-            var data;
-            var buffer;
+            var args = [true, null, undefined, [], {}, new Date()];
 
-            data = {balance:  true};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
+            function test(balance) {
+                var buffer = Type.serialize({balance: balance});
+                expect(buffer).to.equal(undefined);
+            }
 
-            data = {balance:  null};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {balance:  undefined};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {balance:  []};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {balance:  {}};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {balance:  new Date()};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
+            for (var i in args) {
+                test(args[i])
+            }
         });
 
     });
@@ -1079,32 +889,16 @@ describe('Client for Exonum blockchain platform', function() {
                 size: 2,
                 fields: {balance: {type: Exonum.Uint16, size: 2, from: 0, to: 2}}
             });
-            var data;
-            var buffer;
+            var args = [true, null, undefined, [], {}, new Date()];
 
-            data = {balance:  true};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
+            function test(balance) {
+                var buffer = Type.serialize({balance: balance});
+                expect(buffer).to.equal(undefined);
+            }
 
-            data = {balance:  null};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {balance:  undefined};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {balance:  []};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {balance:  {}};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {balance:  new Date()};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
+            for (var i in args) {
+                test(args[i])
+            }
         });
 
     });
@@ -1163,32 +957,16 @@ describe('Client for Exonum blockchain platform', function() {
                 size: 4,
                 fields: {balance: {type: Exonum.Uint32, size: 4, from: 0, to: 4}}
             });
-            var data;
-            var buffer;
+            var args = [true, null, undefined, [], {}, new Date()];
 
-            data = {balance:  true};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
+            function test(balance) {
+                var buffer = Type.serialize({balance: balance});
+                expect(buffer).to.equal(undefined);
+            }
 
-            data = {balance:  null};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {balance:  undefined};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {balance:  []};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {balance:  {}};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {balance:  new Date()};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
+            for (var i in args) {
+                test(args[i])
+            }
         });
 
     });
@@ -1258,32 +1036,16 @@ describe('Client for Exonum blockchain platform', function() {
                 size: 8,
                 fields: {balance: {type: Exonum.Uint64, size: 8, from: 0, to: 8}}
             });
-            var data;
-            var buffer;
+            var args = [true, null, undefined, [], {}, new Date()];
 
-            data = {balance:  true};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
+            function test(balance) {
+                var buffer = Type.serialize({balance: balance});
+                expect(buffer).to.equal(undefined);
+            }
 
-            data = {balance:  null};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {balance: undefined};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {balance:  []};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {balance:  {}};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
-
-            data = {balance:  new Date()};
-            buffer = Type.serialize(data);
-            expect(buffer).to.equal(undefined);
+            for (var i in args) {
+                test(args[i])
+            }
         });
 
     });
@@ -1566,22 +1328,16 @@ describe('Client for Exonum blockchain platform', function() {
                     history_hash: {type: Exonum.Hash, size: 32, from: 48, to: 80}
                 }
             });
-            var hash;
+            var args = [undefined, false, 42, new Date(), []];
 
-            hash = Exonum.hash(undefined, Wallet);
-            expect(hash).to.equal(undefined);
+            function test(_hash) {
+                var hash = Exonum.hash(_hash, Wallet);
+                expect(hash).to.equal(undefined);
+            }
 
-            hash = Exonum.hash(false, Wallet);
-            expect(hash).to.equal(undefined);
-
-            hash = Exonum.hash(42, Wallet);
-            expect(hash).to.equal(undefined);
-
-            hash = Exonum.hash(new Date(), Wallet);
-            expect(hash).to.equal(undefined);
-
-            hash = Exonum.hash([], Wallet);
-            expect(hash).to.equal(undefined);
+            for (var i in args) {
+                test(args[i])
+            }
         });
 
         it('should return undefined when data of invalid NewMessage type', function() {
@@ -1596,22 +1352,16 @@ describe('Client for Exonum blockchain platform', function() {
                     status: {type: Exonum.Bool, size: 1, from: 17, to: 18}
                 }
             });
-            var hash;
+            var args = [undefined, false, 42, new Date(), []];
 
-            hash = Exonum.hash(undefined, CustomMessage);
-            expect(hash).to.equal(undefined);
+            function test(_hash) {
+                var hash = Exonum.hash(_hash, CustomMessage);
+                expect(hash).to.equal(undefined);
+            }
 
-            hash = Exonum.hash(false, CustomMessage);
-            expect(hash).to.equal(undefined);
-
-            hash = Exonum.hash(42, CustomMessage);
-            expect(hash).to.equal(undefined);
-
-            hash = Exonum.hash(new Date(), CustomMessage);
-            expect(hash).to.equal(undefined);
-
-            hash = Exonum.hash([], CustomMessage);
-            expect(hash).to.equal(undefined);
+            for (var i in args) {
+                test(args[i]);
+            }
         });
 
     });
@@ -1829,20 +1579,15 @@ describe('Client for Exonum blockchain platform', function() {
                 lastName: 'Doe'
             };
             var buffer = User.serialize(userData);
+            var args = [true, null, undefined, [], {}, 51, new Date()];
 
-            expect(Exonum.sign(buffer, true)).to.equal(undefined);
+            function test(secretKey) {
+                expect(Exonum.sign(buffer, secretKey)).to.equal(undefined);
+            }
 
-            expect(Exonum.sign(buffer, null)).to.equal(undefined);
-
-            expect(Exonum.sign(buffer, undefined)).to.equal(undefined);
-
-            expect(Exonum.sign(buffer, [])).to.equal(undefined);
-
-            expect(Exonum.sign(buffer, {})).to.equal(undefined);
-
-            expect(Exonum.sign(buffer, 51)).to.equal(undefined);
-
-            expect(Exonum.sign(buffer, new Date())).to.equal(undefined);
+            for (var i in args) {
+                test(args[i]);
+            }
         });
 
     });
@@ -2061,20 +1806,15 @@ describe('Client for Exonum blockchain platform', function() {
                 lastName: 'Doe'
             };
             var buffer = User.serialize(userData);
+            var args = [true, null, undefined, [], {}, 51, new Date()];
 
-            expect(Exonum.verifySignature(buffer, true, publicKey)).to.equal(undefined);
+            function test(signature) {
+                expect(Exonum.verifySignature(buffer, signature, publicKey)).to.equal(undefined);
+            }
 
-            expect(Exonum.verifySignature(buffer, null, publicKey)).to.equal(undefined);
-
-            expect(Exonum.verifySignature(buffer, undefined, publicKey)).to.equal(undefined);
-
-            expect(Exonum.verifySignature(buffer, [], publicKey)).to.equal(undefined);
-
-            expect(Exonum.verifySignature(buffer, {}, publicKey)).to.equal(undefined);
-
-            expect(Exonum.verifySignature(buffer, 51, publicKey)).to.equal(undefined);
-
-            expect(Exonum.verifySignature(buffer, new Date(), publicKey)).to.equal(undefined);
+            for (var i in args) {
+                test(args[i]);
+            }
         });
 
         it('should return undefined when the publicKey parameter is of wrong length', function() {
@@ -2129,20 +1869,15 @@ describe('Client for Exonum blockchain platform', function() {
                 lastName: 'Doe'
             };
             var buffer = User.serialize(userData);
+            var args = [true, null, undefined, [], {}, 51, new Date()];
 
-            expect(Exonum.verifySignature(buffer, signature, true)).to.equal(undefined);
+            function test(publicKey) {
+                expect(Exonum.verifySignature(buffer, signature, publicKey)).to.equal(undefined);
+            }
 
-            expect(Exonum.verifySignature(buffer, signature, null)).to.equal(undefined);
-
-            expect(Exonum.verifySignature(buffer, signature, undefined)).to.equal(undefined);
-
-            expect(Exonum.verifySignature(buffer, signature, [])).to.equal(undefined);
-
-            expect(Exonum.verifySignature(buffer, signature, {})).to.equal(undefined);
-
-            expect(Exonum.verifySignature(buffer, signature, 51)).to.equal(undefined);
-
-            expect(Exonum.verifySignature(buffer, signature, new Date())).to.equal(undefined);
+            for (var i in args) {
+                test(args[i]);
+            }
         });
 
     });
@@ -2233,403 +1968,104 @@ describe('Client for Exonum blockchain platform', function() {
         });
 
         it('should return undefined when the tree with invalid rootHash', function() {
-            var elements;
-
-            elements = Exonum.merkleProof(
+            var args = [
                 '6z56f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                8,
-                {},
-                [0, 8]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
                 '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff1',
-                8,
-                {},
-                [0, 8]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
                 true,
-                8,
-                {},
-                [0, 8]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
                 null,
-                8,
-                {},
-                [0, 8]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
                 undefined,
-                8,
-                {},
-                [0, 8]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
                 [],
-                8,
                 {},
-                [0, 8]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                {},
-                8,
-                {},
-                [0, 8]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
                 42,
-                8,
-                {},
-                [0, 8]
-            );
-            expect(elements).to.equal(undefined);
+                new Date()
+            ];
 
-            elements = Exonum.merkleProof(
-                new Date(),
-                8,
-                {},
-                [0, 8]
-            );
-            expect(elements).to.equal(undefined);
+            function test(rootHash) {
+                expect(Exonum.merkleProof(
+                    rootHash,
+                    8,
+                    {},
+                    [0, 8]
+                )).to.equal(undefined);
+            }
+
+            for (var i in args) {
+                test(args[i]);
+            }
         });
 
         it('should return undefined when the tree with invalid count', function() {
-            var elements;
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+            var args = [
                 true,
-                {},
-                [0, 8]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
                 null,
-                {},
-                [0, 8]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
                 undefined,
-                {},
-                [0, 8]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
                 [],
                 {},
-                [0, 8]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {},
-                {},
-                [0, 8]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                new Date(),
-                {},
-                [0, 8]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
                 'Hello world',
-                {},
-                [0, 8]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
                 -42,
-                {},
-                [0, 8]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
                 '-42',
-                {},
-                [0, 8]
-            );
-            expect(elements).to.equal(undefined);
+                new Date()
+            ];
+
+            function test(count) {
+                expect(Exonum.merkleProof(
+                    '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+                    count,
+                    {},
+                    [0, 8]
+                )).to.equal(undefined);
+            }
+
+            for (var i in args) {
+                test(args[i]);
+            }
         });
 
         it('should return undefined when the tree with invalid proofNode', function() {
-            var elements;
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                8,
+            var args = [
                 true,
-                [0, 8]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                8,
                 null,
-                [0, 8]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                8,
                 undefined,
-                [0, 8]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                8,
-                42,
-                [0, 8]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                8,
                 [],
-                [0, 8]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                8,
                 'Hello world',
-                [0, 8]
-            );
-            expect(elements).to.equal(undefined);
+                42,
+                new Date()
+            ];
 
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                8,
-                new Date(),
-                [0, 8]
-            );
-            expect(elements).to.equal(undefined);
+            function test(proofNode) {
+                expect(Exonum.merkleProof(
+                    '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+                    8,
+                    proofNode,
+                    [0, 8]
+                )).to.equal(undefined);
+            }
+
+            for (var i in args) {
+                test(args[i]);
+            }
         });
 
         it('should return undefined when the tree with invalid range', function() {
-            var elements;
+            var args = [
+                true, null, undefined, [], {}, 'Hello world', 42, new Date(),
+                [0], [0, 8, 16],
+                [true, 8], [null, 8], [undefined, 8], [[], 8], [{}, 8], ['Hello world', 8], [new Date(), 8], ['1', 8], ['-1', 8], [-1, 8],
+                [8, true], [8, null], [8, undefined], [8, []], [8, {}], [8, 'Hello world'], [8, new Date()], [0, '1'], [0, '-1'], [0, -1]
+            ];
 
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                8,
-                {},
-                true
-            );
-            expect(elements).to.equal(undefined);
+            function test(range) {
+                expect(Exonum.merkleProof(
+                    '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+                    8,
+                    {},
+                    range
+                )).to.equal(undefined);
+            }
 
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                8,
-                {},
-                null
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                8,
-                {},
-                undefined
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                8,
-                {},
-                []
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                8,
-                {},
-                {}
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                8,
-                {},
-                new Date()
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                8,
-                {},
-                42
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                8,
-                {},
-                new Date()
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                8,
-                {},
-                'Hello world'
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                8,
-                {},
-                [0]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                8,
-                {},
-                [0, 8, 16]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                8,
-                {},
-                [true, 8]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                8,
-                {},
-                [null, 8]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                8,
-                {},
-                [undefined, 8]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                8,
-                {},
-                ['Hello world', 8]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                8,
-                {},
-                [[], 8]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                8,
-                {},
-                [{}, 8]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                8,
-                {},
-                [new Date(), 8]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                8,
-                {},
-                [9, 8]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                8,
-                {},
-                ['9', 8]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                8,
-                {},
-                [9, '8']
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                8,
-                {},
-                [-1, '8']
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                8,
-                {},
-                [0, -5]
-            );
-            expect(elements).to.equal(undefined);
+            for (var i in args) {
+                test(args[i]);
+            }
         });
 
         it('should return undefined when the tree with range start is out of range', function() {
@@ -2686,67 +2122,26 @@ describe('Client for Exonum blockchain platform', function() {
         });
 
         it('should return undefined when the tree with invalid type of type parameter', function() {
-            var elements;
+            var args = [
+                null, 42, [], new Date()
+            ];
 
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: {val: [255, 128]},
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                },
-                [0, 2],
-                true
-            );
-            expect(elements).to.equal(undefined);
+            function test(type) {
+                expect(Exonum.merkleProof(
+                    '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+                    2,
+                    {
+                        left: {val: [255, 128]},
+                        right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
+                    },
+                    [0, 2],
+                    type
+                )).to.equal(undefined);
+            }
 
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: {val: [255, 128]},
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                },
-                [0, 2],
-                null
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: {val: [255, 128]},
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                },
-                [0, 2],
-                42
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: {val: [255, 128]},
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                },
-                [0, 2],
-                []
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: {val: [255, 128]},
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                },
-                [0, 2],
-                new Date()
-            );
-            expect(elements).to.equal(undefined);
+            for (var i in args) {
+                test(args[i]);
+            }
         });
 
         it('should return undefined when the tree with invalid value', function() {
@@ -2754,67 +2149,26 @@ describe('Client for Exonum blockchain platform', function() {
                 size: 32,
                 fields: {hash: {type: Exonum.Hash, size: 32, from: 0, to: 32}}
             });
-            var elements;
+            var args = [
+                42, 'Hello world', [], new Date()
+            ];
 
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: {val: true},
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                },
-                [0, 2],
-                Type
-            );
-            expect(elements).to.equal(undefined);
+            function test(val) {
+                expect(Exonum.merkleProof(
+                    '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+                    2,
+                    {
+                        left: {val: val},
+                        right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
+                    },
+                    [0, 2],
+                    Type
+                )).to.equal(undefined);
+            }
 
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: {val: 42},
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                },
-                [0, 2],
-                Type
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: {val: 'Hello world'},
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                },
-                [0, 2],
-                Type
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: {val: []},
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                },
-                [0, 2],
-                Type
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: {val: new Date()},
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                },
-                [0, 2],
-                Type
-            );
-            expect(elements).to.equal(undefined);
+            for (var i in args) {
+                test(args[i]);
+            }
         });
 
         it('should return undefined when the tree with invalid value not corresponding to passed type', function() {
@@ -2836,161 +2190,26 @@ describe('Client for Exonum blockchain platform', function() {
         });
 
         it('should return undefined when the tree with invalid array of 8-bit integers as value', function() {
-            var elements;
+            var args = [
+                true, {}, 42, 'Hello world', new Date(),
+                [153, 256], [153, -1], [153, true], [153, null], [153, undefined], [153, 'Hello world'], [153, {}], [153, []], [153, new Date()]
+            ];
 
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: {val: true},
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                },
-                [0, 2]
-            );
-            expect(elements).to.equal(undefined);
+            function test(val) {
+                expect(Exonum.merkleProof(
+                    '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+                    2,
+                    {
+                        left: {val: true},
+                        right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
+                    },
+                    [0, 2]
+                )).to.equal(undefined);
+            }
 
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: {val: {}},
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                },
-                [0, 2]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: {val: 42},
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                },
-                [0, 2]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: {val: 'Hello world'},
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                },
-                [0, 2]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: {val: new Date()},
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                },
-                [0, 2]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: {val: [153, 256]},
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                },
-                [0, 2]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: {val: [153, -1]},
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                },
-                [0, 2]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: {val: [153, true]},
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                },
-                [0, 2]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: {val: [153, null]},
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                },
-                [0, 2]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: {val: [153, undefined]},
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                },
-                [0, 2]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: {val: [153, 'Hello world']},
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                },
-                [0, 2]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: {val: [153, {}]},
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                },
-                [0, 2]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: {val: [153, []]},
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                },
-                [0, 2]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: {val: [153, new Date()]},
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                },
-                [0, 2]
-            );
-            expect(elements).to.equal(undefined);
+            for (var i in args) {
+                test(args[i]);
+            }
         });
 
         it('should return undefined when the tree with missed left node', function() {
@@ -3009,195 +2228,63 @@ describe('Client for Exonum blockchain platform', function() {
         });
 
         it('should return undefined when the tree with invalid string in left node', function() {
-            var elements;
+            var args = [
+                'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fz',
+                'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365c',
+                'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fa52',
+                '',
+                true,
+                null,
+                undefined,
+                [],
+                42
+            ];
 
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fz',
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                },
-                [0, 2]
-            );
-            expect(elements).to.equal(undefined);
+            function test(hash) {
+                expect(Exonum.merkleProof(
+                    '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+                    2,
+                    {
+                        left: hash,
+                        right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
+                    },
+                    [0, 2]
+                )).to.equal(undefined);
+            }
 
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365c',
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                },
-                [0, 2]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fa52',
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                },
-                [0, 2]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: '',
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                },
-                [0, 2]
-            );
-            expect(elements).to.equal(undefined);
+            for (var i in args) {
+                test(args[i]);
+            }
         });
 
         it('should return undefined when the tree with invalid string in right node', function() {
-            var elements;
+            var args = [
+                'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fz',
+                'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365c',
+                'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fa52',
+                '',
+                true,
+                null,
+                undefined,
+                [],
+                42
+            ];
 
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc',
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fz'
-                },
-                [0, 2]
-            );
-            expect(elements).to.equal(undefined);
+            function test(hash) {
+                expect(Exonum.merkleProof(
+                    '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+                    2,
+                    {
+                        left: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc',
+                        right: hash
+                    },
+                    [0, 2]
+                )).to.equal(undefined);
+            }
 
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc',
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365c'
-                },
-                [0, 2]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc',
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fa52'
-                },
-                [0, 2]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc',
-                    right: ''
-                },
-                [0, 2]
-            );
-            expect(elements).to.equal(undefined);
-        });
-
-        it('should return undefined when the tree with invalid type of left node', function() {
-            var elements;
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: true,
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                },
-                [0, 2]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: null,
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                },
-                [0, 2]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: [],
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                },
-                [0, 2]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: 42,
-                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                },
-                [0, 2]
-            );
-            expect(elements).to.equal(undefined);
-        });
-
-        it('should return undefined when the tree with invalid type of right node', function() {
-            var elements;
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc',
-                    right: true
-                },
-                [0, 2]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc',
-                    right: null
-                },
-                [0, 2]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc',
-                    right: []
-                },
-                [0, 2]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                2,
-                {
-                    left: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc',
-                    right: 42
-                },
-                [0, 2]
-            );
-            expect(elements).to.equal(undefined);
+            for (var i in args) {
+                test(args[i]);
+            }
         });
 
         it('should return undefined when the tree with missed right leaf inside right tree branch', function() {
@@ -3301,218 +2388,96 @@ describe('Client for Exonum blockchain platform', function() {
         });
 
         it('should return undefined when invalid rootHash parameter', function() {
-            var elements;
+            var args = [
+                '6z56f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff1',
+                true, null, undefined, [], {}, 42, new Date()
+            ];
 
-            elements = Exonum.merklePatriciaProof('6z56f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13');
-            expect(elements).to.equal(undefined);
+            function test(rootHash) {
+                expect(Exonum.merklePatriciaProof(rootHash)).to.equal(undefined);
+            }
 
-            elements = Exonum.merklePatriciaProof('6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff1');
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(true);
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(null);
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(undefined);
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof([]);
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof({});
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(42);
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(new Date());
-            expect(elements).to.equal(undefined);
+            for (var i in args) {
+                test(args[i]);
+            }
         });
 
         it('should return undefined when invalid proofNode parameter', function() {
-            var elements;
+            var args = [
+                true, null, undefined, [], 42, 'Hello world', new Date()
+            ];
 
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                true
-            );
-            expect(elements).to.equal(undefined);
+            function test(proofNode) {
+                expect(Exonum.merklePatriciaProof('6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13', proofNode)).to.equal(undefined);
+            }
 
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                null
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                undefined
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                42
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                []
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                'Hello world'
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                new Date()
-            );
-            expect(elements).to.equal(undefined);
+            for (var i in args) {
+                test(args[i]);
+            }
         });
 
         it('should return undefined when invalid byte array key parameter', function() {
-            var elements;
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {},
-                [1, 114]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {},
-                [1, true, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {},
-                [1, null, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {},
-                [1, undefined, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {},
-                [1, {}, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {},
-                [1, [], 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {},
-                [1, new Date(), 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {},
-                [1, 256, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0]
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {},
+            var args = [
+                [1, 114],
+                [1, true, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0],
+                [1, null, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0],
+                [1, undefined, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0],
+                [1, {}, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0],
+                [1, new Date(), 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0],
+                [1, 256, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0],
                 [1, -1, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0]
-            );
-            expect(elements).to.equal(undefined);
+            ];
+
+            function test(key) {
+                expect(Exonum.merklePatriciaProof(
+                    '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+                    {},
+                    key
+                )).to.equal(undefined);
+            }
+
+            for (var i in args) {
+                test(args[i]);
+            }
         });
 
         it('should return undefined when invalid string key parameter', function() {
-            var elements;
+            var args = [
+                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff1',
+                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff1z',
+                ''
+            ];
 
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {},
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff1'
-            );
-            expect(elements).to.equal(undefined);
+            function test(key) {
+                expect(Exonum.merklePatriciaProof(
+                    '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+                    {},
+                    key
+                )).to.equal(undefined);
+            }
 
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {},
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff1z'
-            );
-            expect(elements).to.equal(undefined);
+            for (var i in args) {
+                test(args[i]);
+            }
         });
 
         it('should return undefined when key parameter of wrong type', function() {
-            var elements;
+            var args = [
+                true, null, undefined, 42, [], {}, new Date()
+            ];
 
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {},
-                true
-            );
-            expect(elements).to.equal(undefined);
+            function test(key) {
+                expect(Exonum.merklePatriciaProof(
+                    '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+                    {},
+                    key
+                )).to.equal(undefined);
+            }
 
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {},
-                null
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {},
-                undefined
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {},
-                42
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {},
-                []
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {},
-                'Hello world'
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {},
-                new Date()
-            );
-            expect(elements).to.equal(undefined);
+            for (var i in args) {
+                test(args[i]);
+            }
         });
 
         it('should return undefined when root is empty but rootHash is wrong', function() {
@@ -3556,34 +2521,25 @@ describe('Client for Exonum blockchain platform', function() {
         });
 
         it('should return undefined when it is invalid hash is value of tree node', function() {
-            var elements;
+            var args = [
+                '',
+                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff1',
+                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff1z'
+            ];
 
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {
-                    '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': ''
-                },
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-            );
-            expect(elements).to.equal(undefined);
+            function test(val) {
+                expect(Exonum.merklePatriciaProof(
+                    '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+                    {
+                        '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': val
+                    },
+                    '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
+                )).to.equal(undefined);
+            }
 
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {
-                    '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff1'
-                },
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {
-                    '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff1z'
-                },
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-            );
-            expect(elements).to.equal(undefined);
+            for (var i in args) {
+                test(args[i]);
+            }
         });
 
         it('should return undefined when wrong rootHash parameter is passed (element is not found)', function() {
@@ -3609,277 +2565,95 @@ describe('Client for Exonum blockchain platform', function() {
         });
 
         it('should return undefined when value is of invalid type', function() {
-            var elements;
+            var args = [
+                false, null, undefined, 'Hello world', 42, new Date()
+            ];
 
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {
-                    '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': {
-                        val: false
-                    }
-                },
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-            );
-            expect(elements).to.equal(undefined);
+            function test(val) {
+                expect(Exonum.merklePatriciaProof(
+                    '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+                    {
+                        '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': {
+                            val: val
+                        }
+                    },
+                    '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
+                )).to.equal(undefined);
+            }
 
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {
-                    '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': {
-                        val: null
-                    }
-                },
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {
-                    '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': {
-                        val: undefined
-                    }
-                },
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {
-                    '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': {
-                        val: 'Hello world'
-                    }
-                },
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {
-                    '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': {
-                        val: 42
-                    }
-                },
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {
-                    '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': {
-                        val: new Date()
-                    }
-                },
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-            );
-            expect(elements).to.equal(undefined);
+            for (var i in args) {
+                test(args[i]);
+            }
         });
 
         it('should return undefined when invalid bytes array is on value position', function() {
-            var elements;
+            var args = [
+                [1, 'a', 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4],
+                [1, -1, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4],
+                [1, 256, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4]
+            ];
 
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {
-                    '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': {
-                        val: [1, 'a', 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4]
-                    }
-                },
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-            );
-            expect(elements).to.equal(undefined);
+            function test(val) {
+                expect(Exonum.merklePatriciaProof(
+                    '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+                    {
+                        '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': {
+                            val: val
+                        }
+                    },
+                    '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
+                )).to.equal(undefined);
+            }
 
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {
-                    '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': {
-                        val: [1, -1, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4]
-                    }
-                },
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {
-                    '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': {
-                        val: [1, 256, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4]
-                    }
-                },
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-            );
-            expect(elements).to.equal(undefined);
+            for (var i in args) {
+                test(args[i]);
+            }
         });
 
         it('should return undefined when invalid value type', function() {
-            var elements;
+            var args = [
+                false, undefined, [], 42, new Date()
+            ];
 
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {
-                    '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': false
-                },
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-            );
-            expect(elements).to.equal(undefined);
+            function test(val) {
+                expect(Exonum.merklePatriciaProof(
+                    '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+                    {
+                        '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': val
+                    },
+                    '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
+                )).to.equal(undefined);
+            }
 
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {
-                    '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': null
-                },
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {
-                    '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': undefined
-                },
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {
-                    '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': []
-                },
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {
-                    '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': 42
-                },
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {
-                    '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': new Date()
-                },
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-            );
-            expect(elements).to.equal(undefined);
+            for (var i in args) {
+                test(args[i]);
+            }
         });
 
         it('should return undefined when invalid type parameter', function() {
-            var elements;
+            var args = [
+                null, false, 42, {}, [], new Date()
+            ];
 
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {
-                    '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': {
-                        val: {
-                            name: 'John',
-                            surname: 'Doe'
+            function test(type) {
+                expect(Exonum.merklePatriciaProof(
+                    '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+                    {
+                        '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': {
+                            val: {
+                                name: 'John',
+                                surname: 'Doe'
+                            }
                         }
-                    }
-                },
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                null
-            );
-            expect(elements).to.equal(undefined);
+                    },
+                    '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+                    type
+                )).to.equal(undefined);
+            }
 
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {
-                    '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': {
-                        val: {
-                            name: 'John',
-                            surname: 'Doe'
-                        }
-                    }
-                },
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                false
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {
-                    '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': {
-                        val: {
-                            name: 'John',
-                            surname: 'Doe'
-                        }
-                    }
-                },
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                42
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {
-                    '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': {
-                        val: {
-                            name: 'John',
-                            surname: 'Doe'
-                        }
-                    }
-                },
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {}
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {
-                    '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': {
-                        val: {
-                            name: 'John',
-                            surname: 'Doe'
-                        }
-                    }
-                },
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                []
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {
-                    '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': {
-                        val: {
-                            name: 'John',
-                            surname: 'Doe'
-                        }
-                    }
-                },
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                42
-            );
-            expect(elements).to.equal(undefined);
-
-            elements = Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {
-                    '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': {
-                        val: {
-                            name: 'John',
-                            surname: 'Doe'
-                        }
-                    }
-                },
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                new Date()
-            );
-            expect(elements).to.equal(undefined);
+            for (var i in args) {
+                test(args[i]);
+            }
         });
 
         it('should return undefined when single node tree with wrong type parameter', function() {
@@ -4026,179 +2800,91 @@ describe('Client for Exonum blockchain platform', function() {
         });
 
         it('should return undefined when tree contains non full key and value of wrong type', function() {
-            var element;
+            var args = [
+                true, null, undefined, [], 42, new Date()
+            ];
 
-            element = Exonum.merklePatriciaProof(
-                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
-                {
-                    '0': true,
-                    '1': {}
-                },
-                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-            );
-            expect(element).to.deep.equal(undefined);
+            function test(val) {
+                expect(Exonum.merklePatriciaProof(
+                    '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                    {
+                        '0': val,
+                        '1': {}
+                    },
+                    '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+                )).to.equal(undefined);
+            }
 
-            element = Exonum.merklePatriciaProof(
-                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
-                {
-                    '0': null,
-                    '1': {}
-                },
-                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-            );
-            expect(element).to.deep.equal(undefined);
-
-            element = Exonum.merklePatriciaProof(
-                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
-                {
-                    '0': undefined,
-                    '1': {}
-                },
-                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-            );
-            expect(element).to.deep.equal(undefined);
-
-            element = Exonum.merklePatriciaProof(
-                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
-                {
-                    '0': [],
-                    '1': {}
-                },
-                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-            );
-            expect(element).to.deep.equal(undefined);
-
-            element = Exonum.merklePatriciaProof(
-                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
-                {
-                    '0': 42,
-                    '1': {}
-                },
-                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-            );
-            expect(element).to.deep.equal(undefined);
-
-            element = Exonum.merklePatriciaProof(
-                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
-                {
-                    '0': new Date(),
-                    '1': {}
-                },
-                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-            );
-            expect(element).to.deep.equal(undefined);
+            for (var i in args) {
+                test(args[i]);
+            }
         });
 
         it('should return undefined when tree contains full key and value of wrong type', function() {
-            var element;
+            var args = [
+                true, null, undefined, [], 42, new Date()
+            ];
 
-            element = Exonum.merklePatriciaProof(
-                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
-                {
-                    '0011001010001111110000101101101011111110000101010111001100101110011110010011110000111001011111111011110110100101111111111110111001110011111110011111001110011110111100001100100101110011010010111111011110001001000010000110000001000101101111100000101010100': true,
-                    '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-                },
-                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-            );
-            expect(element).to.deep.equal(undefined);
+            function test(val) {
+                expect(Exonum.merklePatriciaProof(
+                    '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                    {
+                        '0011001010001111110000101101101011111110000101010111001100101110011110010011110000111001011111111011110110100101111111111110111001110011111110011111001110011110111100001100100101110011010010111111011110001001000010000110000001000101101111100000101010100': val,
+                        '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+                    },
+                    '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+                )).to.equal(undefined);
+            }
 
-            element = Exonum.merklePatriciaProof(
-                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
-                {
-                    '0011001010001111110000101101101011111110000101010111001100101110011110010011110000111001011111111011110110100101111111111110111001110011111110011111001110011110111100001100100101110011010010111111011110001001000010000110000001000101101111100000101010100': null,
-                    '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-                },
-                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-            );
-            expect(element).to.deep.equal(undefined);
-
-            element = Exonum.merklePatriciaProof(
-                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
-                {
-                    '0011001010001111110000101101101011111110000101010111001100101110011110010011110000111001011111111011110110100101111111111110111001110011111110011111001110011110111100001100100101110011010010111111011110001001000010000110000001000101101111100000101010100': undefined,
-                    '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-                },
-                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-            );
-            expect(element).to.deep.equal(undefined);
-
-            element = Exonum.merklePatriciaProof(
-                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
-                {
-                    '0011001010001111110000101101101011111110000101010111001100101110011110010011110000111001011111111011110110100101111111111110111001110011111110011111001110011110111100001100100101110011010010111111011110001001000010000110000001000101101111100000101010100': [],
-                    '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-                },
-                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-            );
-            expect(element).to.deep.equal(undefined);
-
-            element = Exonum.merklePatriciaProof(
-                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
-                {
-                    '0011001010001111110000101101101011111110000101010111001100101110011110010011110000111001011111111011110110100101111111111110111001110011111110011111001110011110111100001100100101110011010010111111011110001001000010000110000001000101101111100000101010100': 42,
-                    '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-                },
-                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-            );
-            expect(element).to.deep.equal(undefined);
-
-            element = Exonum.merklePatriciaProof(
-                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
-                {
-                    '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': new Date(),
-                    '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-                },
-                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-            );
-            expect(element).to.deep.equal(undefined);
+            for (var i in args) {
+                test(args[i]);
+            }
         });
 
         it('should return undefined when tree contains non full key and invalid hash', function() {
-            var element;
+            var args = [
+                'Hello world',
+                'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6ez',
+                ''
+            ];
 
-            element = Exonum.merklePatriciaProof(
-                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
-                {
-                    '0': 'ads',
-                    '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-                },
-                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-            );
-            expect(element).to.deep.equal(undefined);
+            function test(val) {
+                expect(Exonum.merklePatriciaProof(
+                    '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                    {
+                        '0': val,
+                        '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+                    },
+                    '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+                )).to.equal(undefined);
+            }
 
-            element = Exonum.merklePatriciaProof(
-                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
-                {
-                    '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6ez',
-                    '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-                },
-                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-            );
-            expect(element).to.deep.equal(undefined);
+            for (var i in args) {
+                test(args[i]);
+            }
         });
 
         it('should return undefined when tree contains full key and invalid hash', function() {
-            var element;
+            var args = [
+                'Hello world',
+                'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6ez',
+                ''
+            ];
 
-            element = Exonum.merklePatriciaProof(
-                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
-                {
-                    '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': 'ads',
-                    '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-                },
-                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-            );
-            expect(element).to.deep.equal(undefined);
+            function test(val) {
+                expect(Exonum.merklePatriciaProof(
+                    '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                    {
+                        '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': val,
+                        '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+                    },
+                    '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+                )).to.equal(undefined);
+            }
 
-            element = Exonum.merklePatriciaProof(
-                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
-                {
-                    '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6ez',
-                    '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-                },
-                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-            );
-            expect(element).to.deep.equal(undefined);
+            for (var i in args) {
+                test(args[i]);
+            }
         });
 
         it('should return undefined when tree contains full key and missed value', function() {
@@ -4260,131 +2946,49 @@ describe('Client for Exonum blockchain platform', function() {
         });
 
         it('should return undefined when tree contains full key and value of wrong type', function() {
-            var element;
+            var args = [
+                false, null, 42, 'Hello world'
+            ];
 
-            element = Exonum.merklePatriciaProof(
-                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
-                {
-                    '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
-                        val: false
+            function test(val) {
+                expect(Exonum.merklePatriciaProof(
+                    '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                    {
+                        '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
+                            val: val
+                        },
+                        '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
                     },
-                    '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-                },
-                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-            );
-            expect(element).to.deep.equal(undefined);
+                    '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+                )).to.equal(undefined);
+            }
 
-            element = Exonum.merklePatriciaProof(
-                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
-                {
-                    '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
-                        val: null
-                    },
-                    '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-                },
-                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-            );
-            expect(element).to.deep.equal(undefined);
-
-            element = Exonum.merklePatriciaProof(
-                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
-                {
-                    '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
-                        val: 42
-                    },
-                    '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-                },
-                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-            );
-            expect(element).to.deep.equal(undefined);
-
-            element = Exonum.merklePatriciaProof(
-                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
-                {
-                    '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
-                        val: 'Hello world'
-                    },
-                    '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-                },
-                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-            );
-            expect(element).to.deep.equal(undefined);
+            for (var i in args) {
+                test(args[i]);
+            }
         });
 
         it('should return undefined when tree contains full key and value as invalid binary array', function() {
-            var element;
+            var args = [
+                [false], [null], [257], ['Hello world'], [[]], [{}], [new Date()]
+            ];
 
-            element = Exonum.merklePatriciaProof(
-                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
-                {
-                    '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
-                        val: [false]
+            function test(val) {
+                expect(Exonum.merklePatriciaProof(
+                    '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                    {
+                        '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
+                            val: val
+                        },
+                        '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
                     },
-                    '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-                },
-                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-            );
-            expect(element).to.deep.equal(undefined);
+                    '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+                )).to.equal(undefined);
+            }
 
-            element = Exonum.merklePatriciaProof(
-                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
-                {
-                    '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
-                        val: [null]
-                    },
-                    '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-                },
-                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-            );
-            expect(element).to.deep.equal(undefined);
-
-            element = Exonum.merklePatriciaProof(
-                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
-                {
-                    '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
-                        val: [257]
-                    },
-                    '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-                },
-                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-            );
-            expect(element).to.deep.equal(undefined);
-
-            element = Exonum.merklePatriciaProof(
-                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
-                {
-                    '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
-                        val: [{}]
-                    },
-                    '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-                },
-                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-            );
-            expect(element).to.deep.equal(undefined);
-
-            element = Exonum.merklePatriciaProof(
-                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
-                {
-                    '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
-                        val: [[]]
-                    },
-                    '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-                },
-                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-            );
-            expect(element).to.deep.equal(undefined);
-
-            element = Exonum.merklePatriciaProof(
-                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
-                {
-                    '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
-                        val: [new Date()]
-                    },
-                    '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-                },
-                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-            );
-            expect(element).to.deep.equal(undefined);
+            for (var i in args) {
+                test(args[i]);
+            }
         });
 
         it('should return undefined when tree contains full key and wrong type parameter', function() {
@@ -4557,115 +3161,63 @@ describe('Client for Exonum blockchain platform', function() {
         });
 
         it('should return false when body field of wrong type in precommit', function() {
-            expect(Exonum.verifyBlock({
-                block: {},
-                precommits: [{
-                    body: null
-                }]
-            }, validators)).to.equal(false);
+            var args = [
+                null, 42, 'Hello world', [], new Date()
+            ];
 
-            expect(Exonum.verifyBlock({
-                block: {},
-                precommits: [{
-                    body: undefined
-                }]
-            }, validators)).to.equal(false);
+            function test(body) {
+                expect(Exonum.verifyBlock({
+                    block: {},
+                    precommits: [{
+                        body: body
+                    }]
+                }, validators)).to.equal(false);
+            }
 
-            expect(Exonum.verifyBlock({
-                block: {},
-                precommits: [{
-                    body: 42
-                }]
-            }, validators)).to.equal(false);
-
-            expect(Exonum.verifyBlock({
-                block: {},
-                precommits: [{
-                    body: 'Hello world'
-                }]
-            }, validators)).to.equal(false);
-
-            expect(Exonum.verifyBlock({
-                block: {},
-                precommits: [{
-                    body: []
-                }]
-            }, validators)).to.equal(false);
-
-            expect(Exonum.verifyBlock({
-                block: {},
-                precommits: [{
-                    body: new Date()
-                }]
-            }, validators)).to.equal(false);
+            for (var i in args) {
+                test(args[i]);
+            }
         });
 
         it('should return false when signature field of wrong type in precommit', function() {
-            expect(Exonum.verifyBlock({
-                block: {},
-                precommits: [{
-                    body: {},
-                    signature: null
-                }]
-            }, validators)).to.equal(false);
+            var args = [
+                null, undefined, 42, [], {}, new Date()
+            ];
 
-            expect(Exonum.verifyBlock({
-                block: {},
-                precommits: [{
-                    body: {},
-                    signature: undefined
-                }]
-            }, validators)).to.equal(false);
+            function test(signature) {
+                expect(Exonum.verifyBlock({
+                    block: {},
+                    precommits: [{
+                        body: {},
+                        signature: signature
+                    }]
+                }, validators)).to.equal(false);
+            }
 
-            expect(Exonum.verifyBlock({
-                block: {},
-                precommits: [{
-                    body: {},
-                    signature: 42
-                }]
-            }, validators)).to.equal(false);
-
-            expect(Exonum.verifyBlock({
-                block: {},
-                precommits: [{
-                    body: {},
-                    signature: []
-                }]
-            }, validators)).to.equal(false);
-
-            expect(Exonum.verifyBlock({
-                block: {},
-                precommits: [{
-                    body: {},
-                    signature: {}
-                }]
-            }, validators)).to.equal(false);
-
-            expect(Exonum.verifyBlock({
-                block: {},
-                precommits: [{
-                    body: {},
-                    signature: new Date()
-                }]
-            }, validators)).to.equal(false);
+            for (var i in args) {
+                test(args[i]);
+            }
         });
 
         it('should return false when invalid signature field in precommit', function() {
-            expect(Exonum.verifyBlock({
-                block: {},
-                precommits: [{
-                    body: {},
-                    signature: '22635e36303ff3ef4c86b855e57356f41483e6637136d1d2ec46ba2ec8f69fb9'
-                }]
-            }, validators)).to.equal(false);
+            var args = [
+                '22635e36303ff3ef4c86b855e57356f41483e6637136d1d2ec46ba2ec8f69fb9',
+                '22635e36303ff3ef4c86b855e57356f41483e6637136d1d2ec46ba2ec8f69fb922635e36303ff3ef4c86b855e57356f41483e6637136d1d2ec46ba2ec8f69fbz'
+            ];
 
-            expect(Exonum.verifyBlock({
-                block: {},
-                precommits: [{
-                    body: {},
-                    signature: '22635e36303ff3ef4c86b855e57356f41483e6637136d1d2ec46ba2ec8f69fb922635e36303ff3ef4c86b855e57356f41483e6637136d1d2ec46ba2ec8f69fbz'
-                }]
-            }, validators)).to.equal(false);
+            function test(signature) {
+                expect(Exonum.verifyBlock({
+                    block: {},
+                    precommits: [{
+                        body: {},
+                        signature: signature
+                    }]
+                }, validators)).to.equal(false);
+            }
+
+            for (var i in args) {
+                test(args[i]);
+            }
         });
 
         it('should return false when precommit from non existed validator', function() {
