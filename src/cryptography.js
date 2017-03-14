@@ -1,10 +1,12 @@
 'use strict';
-import Exonum from 'core';
-import 'convertors';
-import 'validators';
+var Exonum = require('../src/core');
 
-let sha = require('sha.js');
-let nacl = require('tweetnacl');
+require('../src/convertors');
+require('../src/data-management');
+require('../src/validators');
+
+var sha = require('sha.js');
+var nacl = require('tweetnacl');
 
 /**
  * Get SHA256 hash
@@ -14,8 +16,8 @@ let nacl = require('tweetnacl');
  * @return {String}
  */
 Exonum.hash = function(data, type) {
-    let buffer;
-    if (type instanceof NewType) {
+    var buffer;
+    if (Exonum.isInstanceofOfNewType(type)) {
         if (Exonum.isObject(data) === true) {
             buffer = type.serialize(data);
             if (typeof buffer === 'undefined') {
@@ -26,7 +28,7 @@ Exonum.hash = function(data, type) {
             console.error('Wrong type of data. Should be object.');
             return;
         }
-    } else if (type instanceof NewMessage) {
+    } else if (Exonum.isInstanceofOfMessage(type)) {
         if (Exonum.isObject(data) === true) {
             buffer = type.serialize(data);
             if (typeof buffer === 'undefined') {
@@ -57,17 +59,17 @@ Exonum.hash = function(data, type) {
  * @return {String}
  */
 Exonum.sign = function(data, type, secretKey) {
-    let buffer;
-    let signature;
+    var buffer;
+    var signature;
 
     if (typeof secretKey !== 'undefined') {
-        if (type instanceof NewType) {
+        if (Exonum.isInstanceofOfNewType(type)) {
             buffer = type.serialize(data);
             if (typeof buffer === 'undefined') {
                 console.error('Invalid data parameter. Instance of NewType is expected.');
                 return;
             }
-        } else if (type instanceof NewMessage) {
+        } else if (Exonum.isInstanceofOfMessage(type)) {
             buffer = type.serialize(data, true);
             if (typeof buffer === 'undefined') {
                 console.error('Invalid data parameter. Instance of NewMessage is expected.');
@@ -107,16 +109,16 @@ Exonum.sign = function(data, type, secretKey) {
  * @return {Boolean}
  */
 Exonum.verifySignature = function(data, type, signature, publicKey) {
-    let buffer;
+    var buffer;
 
     if (typeof publicKey !== 'undefined') {
-        if (type instanceof NewType) {
+        if (Exonum.isInstanceofOfNewType(type)) {
             buffer = type.serialize(data);
             if (typeof buffer === 'undefined') {
                 console.error('Invalid data parameter. Instance of NewType is expected.');
                 return;
             }
-        } else if (type instanceof NewMessage) {
+        } else if (Exonum.isInstanceofOfMessage(type)) {
             buffer = type.serialize(data, true);
             if (typeof buffer === 'undefined') {
                 console.error('Invalid data parameter. Instance of NewMessage is expected.');
@@ -159,9 +161,9 @@ Exonum.verifySignature = function(data, type, signature, publicKey) {
  *  secretKey {String}
  */
 Exonum.keyPair = function() {
-    let pair = nacl.sign.keyPair();
-    let publicKey = Exonum.uint8ArrayToHexadecimal(pair.publicKey);
-    let secretKey = Exonum.uint8ArrayToHexadecimal(pair.secretKey);
+    var pair = nacl.sign.keyPair();
+    var publicKey = Exonum.uint8ArrayToHexadecimal(pair.publicKey);
+    var secretKey = Exonum.uint8ArrayToHexadecimal(pair.secretKey);
 
     return {
         publicKey: publicKey,

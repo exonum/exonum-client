@@ -1,7 +1,8 @@
 'use strict';
-import Exonum from 'core';
-import 'cryptography';
-import 'types';
+var Exonum = require('../src/core');
+
+require('../src/cryptography');
+require('../src/types');
 
 const SIGNATURE_LENGTH = 64;
 
@@ -44,8 +45,8 @@ Exonum.newType = function(type) {
     return new NewType(type);
 };
 
-Exonum.isPrototypeOfNewType = function(type) {
-    return NewType.prototype.isPrototypeOf(type);
+Exonum.isInstanceofOfNewType = function(type) {
+    return type instanceof NewType;
 };
 
 /**
@@ -67,17 +68,17 @@ function NewMessage(type) {
  * @returns {Array}
  */
 NewMessage.prototype.serialize = function(data, cutSignature) {
-    let MessageHead = Exonum.newType({
+    var MessageHead = Exonum.newType({
         size: 10,
         fields: {
-            network_id: {type: Uint8, size: 1, from: 0, to: 1},
-            version: {type: Uint8, size: 1, from: 1, to: 2},
-            message_id: {type: Uint16, size: 2, from: 2, to: 4},
-            service_id: {type: Uint16, size: 2, from: 4, to: 6},
-            payload: {type: Uint32, size: 4, from: 6, to: 10}
+            network_id: {type: Exonum.Uint8, size: 1, from: 0, to: 1},
+            version: {type: Exonum.Uint8, size: 1, from: 1, to: 2},
+            message_id: {type: Exonum.Uint16, size: 2, from: 2, to: 4},
+            service_id: {type: Exonum.Uint16, size: 2, from: 4, to: 6},
+            payload: {type: Exonum.Uint32, size: 4, from: 6, to: 10}
         }
     });
-    let buffer = MessageHead.serialize({
+    var buffer = MessageHead.serialize({
         network_id: Exonum.NETWORK_ID,
         version: 0,
         message_id: this.message_id,
@@ -122,4 +123,7 @@ Exonum.newMessage = function(type) {
     return new NewMessage(type);
 };
 
+Exonum.isInstanceofOfMessage = function(type) {
+    return type instanceof NewMessage;
+};
 

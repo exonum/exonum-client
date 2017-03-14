@@ -1,11 +1,12 @@
 'use strict';
-import Exonum from 'core';
-import 'convertors';
-import 'data-management';
-import 'validators';
+var Exonum = require('../src/core');
 
-let bigInt = require('big-integer');
-let objectAssign = require('object-assign');
+require('../src/convertors');
+require('../src/data-management');
+require('../src/validators');
+
+var bigInt = require('big-integer');
+var objectAssign = require('object-assign');
 
 /**
  * Calculate height of merkle tree
@@ -13,7 +14,7 @@ let objectAssign = require('object-assign');
  * @return {Number}
  */
 function calcHeight(count) {
-    let i = 0;
+    var i = 0;
     while (bigInt(2).pow(i).lt(count)) {
         i++;
     }
@@ -30,8 +31,8 @@ function calcHeight(count) {
  * @return {Array}
  */
 Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
-    let elements = [];
-    let rootBranch = 'left';
+    var elements = [];
+    var rootBranch = 'left';
 
     /**
      * Get value from node, insert into elements array and return its hash
@@ -41,8 +42,8 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
      * @returns {String}
      */
     function getHash(data, depth, index) {
-        let element;
-        let elementsHash;
+        var element;
+        var elementsHash;
 
         if (depth !== 0 && (depth + 1) !== height) {
             console.error('Value node is on wrong height in tree.');
@@ -72,7 +73,7 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
                 return;
             }
         } else if (Exonum.isObject(data) === true) {
-            if (Exonum.isPrototypeOfNewType(type) === true) {
+            if (Exonum.isInstanceofOfNewType(type) === true) {
                 element = objectAssign(data); // deep copy
                 elementsHash = Exonum.hash(element, type);
             } else {
@@ -100,9 +101,9 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
      * @returns {String}
      */
     function recursive(node, depth, index) {
-        let hashLeft;
-        let hashRight;
-        let summingBuffer;
+        var hashLeft;
+        var hashRight;
+        var summingBuffer;
 
         // case with single node in tree
         if (depth === 0 && typeof node.val !== 'undefined') {
@@ -202,14 +203,14 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
         console.error('Invalid value is passed as end of range parameter.');
         return undefined;
     }
-    let rangeStart;
+    var rangeStart;
     try {
         rangeStart = bigInt(range[0]);
     } catch (e) {
         console.error('Invalid value is passed as start of range parameter. Number or string is expected.');
         return undefined;
     }
-    let rangeEnd;
+    var rangeEnd;
     try {
         rangeEnd = bigInt(range[1]);
     } catch (e) {
@@ -230,15 +231,15 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
     }
 
     // validate proofNode
-    if (!isObject(proofNode)) {
+    if (Exonum.isObject(proofNode) === false) {
         console.error('Invalid type of proofNode parameter. Object expected.');
         return undefined;
     }
 
-    let height = calcHeight(count);
-    let start = rangeStart;
-    let end = rangeEnd.lt(count) ? rangeEnd : count.minus(1);
-    let actualHash = recursive(proofNode, 0, 0);
+    var height = calcHeight(count);
+    var start = rangeStart;
+    var end = rangeEnd.lt(count) ? rangeEnd : count.minus(1);
+    var actualHash = recursive(proofNode, 0, 0);
 
     if (typeof actualHash === 'undefined') { // tree is invalid
         return undefined;

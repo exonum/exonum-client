@@ -1,6 +1,6 @@
 'use strict';
 
-let Exonum = {
+var Exonum = {
     NETWORK_ID: 0
 };
 
@@ -19,8 +19,8 @@ Exonum.isObject = function(obj) {
  * @returns {Number}
  */
 Exonum.getObjectLength = function(obj) {
-    let l = 0;
-    for (let prop in obj) {
+    var l = 0;
+    for (var prop in obj) {
         if (obj.hasOwnProperty(prop)) {
             l++;
         }
@@ -28,4 +28,4 @@ Exonum.getObjectLength = function(obj) {
     return l;
 };
 
-export default Exonum;
+module.exports = Exonum;

@@ -1,8 +1,10 @@
 'use strict';
-import Exonum from 'core';
-import 'data-management';
-import 'cryptography';
-import 'merkle-proof';
-import 'merkle-patricia-proof';
-import 'blockchain';
-export default Exonum;
+var Exonum = require('../src/core');
+
+require('../src/data-management');
+require('../src/cryptography');
+require('../src/merkle-proof');
+require('../src/merkle-patricia-proof');
+require('../src/blockchain');
+
+module.exports = Exonum;

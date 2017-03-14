@@ -1,5 +1,7 @@
 'use strict';
-import Exonum from 'core';
+var Exonum = require('../src/core');
+
+var bigInt = require('big-integer');
 
 Exonum.validateInteger = function(value, min, max, from, to, length) {
     if (typeof value !== 'number') {
@@ -21,7 +23,7 @@ Exonum.validateInteger = function(value, min, max, from, to, length) {
 
 // value can be of type string or number
 Exonum.validateBigInteger = function(value, min, max, from, to, length) {
-    let val;
+    var val;
 
     if (!(typeof value === 'number' || typeof value === 'string')) {
         console.error('Wrong data type is passed as number. Should be of type Number or String.');
@@ -58,7 +60,7 @@ Exonum.validateHexHash = function(hash, bytes) {
         return false;
     }
 
-    for (let i = 0, len = hash.length; i < len; i++) {
+    for (var i = 0, len = hash.length; i < len; i++) {
         if (isNaN(parseInt(hash[i], 16))) {
             console.error('Invalid symbol in hexadecimal string.');
             return false;
@@ -70,11 +72,11 @@ Exonum.validateHexHash = function(hash, bytes) {
 
 Exonum.validateBytesArray = function(arr, bytes) {
     if (bytes && arr.length !== bytes) {
-        console.error('Array of 8-bit integers validity is of wrong length. ' + bytes * 2 + ' char symbols long is required. ' + hash.length + ' is passed.');
+        console.error('Array of 8-bit integers validity is of wrong length. ' + bytes * 2 + ' char symbols long is required. ' + arr.length + ' is passed.');
         return false;
     }
 
-    for (let i = 0, len = arr.length; i < len; i++) {
+    for (var i = 0, len = arr.length; i < len; i++) {
         if (typeof arr[i] !== 'number') {
             console.error('Wrong data type is passed as byte. Number is required');
             return false;
@@ -93,8 +95,8 @@ Exonum.validateBinaryString = function(str, bits) {
         return null;
     }
 
-    for (let i = 0; i < str.length; i++) {
-        let bit = parseInt(str[i]);
+    for (var i = 0; i < str.length; i++) {
+        var bit = parseInt(str[i]);
         if (isNaN(bit)) {
             console.error('Wrong bit is passed in binary string.');
             return false;

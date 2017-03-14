@@ -1,9 +1,10 @@
 'use strict';
-import Exonum from 'core';
-import 'data-management';
-import 'validators';
+var Exonum = require('../src/core');
 
-let Block = Exonum.newType({
+require('../src/data-management');
+require('../src/validators');
+
+var Block = Exonum.newType({
     size: 116,
     fields: {
         height: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
@@ -14,7 +15,7 @@ let Block = Exonum.newType({
         state_hash: {type: Exonum.Hash, size: 32, from: 84, to: 116}
     }
 });
-let Precommit = Exonum.newMessage({
+var Precommit = Exonum.newMessage({
     size: 84,
     service_id: 0,
     message_id: 4,
@@ -48,19 +49,19 @@ Exonum.verifyBlock = function(data, validators) {
         return false;
     }
 
-    for (let i = 0; i < validators.length; i++) {
+    for (var i = 0; i < validators.length; i++) {
         if (Exonum.validateHexHash(validators[i]) === false) {
             return false;
         }
     }
 
-    let validatorsTotalNumber = validators.length;
-    let uniqueValidators = [];
-    let round;
-    let blockHash = hash(data.block, Block);
+    var validatorsTotalNumber = validators.length;
+    var uniqueValidators = [];
+    var round;
+    var blockHash = Exonum.hash(data.block, Block);
 
-    for (let i = 0; i < data.precommits.length; i++) {
-        let precommit = data.precommits[i];
+    for (var i = 0; i < data.precommits.length; i++) {
+        var precommit = data.precommits[i];
 
         if (Exonum.isObject(precommit.body) === false) {
             console.error('Wrong type of precommits body. Object is expected.');
@@ -94,7 +95,7 @@ Exonum.verifyBlock = function(data, validators) {
             return false;
         }
 
-        let publicKey = validators[precommit.body.validator];
+        var publicKey = validators[precommit.body.validator];
 
         if (Exonum.verifySignature(precommit.body, Precommit, precommit.signature, publicKey) === false) {
             console.error('Wrong signature of precommit.');

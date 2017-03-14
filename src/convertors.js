@@ -1,5 +1,5 @@
 'use strict';
-import Exonum from 'core';
+var Exonum = require('../src/core');
 
 Exonum.hexadecimalToUint8Array = function(str) {
     if (typeof str !== 'string') {
@@ -7,8 +7,8 @@ Exonum.hexadecimalToUint8Array = function(str) {
         return new Uint8Array([]);
     }
 
-    let array = [];
-    for (let i = 0, len = str.length; i < len; i += 2) {
+    var array = [];
+    for (var i = 0, len = str.length; i < len; i += 2) {
         array.push(parseInt(str.substr(i, 2), 16));
     }
 
@@ -16,8 +16,8 @@ Exonum.hexadecimalToUint8Array = function(str) {
 };
 
 Exonum.hexadecimalToBinaryString = function(str) {
-    let binaryStr = '';
-    for (let i = 0, len = str.length; i < len; i += 2) {
+    var binaryStr = '';
+    for (var i = 0, len = str.length; i < len; i += 2) {
         binaryStr += parseInt(str.substr(i, 2), 16).toString(2);
     }
     return binaryStr;
@@ -29,9 +29,9 @@ Exonum.uint8ArrayToHexadecimal = function(uint8arr) {
         return '';
     }
 
-    let str = '';
-    for (let i = 0, len = uint8arr.length; i < len; i++) {
-        let hex = (uint8arr[i]).toString(16);
+    var str = '';
+    for (var i = 0, len = uint8arr.length; i < len; i++) {
+        var hex = (uint8arr[i]).toString(16);
         hex = (hex.length === 1) ? '0' + hex : hex;
         str += hex;
     }
@@ -40,8 +40,8 @@ Exonum.uint8ArrayToHexadecimal = function(uint8arr) {
 };
 
 Exonum.binaryStringToUint8Array = function(binaryStr) {
-    let array = [];
-    for (let i = 0, len = binaryStr.length; i < len; i += 8) {
+    var array = [];
+    for (var i = 0, len = binaryStr.length; i < len; i += 8) {
         array.push(parseInt(binaryStr.substr(i, 8), 2));
     }
 
@@ -49,9 +49,9 @@ Exonum.binaryStringToUint8Array = function(binaryStr) {
 };
 
 Exonum.binaryStringToHexadecimal = function(binaryStr) {
-    let str = '';
-    for (let i = 0, len = binaryStr.length; i < len; i += 8) {
-        let hex = (parseInt(binaryStr.substr(i, 8), 2)).toString(16);
+    var str = '';
+    for (var i = 0, len = binaryStr.length; i < len; i += 8) {
+        var hex = (parseInt(binaryStr.substr(i, 8), 2)).toString(16);
         hex = (hex.length === 1) ? '0' + hex : hex;
         str += hex;
     }

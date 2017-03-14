@@ -1113,7 +1113,7 @@ describe('Client for Exonum blockchain platform', function() {
 
             var buffer = Transaction.serialize(transactionData);
 
-            expect(buffer).to.deep.equal([40, 0, 0, 0, 23, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 0, 27, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 200, 0, 0, 0, 0, 0, 0, 0, 56, 0, 0, 0, 4, 0, 0, 0, 60, 0, 0, 0, 3, 0, 0, 0, 74, 111, 104, 110, 68, 111, 101, 79, 0, 0, 0, 6, 0, 0, 0, 85, 0, 0, 0, 5, 0, 0, 0, 83, 116, 101, 118, 101, 110, 66, 108, 97, 99, 107]);
+            expect(buffer).to.deep.equal([40, 0, 0, 0, 4, 0, 0, 0, 44, 0, 0, 0, 3, 0, 0, 0, 47, 0, 0, 0, 6, 0, 0, 0, 53, 0, 0, 0, 5, 0, 0, 0, 200, 0, 0, 0, 0, 0, 0, 0, 74, 111, 104, 110, 68, 111, 101, 83, 116, 101, 118, 101, 110, 66, 108, 97, 99, 107]);
         });
 
         it('should serialize data of complicated fixed newType type and return array of 8-bit integers', function() {
