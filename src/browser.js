@@ -1,3 +1,3 @@
-var Exonum = require('./index.js');
+var Exonum = require('./core.js');
 
 window.Exonum = window.Exonum || Exonum;
