@@ -2,6 +2,7 @@
 var Exonum = require('../src/core');
 
 require('../src/cryptography');
+require('../src/serialization');
 require('../src/types');
 
 const SIGNATURE_LENGTH = 64;

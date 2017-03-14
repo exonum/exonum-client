@@ -3,6 +3,7 @@ var Exonum = require('../src/core');
 
 require('../src/convertors');
 require('../src/data-management');
+require('../src/serialization');
 require('../src/validators');
 
 var sha = require('sha.js');
