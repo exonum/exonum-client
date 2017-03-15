@@ -20,58 +20,58 @@ Exonum.hash(buffer);
 
 #### Built-in data types:
 
-* [Int8](#built-in-int8)
-* [Int16](#built-in-int16)
-* [Int32](#built-in-int32)
-* [Int64](#built-in-int64)
-* [Uint8](#built-in-uint8)
-* [Uint16](#built-in-uint16)
-* [Uint32](#built-in-uint32)
-* [Uint64](#built-in-uint64)
-* [String](#built-in-string)
-* [Hash](#built-in-hash)
-* [PublicKey](#built-in-public-key)
-* [Digest](#built-in-digest)
-* [Timespec](#built-in-timespec)
-* [Bool](#built-in-bool)
+* [Int8](#int8)
+* [Int16](#int16)
+* [Int32](#int32)
+* [Int64](#int64)
+* [Uint8](#uint8)
+* [Uint16](#uint16)
+* [Uint32](#uint32)
+* [Uint64](#uint64)
+* [String](#string)
+* [Hash](#hash)
+* [PublicKey](#public-key)
+* [Digest](#digest)
+* [Timespec](#timespec)
+* [Bool](#bool)
 
 
 #### Helpers
 
-* [randomUint64](#helpers-random-uint64)
+* [randomUint64](#randomuint64)
 
 #### Custom data types:
 
-* [newType](#custom-types-new-type)
-* [newMessage](#custom-types-new-message)
+* [newType](#newtype)
+* [newMessage](#newmessage)
 
 #### Cryptography:
 
-* [Get hash](#cryptography-hash)
-* [Sign data](#cryptography-sign)
-* [Verify signature](#cryptography-verify-signature)
-* [Generate key pair](#cryptography-key-pair)
+* [Get hash](#hash--1)
+* [Sign data](#sign)
+* [Verify signature](#verifysignature)
+* [Generate key pair](#keypair)
 
 #### Proofs of existence:
 
-* [Merkle proof](#proofs-mp)
-* [Merkle Patricia proof](#proofs-mpt)
+* [Merkle proof](#merkleproofroothash-count-proofnode-range-type)
+* [Merkle Patricia proof](#merklepatriciaproofroothash-proof-key)
 
 #### Work with blockchain:
 
-* [Verify block of precommits](#blockchain-verify-block)
+* [Verify block of precommits](#verifyblockdata-validators)
 
 #### Other:
 
-* [Build](#other-build)
-* [Test](#other-test)
-* [License](#other-license)
+* [Build](#build)
+* [Test](#test)
+* [License](#license)
 
 ---
 
 ## Built-in data types
 
-#### Int8 <a id="built-in-int8"></a>
+#### Int8
 
 A Signed integer value of the length of `1` byte.
 
@@ -86,7 +86,7 @@ var someType = Exonum.newType({
 });
 ```
 
-#### Int16 <a id="built-in-int16"></a>
+#### Int16
 
 A Signed integer value of the length of `2` bytes.
 
@@ -101,7 +101,7 @@ var someType = Exonum.newType({
 });
 ```
 
-#### Int32 <a id="built-in-int32"></a>
+#### Int32
 
 A Signed integer value of the length of `4` bytes.
 
@@ -116,7 +116,7 @@ var someType = Exonum.newType({
 });
 ```
 
-#### Int64 <a id="built-in-int64"></a>
+#### Int64
 
 A Signed integer value of the length of `8` bytes.
 
@@ -139,7 +139,7 @@ var someType = Exonum.newType({
 });
 ```
 
-#### Uint8 <a id="built-in-uint8"></a>
+#### Uint8
 
 Unsigned integer value of the length of `1` byte.
 
@@ -154,7 +154,7 @@ var someType = Exonum.newType({
 });
 ```
 
-#### Uint16 <a id="built-in-uint16"></a>
+#### Uint16
 
 Unsigned integer value of the length of `2` bytes.
 
@@ -169,7 +169,7 @@ var someType = Exonum.newType({
 });
 ```
 
-#### Uint32 <a id="built-in-uint32"></a>
+#### Uint32
 
 Unsigned integer value of the length of `4` bytes.
 
@@ -184,7 +184,7 @@ var someType = Exonum.newType({
 });
 ```
 
-#### Uint64 <a id="built-in-uint64"></a>
+#### Uint64
 
 Unsigned integer value of the length of `8` bytes.
 
@@ -205,7 +205,7 @@ var someType = Exonum.newType({
 });
 ```
 
-#### String <a id="built-in-string"></a>
+#### String
 
 String value of the length of `8` bytes.
 
@@ -218,7 +218,7 @@ var someType = Exonum.newType({
 });
 ```
 
-#### Hash <a id="built-in-hash"></a>
+#### Hash
 
 Hexadecimal value of the length of `32` bytes.
 
@@ -231,7 +231,7 @@ var someType = Exonum.newType({
 });
 ```
 
-#### PublicKey <a id="built-in-public-key"></a>
+#### PublicKey
 
 Hexadecimal value of the length of `32` bytes.
 
@@ -244,7 +244,7 @@ var someType = Exonum.newType({
 });
 ```
 
-#### Digest <a id="built-in-digest"></a>
+#### Digest
 
 Hexadecimal value of the length of `64` bytes.
 
@@ -258,7 +258,7 @@ var someType = Exonum.newType({
 });
 ```
 
-#### Timespec <a id="built-in-timespec"></a>
+#### Timespec
 
 Unsigned integer value of the length of `8` bytes. Represents Unix time in nanosecond.
 
@@ -275,7 +275,7 @@ var someType = Exonum.newType({
 });
 ```
 
-#### Bool <a id="built-in-bool"></a>
+#### Bool
 
 A Boolean value of the length of `1` byte.
 
@@ -292,7 +292,7 @@ var someType = Exonum.newType({
 
 ## Helpers
 
-#### randomUint64 <a id="helpers-random-uint64"></a>
+#### randomUint64
 
 Returns random integer in range from `0` to `18446744073709551615` as string.
 
@@ -304,7 +304,7 @@ var randomNumber = Exonum.randomUint64();
 
 ## Custom data types
 
-#### newType <a id="custom-types-new-type"></a>
+#### newType
 
 Used to describe custom data format to make it possible to serialize data of this format into array of 8-bit integers.
 
@@ -367,7 +367,7 @@ var data = {
 var buffer = someOtherType.serialize(data);
 ```
 
-#### newMessage <a id="custom-types-new-message"></a>
+#### newMessage
 
 Used to describe custom data format to make it possible to serialize data of this format into array of 8-bit integers.
 
@@ -419,7 +419,7 @@ var buffer = someMessage.serialize(data);
 
 ## Cryptography
 
-#### hash <a id="cryptography-hash"></a>
+#### hash
 
 Returns SHA256 hash of the data as hexadecimal string.
 
@@ -472,7 +472,7 @@ var buffer = [218, 0, 3, 12, 33, 68, 105, 0];
 var hash = Exonum.hash(buffer);
 ```
 
-#### sign <a id="cryptography-sign"></a>
+#### sign
 
 Returns ED25519 signature of the data as hexadecimal string.
 
@@ -535,7 +535,7 @@ var secretKey = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc03
 var signature = Exonum.sign(buffer, secretKey);
 ```
 
-#### verifySignature <a id="cryptography-verify-signature"></a>
+#### verifySignature
 
 Returns `true` if verification succeeded or `false` if it failed.
 
@@ -608,7 +608,7 @@ var publicKey = '280a704efafae9410d7b07140bb130e4995eeb381ba90939b4eaefcaf740ca2
 Exonum.verifySignature(buffer, signature, publicKey);
 ```
 
-#### keyPair <a id="cryptography-key-pair"></a>
+#### keyPair
 
 Returns random pair of `publicKey` and `secretKey` as hexadecimal strings.
 
@@ -623,7 +623,7 @@ Returns random pair of `publicKey` and `secretKey` as hexadecimal strings.
 
 ## Proofs of existence
 
-#### merkleProof(rootHash, count, proofNode, range, type) <a id="proofs-mp"></a>
+#### merkleProof(rootHash, count, proofNode, range, type)
 
 This methods can check proof of Merkle tree.
 
@@ -641,7 +641,7 @@ Returns an array of elements if tree is valid.
 
 Returns `undefined` if tree is not valid.
 
-#### merklePatriciaProof(rootHash, proof, key) <a id="proofs-mpt"></a>
+#### merklePatriciaProof(rootHash, proof, key)
 
 This methods can check proof of Merkle Patricia tree.
 
@@ -663,7 +663,7 @@ Returns `undefined` if tree is not valid.
 
 ## Work with blockchain
 
-#### verifyBlock(data, validators) <a id="blockchain-verify-block"></a>
+#### verifyBlock(data, validators)
 
 This methods can verify block of precommits.
 
@@ -677,7 +677,7 @@ Returns `true` if verification is succeeded or `false` if it is failed.
 
 ## Other
 
-#### Build <a id="other-build"></a>
+#### Build
 
 Install npm packages required for development:
 
@@ -691,7 +691,7 @@ To build minimised and development versions of library execute:
 $ grunt
 ```
 
-#### Test <a id="other-test"></a>
+#### Test
 
 To run tests execute:
 
@@ -699,6 +699,6 @@ To run tests execute:
 $ grunt mochaTest
 ```
 
-#### License <a id="other-license"></a>
+#### License
 
 TODO

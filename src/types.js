@@ -18,7 +18,7 @@ const MAX_UINT64 = '18446744073709551615';
 
 var bigInt = require('big-integer');
 
-function insertHexadecimalToArray(str, buffer, from, to) {
+function insertHexadecimalToByteArray(str, buffer, from, to) {
     for (var i = 0, len = str.length; i < len; i += 2) {
         buffer[from] = parseInt(str.substr(i, 2), 16);
         from++;
@@ -32,16 +32,16 @@ function insertHexadecimalToArray(str, buffer, from, to) {
 function insertIntegerToByteArray(number, buffer, from, to) {
     var str = number.toString(16);
 
-    insertNumberInHexToByteArray(str, buffer, from, to);
+    insertNumberAsHexToByteArray(str, buffer, from, to);
 }
 
 function insertBigIntegerToByteArray(number, buffer, from, to) {
     var str = number.toString(16);
 
-    insertNumberInHexToByteArray(str, buffer, from, to);
+    insertNumberAsHexToByteArray(str, buffer, from, to);
 }
 
-function insertNumberInHexToByteArray(number, buffer, from, to) {
+function insertNumberAsHexToByteArray(number, buffer, from, to) {
     // store Number as little-endian
     if (number.length < 3) {
         buffer[from] = parseInt(number, 16);
@@ -222,7 +222,7 @@ Exonum.Hash = function(hash, buffer, from, to) {
         return;
     }
 
-    insertHexadecimalToArray(hash, buffer, from, to);
+    insertHexadecimalToByteArray(hash, buffer, from, to);
 
     return buffer;
 };
@@ -235,7 +235,7 @@ Exonum.Digest = function(digest, buffer, from, to) {
         return;
     }
 
-    insertHexadecimalToArray(digest, buffer, from, to);
+    insertHexadecimalToByteArray(digest, buffer, from, to);
 
     return buffer;
 };
@@ -248,7 +248,7 @@ Exonum.PublicKey = function(publicKey, buffer, from, to) {
         return;
     }
 
-    insertHexadecimalToArray(publicKey, buffer, from, to);
+    insertHexadecimalToByteArray(publicKey, buffer, from, to);
 
     return buffer;
 };
