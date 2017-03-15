@@ -47,7 +47,7 @@ Exonum.hash(buffer);
 
 #### Cryptography:
 
-* [Get hash](#hash--1)
+* [Get hash](#hash-1)
 * [Sign data](#sign)
 * [Verify signature](#verifysignature)
 * [Generate key pair](#keypair)
@@ -367,6 +367,78 @@ var data = {
 var buffer = someOtherType.serialize(data);
 ```
 
+##### newType.hash(data)
+
+The `data` is a custom data in JSON format.
+
+Returns SHA256 hash of the data as hexadecimal string.
+
+```javascript
+var someType = Exonum.newType({
+    size: 16,
+    fields: {
+        id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
+        name: {type: Exonum.String, size: 8, from: 8, to: 16}
+    }
+});
+
+var data = {id: 1, name: 'John Doe'};
+
+var hash = someType.hash(data);
+```
+
+##### newType.sign(data, secretKey)
+
+The `data` is a custom data in JSON format.
+
+The `secretKey` is a 64 bit secret key.
+
+Returns ED25519 signature of the data as hexadecimal string.
+
+```javascript
+var someType = Exonum.newType({
+    size: 16,
+    fields: {
+        id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
+        name: {type: Exonum.String, size: 8, from: 8, to: 16}
+    }
+});
+
+var data = {id: 1, name: 'John Doe'};
+
+var secretKey = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36';
+
+var signature = someType.sign(data, secretKey);
+```
+
+##### newType.verifySignature(data, signature, publicKey)
+
+The `data` is a custom data in JSON format.
+
+The `signature` is a 64 bit hexadecimal string.
+
+The `publicKey` is a 32 bit secret key.
+
+Returns `true` if verification succeeded or `false` if it failed.
+
+```javascript
+var someType = Exonum.newType({
+    size: 16,
+    fields: {
+        id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
+        name: {type: Exonum.String, size: 8, from: 8, to: 16}
+    }
+});
+
+var data = {id: 1, name: 'John Doe'};
+
+var signature = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36';
+
+var publicKey = '280a704efafae9410d7b07140bb130e4995eeb381ba90939b4eaefcaf740ca25';
+
+someType.verifySignature(data, signature, publicKey);
+```
+
 #### newMessage
 
 Used to describe custom data format to make it possible to serialize data of this format into array of 8-bit integers.
@@ -413,6 +485,87 @@ var data = {
 };
 
 var buffer = someMessage.serialize(data);
+```
+
+##### newMessage.hash(data)
+
+The `data` is a custom data in JSON format.
+
+Returns SHA256 hash of the data as hexadecimal string.
+
+```javascript
+var someMessage = Exonum.newMessage({
+    size: 16,
+    service_id: 8,
+    message_id: 12,
+    signature: 'aa77e9f37671ab2e85851e518aca2288f61662816bce15cfc03a8e094e7f9ecd',
+    fields: {
+        id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
+        name: {type: Exonum.String, size: 8, from: 8, to: 16}
+    }
+});
+
+var data = {id: 1, name: 'John Doe'};
+
+var hash = someMessage.hash(data);
+```
+
+##### newMessage.sign(data, secretKey)
+
+The `data` is a custom data in JSON format.
+
+The `secretKey` is a 64 bit secret key.
+
+Returns ED25519 signature of the data as hexadecimal string.
+
+```javascript
+var someMessage = Exonum.newMessage({
+    size: 16,
+    service_id: 8,
+    message_id: 12,
+    signature: 'aa77e9f37671ab2e85851e518aca2288f61662816bce15cfc03a8e094e7f9ecd',
+    fields: {
+        id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
+        name: {type: Exonum.String, size: 8, from: 8, to: 16}
+    }
+});
+
+var data = {id: 1, name: 'John Doe'};
+
+var secretKey = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36';
+
+var signature = someMessage.sign(data, secretKey);
+```
+
+##### newMessage.verifySignature(data, signature, publicKey)
+
+The `data` is a custom data in JSON format.
+
+The `signature` is a 64 bit hexadecimal string.
+
+The `publicKey` is a 32 bit secret key.
+
+Returns `true` if verification succeeded or `false` if it failed.
+
+```javascript
+var someMessage = Exonum.newMessage({
+    size: 16,
+    service_id: 8,
+    message_id: 12,
+    signature: 'aa77e9f37671ab2e85851e518aca2288f61662816bce15cfc03a8e094e7f9ecd',
+    fields: {
+        id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
+        name: {type: Exonum.String, size: 8, from: 8, to: 16}
+    }
+});
+
+var data = {id: 1, name: 'John Doe'};
+
+var signature = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36';
+
+var publicKey = '280a704efafae9410d7b07140bb130e4995eeb381ba90939b4eaefcaf740ca25';
+
+someMessage.verifySignature(data, signature, publicKey);
 ```
 
 ---
