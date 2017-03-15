@@ -1,42 +1,6 @@
 # Client for Exonum blockchain platform
 
-JavaScript toolkit to work with Exonum blockchain in both of browser and Node.js.
-
-#### Table of Contents:
-* [Use in browser](#use-in-browser)
-* [Use in Node.js](#use-in-nodejs)
-* API
-   * Custom data formats:
-      * [newType](#newtype)
-      * [newMessage](#newmessage)
-   * [Get hash](#hash)
-   * [Sign data](#sign)
-   * [Verify signature](#verifysignature)
-   * [Verify block of precommits](#verifyblockdata)
-   * Proofs of existence:
-      * [merkleProof](#merkleproofroothash-count-proofnode-range-type)
-      * [merklePatriciaProof](#merklepatriciaproofroothash-proof-key)
-   * Helpers
-      * [Generate key pair](#keypair)
-      * [Generate random number](#randomuint64)
-* Built-in types:
-   * [Int8](#int8)
-   * [Int16](#int16)
-   * [Int32](#int32)
-   * [Int64](#int64)
-   * [Uint8](#uint8)
-   * [Uint16](#uint16)
-   * [Uint32](#uint32)
-   * [Uint64](#uint64)
-   * [String](#string)
-   * [Hash](#hash-1)
-   * [PublicKey](#publickey)
-   * [Digest](#digest)
-   * [Timespec](#timespec)
-   * [Bool](#bool)
-* [Build](#build)
-* [Tests](#tests)
-* [License](#license)
+JavaScript toolkit to work with Exonum blockchain from both of browser and Node.js.
 
 #### Use in browser:
 
@@ -54,9 +18,293 @@ var Exonum = require('exonum-client');
 Exonum.hash(buffer);
 ```
 
-## API methods
+#### Built-in data types:
 
-### newType
+* [Int8](#built-in-int8)
+* [Int16](#built-in-int16)
+* [Int32](#built-in-int32)
+* [Int64](#built-in-int64)
+* [Uint8](#built-in-uint8)
+* [Uint16](#built-in-uint16)
+* [Uint32](#built-in-uint32)
+* [Uint64](#built-in-uint64)
+* [String](#built-in-string)
+* [Hash](#built-in-hash)
+* [PublicKey](#built-in-public-key)
+* [Digest](#built-in-digest)
+* [Timespec](#built-in-timespec)
+* [Bool](#built-in-bool)
+
+
+#### Helpers
+
+* [randomUint64](#helpers-random-uint64)
+
+#### Custom data types:
+
+* [newType](#custom-types-new-type)
+* [newMessage](#custom-types-new-message)
+
+#### Cryptography:
+
+* [Get hash](#cryptography-hash)
+* [Sign data](#cryptography-sign)
+* [Verify signature](#cryptography-verify-signature)
+* [Generate key pair](#cryptography-key-pair)
+
+#### Proofs of existence:
+
+* [Merkle proof](#proofs-mp)
+* [Merkle Patricia proof](#proofs-mpt)
+
+#### Work with blockchain:
+
+* [Verify block of precommits](#blockchain-verify-block)
+
+#### Other:
+
+* [Build](#other-build)
+* [Test](#other-test)
+* [License](#other-license)
+
+---
+
+## Built-in data types
+
+#### Int8 <a id="built-in-int8"></a>
+
+A Signed integer value of the length of `1` byte.
+
+Values range is from `-128` to `127`.
+
+```
+var someType = Exonum.newType({
+    size: 1,
+    fields: {
+        someNumber: {type: Exonum.Int8, size: 1, from: 0, to: 1}
+    }
+});
+```
+
+#### Int16 <a id="built-in-int16"></a>
+
+A Signed integer value of the length of `2` bytes.
+
+Values range is from `-32768` to `32767`.
+
+```
+var someType = Exonum.newType({
+    size: 2,
+    fields: {
+        someNumber: {type: Exonum.Int16, size: 2, from: 0, to: 2}
+    }
+});
+```
+
+#### Int32 <a id="built-in-int32"></a>
+
+A Signed integer value of the length of `4` bytes.
+
+Values range is from `-2147483648` to `2147483647`.
+
+```
+var someType = Exonum.newType({
+    size: 4,
+    fields: {
+        someNumber: {type: Exonum.Int32, size: 4, from: 0, to: 4}
+    }
+});
+```
+
+#### Int64 <a id="built-in-int64"></a>
+
+A Signed integer value of the length of `8` bytes.
+
+Values range is from `-9223372036854775808` to `9223372036854775807`.
+
+Please note that JavaScript limits minimum and maximum integer number.
+
+Minimum safe integer in JavaScript is `-(2^53-1)` which is equal to `-9007199254740991`
+
+Maximum safe integer in JavaScript is `2^53-1` which is equal to `9007199254740991`.
+
+Work around is to use value not as `Number` but as `String`.
+
+```
+var someType = Exonum.newType({
+    size: 8,
+    fields: {
+        someNumber: {type: Exonum.Int64, size: 8, from: 0, to: 8}
+    }
+});
+```
+
+#### Uint8 <a id="built-in-uint8"></a>
+
+Unsigned integer value of the length of `1` byte.
+
+Values range is from `0` to `255`.
+
+```
+var someType = Exonum.newType({
+    size: 1,
+    fields: {
+        someNumber: {type: Exonum.Uint8, size: 1, from: 0, to: 1}
+    }
+});
+```
+
+#### Uint16 <a id="built-in-uint16"></a>
+
+Unsigned integer value of the length of `2` bytes.
+
+Values range is from `0` to `65535`.
+
+```
+var someType = Exonum.newType({
+    size: 2,
+    fields: {
+        someNumber: {type: Exonum.Uint16, size: 2, from: 0, to: 2}
+    }
+});
+```
+
+#### Uint32 <a id="built-in-uint32"></a>
+
+Unsigned integer value of the length of `4` bytes.
+
+Values range is from `0` to `4294967295`.
+
+```
+var someType = Exonum.newType({
+    size: 4,
+    fields: {
+        someNumber: {type: Exonum.Uint32, size: 4, from: 0, to: 4}
+    }
+});
+```
+
+#### Uint64 <a id="built-in-uint64"></a>
+
+Unsigned integer value of the length of `8` bytes.
+
+Values range is from `0` to `18446744073709551615`.
+
+Please note that JavaScript limits maximum integer number.
+
+Maximum safe integer in JavaScript is `2^53-1` which is equal to `9007199254740991`.
+
+Work around is to use value not as `Number` but as `String`.
+
+```
+var someType = Exonum.newType({
+    size: 8,
+    fields: {
+        someNumber: {type: Exonum.Uint64, size: 8, from: 0, to: 8}
+    }
+});
+```
+
+#### String <a id="built-in-string"></a>
+
+String value of the length of `8` bytes.
+
+```
+var someType = Exonum.newType({
+    size: 8,
+    fields: {
+        someString: {type: Exonum.String, size: 8, from: 0, to: 8}
+    }
+});
+```
+
+#### Hash <a id="built-in-hash"></a>
+
+Hexadecimal value of the length of `32` bytes.
+
+```
+var someType = Exonum.newType({
+    size: 32,
+    fields: {
+        someHash: {type: Exonum.Hash, size: 32, from: 0, to: 32}
+    }
+});
+```
+
+#### PublicKey <a id="built-in-public-key"></a>
+
+Hexadecimal value of the length of `32` bytes.
+
+```
+var someType = Exonum.newType({
+    size: 32,
+    fields: {
+        somePublicKey: {type: Exonum.PublicKey, size: 32, from: 0, to: 32}
+    }
+});
+```
+
+#### Digest <a id="built-in-digest"></a>
+
+Hexadecimal value of the length of `64` bytes.
+
+
+```
+var someType = Exonum.newType({
+    size: 64,
+    fields: {
+        someDigest: {type: Exonum.Digest, size: 64, from: 0, to: 64}
+    }
+});
+```
+
+#### Timespec <a id="built-in-timespec"></a>
+
+Unsigned integer value of the length of `8` bytes. Represents Unix time in nanosecond.
+
+Maximum safe integer in JavaScript is `2^53-1` which is equal to `9007199254740991`.
+
+Work around is to use value not as `Number` but as `String`.
+
+```
+var someType = Exonum.newType({
+    size: 8,
+    fields: {
+        someTimespec: {type: Exonum.Timespec, size: 8, from: 0, to: 8}
+    }
+});
+```
+
+#### Bool <a id="built-in-bool"></a>
+
+A Boolean value of the length of `1` byte.
+
+```
+var someType = Exonum.newType({
+    size: 1,
+    fields: {
+        someBool: {type: Exonum.Bool, size: 1, from: 0, to: 1}
+    }
+});
+```
+
+---
+
+## Helpers
+
+#### randomUint64 <a id="helpers-random-uint64"></a>
+
+Returns random integer in range from `0` to `18446744073709551615` as string.
+
+```
+var randomNumber = Exonum.randomUint64();
+```
+
+---
+
+## Custom data types
+
+#### newType <a id="custom-types-new-type"></a>
 
 Used to describe custom data format to make it possible to serialize data of this format into array of 8-bit integers.
 
@@ -74,10 +322,10 @@ Can be used to retrieve representation of data of type `newType` as array of 8-b
 
 The `data` is a custom data in JSON format.
 
-Lets declare simple type `User` with field `id` of Integer type and field `name` of String type:
+Example:
 
 ```javascript
-var User = Exonum.newType({
+var someType = Exonum.newType({
     size: 16,
     fields: {
         id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
@@ -85,15 +333,15 @@ var User = Exonum.newType({
     }
 });
 
-var userData = {id: 1, name: 'John Doe'};
+var data = {id: 1, name: 'John Doe'};
 
-var buffer = User.serialize(userData);
+var buffer = someType.serialize(data);
 ```
 
-Lets declare custom type `Payment` that will use custom type `User` as one of the fields: 
+It is possible to use other custom types as type of field: 
 
 ```javascript
-var User = Exonum.newType({
+var someType = Exonum.newType({
     size: 16,
     fields: {
         id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
@@ -101,25 +349,25 @@ var User = Exonum.newType({
     }
 });
 
-var Payment = Exonum.newType({
+var someOtherType = Exonum.newType({
     size: 40,
     fields: {
         amount: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
-        from: {type: User, size: 16, from: 8, to: 24},
-        to: {type: User, size: 16, from: 24, to: 40}
+        from: {type: someType, size: 16, from: 8, to: 24},
+        to: {type: someType, size: 16, from: 24, to: 40}
     }
 });
 
-var paymentData = {
+var data = {
     amount: 500,
     from: {id: 1, name: 'John Doe'},
-    to: {id: 2, name: 'Jenifer Lee'}
+    to: {id: 2, name: 'Jane Roe'}
 };
 
-var buffer = Payment.serialize(paymentData);
+var buffer = someOtherType.serialize(data);
 ```
 
-### newMessage
+#### newMessage <a id="custom-types-new-message"></a>
 
 Used to describe custom data format to make it possible to serialize data of this format into array of 8-bit integers.
 
@@ -145,10 +393,10 @@ The `data` is a custom data in JSON format.
 
 The `cutSignature` parameter is an optional boolean flag. If set to `true` signature will not be appended to serialized data.
 
-Lets declare custom type `CreateUser`:
+Example:
 
 ```javascript
-var CreateUser = Exonum.newMessage({
+var someMessage = Exonum.newMessage({
     size: 16,
     service_id: 7,
     message_id: 15,
@@ -159,15 +407,19 @@ var CreateUser = Exonum.newMessage({
     }
 });
 
-var userData = {
+var data = {
     name: 'John Doe',
     balance: 500
 };
 
-var buffer = CreateUser.serialize(userData);
+var buffer = someMessage.serialize(data);
 ```
 
-### hash
+---
+
+## Cryptography
+
+#### hash <a id="cryptography-hash"></a>
 
 Returns SHA256 hash of the data as hexadecimal string.
 
@@ -180,7 +432,7 @@ The `data` is a custom data in JSON format.
 The `type` is a description of type in the one of the internal data formats: `newType` or `newMessage`.
 
 ```javascript
-var CustomType = Exonum.newType({
+var someType = Exonum.newType({
     size: 16,
     fields: {
         id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
@@ -190,11 +442,11 @@ var CustomType = Exonum.newType({
 
 var data = {id: 1, name: 'John Doe'};
 
-var hash = Exonum.hash(data, CustomType);
+var hash = Exonum.hash(data, someType);
 ```
 
 ```javascript
-var CustomMessage = Exonum.newMessage({
+var someMessage = Exonum.newMessage({
     size: 16,
     service_id: 8,
     message_id: 12,
@@ -207,7 +459,7 @@ var CustomMessage = Exonum.newMessage({
 
 var data = {id: 1, name: 'John Doe'};
 
-var hash = Exonum.hash(data, CustomMessage);
+var hash = Exonum.hash(data, someMessage);
 ```
 
 ##### hash(buffer)
@@ -220,7 +472,7 @@ var buffer = [218, 0, 3, 12, 33, 68, 105, 0];
 var hash = Exonum.hash(buffer);
 ```
 
-### sign
+#### sign <a id="cryptography-sign"></a>
 
 Returns ED25519 signature of the data as hexadecimal string.
 
@@ -235,7 +487,7 @@ The `type` is a description of type in the one of the internal data formats: `ne
 The `secretKey` is a 64 bit secret key.
 
 ```javascript
-var CustomType = Exonum.newType({
+var someType = Exonum.newType({
     size: 16,
     fields: {
         id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
@@ -247,11 +499,11 @@ var data = {id: 1, name: 'John Doe'};
 
 var secretKey = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36';
 
-var signature = Exonum.sign(CustomType, data, secretKey);
+var signature = Exonum.sign(someType, data, secretKey);
 ```
 
 ```javascript
-var CustomMessage = Exonum.newMessage({
+var someMessage = Exonum.newMessage({
     size: 16,
     service_id: 8,
     message_id: 12,
@@ -266,7 +518,7 @@ var data = {id: 1, name: 'John Doe'};
 
 var secretKey = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36';
 
-var signature = Exonum.sign(data, CustomMessage, secretKey);
+var signature = Exonum.sign(data, someMessage, secretKey);
 ```
 
 ##### sign(buffer, secretKey)
@@ -283,7 +535,7 @@ var secretKey = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc03
 var signature = Exonum.sign(buffer, secretKey);
 ```
 
-### verifySignature
+#### verifySignature <a id="cryptography-verify-signature"></a>
 
 Returns `true` if verification succeeded or `false` if it failed.
 
@@ -300,7 +552,7 @@ The `signature` is a 64 bit hexadecimal string.
 The `publicKey` is a 32 bit secret key.
 
 ```javascript
-var CustomType = Exonum.newType({
+var someType = Exonum.newType({
     size: 16,
     fields: {
         id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
@@ -314,11 +566,11 @@ var signature = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc03
 
 var publicKey = '280a704efafae9410d7b07140bb130e4995eeb381ba90939b4eaefcaf740ca25';
 
-Exonum.verifySignature(data, CustomType, signature, publicKey);
+Exonum.verifySignature(data, someType, signature, publicKey);
 ```
 
 ```javascript
-var CustomMessage = Exonum.newMessage({
+var someMessage = Exonum.newMessage({
     size: 16,
     service_id: 8,
     message_id: 12,
@@ -335,7 +587,7 @@ var signature = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc03
 
 var publicKey = '280a704efafae9410d7b07140bb130e4995eeb381ba90939b4eaefcaf740ca25';
 
-Exonum.verifySignature(data, CustomMessage, signature, publicKey);
+Exonum.verifySignature(data, someMessage, signature, publicKey);
 ```
 
 ##### verifySignature(buffer, signature, publicKey)
@@ -356,26 +608,22 @@ var publicKey = '280a704efafae9410d7b07140bb130e4995eeb381ba90939b4eaefcaf740ca2
 Exonum.verifySignature(buffer, signature, publicKey);
 ```
 
-### verifyBlock(data, validators)
+#### keyPair <a id="cryptography-key-pair"></a>
 
-This methods can verify block of precommits.
+Returns random pair of `publicKey` and `secretKey` as hexadecimal strings.
 
-The `data` is a custom data in JSON format.
-
-The `validators` is an array of validators public keys. Each public key is hexadecimal string of a 32 bytes.
-
-```
-[
-    "eb7e3ad55f97e5d5693fe0e69f4c26bd1173077dbffb5fff5b69f213f71bee3f",
-    "3d17702a3f260ccf0d171279ceee74dc7309049e11bfd13d839f66f867f2d504",
-    "612bc36d1de16541b40ee468157f1aeb3cf709347e32654b730e1f970dc20edd",
-    "3016901f539f794dcc4c2466be14678b30c5d503107a2fc8bbed4680a306b177"
-]
+```javascript
+{
+    publicKey: '...',
+    secretKey: '...'
+}
 ```
 
-Returns `true` if verification succeeded or `false` if it failed.
+---
 
-### merkleProof(rootHash, count, proofNode, range, type)
+## Proofs of existence
+
+#### merkleProof(rootHash, count, proofNode, range, type) <a id="proofs-mp"></a>
 
 This methods can check proof of Merkle tree.
 
@@ -393,7 +641,7 @@ Returns an array of elements if tree is valid.
 
 Returns `undefined` if tree is not valid.
 
-### merklePatriciaProof(rootHash, proof, key)
+#### merklePatriciaProof(rootHash, proof, key) <a id="proofs-mpt"></a>
 
 This methods can check proof of Merkle Patricia tree.
 
@@ -411,241 +659,25 @@ Returns `null` if tree is valid but element is not found.
 
 Returns `undefined` if tree is not valid.
 
-### keyPair
+---
 
-Returns random pair of `publicKey` and `secretKey` as hexadecimal strings.
+## Work with blockchain
 
-```javascript
-{
-    publicKey: ...,
-    secretKey: ...
-}
-```
+#### verifyBlock(data, validators) <a id="blockchain-verify-block"></a>
 
-### randomUint64
+This methods can verify block of precommits.
 
-Returns random integer in range from `0` to `18446744073709551615`.
+The `data` is a custom data in JSON format.
 
-## Built-in types
+The `validators` is an array of validators public keys. Each public key is hexadecimal string of a 32 bytes.
 
-#### Int8
+Returns `true` if verification is succeeded or `false` if it is failed.
 
-A Signed integer value of the length of `1` byte.
+---
 
-Values range is from `-128` to `127`.
+## Other
 
-```
-var CustomType = Exonum.newType({
-    size: 1,
-    fields: {
-        someNumber: {type: Exonum.Int8, size: 1, from: 0, to: 1}
-    }
-});
-```
-
-#### Int16
-
-A Signed integer value of the length of `2` bytes.
-
-Values range is from `-32768` to `32767`.
-
-```
-var CustomType = Exonum.newType({
-    size: 2,
-    fields: {
-        someNumber: {type: Exonum.Int16, size: 2, from: 0, to: 2}
-    }
-});
-```
-
-#### Int32
-
-A Signed integer value of the length of `4` bytes.
-
-Values range is from `-2147483648` to `2147483647`.
-
-```
-var CustomType = Exonum.newType({
-    size: 4,
-    fields: {
-        someNumber: {type: Exonum.Int32, size: 4, from: 0, to: 4}
-    }
-});
-```
-
-#### Int64
-
-A Signed integer value of the length of `8` bytes.
-
-Values range is from `-9223372036854775808` to `9223372036854775807`.
-
-Please note that JavaScript limits minimum and maximum integer number.
-
-Minimum safe integer in JavaScript is `-(2^53-1)` which is equal to `-9007199254740991`
-
-Maximum safe integer in JavaScript is `2^53-1` which is equal to `9007199254740991`.
-
-Work around is to use value not as `Number` but as `String`.
-
-```
-var CustomType = Exonum.newType({
-    size: 8,
-    fields: {
-        someNumber: {type: Exonum.Int64, size: 8, from: 0, to: 8}
-    }
-});
-```
-
-#### Uint8
-
-Unsigned integer value of the length of `1` byte.
-
-Values range is from `0` to `255`.
-
-```
-var CustomType = Exonum.newType({
-    size: 1,
-    fields: {
-        someNumber: {type: Exonum.Uint8, size: 1, from: 0, to: 1}
-    }
-});
-```
-
-#### Uint16
-
-Unsigned integer value of the length of `2` bytes.
-
-Values range is from `0` to `65535`.
-
-```
-var CustomType = Exonum.newType({
-    size: 2,
-    fields: {
-        someNumber: {type: Exonum.Uint16, size: 2, from: 0, to: 2}
-    }
-});
-```
-
-#### Uint32
-
-Unsigned integer value of the length of `4` bytes.
-
-Values range is from `0` to `4294967295`.
-
-```
-var CustomType = Exonum.newType({
-    size: 4,
-    fields: {
-        someNumber: {type: Exonum.Uint32, size: 4, from: 0, to: 4}
-    }
-});
-```
-
-#### Uint64
-
-Unsigned integer value of the length of `8` bytes.
-
-Values range is from `0` to `18446744073709551615`.
-
-Please note that JavaScript limits maximum integer number.
-
-Maximum safe integer in JavaScript is `2^53-1` which is equal to `9007199254740991`.
-
-Work around is to use value not as `Number` but as `String`.
-
-```
-var CustomType = Exonum.newType({
-    size: 8,
-    fields: {
-        someNumber: {type: Exonum.Uint64, size: 8, from: 0, to: 8}
-    }
-});
-```
-
-#### String
-
-String value of the length of `8` bytes.
-
-```
-var CustomType = Exonum.newType({
-    size: 8,
-    fields: {
-        someString: {type: Exonum.String, size: 8, from: 0, to: 8}
-    }
-});
-```
-
-#### Hash
-
-Hexadecimal value of the length of `32` bytes.
-
-```
-var CustomType = Exonum.newType({
-    size: 32,
-    fields: {
-        someHash: {type: Exonum.Hash, size: 32, from: 0, to: 32}
-    }
-});
-```
-
-#### PublicKey
-
-Hexadecimal value of the length of `32` bytes.
-
-```
-var CustomType = Exonum.newType({
-    size: 32,
-    fields: {
-        somePublicKey: {type: Exonum.PublicKey, size: 32, from: 0, to: 32}
-    }
-});
-```
-
-#### Digest
-
-Hexadecimal value of the length of `64` bytes.
-
-
-```
-var CustomType = Exonum.newType({
-    size: 64,
-    fields: {
-        someDigest: {type: Exonum.Digest, size: 64, from: 0, to: 64}
-    }
-});
-```
-
-#### Timespec
-
-Unsigned integer value of the length of `8` bytes. Represents Unix time in nanosecond.
-
-Maximum safe integer in JavaScript is `2^53-1` which is equal to `9007199254740991`.
-
-Work around is to use value not as `Number` but as `String`.
-
-```
-var CustomType = Exonum.newType({
-    size: 8,
-    fields: {
-        someTimespec: {type: Exonum.Timespec, size: 8, from: 0, to: 8}
-    }
-});
-```
-
-#### Bool
-
-A Boolean value of the length of `1` byte.
-
-```
-var CustomType = Exonum.newType({
-    size: 1,
-    fields: {
-        someBool: {type: Exonum.Bool, size: 1, from: 0, to: 1}
-    }
-});
-```
-
-## Build
+#### Build <a id="other-build"></a>
 
 Install npm packages required for development:
 
@@ -659,20 +691,14 @@ To build minimised and development versions of library execute:
 $ grunt
 ```
 
-## Tests
+#### Test <a id="other-test"></a>
 
 To run tests execute:
 
 ```
-$ npm run test
+$ grunt mochaTest
 ```
 
-To check test coverage execute:
-
-```
-$ npm run test-coverage
-```
-
-## License
+#### License <a id="other-license"></a>
 
 TODO
