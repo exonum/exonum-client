@@ -5,7 +5,7 @@ JavaScript toolkit to work with Exonum blockchain from both of browser and Node.
 #### Use in browser:
 
 ```html
-<script src="exonum-client.min.js"></script>
+<script src="dist/exonum-client.min.js"></script>
 <script>
     Exonum.hash(buffer);
 </script>
