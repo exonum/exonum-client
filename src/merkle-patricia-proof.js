@@ -35,17 +35,17 @@ var RootBranch = Exonum.newType({
 
 /**
  * Check Merkle Patricia tree proof and return element
- * @param {String} rootHash
+ * @param {string} rootHash
  * @param {Object} proofNode
- * @param key
- * @param {NewType} type (optional)
+ * @param {string} key
+ * @param {NewType} [type] - optional
  * @return {Object}
  */
 Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
     /**
      * Get value from node
      * @param data
-     * @returns {String || Array || Object}
+     * @returns {string} or {Array} or {Object}
      */
     function getHash(data) {
         var elementsHash;
@@ -82,20 +82,21 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
 
     /**
      * Check either suffix is a part of search key
-     * @param {String} prefix
-     * @param {String} suffix
-     * @returns {Boolean}
+     * @param {string} prefix
+     * @param {string} suffix
+     * @returns {boolean}
      */
     function isPartOfSearchKey(prefix, suffix) {
+        // remove prefix from searched binary key
         var diff = keyBinary.substr(prefix.length);
-        return diff[0] === suffix[0];
+        return diff.indexOf(suffix) === 0;
     }
 
     /**
      * Recursive tree traversal function
      * @param {Object} node
-     * @param {String} keyPrefix
-     * @returns {String}
+     * @param {string} keyPrefix
+     * @returns {string}
      */
     function recursive(node, keyPrefix) {
         if (Exonum.getObjectLength(node) !== 2) {

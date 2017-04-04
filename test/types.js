@@ -5,7 +5,7 @@ describe('Check built-in types', function() {
 
     describe('Process Hash', function() {
 
-        it('should serialize data and return array of 8-bit integers when the value is valid string', function() {
+        it('should serialize data and return array of 8-bit integers when the value is valid hexadecimal string', function() {
             var Type = Exonum.newType({
                 size: 32,
                 fields: {hash: {type: Exonum.Hash, size: 32, from: 0, to: 32}}
@@ -997,21 +997,6 @@ describe('Check built-in types', function() {
             for (var i in args) {
                 test(args[i])
             }
-        });
-
-    });
-
-    describe('Generate random Uint64', function() {
-
-        it('should generate random value if Uint64 type, serialize and return serialized array', function() {
-            var Type = Exonum.newType({
-                size: 8,
-                fields: {balance: {type: Exonum.Uint64, size: 8, from: 0, to: 8}}
-            });
-            var data = {balance: Exonum.randomUint64()};
-            var buffer = Type.serialize(data);
-
-            expect(buffer.length).to.equal(8);
         });
 
     });

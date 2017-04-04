@@ -5,18 +5,24 @@ require('../src/data-management');
 require('../src/validators');
 
 var Block = Exonum.newType({
-    size: 116,
+    size: 108,
     fields: {
         height: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
         propose_round: {type: Exonum.Uint32, size: 4, from: 8, to: 12},
-        time: {type: Exonum.Timespec, size: 8, from: 12, to: 20},
-        prev_hash: {type: Exonum.Hash, size: 32, from: 20, to: 52},
-        tx_hash: {type: Exonum.Hash, size: 32, from: 52, to: 84},
-        state_hash: {type: Exonum.Hash, size: 32, from: 84, to: 116}
+        prev_hash: {type: Exonum.Hash, size: 32, from: 12, to: 44},
+        tx_hash: {type: Exonum.Hash, size: 32, from: 44, to: 76},
+        state_hash: {type: Exonum.Hash, size: 32, from: 76, to: 108}
+    }
+});
+var SystemTime = Exonum.newType({
+    size: 12,
+    fields: {
+        secs: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
+        nanos: {type: Exonum.Uint32, size: 4, from: 8, to: 12}
     }
 });
 var Precommit = Exonum.newMessage({
-    size: 84,
+    size: 96,
     service_id: 0,
     message_id: 4,
     fields: {
@@ -24,15 +30,16 @@ var Precommit = Exonum.newMessage({
         height: {type: Exonum.Uint64, size: 8, from: 8, to: 16},
         round: {type: Exonum.Uint32, size: 4, from: 16, to: 20},
         propose_hash: {type: Exonum.Hash, size: 32, from: 20, to: 52},
-        block_hash: {type: Exonum.Hash, size: 32, from: 52, to: 84}
+        block_hash: {type: Exonum.Hash, size: 32, from: 52, to: 84},
+        time: {type: SystemTime, size: 12, from: 84, to: 96}
     }
 });
 
 /**
- * Verifies block
+ * Validate block and each precommit in block
  * @param {Object} data
  * @param {Array} validators
- * @return {Boolean}
+ * @return {boolean}
  */
 Exonum.verifyBlock = function(data, validators) {
     if (Exonum.isObject(data) === false) {
@@ -97,7 +104,7 @@ Exonum.verifyBlock = function(data, validators) {
 
         var publicKey = validators[precommit.body.validator];
 
-        if (Exonum.verifySignature(precommit.body, Precommit, precommit.signature, publicKey) === false) {
+        if (Precommit.verifySignature(precommit.signature, publicKey, precommit.body) === false) {
             console.error('Wrong signature of precommit.');
             return false;
         }

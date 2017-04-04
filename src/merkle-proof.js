@@ -11,7 +11,7 @@ var objectAssign = require('object-assign');
 /**
  * Calculate height of merkle tree
  * @param {bigInt} count
- * @return {Number}
+ * @return {number}
  */
 function calcHeight(count) {
     var i = 0;
@@ -23,11 +23,11 @@ function calcHeight(count) {
 
 /**
  * Check proof of Merkle tree and return array of elements
- * @param {String} rootHash
- * @param {Number} count
+ * @param {string} rootHash
+ * @param {number} count
  * @param {Object} proofNode
  * @param {Array} range
- * @param type (optional)
+ * @param {NewType} [type] - optional
  * @return {Array}
  */
 Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
@@ -37,9 +37,9 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
     /**
      * Get value from node, insert into elements array and return its hash
      * @param data
-     * @param {Number} depth
-     * @param {Number} index
-     * @returns {String}
+     * @param {number} depth
+     * @param {number} index
+     * @returns {string}
      */
     function getHash(data, depth, index) {
         var element;
@@ -96,9 +96,9 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
     /**
      * Recursive tree traversal function
      * @param {Object} node
-     * @param {Number} depth
-     * @param {Number} index
-     * @returns {String}
+     * @param {number} depth
+     * @param {number} index
+     * @returns {string}
      */
     function recursive(node, depth, index) {
         var hashLeft;
@@ -122,7 +122,7 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
                 } else {
                     hashLeft = recursive(node.left, depth + 1, index * 2);
                 }
-                if (typeof hashLeft === 'undefined') {
+                if (typeof hashLeft === 'undefined' || hashLeft === null) {
                     return null;
                 }
             } else {
@@ -150,7 +150,7 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
                 } else {
                     hashRight = recursive(node.right, depth + 1, index * 2 + 1);
                 }
-                if (typeof hashRight === 'undefined') {
+                if (typeof hashRight === 'undefined' || hashRight === null) {
                     return null;
                 }
             } else {

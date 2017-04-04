@@ -41,6 +41,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-mocha-test');
     grunt.loadNpmTasks('grunt-contrib-clean');
 
-    grunt.registerTask('default', ['clean', 'jshint', 'mochaTest', 'browserify', 'uglify']);
+    grunt.registerTask('test', ['jshint', 'mochaTest']);
+    grunt.registerTask('build', ['clean', 'browserify', 'uglify']);
+    grunt.registerTask('default', ['test', 'build']);
 
 };

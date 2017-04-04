@@ -17,7 +17,7 @@ function NewType(type) {
 }
 
 /**
- * Built-in method to serialize data into array of 8-bit integers
+ * Serialize data of NewType type into array of 8-bit integers
  * @param {Object} data
  * @returns {Array}
  */
@@ -25,16 +25,34 @@ NewType.prototype.serialize = function(data) {
     return Exonum.serialize([], 0, data, this);
 };
 
+/**
+ * Get SHA256 hash
+ * @param {Object} data
+ * @returns {string}
+ */
 NewType.prototype.hash = function(data) {
     return Exonum.hash(data, this);
 };
 
-NewType.prototype.sign = function(data, secretKey) {
-    return Exonum.sign(data, this, secretKey);
+/**
+ * Get ED25519 signature
+ * @param {string} secretKey
+ * @param {Object} data
+ * @returns {string}
+ */
+NewType.prototype.sign = function(secretKey, data) {
+    return Exonum.sign(secretKey, data, this);
 };
 
-NewType.prototype.verifySignature = function(data, signature, publicKey) {
-    return Exonum.verifySignature(data, this, signature, publicKey);
+/**
+ * Verifies ED25519 signature
+ * @param {string} signature
+ * @param {string} publicKey
+ * @param {Object} data
+ * @returns {boolean}
+ */
+NewType.prototype.verifySignature = function(signature, publicKey, data) {
+    return Exonum.verifySignature(signature, publicKey, data, this);
 };
 
 /**
@@ -46,6 +64,11 @@ Exonum.newType = function(type) {
     return new NewType(type);
 };
 
+/**
+ * Check if passed object is of type NewType
+ * @param {Object} type
+ * @returns {boolean}
+ */
 Exonum.isInstanceofOfNewType = function(type) {
     return type instanceof NewType;
 };
@@ -63,9 +86,9 @@ function NewMessage(type) {
 }
 
 /**
- * Built-in method to serialize data into array of 8-bit integers
+ * Serialize data of NewMessage type into array of 8-bit integers
  * @param {Object} data
- * @param {Boolean} cutSignature
+ * @param {boolean} [cutSignature] - optional parameter used flag that signature should not be appended to serialized data
  * @returns {Array}
  */
 NewMessage.prototype.serialize = function(data, cutSignature) {
@@ -103,16 +126,34 @@ NewMessage.prototype.serialize = function(data, cutSignature) {
     return buffer;
 };
 
+/**
+ * Get SHA256 hash
+ * @param {Object} data
+ * @returns {string}
+ */
 NewMessage.prototype.hash = function(data) {
     return Exonum.hash(data, this);
 };
 
-NewMessage.prototype.sign = function(data, secretKey) {
-    return Exonum.sign(data, this, secretKey);
+/**
+ * Get ED25519 signature
+ * @param {string} secretKey
+ * @param {Object} data
+ * @returns {string}
+ */
+NewMessage.prototype.sign = function(secretKey, data) {
+    return Exonum.sign(secretKey, data, this);
 };
 
-NewMessage.prototype.verifySignature = function(data, signature, publicKey) {
-    return Exonum.verifySignature(data, this, signature, publicKey);
+/**
+ * Verifies ED25519 signature
+ * @param {string} signature
+ * @param {string} publicKey
+ * @param {Object} data
+ * @returns {boolean}
+ */
+NewMessage.prototype.verifySignature = function(signature, publicKey, data) {
+    return Exonum.verifySignature(signature, publicKey, data, this);
 };
 
 /**
@@ -124,7 +165,12 @@ Exonum.newMessage = function(type) {
     return new NewMessage(type);
 };
 
-Exonum.isInstanceofOfMessage = function(type) {
+/**
+ * Check if passed object is of type NewMessage
+ * @param type
+ * @returns {boolean}
+ */
+Exonum.isInstanceofOfNewMessage = function(type) {
     return type instanceof NewMessage;
 };
 

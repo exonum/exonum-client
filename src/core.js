@@ -5,7 +5,7 @@ var Exonum = {
 };
 
 /**
- * Check if element is of type {Object}
+ * Check if element is of type Object
  * @param obj
  * @returns {boolean}
  */
@@ -14,9 +14,9 @@ Exonum.isObject = function(obj) {
 };
 
 /**
- * Get length of object
+ * Get length of element of type Object
  * @param {Object} obj
- * @returns {Number}
+ * @returns {number}
  */
 Exonum.getObjectLength = function(obj) {
     var l = 0;

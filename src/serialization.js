@@ -6,7 +6,7 @@ require('../src/types');
 /**
  * Serialize data into array of 8-bit integers and insert into buffer
  * @param {Array} buffer
- * @param {Number} shift - the index to start write into buffer
+ * @param {number} shift - the index to start write into buffer
  * @param {Object} data
  * @param type - can be {NewType} or one of built-in types
  */
