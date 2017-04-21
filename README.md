@@ -854,4 +854,4 @@ $ grunt mochaTest
 
 #### License
 
-TODO
+Exonum Client is licensed under the Apache License (Version 2.0). See [LICENSE](https://github.com/exonum/exonum-core/blob/master/LICENSE) for details.
