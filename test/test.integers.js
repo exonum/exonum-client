@@ -16,6 +16,30 @@ const typeDefs = {
     signed: true,
     range: [ -128, 127 ],
     valuesInRange: [ 23, -42, -109 ]
+  },
+  Uint16: {
+    byteLength: 2,
+    signed: false,
+    range: [ 0, 65535 ],
+    valuesInRange: [ 7, 2323, 42000 ]
+  },
+  Int16: {
+    byteLength: 2,
+    signed: true,
+    range: [ -32768, 32767 ],
+    valuesInRange: [ -7, 2323, -32140 ]
+  },
+  Uint32: {
+    byteLength: 4,
+    signed: false,
+    range: [ 0, 4294967295 ],
+    valuesInRange: [ 77, 11111, 3000000000 ]
+  },
+  Int32: {
+    byteLength: 4,
+    signed: true,
+    range: [ -2147483648, 2147483647 ],
+    valuesInRange: [ -2000000000, 111111, 1999999999 ]
   }
 };
 

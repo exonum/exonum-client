@@ -83,6 +83,10 @@ function Integer (byteLength, signed) {
 module.exports = {
   Uint8: Integer(1, false),
   Int8: Integer(1, true),
+  Uint16: Integer(2, false),
+  Int16: Integer(2, true),
+  Uint32: Integer(4, false),
+  Int32: Integer(4, true),
   Integer: Integer,
   isInteger: isInteger
 };
