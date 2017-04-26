@@ -11,35 +11,52 @@ const typeDefs = {
     range: [ 0, 255 ],
     valuesInRange: [ 7, 23, 42, 114 ]
   },
+
   Int8: {
     byteLength: 1,
     signed: true,
     range: [ -128, 127 ],
     valuesInRange: [ 23, -42, -109 ]
   },
+
   Uint16: {
     byteLength: 2,
     signed: false,
     range: [ 0, 65535 ],
-    valuesInRange: [ 7, 2323, 42000 ]
+    valuesInRange: [ 7, 2323, 42000 ],
+    serializations: [
+      { from: 4660, expect: new Uint8Array([0x34, 0x12]) }
+    ]
   },
+
   Int16: {
     byteLength: 2,
     signed: true,
     range: [ -32768, 32767 ],
-    valuesInRange: [ -7, 2323, -32140 ]
+    valuesInRange: [ -7, 2323, -32140 ],
+    serializations: [
+      { from: -28671, expect: new Uint8Array([0x01, 0x90]) }
+    ]
   },
+
   Uint32: {
     byteLength: 4,
     signed: false,
     range: [ 0, 4294967295 ],
-    valuesInRange: [ 77, 11111, 3000000000 ]
+    valuesInRange: [ 77, 11111, 3000000000 ],
+    serializations: [
+      { from: 3735928559, expect: new Uint8Array([0xef, 0xbe, 0xad, 0xde]) }
+    ]
   },
+
   Int32: {
     byteLength: 4,
     signed: true,
     range: [ -2147483648, 2147483647 ],
-    valuesInRange: [ -2000000000, 111111, 1999999999 ]
+    valuesInRange: [ -2000000000, 111111, 1999999999 ],
+    serializations: [
+      { from: -1056969216, expect: new Uint8Array([0x00, 0xee, 0xff, 0xc0]) }
+    ]
   }
 };
 
@@ -165,6 +182,86 @@ const baseEncodings = {
           });
         });
       });
+
+      describe('serialize', function () {
+        it('should serialize as Uint8Array', function () {
+          var s = new Type().serialize();
+          expect(s).to.be.a('uint8array');
+        });
+
+        // Generic expected serializations for datatypes
+        let serializations = [
+          {
+            from: 0,
+            expect: new Uint8Array(def.byteLength)
+          },
+          {
+            from: 1,
+            expect: (() => {
+              var b = new Uint8Array(def.byteLength);
+              b[0] = 1;
+              return b;
+            })()
+          }
+        ];
+
+        if (def.signed) {
+          // Signed type
+
+          // -1 should serialize as all 1 bits
+          serializations.push({
+            from: -1,
+            expect: (() => {
+              var b = new Uint8Array(def.byteLength);
+              b.fill(255);
+              return b;
+            })()
+          });
+
+          // MIN_VALUE should serialize as [0, 0, ..., 128]
+          serializations.push({
+            from: def.range[0],
+            expect: (() => {
+              var b = new Uint8Array(def.byteLength);
+              b[b.length - 1] = 128;
+              return b;
+            })()
+          });
+
+          // MAX_VALUE should serialize as [255, 255, ..., 127]
+          serializations.push({
+            from: def.range[1],
+            expect: (() => {
+              var b = new Uint8Array(def.byteLength);
+              b.fill(255);
+              b[b.length - 1] = 127;
+              return b;
+            })()
+          });
+        } else {
+          // Unsigned type
+
+          // MAX_VALUE should serialize as [255, ..., 255]
+          serializations.push({
+            from: def.range[1],
+            expect: (() => {
+              var b = new Uint8Array(def.byteLength);
+              b.fill(255);
+              return b;
+            })()
+          });
+        }
+
+        if (def.serializations) {
+          Array.prototype.push.apply(serializations, def.serializations);
+        }
+
+        serializations.forEach(s => {
+          it('should serialize ' + s.from + ' as [' + s.expect.join(', ') + ']', function () {
+            var x = new Type(s.from);
+            expect(x.serialize()).to.deep.equal(s.expect);
+          });
+        });
       });
     });
   }

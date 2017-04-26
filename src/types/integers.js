@@ -70,6 +70,16 @@ function Integer (byteLength, signed) {
 
   SizedInteger.prototype.serialize = function () {
     var buffer = new Uint8Array(byteLength);
+    var x = this.raw;
+    if (signed && x.isNegative()) {
+      x = x.minus(MIN_VALUE.multiply(2));
+    }
+
+    for (var i = 0; i < byteLength; i++) {
+      var divmod = x.divmod(256);
+      buffer[i] = divmod.remainder;
+      x = divmod.quotient;
+    }
     return buffer;
   };
 
