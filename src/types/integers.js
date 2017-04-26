@@ -2,6 +2,12 @@
 
 const bigInt = require('big-integer');
 
+/**
+ * Maximum length for integer types so that they can still be safely
+ * converted to native JS numbers.
+ */
+const MAX_SAFE_LENGTH = 6;
+
 function isInteger () {
   return false;
 }
@@ -14,7 +20,7 @@ function Integer (byteLength, signed) {
     ? bigInt(1).shiftLeft(byteLength * 8 - 1)
     : bigInt(1).shiftLeft(byteLength * 8)).minus(1);
 
-  if (byteLength <= 6) {
+  if (byteLength <= MAX_SAFE_LENGTH) {
     MIN_VALUE = MIN_VALUE.toJSNumber();
     MAX_VALUE = MAX_VALUE.toJSNumber();
   }
@@ -28,7 +34,7 @@ function Integer (byteLength, signed) {
       if (encoding === undefined) encoding = 'dec';
 
       // XXX: bigInt's parsing rules are lax: e.g., bigInt('18', 8) parses as 1
-      // Not sure whether this needs to be fixed
+      // Not sure whether this needs to be addressed here
 
       switch (encoding) {
         case 'dec':
@@ -70,8 +76,6 @@ function Integer (byteLength, signed) {
   SizedInteger.BYTE_LENGTH = byteLength;
   SizedInteger.MIN_VALUE = MIN_VALUE;
   SizedInteger.MAX_VALUE = MAX_VALUE;
-
-  console.log(SizedInteger.prototype);
 
   return SizedInteger;
 }
