@@ -1,6 +1,7 @@
 /* eslint-env node, mocha */
 
 const expect = require('chai').expect;
+const bigInt = require('big-integer');
 
 const integers = require('../src/types/integers');
 
@@ -57,6 +58,26 @@ const typeDefs = {
     serializations: [
       { from: -1056969216, expect: new Uint8Array([0x00, 0xee, 0xff, 0xc0]) }
     ]
+  },
+
+  Uint64: {
+    byteLength: 8,
+    signed: false,
+    range: [ 0, bigInt('18446744073709551615') ],
+    valuesInRange: [ 11111, 3000000000, bigInt('1234567890987654321') ],
+    serializations: [
+      // 1234567890987654321 === 0x112210f4b16c1cb1
+      { from: bigInt('1234567890987654321'), expect: new Uint8Array([0xb1, 0x1c, 0x6c, 0xb1, 0xf4, 0x10, 0x22, 0x11]) }
+    ]
+  },
+
+  Int64: {
+    byteLength: 8,
+    signed: true,
+    range: [ bigInt('-9223372036854775808'), bigInt('9223372036854775807') ],
+    valuesInRange: [ 2000000000, bigInt('-1234567890987654321') ],
+    serializations: [
+    ]
   }
 };
 
@@ -81,21 +102,27 @@ const baseEncodings = {
       });
 
       it('should declare correct MIN_VALUE', function () {
-        expect(Type.MIN_VALUE).to.equal(def.range[0]);
+        expect(Type.MIN_VALUE).to.deep.equal(def.range[0]);
       });
 
       it('should declare correct MAX_VALUE', function () {
-        expect(Type.MAX_VALUE).to.equal(def.range[1]);
+        expect(Type.MAX_VALUE).to.deep.equal(def.range[1]);
       });
 
       describe('constructor', function () {
-        let allowedValues = [ 0, 1, 2 ];
+        let allowedValues = [ ];
         allowedValues.push(def.range[0]); // MIN_VALUE
-        allowedValues.push(def.range[0] + 1);
+        allowedValues.push(bigInt.isInstance(def.range[0])
+          ? def.range[0].plus(1)
+          : def.range[0] + 1);
+
         allowedValues.push(def.range[1]); // MAX_VALUE
-        allowedValues.push(def.range[1] - 1);
+        allowedValues.push(bigInt.isInstance(def.range[1])
+          ? def.range[1].minus(1)
+          : def.range[1] - 1);
+
         if (def.signed) {
-          allowedValues.push(-1, -2);
+          allowedValues.push(0, 1, -1);
         }
         Array.prototype.push.apply(allowedValues, def.valuesInRange);
 
@@ -134,19 +161,21 @@ const baseEncodings = {
         });
 
         let disallowedValues = [
-          def.range[0] - 1,
-          def.range[0] - 2,
-          def.range[1] + 1,
-          def.range[1] + 2
+          bigInt.isInstance(def.range[0])
+            ? def.range[0].minus(1)
+            : def.range[0] - 1,
+          bigInt.isInstance(def.range[1])
+            ? def.range[1].plus(1)
+            : def.range[1] + 1
         ];
 
         disallowedValues.forEach(value => {
-          it('should not accept an out-of-range Number ' + value, function () {
+          it('should not accept an out-of-range Number ' + value.toString(), function () {
             expect(() => new Type(value)).to.throw(Error, /range/i);
           });
 
           let str = value.toString();
-          it('should not construct from an out-of-range String ' + value, function () {
+          it('should not construct from an out-of-range String ' + str, function () {
             expect(() => new Type(str)).to.throw(Error, /range/i);
           });
 
@@ -267,7 +296,7 @@ const baseEncodings = {
         }
 
         serializations.forEach(s => {
-          it('should serialize ' + s.from + ' as [' + s.expect.join(', ') + ']', function () {
+          it('should serialize ' + s.from.toString() + ' as [' + s.expect.join(', ') + ']', function () {
             var x = new Type(s.from);
             expect(x.serialize()).to.deep.equal(s.expect);
           });

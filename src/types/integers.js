@@ -94,13 +94,12 @@ function Integer (byteLength, signed) {
 
   SizedInteger.BYTE_LENGTH = byteLength;
 
-  if (byteLength <= MAX_SAFE_LENGTH) {
-    SizedInteger.MIN_VALUE = MIN_VALUE.toJSNumber();
-    SizedInteger.MAX_VALUE = MAX_VALUE.toJSNumber();
-  } else {
-    SizedInteger.MIN_VALUE = MIN_VALUE;
-    SizedInteger.MAX_VALUE = MAX_VALUE;
-  }
+  SizedInteger.MIN_VALUE = (byteLength <= MAX_SAFE_LENGTH || !signed)
+    ? MIN_VALUE.toJSNumber()
+    : MIN_VALUE;
+  SizedInteger.MAX_VALUE = (byteLength <= MAX_SAFE_LENGTH)
+    ? MAX_VALUE.toJSNumber()
+    : MAX_VALUE;
 
   return SizedInteger;
 }
@@ -112,6 +111,8 @@ module.exports = {
   Int16: Integer(2, true),
   Uint32: Integer(4, false),
   Int32: Integer(4, true),
+  Uint64: Integer(8, false),
+  Int64: Integer(8, true),
   Integer: Integer,
   isInteger: isInteger
 };
