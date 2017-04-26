@@ -20,11 +20,6 @@ function Integer (byteLength, signed) {
     ? bigInt(1).shiftLeft(byteLength * 8 - 1)
     : bigInt(1).shiftLeft(byteLength * 8)).minus(1);
 
-  if (byteLength <= MAX_SAFE_LENGTH) {
-    MIN_VALUE = MIN_VALUE.toJSNumber();
-    MAX_VALUE = MAX_VALUE.toJSNumber();
-  }
-
   function SizedInteger (value, encoding) {
     var _raw;
 
@@ -79,8 +74,14 @@ function Integer (byteLength, signed) {
   };
 
   SizedInteger.BYTE_LENGTH = byteLength;
-  SizedInteger.MIN_VALUE = MIN_VALUE;
-  SizedInteger.MAX_VALUE = MAX_VALUE;
+
+  if (byteLength <= MAX_SAFE_LENGTH) {
+    SizedInteger.MIN_VALUE = MIN_VALUE.toJSNumber();
+    SizedInteger.MAX_VALUE = MAX_VALUE.toJSNumber();
+  } else {
+    SizedInteger.MIN_VALUE = MIN_VALUE;
+    SizedInteger.MAX_VALUE = MAX_VALUE;
+  }
 
   return SizedInteger;
 }
