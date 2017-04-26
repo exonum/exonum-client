@@ -2,6 +2,8 @@
 
 const bigInt = require('big-integer');
 
+const utils = require('./utils');
+
 /**
  * Maximum length for integer types so that they can still be safely
  * converted to native JS numbers.
@@ -69,16 +71,10 @@ function Integer (byteLength, signed) {
       throw new Error('Value out of range');
     }
 
-    Object.defineProperty(this, 'raw', {
-      writable: false,
-      enumerable: true,
-      configurable: true,
-      value: _raw
-    });
+    utils.addConstant(this, 'raw', _raw);
   }
 
-  SizedInteger.prototype.serialize = function () {
-    var buffer = new Uint8Array(byteLength);
+  SizedInteger.prototype.serialize = function (buffer) {
     var x = this.raw;
     if (signed && x.isNegative()) {
       x = x.minus(MIN_VALUE.multiply(2));
@@ -92,14 +88,16 @@ function Integer (byteLength, signed) {
     return buffer;
   };
 
-  SizedInteger.BYTE_LENGTH = byteLength;
-
-  SizedInteger.MIN_VALUE = (byteLength <= MAX_SAFE_LENGTH || !signed)
+  utils.addConstant(SizedInteger, 'minValue', (byteLength <= MAX_SAFE_LENGTH || !signed)
     ? MIN_VALUE.toJSNumber()
-    : MIN_VALUE;
-  SizedInteger.MAX_VALUE = (byteLength <= MAX_SAFE_LENGTH)
+    : MIN_VALUE);
+  utils.addConstant(SizedInteger, 'maxValue', (byteLength <= MAX_SAFE_LENGTH)
     ? MAX_VALUE.toJSNumber()
-    : MAX_VALUE;
+    : MAX_VALUE);
+
+  utils.configureType(SizedInteger, {
+    byteLength: byteLength
+  });
 
   return SizedInteger;
 }

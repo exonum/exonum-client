@@ -98,25 +98,25 @@ const baseEncodings = {
       let Type = integers[typeName];
 
       it('should declare correct length', function () {
-        expect(Type.BYTE_LENGTH).to.equal(def.byteLength);
+        expect(Type.byteLength).to.equal(def.byteLength);
       });
 
-      it('should declare correct MIN_VALUE', function () {
-        expect(Type.MIN_VALUE).to.deep.equal(def.range[0]);
+      it('should declare correct minValue', function () {
+        expect(Type.minValue).to.deep.equal(def.range[0]);
       });
 
-      it('should declare correct MAX_VALUE', function () {
-        expect(Type.MAX_VALUE).to.deep.equal(def.range[1]);
+      it('should declare correct maxValue', function () {
+        expect(Type.maxValue).to.deep.equal(def.range[1]);
       });
 
       describe('constructor', function () {
         let allowedValues = [ ];
-        allowedValues.push(def.range[0]); // MIN_VALUE
+        allowedValues.push(def.range[0]); // minValue
         allowedValues.push(bigInt.isInstance(def.range[0])
           ? def.range[0].plus(1)
           : def.range[0] + 1);
 
-        allowedValues.push(def.range[1]); // MAX_VALUE
+        allowedValues.push(def.range[1]); // maxValue
         allowedValues.push(bigInt.isInstance(def.range[1])
           ? def.range[1].minus(1)
           : def.range[1] - 1);
@@ -257,7 +257,7 @@ const baseEncodings = {
             })()
           });
 
-          // MIN_VALUE should serialize as [0, 0, ..., 128]
+          // minValue should serialize as [0, 0, ..., 128]
           serializations.push({
             from: def.range[0],
             expect: (() => {
@@ -267,7 +267,7 @@ const baseEncodings = {
             })()
           });
 
-          // MAX_VALUE should serialize as [255, 255, ..., 127]
+          // maxValue should serialize as [255, 255, ..., 127]
           serializations.push({
             from: def.range[1],
             expect: (() => {
@@ -280,7 +280,7 @@ const baseEncodings = {
         } else {
           // Unsigned type
 
-          // MAX_VALUE should serialize as [255, ..., 255]
+          // maxValue should serialize as [255, ..., 255]
           serializations.push({
             from: def.range[1],
             expect: (() => {
