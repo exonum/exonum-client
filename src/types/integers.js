@@ -52,8 +52,13 @@ function Integer (byteLength, signed) {
       _raw = bigInt(value);
     }
 
+    // Check if `_raw` is indeed a big integer (may fail if supplied
+    //  witn `null`, `false`, `[]`, etc.)
+    if (!('value' in _raw)) {
+      throw new TypeError('Not a number: ' + value);
+    }
     if (isNaN(_raw.toJSNumber())) {
-      throw new Error('Not a number ' + value);
+      throw new TypeError('Not a number: ' + value);
     }
 
     if (_raw.lt(MIN_VALUE) || _raw.gt(MAX_VALUE)) {

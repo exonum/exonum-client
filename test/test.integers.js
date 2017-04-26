@@ -150,6 +150,21 @@ const baseEncodings = {
         it('should fail with a faulty bin string', function () {
           expect(() => new Type('2', 'bin')).to.throw(Error);
         });
+
+        let invalidTypeValues = [
+          [],
+          {},
+          null,
+          false,
+          function () {}
+        ];
+
+        invalidTypeValues.forEach(value => {
+          it('should fail with invalid type value ' + value, function () {
+            expect(() => new Type(value)).to.throw(TypeError);
+          });
+        });
+      });
       });
     });
   }
