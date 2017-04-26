@@ -8,7 +8,16 @@ const bigInt = require('big-integer');
  */
 const MAX_SAFE_LENGTH = 6;
 
-function isInteger () {
+/**
+ * Checks whether a value looks like an instance of an Exonum integer type.
+ *
+ * @param {Object} value to check
+ * @returns {Boolean}
+ */
+function isInteger (value) {
+  if (typeof value === 'object' && value.raw) {
+    return true;
+  }
   return false;
 }
 

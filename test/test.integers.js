@@ -123,6 +123,16 @@ const baseEncodings = {
           }
         });
 
+        it('should construct from bigInt', function () {
+          var x = bigInt(10);
+          expect(new Type(x).raw).to.deep.equal(x);
+        });
+
+        it('should construct from another type instance', function () {
+          var x = new Type(10);
+          expect(new Type(x)).to.deep.equal(x);
+        });
+
         let disallowedValues = [
           def.range[0] - 1,
           def.range[0] - 2,
