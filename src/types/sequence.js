@@ -117,9 +117,7 @@ function Sequence (spec) {
   });
 
   SequenceType.prototype.serialize = function (buffer) {
-    if (!buffer) {
-      buffer = new Uint8Array(this.byteLength);
-    } else if (buffer.length !== this.byteLength) {
+    if (buffer.length !== this.byteLength) {
       throw new Error('Unexpected buffer length: ' + buffer.length +
         '; ' + this.byteLength + ' expected');
     }
