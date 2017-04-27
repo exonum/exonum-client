@@ -144,6 +144,15 @@ function Sequence (spec) {
     return buffer;
   };
 
+  SequenceType.prototype.toJSON = function () {
+    var obj = {};
+    for (var i = 0; i < spec.length; i++) {
+      var value = this.get(spec[i].name);
+      obj[spec[i].name] = value ? value.toJSON() : undefined;
+    }
+    return obj;
+  };
+
   var hasFixedLength = spec.every(f => f.type.hasFixedLength);
   utils.configureType(SequenceType, {
     byteLength: hasFixedLength ? fixedLength : undefined

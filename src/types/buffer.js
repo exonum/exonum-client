@@ -33,6 +33,14 @@ function decode (str, length, encoding) {
   return buffer;
 }
 
+function encode (buffer, encoding) {
+  if (encoding === 'hex') {
+    return Array.prototype.map.call(buffer, x => x.toString(16))
+      .map(x => (x.length === 1) ? ('0' + x) : x)
+      .join('');
+  }
+}
+
 function FixedBuffer (length) {
   /**
    * @param {String|Array|Uint8Array|FixedBuffer}
@@ -73,6 +81,10 @@ function FixedBuffer (length) {
 
     buffer.set(this.raw);
     return buffer;
+  };
+
+  SizedBuffer.prototype.toJSON = function () {
+    return encode(this.raw, 'hex');
   };
 
   utils.configureType(SizedBuffer, {

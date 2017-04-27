@@ -10,6 +10,9 @@ const utils = require('./utils');
  */
 const MAX_SAFE_LENGTH = 6;
 
+const MAX_SAFE_INTEGER = bigInt(Number.MAX_SAFE_INTEGER || '9007199254740991');
+const MIN_SAFE_INTEGER = bigInt(Number.MIN_SAFE_INTEGER || '-9007199254740991');
+
 /**
  * Checks whether a value looks like an instance of an Exonum integer type.
  *
@@ -86,6 +89,13 @@ function Integer (byteLength, signed) {
       x = divmod.quotient;
     }
     return buffer;
+  };
+
+  SizedInteger.prototype.toJSON = function () {
+    if (this.raw.gt(MAX_SAFE_INTEGER) || this.raw.lt(MIN_SAFE_INTEGER)) {
+      return this.raw.toString();
+    }
+    return this.raw.toJSNumber();
   };
 
   utils.addConstant(SizedInteger, 'minValue', (byteLength <= MAX_SAFE_LENGTH || !signed)

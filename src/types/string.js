@@ -55,6 +55,10 @@ Str.prototype.serialize = function (buffer) {
   serializeString(this.raw, buffer);
 };
 
+Str.prototype.toJSON = function () {
+  return this.raw;
+};
+
 Object.defineProperty(Str.prototype, 'byteLength', {
   enumerable: true,
   configurable: true,
