@@ -17,7 +17,7 @@ const MAX_SAFE_LENGTH = 6;
  * @returns {Boolean}
  */
 function isInteger (value) {
-  if (typeof value === 'object' && value.raw) {
+  if (typeof value === 'object' && value.raw && value.raw.toJSNumber) {
     return true;
   }
   return false;
