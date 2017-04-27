@@ -238,4 +238,25 @@ describe('Sequence', function () {
       ]));
     });
   });
+
+  describe('toJSON', function () {
+    it('should work for simple sequence type', function () {
+      var obj = { foo: 5, bar: -1000 };
+      var x = new Type(obj);
+      expect(x.toJSON()).to.deep.equal(obj);
+    });
+
+    it('should work for hierarchical sequence type', function () {
+      var obj = {
+        a: -10,
+        b: {
+          str: 'cabbage',
+          foo: 16
+        },
+        c: 'f00'
+      };
+      var x = new ComplexType(obj);
+      expect(x.toJSON()).to.deep.equal(obj);
+    });
+  });
 });

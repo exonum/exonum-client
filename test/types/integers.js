@@ -309,3 +309,32 @@ const baseEncodings = {
     });
   }
 })();
+
+describe('Integer', function () {
+  describe('toJSON', function () {
+    var safeInts = [
+      1, -1, 1234567, -1234567, 9007199254740991, -9007199254740991,
+      '777', '-9876543210',
+      bigInt(8888888), bigInt(-9000000000)
+    ];
+    safeInts.forEach(num => {
+      it('should return a JS number for ' + num, function () {
+        var x = new integers.Int64(num);
+        expect(x.toJSON()).to.equal(parseInt(num.toString()));
+      });
+    });
+
+    var unsafeInts = [
+      '9007199254740992',
+      '-9007199254740992',
+      bigInt(1).shiftLeft(60),
+      bigInt(1).shiftLeft(62).multiply(-1)
+    ];
+    unsafeInts.forEach(num => {
+      it('should return a string for ' + num.toString(), function () {
+        var x = new integers.Int64(num);
+        expect(x.toJSON()).to.equal(num.toString());
+      });
+    });
+  });
+});

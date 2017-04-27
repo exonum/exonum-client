@@ -78,4 +78,11 @@ describe('FixedBuffer', function () {
       expect(buf.serialize()).to.deep.equal(new Uint8Array([1, 2, 3, 4]));
     });
   });
+
+  describe('toJSON', function () {
+    it('should return a hex string', function () {
+      var buf = new ShortBuffer([1, 2, 254, 4]);
+      expect(buf.toJSON()).to.equal('0102fe04');
+    });
+  });
 });
