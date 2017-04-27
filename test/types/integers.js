@@ -3,7 +3,7 @@
 const expect = require('chai').expect;
 const bigInt = require('big-integer');
 
-const integers = require('../src/types/integers');
+const integers = require('../../src/types/integers');
 
 const typeDefs = {
   Uint8: {
@@ -96,6 +96,10 @@ const baseEncodings = {
 
     describe(typeName, function () {
       let Type = integers[typeName];
+
+      it('should declare fixed length', function () {
+        expect(Type.hasFixedLength).to.be.true;
+      });
 
       it('should declare correct length', function () {
         expect(Type.byteLength).to.equal(def.byteLength);

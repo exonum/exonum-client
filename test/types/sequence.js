@@ -4,9 +4,9 @@
 const expect = require('chai').expect;
 const bigInt = require('big-integer');
 
-const Sequence = require('../src/types/sequence').Sequence;
-const integers = require('../src/types/integers');
-const Str = require('../src/types/string').Str;
+const Sequence = require('../../src/types/sequence').Sequence;
+const integers = require('../../src/types/integers');
+const Str = require('../../src/types/string').Str;
 
 function expectInt (obj, expected) {
   expect(integers.isInteger(obj)).to.be.true;
@@ -218,6 +218,23 @@ describe('Sequence', function () {
         /* 27: */ 99, 97, 98, 98, 97, 103, 101, // x.b.str
         // end x.b
         /* 34: */ 102, 48, 48 // x.c
+      ]));
+    });
+
+    it('should serialize a type with several var-length fields', function () {
+      var Type = Sequence([
+        { name: 'foo', type: Str },
+        { name: 'bar', type: Str }
+      ]);
+
+      var x = new Type('ABC', '----');
+      expect(x.serialize()).to.deep.equal(new Uint8Array([
+        16, 0, 0, 0,   // segment for x.foo
+        3, 0, 0, 0,
+        19, 0, 0, 0,   // segment for x.bar
+        4, 0, 0, 0,
+        65, 66, 67,    // x.foo
+        45, 45, 45, 45 // x.bar
       ]));
     });
   });
