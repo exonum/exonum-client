@@ -4,12 +4,12 @@ const utils = require('./utils');
 
 /**
  * @param {Number} expectedLength expected buffer length in bytes
- * @returns {Boolean} does `str` have the expected length?
+ * @returns {Boolean} is `str` valid for the buffer?
  */
-function checkLength (str, expectedLength, encoding) {
+function validateString (str, expectedLength, encoding) {
   switch (encoding) {
     case 'hex':
-      return str.length === expectedLength * 2;
+      return (str.length === expectedLength * 2) && str.match(/^[0-9a-f]+$/i);
     default:
       throw new TypeError('Unknown encoding: ' + encoding);
   }
@@ -53,8 +53,8 @@ function FixedBuffer (length) {
       _raw = new Uint8Array(length);
     } else if (typeof obj === 'string') {
       if (!encoding) encoding = 'hex';
-      if (!checkLength(obj, length, encoding)) {
-        throw new TypeError('Invalid buffer length');
+      if (!validateString(obj, length, encoding)) {
+        throw new TypeError('Cannot parse string: ' + obj);
       }
       _raw = decode(obj, length, encoding);
     } else if (isBuffer(obj)) {
