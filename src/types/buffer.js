@@ -2,6 +2,7 @@
 
 const utils = require('./utils');
 
+// TODO move to a separate file
 const ENCODINGS = {
   hex: {
     validate (str, expectedLength) {

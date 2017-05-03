@@ -174,5 +174,6 @@ var Segment = sequence([
 
 module.exports = {
   sequence: sequence,
+  Segment: Segment,
   validateSpec: validateSpec
 };
