@@ -8,4 +8,5 @@ module.exports = objectAssign({},
   require('./bool'),
   require('./buffer'),
   require('./sequence'),
+  require('./crypto'),
   require('./utils'));

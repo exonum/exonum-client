@@ -2,6 +2,8 @@
 
 const objectAssign = Object.assign || require('object-assign');
 
+const crypto = require('../_crypto');
+
 const DEFAULT_OPTIONS = {
   byteLength: false,
   wrapSerialize: true
@@ -62,6 +64,10 @@ function configureType (type, options) {
       };
     })(type.prototype.serialize);
   }
+
+  type.prototype.hash = function () {
+    return crypto.hash(this.serialize());
+  };
 }
 
 function isExonumType (type) {

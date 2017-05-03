@@ -7,14 +7,11 @@ const expect = require('chai').expect;
 const types = require('../../src/types/index');
 
 describe('Type integration', function () {
-  var Pubkey = types.FixedBuffer(32);
-  var Hash = types.FixedBuffer(32);
-
   var Wallet = types.sequence([
-    { name: 'pubkey', type: Pubkey },
+    { name: 'pubkey', type: types.Pubkey },
     { name: 'name', type: types.Str },
     { name: 'balance', type: types.Uint64 },
-    { name: 'history_hash', type: Hash }
+    { name: 'history_hash', type: types.Hash }
   ]);
 
   it('should parse wallet from JSON', function () {
