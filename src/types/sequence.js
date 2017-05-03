@@ -50,7 +50,13 @@ function Sequence (spec) {
     var i;
     this.raw = [];
 
-    if (typeof obj === 'object' && arguments.length === 1) {
+    if (arguments.length === 1 && Array.isArray(obj)) {
+      // Assume `obj` is the sequence of properties
+      // in the order of their declaration in the type
+      for (i = 0; i < obj.length; i++) {
+        this.set(spec[i].name, obj[i]);
+      }
+    } else if (arguments.length === 1 && typeof obj === 'object') {
       // Read object field-by-field
       for (i = 0; i < spec.length; i++) {
         if (obj[spec[i].name] !== undefined) {

@@ -65,6 +65,14 @@ describe('Sequence', function () {
       expectInt(x.bar, -344666);
     });
 
+    it('should instantiate from an array', function () {
+      var x = new Type([ 12, -30000 ]);
+      expect(x).to.have.property('foo');
+      expect(x).to.have.property('bar');
+      expectInt(x.foo, 12);
+      expectInt(x.bar, -30000);
+    });
+
     it('should support field writes with various coercible types', function () {
       var x = new Type(12, -344666);
       x.foo = 23;
@@ -124,6 +132,13 @@ describe('Sequence', function () {
       var x = new Type({ bar: 11 });
       expectInt(x.bar, 11);
       expect(x.foo).to.be.undefined;
+    });
+
+    it('should support partial assignement through array', function () {
+      var x = new Type([ 11 ]);
+      console.log(x.foo);
+      expectInt(x.foo, 11);
+      expect(x.bar).to.be.undefined;
     });
   });
 
