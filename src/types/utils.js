@@ -7,12 +7,34 @@ const DEFAULT_OPTIONS = {
   wrapSerialize: true
 };
 
+/**
+ * Defines a constant property for an object.
+ */
 function defineConstant (obj, name, value) {
   Object.defineProperty(obj, name, {
     writable: false,
     enumerable: true,
     configurable: true,
     value: value
+  });
+}
+
+/**
+ * Defines a raw value for Exonum type instance.
+ *
+ * @param {Array<String>} [proxiedMethods]
+ *   list of method names that should be proxied from the raw value
+ *   to the Exonum type instance. If not specified, `toString` and `valueOf` are proxied.
+ */
+function defineRawValue (obj, value, proxiedMethods) {
+  defineConstant(obj, 'raw', value);
+  if (!proxiedMethods) {
+    proxiedMethods = [ 'toString', 'valueOf' ];
+  }
+  proxiedMethods.forEach(name => {
+    obj[name] = function () {
+      return this.raw[name].apply(this.raw, arguments);
+    };
   });
 }
 
@@ -40,13 +62,6 @@ function configureType (type, options) {
       };
     })(type.prototype.serialize);
   }
-
-  type.prototype.toString = function () {
-    return this.raw.toString.apply(this.raw, arguments);
-  };
-  type.prototype.valueOf = function () {
-    return this.raw.valueOf.apply(this.raw, arguments);
-  };
 }
 
 function isExonumType (type) {
@@ -56,5 +71,6 @@ function isExonumType (type) {
 module.exports = {
   configureType: configureType,
   defineConstant: defineConstant,
+  defineRawValue: defineRawValue,
   isExonumType: isExonumType
 };

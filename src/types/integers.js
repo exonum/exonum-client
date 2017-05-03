@@ -99,7 +99,7 @@ function Integer (byteLength, signed) {
       throw new Error('Value out of range');
     }
 
-    utils.defineConstant(this, 'raw', _raw);
+    utils.defineRawValue(this, _raw);
   }
 
   SizedInteger.prototype.serialize = function (buffer) {

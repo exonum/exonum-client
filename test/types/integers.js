@@ -166,7 +166,7 @@ const baseEncodings = {
 
         it('should construct from another type instance', function () {
           var x = new Type(10);
-          expect(new Type(x)).to.deep.equal(x);
+          expect(new Type(x).raw).to.deep.equal(x.raw);
         });
 
         let disallowedValues = [
@@ -316,6 +316,25 @@ const baseEncodings = {
 })();
 
 describe('Integer', function () {
+  describe('valueOf', function () {
+    it('should proxy integer value for comparisons', function () {
+      var x = new integers.Int64(100);
+      expect(x > 99).to.be.true;
+      expect(x <= 101).to.be.true;
+    });
+
+    it('should proxy integer value for arithmetic operations', function () {
+      var x = new integers.Int64(100);
+      expect(x - 100).to.equal(0);
+      expect(x * 2).to.equal(200);
+    });
+
+    it('should proxy integer value for functions that expect integer', function () {
+      var x = new integers.Uint32(1);
+      expect('abc'.substring(x)).to.equal('bc');
+    });
+  });
+
   describe('toJSON', function () {
     var safeInts = [
       1, -1, 1234567, -1234567, 9007199254740991, -9007199254740991,

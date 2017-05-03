@@ -52,7 +52,7 @@ function serializeString (str, buffer) {
 
 function Str (obj) {
   var _raw = obj.toString();
-  utils.defineConstant(this, 'raw', _raw);
+  utils.defineRawValue(this, _raw);
 }
 
 Str.prototype.serialize = function (buffer) {
