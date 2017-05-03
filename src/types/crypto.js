@@ -5,34 +5,37 @@ const fixedBuffer = require('./buffer').fixedBuffer;
 const crypto = require('../_crypto');
 
 const Hash = fixedBuffer(crypto.hashLength);
-const PrivateKey = fixedBuffer(crypto.privateKeyLength);
+const SecretKey = fixedBuffer(crypto.secretKeyLength);
 const Pubkey = fixedBuffer(crypto.publicKeyLength);
 const Signature = fixedBuffer(crypto.signatureLength);
 
-function authenticate (Type) {
+function authenticated (Type) {
   return class extends sequence([
     { name: 'from', type: Pubkey },
     { name: 'signature', type: Signature },
-    { name: 'value', type: Type }
+    { name: 'inner', type: Type }
   ]) {
-    sign (privkey) {
-      this.signature = crypto.sign(this.value.serialize(), privkey.raw);
-      if (!this.verify()) {
-        throw new Error('Cannot sign object');
-      }
+    static wrap (obj) {
+      return new this({ inner: obj });
+    }
+
+    sign (secretKey) {
+      this.from = crypto.fromSecretKey(secretKey.raw);
+      this.signature = crypto.sign(this.inner.serialize(), secretKey.raw);
+      return this;
     }
 
     verify () {
-      return crypto.verify(this.value.serialize(), this.from.raw);
+      return crypto.verify(this.inner.serialize(), this.signature.raw, this.from.raw);
     }
   };
 }
 
 module.exports = {
   Hash: Hash,
-  PrivateKey: PrivateKey,
+  SecretKey: SecretKey,
   Pubkey: Pubkey,
   Signature: Signature,
 
-  authenticate: authenticate
+  authenticated: authenticated
 };
