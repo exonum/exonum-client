@@ -4,30 +4,29 @@
 const expect = require('chai').expect;
 const bigInt = require('big-integer');
 
-const Sequence = require('../../src/types/sequence').Sequence;
-const integers = require('../../src/types/integers');
-const Str = require('../../src/types/string').Str;
+const types = require('../../src/types/index');
+const sequence = types.sequence;
 
 function expectInt (obj, expected) {
-  expect(integers.isInteger(obj)).to.be.true;
+  expect(types.isInteger(obj)).to.be.true;
   expect(obj.toString()).to.equal(expected.toString());
 }
 
-describe('Sequence', function () {
-  var Type = Sequence([
-    { name: 'foo', type: integers.Uint32 },
-    { name: 'bar', type: integers.Int64 }
+describe('sequence', function () {
+  var Type = sequence([
+    { name: 'foo', type: types.Uint32 },
+    { name: 'bar', type: types.Int64 }
   ]);
 
-  var VarType = Sequence([
-    { name: 'str', type: Str },
-    { name: 'foo', type: integers.Uint8 }
+  var VarType = sequence([
+    { name: 'str', type: types.Str },
+    { name: 'foo', type: types.Uint8 }
   ]);
 
-  var ComplexType = Sequence([
-    { name: 'a', type: integers.Int16 },
+  var ComplexType = sequence([
+    { name: 'a', type: types.Int16 },
     { name: 'b', type: VarType },
-    { name: 'c', type: Str }
+    { name: 'c', type: types.Str }
   ]);
 
   describe('constructor', function () {
@@ -81,19 +80,19 @@ describe('Sequence', function () {
       expectInt(x.foo, 42);
       x.foo = bigInt('111');
       expectInt(x.foo, 111);
-      x.foo = new integers.Uint32(57566);
+      x.foo = new types.Uint32(57566);
       expectInt(x.foo, 57566);
     });
 
     it('should support sequence-typed properties', function () {
-      var ComplexType = Sequence([
+      var ComplexType = sequence([
         { name: 'complex', type: Type },
-        { name: 'simple', type: integers.Int64 }
+        { name: 'simple', type: types.Int64 }
       ]);
 
       var x = new ComplexType(
         new Type(1, -2),
-        new integers.Int64(25)
+        new types.Int64(25)
       );
       expect(x).to.have.property('complex');
       expect(x).to.have.property('simple');
@@ -105,9 +104,9 @@ describe('Sequence', function () {
     });
 
     it('should support object assignment of sequence-typed properties', function () {
-      var ComplexType = Sequence([
+      var ComplexType = sequence([
         { name: 'complex', type: Type },
-        { name: 'simple', type: integers.Int64 }
+        { name: 'simple', type: types.Int64 }
       ]);
 
       var x = new ComplexType({
@@ -236,9 +235,9 @@ describe('Sequence', function () {
     });
 
     it('should serialize a type with several var-length properties', function () {
-      var Type = Sequence([
-        { name: 'foo', type: Str },
-        { name: 'bar', type: Str }
+      var Type = sequence([
+        { name: 'foo', type: types.Str },
+        { name: 'bar', type: types.Str }
       ]);
 
       var x = new Type('ABC', '----');

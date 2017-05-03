@@ -82,7 +82,7 @@ function getEncoding (obj) {
  * @param {length} length of the buffer
  * @api public
  */
-function FixedBuffer (length) {
+function fixedBuffer (length) {
   /**
    * @param {String|Array|Uint8Array|FixedBuffer} obj
    * @param {String} [encoding]
@@ -147,5 +147,5 @@ function FixedBuffer (length) {
 }
 
 module.exports = {
-  FixedBuffer: FixedBuffer
+  fixedBuffer: fixedBuffer
 };

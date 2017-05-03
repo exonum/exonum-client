@@ -10,7 +10,7 @@ describe('Type integration', function () {
   var Pubkey = types.FixedBuffer(32);
   var Hash = types.FixedBuffer(32);
 
-  var Wallet = types.Sequence([
+  var Wallet = types.sequence([
     { name: 'pubkey', type: Pubkey },
     { name: 'name', type: types.Str },
     { name: 'balance', type: types.Uint64 },

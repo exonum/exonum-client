@@ -3,11 +3,11 @@
 
 const expect = require('chai').expect;
 
-const FixedBuffer = require('../../src/types/buffer').FixedBuffer;
+const fixedBuffer = require('../../src/types/buffer').fixedBuffer;
 
 describe('FixedBuffer', function () {
-  var ShortBuffer = FixedBuffer(4);
-  var LongBuffer = FixedBuffer(32);
+  var ShortBuffer = fixedBuffer(4);
+  var LongBuffer = fixedBuffer(32);
 
   it('should declare correct byteLength', function () {
     expect(ShortBuffer.byteLength).to.equal(4);

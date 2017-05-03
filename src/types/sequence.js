@@ -30,7 +30,7 @@ function validateSpec (spec) {
   // TODO check property uniqueness
 }
 
-function Sequence (spec) {
+function sequence (spec) {
   'use strict';
   validateSpec(spec);
 
@@ -167,12 +167,12 @@ function Sequence (spec) {
   return SequenceType;
 }
 
-var Segment = Sequence([
+var Segment = sequence([
   { name: 'start', type: integers.Uint32 },
   { name: 'length', type: integers.Uint32 }
 ]);
 
 module.exports = {
-  Sequence: Sequence,
+  sequence: sequence,
   validateSpec: validateSpec
 };
