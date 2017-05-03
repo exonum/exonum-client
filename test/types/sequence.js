@@ -136,7 +136,6 @@ describe('Sequence', function () {
 
     it('should support partial assignement through array', function () {
       var x = new Type([ 11 ]);
-      console.log(x.foo);
       expectInt(x.foo, 11);
       expect(x.bar).to.be.undefined;
     });
@@ -236,7 +235,7 @@ describe('Sequence', function () {
       ]));
     });
 
-    it('should serialize a type with several var-length fields', function () {
+    it('should serialize a type with several var-length properties', function () {
       var Type = Sequence([
         { name: 'foo', type: Str },
         { name: 'bar', type: Str }
@@ -251,6 +250,11 @@ describe('Sequence', function () {
         65, 66, 67,    // x.foo
         45, 45, 45, 45 // x.bar
       ]));
+    });
+
+    it('should throw when there are uninitialized properties', function () {
+      var x = new Type(1);
+      expect(() => x.serialize()).to.throw();
     });
   });
 
@@ -272,6 +276,18 @@ describe('Sequence', function () {
       };
       var x = new ComplexType(obj);
       expect(x.toJSON()).to.deep.equal(obj);
+    });
+
+    it('should return uninitialized properties as undefined', function () {
+      var x = new ComplexType({
+        a: 10,
+        b: { str: 'foo' }
+      });
+      expect(x.toJSON()).to.deep.equal({
+        a: 10,
+        b: { str: 'foo', foo: undefined },
+        c: undefined
+      });
     });
   });
 });
