@@ -48,7 +48,7 @@ function Sequence (spec) {
 
   function SequenceType (obj) {
     var i;
-    this.raw = [];
+    utils.defineConstant(this, 'raw', []);
 
     if (arguments.length === 1 && Array.isArray(obj)) {
       // Assume `obj` is the sequence of properties

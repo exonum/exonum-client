@@ -7,7 +7,7 @@ const DEFAULT_OPTIONS = {
   wrapSerialize: true
 };
 
-function addConstant (obj, name, value) {
+function defineConstant (obj, name, value) {
   Object.defineProperty(obj, name, {
     writable: false,
     enumerable: true,
@@ -24,12 +24,12 @@ function configureType (type, options) {
 
   var hasFixedLength = !!options.byteLength;
   if (hasFixedLength) {
-    addConstant(type, 'byteLength', options.byteLength);
+    defineConstant(type, 'byteLength', options.byteLength);
     // Copy the property to instances
-    addConstant(type.prototype, 'byteLength', options.byteLength);
+    defineConstant(type.prototype, 'byteLength', options.byteLength);
   }
 
-  addConstant(type, 'hasFixedLength', hasFixedLength);
+  defineConstant(type, 'hasFixedLength', hasFixedLength);
 
   if (options.wrapSerialize) {
     // Helper for `serialize`
@@ -55,6 +55,6 @@ function isExonumType (type) {
 
 module.exports = {
   configureType: configureType,
-  addConstant: addConstant,
+  defineConstant: defineConstant,
   isExonumType: isExonumType
 };

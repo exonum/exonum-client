@@ -8,7 +8,7 @@ function isBool (obj) {
 
 function Bool (obj) {
   var _raw = isBool(obj) ? obj.raw : !!obj;
-  utils.addConstant(this, 'raw', _raw);
+  utils.defineConstant(this, 'raw', _raw);
 }
 
 Bool.prototype.serialize = function (buffer) {
@@ -24,8 +24,8 @@ utils.configureType(Bool, {
   byteLength: 1
 });
 
-utils.addConstant(Bool, 'true', new Bool(true));
-utils.addConstant(Bool, 'false', new Bool(false));
+utils.defineConstant(Bool, 'true', new Bool(true));
+utils.defineConstant(Bool, 'false', new Bool(false));
 
 module.exports = {
   Bool: Bool

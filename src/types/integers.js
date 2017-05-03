@@ -99,7 +99,7 @@ function Integer (byteLength, signed) {
       throw new Error('Value out of range');
     }
 
-    utils.addConstant(this, 'raw', _raw);
+    utils.defineConstant(this, 'raw', _raw);
   }
 
   SizedInteger.prototype.serialize = function (buffer) {
@@ -123,10 +123,10 @@ function Integer (byteLength, signed) {
     return this.raw.toJSNumber();
   };
 
-  utils.addConstant(SizedInteger, 'minValue', (byteLength <= MAX_SAFE_LENGTH || !signed)
+  utils.defineConstant(SizedInteger, 'minValue', (byteLength <= MAX_SAFE_LENGTH || !signed)
     ? MIN_VALUE.toJSNumber()
     : MIN_VALUE);
-  utils.addConstant(SizedInteger, 'maxValue', (byteLength <= MAX_SAFE_LENGTH)
+  utils.defineConstant(SizedInteger, 'maxValue', (byteLength <= MAX_SAFE_LENGTH)
     ? MAX_VALUE.toJSNumber()
     : MAX_VALUE);
 

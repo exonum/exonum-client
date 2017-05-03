@@ -122,7 +122,7 @@ function FixedBuffer (length) {
       _raw = new Uint8Array(obj);
     }
 
-    utils.addConstant(this, 'raw', _raw);
+    utils.defineConstant(this, 'raw', _raw);
   }
 
   SizedBuffer.prototype.serialize = function (buffer) {
