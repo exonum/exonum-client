@@ -2,6 +2,9 @@
 
 const utils = require('./utils');
 
+/**
+ * Calculates string length in bytes.
+ */
 function stringLength (str) {
   var len = 0;
   for (var i = 0; i < str.length; i++) {
@@ -14,6 +17,7 @@ function stringLength (str) {
     } else if (((c & 0xFC00) === 0xD800) && (i + 1) < str.length && ((str.charCodeAt(i + 1) & 0xFC00) === 0xDC00)) {
       // surrogate pair
       len += 4;
+      i++;
     } else {
       len += 3;
     }
@@ -53,6 +57,7 @@ function Str (obj) {
 
 Str.prototype.serialize = function (buffer) {
   serializeString(this.raw, buffer);
+  return buffer;
 };
 
 Str.prototype.toJSON = function () {
