@@ -73,7 +73,7 @@ describe('Sequence', function () {
       expectInt(x.bar, -30000);
     });
 
-    it('should support field writes with various coercible types', function () {
+    it('should support property writes with various coercible types', function () {
       var x = new Type(12, -344666);
       x.foo = 23;
       expectInt(x.foo, 23);

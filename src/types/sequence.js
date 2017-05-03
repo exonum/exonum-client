@@ -3,7 +3,7 @@
 const integers = require('./integers');
 const utils = require('./utils');
 
-const reservedFieldNames = [
+const reservedPropertyNames = [
   'get',
   'set',
   'byteLength',
@@ -12,30 +12,30 @@ const reservedFieldNames = [
 
 // throws on error
 function validateSpec (spec) {
-  spec.forEach((field, i) => {
-    if (!field.name) {
-      throw new Error('No field name specified for field #' + i);
+  spec.forEach((property, i) => {
+    if (!property.name) {
+      throw new Error('No property name specified for property #' + i);
     }
-    if (reservedFieldNames.indexOf(field.name) >= 0) {
-      throw new Error('Reserved field name: ' + field.name);
+    if (reservedPropertyNames.indexOf(property.name) >= 0) {
+      throw new Error('Reserved property name: ' + property.name);
     }
-    if (!field.type) {
-      throw new Error('No field type specified for field #' + i);
+    if (!property.type) {
+      throw new Error('No property type specified for property #' + i);
     }
-    if (!utils.isExonumType(field.type)) {
-      throw new Error('Invalid type: ' + field.type);
+    if (!utils.isExonumType(property.type)) {
+      throw new Error('Invalid type: ' + property.type);
     }
   });
 
-  // TODO check field uniqueness
+  // TODO check property uniqueness
 }
 
 function Sequence (spec) {
   'use strict';
   validateSpec(spec);
 
-  const fieldNames = spec.map(f => f.name);
-  // Starting and ending positions of fields/segments
+  const propertyNames = spec.map(f => f.name);
+  // Starting and ending positions of properties/segments
   let startPos = [];
   let endPos = [];
   for (var i = 0; i < spec.length; i++) {
@@ -57,14 +57,14 @@ function Sequence (spec) {
         this.set(spec[i].name, obj[i]);
       }
     } else if (arguments.length === 1 && typeof obj === 'object') {
-      // Read object field-by-field
+      // Read object property-by-property
       for (i = 0; i < spec.length; i++) {
         if (obj[spec[i].name] !== undefined) {
           this.set(spec[i].name, obj[spec[i].name]);
         }
       }
     } else {
-      // Assume arguments are the fields
+      // Assume arguments are the properties
       for (i = 0; i < arguments.length; i++) {
         this.set(spec[i].name, arguments[i]);
       }
@@ -72,7 +72,7 @@ function Sequence (spec) {
   }
 
   SequenceType.prototype.get = function (name) {
-    var idx = fieldNames.indexOf(name);
+    var idx = propertyNames.indexOf(name);
     if (idx >= 0) {
       return this.raw[idx];
     }
@@ -80,7 +80,7 @@ function Sequence (spec) {
   };
 
   SequenceType.prototype.set = function (name, value) {
-    var idx = fieldNames.indexOf(name);
+    var idx = propertyNames.indexOf(name);
     if (idx >= 0) {
       var Type = spec[idx].type;
       if (value instanceof Type) {
@@ -93,7 +93,7 @@ function Sequence (spec) {
     }
   };
 
-  fieldNames.forEach(name => {
+  propertyNames.forEach(name => {
     Object.defineProperty(SequenceType.prototype, name, {
       enumerable: true,
       configurable: true,
