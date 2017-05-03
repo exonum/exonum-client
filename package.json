@@ -6,6 +6,9 @@
   "author": "BitFury Group Limited",
   "private": true,
   "main": "src/index.js",
+  "scripts": {
+    "test": "grunt mochaTest"
+  },
   "dependencies": {
     "big-integer": "^1.6.17",
     "object-assign": "^4.1.0",
