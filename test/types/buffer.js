@@ -42,14 +42,26 @@ describe('FixedBuffer', function () {
       expect(anotherBuf.raw).to.deep.equal(new Uint8Array([0x01, 0x23, 0x45, 0x67]));
     });
 
+    it('should accept an object of content and encoding', function () {
+      var buf = new ShortBuffer({ hex: 'fedcba98' });
+      expect(buf.raw).to.deep.equal(new Uint8Array([0xfe, 0xdc, 0xba, 0x98]));
+    });
+
     it('should accept no-args call', function () {
       var buf = new ShortBuffer();
       expect(buf.raw).to.deep.equal(new Uint8Array(4));
     });
 
     it('should not accept hex string with invalid length', function () {
-      expect(() => new ShortBuffer('123')).to.throw(TypeError, /length/i);
-      expect(() => new ShortBuffer('aaaaaaaaaa')).to.throw(TypeError, /length/i);
+      expect(() => new ShortBuffer('123')).to.throw(TypeError, /string/i);
+      expect(() => new ShortBuffer('aaaaaaaaaa')).to.throw(TypeError, /string/i);
+    });
+
+    it('should not accept hex string with invalid chars', function () {
+      expect(() => new ShortBuffer('1234s678')).to.throw(TypeError, /string/i);
+      expect(() => new ShortBuffer('123467 ')).to.throw(TypeError, /string/i);
+      expect(() => new ShortBuffer('  12 34')).to.throw(TypeError, /string/i);
+      expect(() => new ShortBuffer('пять5555')).to.throw(TypeError, /string/i);
     });
 
     it('should not accept JS array with invalid length', function () {
@@ -69,6 +81,28 @@ describe('FixedBuffer', function () {
       expect(() => new ShortBuffer(buf)).to.throw(TypeError, /length/i);
       buf = new ShortBuffer([1, 2, 3, 4]);
       expect(() => new LongBuffer(buf)).to.throw(TypeError, /length/i);
+    });
+
+    it('should not accept an object of content and encoding with invalid content length', function () {
+      expect(() => new ShortBuffer({ hex: 'fedcba9' }))
+        .to.throw(TypeError, /string/i);
+      expect(() => new ShortBuffer({ hex: 'fedcba987' }))
+        .to.throw(TypeError, /string/i);
+    });
+
+    [
+      null,
+      true,
+      1234567,
+      {},
+      { hax: 'fedcba90' },
+      { hex: 1234 },
+      function () {}
+    ].forEach(x => {
+      it('should not accept an invalid-typed initializer ' + JSON.stringify(x), function () {
+        expect(() => new ShortBuffer(x))
+          .to.throw(TypeError, /invalid/i);
+      });
     });
   });
 

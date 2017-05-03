@@ -26,6 +26,24 @@ function isInteger (value) {
   return false;
 }
 
+function getEncoding (obj) {
+  if (!obj) return undefined;
+
+  for (var enc of [ 'dec', 'hex', 'oct', 'bin' ]) {
+    if (obj[enc] && typeof obj[enc] === 'string') {
+      return enc;
+    }
+  }
+  return undefined;
+}
+
+/**
+ * Instantiates a new integer type.
+ *
+ * @param {Number} byteLength byte length of a type
+ * @param {Boolean} signed does the type need to be signed?
+ * @api public
+ */
 function Integer (byteLength, signed) {
   var MIN_VALUE = signed
     ? bigInt(1).shiftLeft(byteLength * 8 - 1).multiply(-1)
@@ -36,6 +54,13 @@ function Integer (byteLength, signed) {
 
   function SizedInteger (value, encoding) {
     var _raw;
+
+    if (getEncoding(value)) {
+      // Allow initializations like `SizedInteger({ hex: 'abcdef' })`,
+      // which are useful in JSON parsing
+      encoding = getEncoding(value);
+      value = value[encoding];
+    }
 
     if (isInteger(value)) {
       _raw = value.raw;

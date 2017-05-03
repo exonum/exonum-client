@@ -151,6 +151,11 @@ const baseEncodings = {
               expect(wrapped).to.have.property('raw');
               expect(wrapped.raw.toString()).to.equal(value.toString());
             });
+
+            it('should construct from an object {' + str + ', ' + enc + '}', function () {
+              var wrapped = new Type({ [enc]: str });
+              expect(wrapped.raw.toString()).to.equal(value.toString());
+            });
           }
         });
 
@@ -211,15 +216,15 @@ const baseEncodings = {
           expect(() => new Type('2', 'bin')).to.throw(Error);
         });
 
-        let invalidTypeValues = [
+        [
           [],
           {},
+          { hax: '0' },
+          { hex: 1 },
           null,
           false,
           function () {}
-        ];
-
-        invalidTypeValues.forEach(value => {
+        ].forEach(value => {
           it('should fail with invalid type value ' + value, function () {
             expect(() => new Type(value)).to.throw(TypeError);
           });
