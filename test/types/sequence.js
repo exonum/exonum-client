@@ -31,6 +31,13 @@ describe('sequence', function () {
     { name: 'c', type: types.Str }
   ]);
 
+  var Wallet = sequence([
+    { name: 'pubkey', type: types.Pubkey },
+    { name: 'name', type: types.Str },
+    { name: 'balance', type: types.Uint64 },
+    { name: 'history_hash', type: types.Hash }
+  ]);
+
   describe('constructor', function () {
     it('should parse spec', function () {
       expect(Type).to.be.a('function');
@@ -72,18 +79,6 @@ describe('sequence', function () {
       expect(x).to.have.property('bar');
       expectInt(x.foo, 12);
       expectInt(x.bar, -30000);
-    });
-
-    it('should support property writes with various coercible types', function () {
-      var x = new Type(12, -344666);
-      x.foo = 23;
-      expectInt(x.foo, 23);
-      x.foo = '42';
-      expectInt(x.foo, 42);
-      x.foo = bigInt('111');
-      expectInt(x.foo, 111);
-      x.foo = new types.Uint32(57566);
-      expectInt(x.foo, 57566);
     });
 
     it('should support sequence-typed properties', function () {
@@ -140,6 +135,22 @@ describe('sequence', function () {
       expectInt(x.foo, 11);
       expect(x.bar).to.be.undefined;
     });
+
+    it('should parse wallet from JSON', function () {
+      var json = {
+        pubkey: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36',
+        name: 'Smart wallet',
+        balance: 359120,
+        history_hash: '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030'
+      };
+      var wallet = new Wallet(json);
+
+      expect(wallet.pubkey.raw).to.equalBytes('f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36');
+      expect(wallet.name.toString()).to.equal('Smart wallet');
+      expect(wallet.balance.valueOf()).to.equal(359120);
+      expect(wallet.history_hash.raw).to.equalBytes('6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030');
+      expect(wallet.toJSON()).to.deep.equal(json);
+    });
   });
 
   describe('get', function () {
@@ -172,6 +183,35 @@ describe('sequence', function () {
       expect(() => x.set('bazz', 5)).to.throw(Error, /property/i);
       expect(() => x.set('get', 5)).to.throw(Error, /property/i);
       expect(() => x.set('set', 5)).to.throw(Error, /property/i);
+    });
+
+    it('should support property writes with various coercible types', function () {
+      var x = new Type(12, -344666);
+      x.foo = 23;
+      expectInt(x.foo, 23);
+      x.foo = '42';
+      expectInt(x.foo, 42);
+      x.foo = bigInt('111');
+      expectInt(x.foo, 111);
+      x.foo = new types.Uint32(57566);
+      expectInt(x.foo, 57566);
+    });
+
+    it('should support implicit conversions for compound operations on integer properties', function () {
+      var x = new Type(12, -344666);
+      x.foo += 13;
+      expect(x.foo.valueOf()).to.equal(25);
+      x.foo *= 4;
+      expect(x.foo.valueOf()).to.equal(100);
+      x.foo++;
+      expect(x.foo.valueOf()).to.equal(101);
+    });
+
+    it('should throw for out-of-range assignments of integer properties', function () {
+      var x = new Type(12, -344666);
+      expect(() => { x.foo = 5000000000; }).to.throw();
+      expect(() => { x.foo -= 13; }).to.throw();
+      expect(() => { x.foo *= x.bar; }).to.throw();
     });
   });
 
@@ -233,7 +273,7 @@ describe('sequence', function () {
         /* 27: */ 99, 97, 98, 98, 97, 103, 101, // x.b.str
         // end x.b
         /* 34: */ 102, 48, 48 // x.c
-      ]));
+      ]);
     });
 
     it('should serialize a type with several var-length properties', function () {
@@ -254,12 +294,6 @@ describe('sequence', function () {
     });
 
     it('should serialize wallet type', function () {
-      var Wallet = sequence([
-        { name: 'pubkey', type: types.Pubkey },
-        { name: 'name', type: types.Str },
-        { name: 'balance', type: types.Uint64 },
-        { name: 'history_hash', type: types.Hash }
-      ]);
       var wallet = new Wallet({
         pubkey: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36',
         name: 'Smart wallet',
