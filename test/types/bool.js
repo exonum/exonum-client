@@ -1,7 +1,9 @@
 'use strict';
 /* eslint-env node, mocha */
 
-const expect = require('chai').expect;
+const expect = require('chai')
+  .use(require('../chai-bytes'))
+  .expect;
 
 const Bool = require('../../src/types/bool').Bool;
 
@@ -40,11 +42,11 @@ describe('Bool', function () {
 
   describe('serialize', function () {
     it('should serialize false as [0]', function () {
-      expect(Bool.false.serialize()).to.deep.equal(new Uint8Array([0]));
+      expect(Bool.false.serialize()).to.equalBytes('00');
     });
 
     it('should serialize true as [1]', function () {
-      expect(Bool.true.serialize()).to.deep.equal(new Uint8Array([1]));
+      expect(Bool.true.serialize()).to.equalBytes('01');
     });
   });
 

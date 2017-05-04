@@ -1,7 +1,9 @@
 'use strict';
 /* eslint-env node, mocha */
 
-const expect = require('chai').expect;
+const expect = require('chai')
+  .use(require('../chai-bytes'))
+  .expect;
 const bigInt = require('big-integer');
 
 const types = require('../../src/types/index');
@@ -195,17 +197,17 @@ describe('sequence', function () {
   describe('serialize', function () {
     it('should serialize a fixed-length type', function () {
       var x = new Type(1, -2);
-      expect(x.serialize()).to.deep.equal(new Uint8Array([1, 0, 0, 0, 254, 255, 255, 255, 255, 255, 255, 255]));
+      expect(x.serialize()).to.equalBytes([1, 0, 0, 0, 254, 255, 255, 255, 255, 255, 255, 255]);
     });
 
     it('should serialize a var-length type', function () {
       var x = new VarType('ABC', 55);
-      expect(x.serialize()).to.deep.equal(new Uint8Array([
+      expect(x.serialize()).to.equalBytes([
         9, 0, 0, 0, // segment start
         3, 0, 0, 0,  // segment length
         55, // x.bar
         65, 66, 67 // x.foo
-      ]));
+      ]);
     });
 
     it('should serialize a complex var-length type', function () {
@@ -217,7 +219,7 @@ describe('sequence', function () {
         },
         c: 'f00'
       });
-      expect(x.serialize()).to.deep.equal(new Uint8Array([
+      expect(x.serialize()).to.equalBytes([
         // offset: contents
         /*  0: */ 0xf6, 0xff, // x.a
         /*  2: */ 18, 0, 0, 0, // segment for x.b
@@ -241,14 +243,14 @@ describe('sequence', function () {
       ]);
 
       var x = new Type('ABC', '----');
-      expect(x.serialize()).to.deep.equal(new Uint8Array([
+      expect(x.serialize()).to.equalBytes([
         16, 0, 0, 0,   // segment for x.foo
         3, 0, 0, 0,
         19, 0, 0, 0,   // segment for x.bar
         4, 0, 0, 0,
         65, 66, 67,    // x.foo
         45, 45, 45, 45 // x.bar
-      ]));
+      ]);
     });
 
     it('should serialize wallet type', function () {
@@ -265,13 +267,14 @@ describe('sequence', function () {
         history_hash: '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030'
       });
 
-      expect(wallet.serialize()).to.deep.equal(new Uint8Array([
+      expect(wallet.serialize()).to.equalBytes([
         245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161,
         242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54,
         80, 0, 0, 0, 12, 0, 0, 0, 208, 122, 5, 0, 0, 0, 0, 0, 103, 82, 190, 136, 35,
         20, 245, 187, 188, 154, 106, 242, 174, 99, 79, 192, 112, 56, 88, 74, 74, 119,
         81, 14, 165, 236, 237, 69, 245, 77, 192, 48, 83, 109, 97, 114, 116, 32, 119,
-        97, 108, 108, 101, 116]));
+        97, 108, 108, 101, 116
+      ]);
     });
 
     it('should throw when there are uninitialized properties', function () {

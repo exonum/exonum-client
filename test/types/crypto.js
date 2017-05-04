@@ -1,15 +1,14 @@
 'use strict';
 /* eslint-env node, mocha */
 
-const chai = require('chai');
-chai.use(require('../chai-equal-array'));
-const expect = chai.expect;
+const expect = require('chai')
+  .use(require('../chai-bytes'))
+  .expect;
 
 // FIXME remove `/index` after replacing types
 const types = require('../../src/types/index');
 const Hash = types.Hash;
 const SecretKey = types.SecretKey;
-const Signature = types.Signature;
 
 describe('Hash', function () {
   var SequenceType = types.sequence([
@@ -63,8 +62,8 @@ describe('Hash', function () {
     it('should calculate hash correctly for custom type', function () {
       var x = new SequenceType('deadbeef', 555);
       // SHA256(0xdeadbeef2b020000)
-      expect(x.hash()).to.equalArray(
-        new Hash('739b3099b5fb4f2d51d02404e3e4383be880e16e2c2f1656a97ca27971777003').raw);
+      expect(x.hash()).to.equalBytes(
+        '739b3099b5fb4f2d51d02404e3e4383be880e16e2c2f1656a97ca27971777003');
     });
 
     it('should calculate hash correctly for wallet type', function () {
@@ -74,8 +73,8 @@ describe('Hash', function () {
         balance: 359120,
         history_hash: '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030'
       });
-      expect(wallet.hash()).to.equalArray(
-        new Hash('86b47510fbcbc83f9926d8898a57c53662518c97502625a6d131842f2003f974').raw);
+      expect(wallet.hash()).to.equalBytes(
+        '86b47510fbcbc83f9926d8898a57c53662518c97502625a6d131842f2003f974');
     });
   });
 });
@@ -103,10 +102,9 @@ describe('authenticated', function () {
       lastName: 'Doe'
     }).sign(secretKey);
 
-    expect(record.signature.raw).to.equalArray(
-      new Signature(
+    expect(record.signature.raw).to.equalBytes(
         '7ccad21d76359c8c3ed1161eb8231edd44a91d53ea468d23f8528e2985e5547f' +
-        '72f98ccc61d96ecad173bdc29627abbf6d46908807f6dd0a0d767ae3887d040e').raw);
+        '72f98ccc61d96ecad173bdc29627abbf6d46908807f6dd0a0d767ae3887d040e');
   });
 
   it('should verify signed message', function () {

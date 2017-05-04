@@ -1,7 +1,9 @@
 'use strict';
 /* eslint-env node, mocha */
 
-const expect = require('chai').expect;
+const expect = require('chai')
+  .use(require('../chai-bytes'))
+  .expect;
 
 const Str = require('../../src/types/string').Str;
 
@@ -57,12 +59,12 @@ describe('str', function () {
   describe('serialize', function () {
     it('should serialize ASCII strings', function () {
       var s = new Str('ABC');
-      expect(s.serialize()).to.deep.equal(new Uint8Array([65, 66, 67]));
+      expect(s.serialize()).to.equalBytes([65, 66, 67]);
     });
 
     it('should serialize non-ASCII strings', function () {
       var s = new Str('👌хД');
-      expect(s.serialize()).to.deep.equal(new Uint8Array([0xf0, 0x9f, 0x91, 0x8c, 0xd1, 0x85, 0xd0, 0x94]));
+      expect(s.serialize()).to.equalBytes([0xf0, 0x9f, 0x91, 0x8c, 0xd1, 0x85, 0xd0, 0x94]);
     });
   });
 

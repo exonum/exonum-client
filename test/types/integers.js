@@ -1,6 +1,8 @@
 /* eslint-env node, mocha */
 
-const expect = require('chai').expect;
+const expect = require('chai')
+  .use(require('../chai-bytes'))
+  .expect;
 const bigInt = require('big-integer');
 
 const integers = require('../../src/types/integers');
@@ -307,7 +309,7 @@ const baseEncodings = {
         serializations.forEach(s => {
           it('should serialize ' + s.from.toString() + ' as [' + s.expect.join(', ') + ']', function () {
             var x = new Type(s.from);
-            expect(x.serialize()).to.deep.equal(s.expect);
+            expect(x.serialize()).to.equalBytes(s.expect);
           });
         });
       });

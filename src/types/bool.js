@@ -8,7 +8,7 @@ function isBool (obj) {
 
 function Bool (obj) {
   var _raw = isBool(obj) ? obj.raw : !!obj;
-  utils.defineConstant(this, 'raw', _raw);
+  utils.defineRawValue(this, _raw);
 }
 
 Bool.prototype.serialize = function (buffer) {
