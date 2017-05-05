@@ -6,7 +6,11 @@ const crypto = require('../_crypto');
 
 const DEFAULT_OPTIONS = {
   byteLength: false,
-  wrapSerialize: true
+  wrapSerialize: true,
+  proxiedMethods: [
+    'valueOf',
+    'toString'
+  ]
 };
 
 /**
@@ -28,15 +32,21 @@ function defineConstant (obj, name, value) {
  *   list of method names that should be proxied from the raw value
  *   to the Exonum type instance. If not specified, `toString` and `valueOf` are proxied.
  */
-function defineRawValue (obj, value, proxiedMethods) {
+function defineRawValue (obj, value) {
   defineConstant(obj, 'raw', value);
-  if (!proxiedMethods) {
-    proxiedMethods = [ 'toString', 'valueOf' ];
-  }
-  proxiedMethods.forEach(name => {
-    obj[name] = function () {
-      return this.raw[name].apply(this.raw, arguments);
-    };
+}
+
+/**
+ * Retrieves owned method names from an object.
+ *
+ * @returns {Array<String>} list of method names
+ */
+function getMethodNames (obj) {
+  return Object.getOwnPropertyNames(obj).filter(name => {
+    var descriptor = Object.getOwnPropertyDescriptor(obj, name);
+    return name !== 'constructor' &&
+      name[0] !== '_' &&   // usually used for "private" APIs
+      typeof descriptor.value === 'function';
   });
 }
 
@@ -65,6 +75,12 @@ function configureType (type, options) {
     })(type.prototype.serialize);
   }
 
+  options.proxiedMethods.forEach(name => {
+    type.prototype[name] = function () {
+      return this.raw[name].apply(this.raw, arguments);
+    };
+  });
+
   type.prototype.hash = function () {
     return crypto.hash(this.serialize());
   };
@@ -78,5 +94,6 @@ module.exports = {
   configureType: configureType,
   defineConstant: defineConstant,
   defineRawValue: defineRawValue,
+  getMethodNames: getMethodNames,
   isExonumType: isExonumType
 };

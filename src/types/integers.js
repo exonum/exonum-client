@@ -131,7 +131,8 @@ function Integer (byteLength, signed) {
     : MAX_VALUE);
 
   utils.configureType(SizedInteger, {
-    byteLength: byteLength
+    byteLength: byteLength,
+    proxiedMethods: utils.getMethodNames(Object.getPrototypeOf(bigInt(0)))
   });
 
   return SizedInteger;

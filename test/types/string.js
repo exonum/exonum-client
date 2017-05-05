@@ -74,4 +74,22 @@ describe('str', function () {
       expect(s.toJSON()).to.equal('abc');
     });
   });
+
+  describe('method proxying', function () {
+    it('should proxy substring() method', function () {
+      var x = new Str('abcdef');
+      expect(x.substring(1, 4)).to.equal('bcd');
+    });
+
+    it('should proxy charAt() method', function () {
+      var x = new Str('abcdef');
+      expect(x.charAt(5)).to.equal('f');
+    });
+
+    it('should proxy startsWith() method', function () {
+      var x = new Str('abcdef');
+      expect(x.startsWith('ab')).to.be.true;
+      expect(x.startsWith('abd')).to.be.false;
+    });
+  });
 });

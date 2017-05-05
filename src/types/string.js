@@ -73,7 +73,8 @@ Object.defineProperty(Str.prototype, 'byteLength', {
 });
 
 utils.configureType(Str, {
-  byteLength: undefined
+  byteLength: undefined,
+  proxiedMethods: utils.getMethodNames(String.prototype)
 });
 
 module.exports = {

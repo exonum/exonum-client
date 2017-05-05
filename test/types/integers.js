@@ -154,7 +154,7 @@ const baseEncodings = {
               expect(wrapped.raw.toString()).to.equal(value.toString());
             });
 
-            it('should construct from an object {' + str + ', ' + enc + '}', function () {
+            it('should construct from an object {' + enc + ': ' + str + '}', function () {
               var wrapped = new Type({ [enc]: str });
               expect(wrapped.raw.toString()).to.equal(value.toString());
             });
@@ -334,6 +334,32 @@ describe('Integer', function () {
     it('should proxy integer value for functions that expect integer', function () {
       var x = new integers.Uint32(1);
       expect('abc'.substring(x)).to.equal('bc');
+    });
+  });
+
+  describe('method proxying', function () {
+    it('should proxy lt() method', function () {
+      var x = new integers.Int32(123456);
+      expect(x.lt(123457)).to.be.true;
+      expect(x.lt(123455)).to.be.false;
+    });
+
+    it('should proxy plus() method', function () {
+      var x = new integers.Int32(123456);
+      expect(x.plus(654321)).to.be.deep.equal(bigInt(777777));
+    });
+
+    it('should proxy isPositive() method', function () {
+      var x = new integers.Int32(-123456);
+      expect(x.isPositive()).to.be.false;
+    });
+
+    it('should proxy divmod() method', function () {
+      var x = new integers.Int32(59);
+      expect(x.divmod(5)).to.deep.equal({
+        quotient: bigInt(11),
+        remainder: bigInt(4)
+      });
     });
   });
 
