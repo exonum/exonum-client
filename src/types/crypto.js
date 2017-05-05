@@ -9,6 +9,11 @@ const SecretKey = fixedBuffer(crypto.secretKeyLength);
 const Pubkey = fixedBuffer(crypto.publicKeyLength);
 const Signature = fixedBuffer(crypto.signatureLength);
 
+SecretKey.prototype.pubkey = function () {
+  // XXX: does it need to return bytes or the Pubkey wrapper?
+  return crypto.fromSecretKey(this.raw);
+};
+
 function authenticated (Type) {
   return class extends sequence([
     { name: 'from', type: Pubkey },
@@ -19,8 +24,12 @@ function authenticated (Type) {
       return new this({ inner: obj });
     }
 
+    static get innerType () {
+      return Type;
+    }
+
     sign (secretKey) {
-      this.from = crypto.fromSecretKey(secretKey.raw);
+      this.from = secretKey.pubkey();
       this.signature = crypto.sign(this.inner.serialize(), secretKey.raw);
       return this;
     }

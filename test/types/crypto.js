@@ -5,6 +5,7 @@ const expect = require('chai')
   .use(require('../chai-bytes'))
   .expect;
 
+const crypto = require('../../src/_crypto');
 // FIXME remove `/index` after replacing types
 const types = require('../../src/types/index');
 const Hash = types.Hash;
@@ -93,6 +94,16 @@ describe('authenticated', function () {
     expect(AuthName.prototype).to.have.property('sign').that.is.a('function');
   });
 
+  describe('innerType', function () {
+    it('should store a wrapped type', function () {
+      expect(AuthName.innerType).to.be.a('function');
+    });
+
+    it('should be read-only', function () {
+      expect(() => { AuthName.innerType = null; }).to.throw();
+    });
+  });
+
   it('should sign a message', function () {
     var secretKey = new SecretKey(
       '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030' +
@@ -111,14 +122,35 @@ describe('authenticated', function () {
     var secretKey = new SecretKey(
       '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030' +
       'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36');
-    var record = AuthName.wrap({
-      firstName: 'John',
-      lastName: 'Doe'
-    }).sign(secretKey);
-
-    expect(record.signature.raw).to.equalArray(
-      new Signature(
+    var record = new AuthName({
+      from: crypto.fromSecretKey(secretKey.raw),
+      signature:
         '7ccad21d76359c8c3ed1161eb8231edd44a91d53ea468d23f8528e2985e5547f' +
-        '72f98ccc61d96ecad173bdc29627abbf6d46908807f6dd0a0d767ae3887d040e').raw);
+        '72f98ccc61d96ecad173bdc29627abbf6d46908807f6dd0a0d767ae3887d040e',
+      inner: {
+        firstName: 'John',
+        lastName: 'Doe'
+      }
+    });
+
+    expect(record.verify()).to.be.true;
+  });
+
+  it('should not verify a corrupted message', function () {
+    var secretKey = new SecretKey(
+      '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030' +
+      'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36');
+    var record = new AuthName({
+      from: secretKey.pubkey(),
+      signature:
+        '7ccad21d76359c8c3ed1161eb8231edd44a91d53ea468d23f8528e2985e5547f' +
+        '72f98ccc61d96ecad173bdc29627abbf6d46908807f6dd0a0d767ae3887d040e',
+      inner: {
+        firstName: 'JohN',
+        lastName: 'Doe'
+      }
+    });
+
+    expect(record.verify()).to.be.false;
   });
 });

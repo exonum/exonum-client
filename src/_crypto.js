@@ -8,14 +8,22 @@ function _hash (buffer) {
 }
 
 function _sign (message, secretKey) {
+  if (message.raw) message = message.raw;
+  if (secretKey.raw) secretKey = secretKey.raw;
+
   return nacl.sign.detached(message, secretKey);
 }
 
 function _verify (message, signature, pubkey) {
+  if (message.raw) message = message.raw;
+  if (signature.raw) signature = pubkey.raw;
+  if (pubkey.raw) pubkey = pubkey.raw;
+
   return nacl.sign.detached.verify(message, signature, pubkey);
 }
 
 function _fromSecretKey (secretKey) {
+  if (secretKey.raw) secretKey = secretKey.raw;
   return nacl.sign.keyPair.fromSecretKey(secretKey).publicKey;
 }
 
