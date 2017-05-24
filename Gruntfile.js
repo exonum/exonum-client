@@ -1,4 +1,4 @@
-module.exports = function(grunt) {
+module.exports = function (grunt) {
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -23,7 +23,11 @@ module.exports = function(grunt) {
         },
         browserify: {
             dist: {
-                src: './src/browser.js',
+                options: {
+                    browserifyOptions: {debug: false, standalone: 'Exonum'},
+                    transform: [["babelify", {"presets": ["es2015"]}]]
+                },
+                src: './src/index.js',
                 dest: './dist/<%= pkg.name %>.js'
             }
         },
