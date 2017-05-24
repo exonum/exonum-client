@@ -2,6 +2,11 @@
 
 import bigInt from 'big-integer';
 import objectAssign from 'object-assign';
+import * as helpers from '../helpers';
+import {isInstanceofOfNewType} from '../types/generic';
+import {validateHexHash, validateBytesArray} from '../types/validate';
+import {hexadecimalToUint8Array} from '../types/convert';
+import {hash} from '../crypto';
 
 /**
  * Calculate height of merkle tree
@@ -26,7 +31,6 @@ function calcHeight(count) {
  * @return {Array}
  */
 export function merkleProof(rootHash, count, proofNode, range, type) {
-    var self = this;
     var elements = [];
     var rootBranch = 'left';
 
@@ -53,25 +57,25 @@ export function merkleProof(rootHash, count, proofNode, range, type) {
         }
 
         if (typeof data === 'string') {
-            if (self.validateHexHash.call(self, data) === true) {
+            if (validateHexHash(data) === true) {
                 element = data;
-                elementsHash = self.hash.call(self, self.hexadecimalToUint8Array.call(self, element));
+                elementsHash = hash(hexadecimalToUint8Array(element));
             } else {
                 console.error('Invalid hexadecimal string is passed as value in tree.');
                 return;
             }
         } else if (Array.isArray(data)) {
-            if (self.validateBytesArray.call(self, data) === true) {
+            if (validateBytesArray(data) === true) {
                 element = data.slice(0); // clone array of 8-bit integers
-                elementsHash = self.hash.call(self, element);
+                elementsHash = hash(element);
             } else {
                 console.error('Invalid array of 8-bit integers in tree.');
                 return;
             }
-        } else if (self.isObject.call(self, data) === true) {
-            if (self.isInstanceofOfNewType.call(self, type) === true) {
+        } else if (helpers.isObject(data) === true) {
+            if (isInstanceofOfNewType(type) === true) {
                 element = objectAssign(data); // deep copy
-                elementsHash = self.hash.call(self, element, type);
+                elementsHash = hash(element, type);
             } else {
                 console.error('Invalid type of type parameter.');
                 return;
@@ -108,11 +112,11 @@ export function merkleProof(rootHash, count, proofNode, range, type) {
 
         if (typeof node.left !== 'undefined') {
             if (typeof node.left === 'string') {
-                if (self.validateHexHash.call(self, node.left) === false) {
+                if (validateHexHash(node.left) === false) {
                     return null;
                 }
                 hashLeft = node.left;
-            } else if (self.isObject.call(self, node.left) === true) {
+            } else if (helpers.isObject(node.left) === true) {
                 if (typeof node.left.val !== 'undefined') {
                     hashLeft = getHash(node.left.val, depth, index * 2);
                 } else {
@@ -136,11 +140,11 @@ export function merkleProof(rootHash, count, proofNode, range, type) {
 
         if (typeof node.right !== 'undefined') {
             if (typeof node.right === 'string') {
-                if (self.validateHexHash.call(self, node.right) === false) {
+                if (validateHexHash(node.right) === false) {
                     return null;
                 }
                 hashRight = node.right;
-            } else if (self.isObject.call(self, node.right) === true) {
+            } else if (helpers.isObject(node.right) === true) {
                 if (typeof node.right.val !== 'undefined') {
                     hashRight = getHash(node.right.val, depth, index * 2 + 1);
                 } else {
@@ -155,20 +159,20 @@ export function merkleProof(rootHash, count, proofNode, range, type) {
             }
 
             summingBuffer = new Uint8Array(64);
-            summingBuffer.set(self.hexadecimalToUint8Array.call(self, hashLeft));
-            summingBuffer.set(self.hexadecimalToUint8Array.call(self, hashRight), 32);
+            summingBuffer.set(hexadecimalToUint8Array(hashLeft));
+            summingBuffer.set(hexadecimalToUint8Array(hashRight), 32);
         } else if (depth === 0 || rootBranch === 'left') {
             console.error('Right leaf is missed in left branch of tree.');
             return null;
         } else {
-            summingBuffer = self.hexadecimalToUint8Array.call(self, hashLeft);
+            summingBuffer = hexadecimalToUint8Array(hashLeft);
         }
 
-        return self.hash.call(self, summingBuffer);
+        return hash(summingBuffer);
     }
 
     // validate rootHash
-    if (this.validateHexHash(rootHash) === false) {
+    if (validateHexHash(rootHash) === false) {
         return undefined;
     }
 
@@ -227,7 +231,7 @@ export function merkleProof(rootHash, count, proofNode, range, type) {
     }
 
     // validate proofNode
-    if (this.isObject(proofNode) === false) {
+    if (helpers.isObject(proofNode) === false) {
         console.error('Invalid type of proofNode parameter. Object expected.');
         return undefined;
     }

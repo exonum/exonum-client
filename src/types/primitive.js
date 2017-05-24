@@ -1,6 +1,7 @@
 'use strict';
 
 import bigInt from 'big-integer';
+import * as validate from './validate';
 
 const MIN_INT8 = -128;
 const MAX_INT8 = 127;
@@ -85,7 +86,7 @@ function insertStringToByteArray(str, buffer, from) {
 }
 
 export function Int8(value, buffer, from, to) {
-    if (this.validateInteger(value, MIN_INT8, MAX_INT8, from, to, 1) === false) {
+    if (validate.validateInteger(value, MIN_INT8, MAX_INT8, from, to, 1) === false) {
         return;
     }
 
@@ -99,7 +100,7 @@ export function Int8(value, buffer, from, to) {
 }
 
 export function Int16(value, buffer, from, to) {
-    if (this.validateInteger(value, MIN_INT16, MAX_INT16, from, to, 2) === false) {
+    if (validate.validateInteger(value, MIN_INT16, MAX_INT16, from, to, 2) === false) {
         return;
     }
 
@@ -113,7 +114,7 @@ export function Int16(value, buffer, from, to) {
 }
 
 export function Int32(value, buffer, from, to) {
-    if (this.validateInteger(value, MIN_INT32, MAX_INT32, from, to, 4) === false) {
+    if (validate.validateInteger(value, MIN_INT32, MAX_INT32, from, to, 4) === false) {
         return;
     }
 
@@ -128,7 +129,7 @@ export function Int32(value, buffer, from, to) {
 
 // value can be of type string or number
 export function Int64(value, buffer, from, to) {
-    var val = this.validateBigInteger(value, MIN_INT64, MAX_INT64, from, to, 8);
+    var val = validate.validateBigInteger(value, MIN_INT64, MAX_INT64, from, to, 8);
 
     if (val === false) {
         return;
@@ -146,7 +147,7 @@ export function Int64(value, buffer, from, to) {
 }
 
 export function Uint8(value, buffer, from, to) {
-    if (this.validateInteger(value, 0, MAX_UINT8, from, to, 1) === false) {
+    if (validate.validateInteger(value, 0, MAX_UINT8, from, to, 1) === false) {
         return;
     }
 
@@ -156,7 +157,7 @@ export function Uint8(value, buffer, from, to) {
 }
 
 export function Uint16(value, buffer, from, to) {
-    if (this.validateInteger(value, 0, MAX_UINT16, from, to, 2) === false) {
+    if (validate.validateInteger(value, 0, MAX_UINT16, from, to, 2) === false) {
         return;
     }
 
@@ -166,7 +167,7 @@ export function Uint16(value, buffer, from, to) {
 }
 
 export function Uint32(value, buffer, from, to) {
-    if (this.validateInteger(value, 0, MAX_UINT32, from, to, 4) === false) {
+    if (validate.validateInteger(value, 0, MAX_UINT32, from, to, 4) === false) {
         return;
     }
 
@@ -177,7 +178,7 @@ export function Uint32(value, buffer, from, to) {
 
 // value can be of type string or number
 export function Uint64(value, buffer, from, to) {
-    var val = this.validateBigInteger(value, 0, MAX_UINT64, from, to, 8);
+    var val = validate.validateBigInteger(value, 0, MAX_UINT64, from, to, 8);
 
     if (val === false) {
         return;
@@ -204,15 +205,15 @@ export function String(string, buffer, from, to) {
     }
 
     var bufferLength = buffer.length;
-    this.Uint32(bufferLength, buffer, from, from + 4); // index where string content starts in buffer
+    Uint32(bufferLength, buffer, from, from + 4); // index where string content starts in buffer
     insertStringToByteArray(string, buffer, bufferLength); // string content
-    this.Uint32(buffer.length - bufferLength, buffer, from + 4, from + 8); // string length
+    Uint32(buffer.length - bufferLength, buffer, from + 4, from + 8); // string length
 
     return buffer;
 }
 
 export function Hash(hash, buffer, from, to) {
-    if (this.validateHexHash(hash) === false) {
+    if (validate.validateHexHash(hash) === false) {
         return;
     } else if ((to - from) !== 32) {
         console.error('Hash segment is of wrong length. 32 bytes long is required to store transmitted value.');
@@ -225,7 +226,7 @@ export function Hash(hash, buffer, from, to) {
 }
 
 export function Digest(digest, buffer, from, to) {
-    if (this.validateHexHash(digest, 64) === false) {
+    if (validate.validateHexHash(digest, 64) === false) {
         return;
     } else if ((to - from) !== 64) {
         console.error('Digest segment is of wrong length. 64 bytes long is required to store transmitted value.');
@@ -238,7 +239,7 @@ export function Digest(digest, buffer, from, to) {
 }
 
 export function PublicKey(publicKey, buffer, from, to) {
-    if (this.validateHexHash(publicKey) === false) {
+    if (validate.validateHexHash(publicKey) === false) {
         return;
     } else if ((to - from) !== 32) {
         console.error('PublicKey segment is of wrong length. 32 bytes long is required to store transmitted value.');
@@ -251,7 +252,7 @@ export function PublicKey(publicKey, buffer, from, to) {
 }
 
 export function Timespec(nanoseconds, buffer, from, to) {
-    var val = this.validateBigInteger(nanoseconds, 0, MAX_UINT64, from, to, 8);
+    var val = validate.validateBigInteger(nanoseconds, 0, MAX_UINT64, from, to, 8);
 
     if (val === false) {
         return;

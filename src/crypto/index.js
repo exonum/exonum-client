@@ -2,6 +2,11 @@
 
 import sha from 'sha.js';
 import nacl from 'tweetnacl';
+import * as helpers from '../helpers';
+import {isInstanceofOfNewType} from '../types/generic';
+import {isInstanceofOfMessage} from '../types/message';
+import * as validate from '../types/validate';
+import * as convert from '../types/convert';
 
 /**
  * Get SHA256 hash
@@ -12,8 +17,8 @@ import nacl from 'tweetnacl';
  */
 export function hash(data, type) {
     var buffer;
-    if (this.isInstanceofOfNewType(type)) {
-        if (this.isObject(data) === true) {
+    if (isInstanceofOfNewType(type)) {
+        if (helpers.isObject(data) === true) {
             buffer = type.serialize(data);
             if (typeof buffer === 'undefined') {
                 console.error('Invalid data parameter. Instance of NewType is expected.');
@@ -23,8 +28,8 @@ export function hash(data, type) {
             console.error('Wrong type of data. Should be object.');
             return;
         }
-    } else if (this.isInstanceofOfMessage(type)) {
-        if (this.isObject(data) === true) {
+    } else if (isInstanceofOfMessage(type)) {
+        if (helpers.isObject(data) === true) {
             buffer = type.serialize(data);
             if (typeof buffer === 'undefined') {
                 console.error('Invalid data parameter. Instance of NewMessage is expected.');
@@ -58,13 +63,13 @@ export function sign(data, type, secretKey) {
     var signature;
 
     if (typeof secretKey !== 'undefined') {
-        if (this.isInstanceofOfNewType(type)) {
+        if (isInstanceofOfNewType(type)) {
             buffer = type.serialize(data);
             if (typeof buffer === 'undefined') {
                 console.error('Invalid data parameter. Instance of NewType is expected.');
                 return;
             }
-        } else if (this.isInstanceofOfMessage(type)) {
+        } else if (isInstanceofOfMessage(type)) {
             buffer = type.serialize(data, true);
             if (typeof buffer === 'undefined') {
                 console.error('Invalid data parameter. Instance of NewMessage is expected.');
@@ -75,7 +80,7 @@ export function sign(data, type, secretKey) {
             return;
         }
     } else {
-        if (this.validateBytesArray(data) === false) {
+        if (validate.validateBytesArray(data) === false) {
             console.error('Invalid data parameter.');
             return;
         }
@@ -84,16 +89,16 @@ export function sign(data, type, secretKey) {
         secretKey = type;
     }
 
-    if (this.validateHexHash(secretKey, 64) === false) {
+    if (validate.validateHexHash(secretKey, 64) === false) {
         console.error('Invalid secretKey parameter.');
         return;
     }
 
     buffer = new Uint8Array(buffer);
-    secretKey = this.hexadecimalToUint8Array(secretKey);
+    secretKey = convert.hexadecimalToUint8Array(secretKey);
     signature = nacl.sign.detached(buffer, secretKey);
 
-    return this.uint8ArrayToHexadecimal(signature);
+    return convert.uint8ArrayToHexadecimal(signature);
 }
 
 /**
@@ -107,13 +112,13 @@ export function verifySignature(data, type, signature, publicKey) {
     var buffer;
 
     if (typeof publicKey !== 'undefined') {
-        if (this.isInstanceofOfNewType(type)) {
+        if (isInstanceofOfNewType(type)) {
             buffer = type.serialize(data);
             if (typeof buffer === 'undefined') {
                 console.error('Invalid data parameter. Instance of NewType is expected.');
                 return;
             }
-        } else if (this.isInstanceofOfMessage(type)) {
+        } else if (isInstanceofOfMessage(type)) {
             buffer = type.serialize(data, true);
             if (typeof buffer === 'undefined') {
                 console.error('Invalid data parameter. Instance of NewMessage is expected.');
@@ -124,7 +129,7 @@ export function verifySignature(data, type, signature, publicKey) {
             return;
         }
     } else {
-        if (this.validateBytesArray(data) === false) {
+        if (validate.validateBytesArray(data) === false) {
             console.error('Invalid data parameter.');
             return;
         }
@@ -134,17 +139,17 @@ export function verifySignature(data, type, signature, publicKey) {
         signature = type;
     }
 
-    if (this.validateHexHash(publicKey) === false) {
+    if (validate.validateHexHash(publicKey) === false) {
         console.error('Invalid publicKey parameter.');
         return;
-    } else if (this.validateHexHash(signature, 64) === false) {
+    } else if (validate.validateHexHash(signature, 64) === false) {
         console.error('Invalid signature parameter.');
         return;
     }
 
     buffer = new Uint8Array(buffer);
-    signature = this.hexadecimalToUint8Array(signature);
-    publicKey = this.hexadecimalToUint8Array(publicKey);
+    signature = convert.hexadecimalToUint8Array(signature);
+    publicKey = convert.hexadecimalToUint8Array(publicKey);
 
     return nacl.sign.detached.verify(buffer, signature, publicKey);
 }
@@ -157,8 +162,8 @@ export function verifySignature(data, type, signature, publicKey) {
  */
 export function keyPair() {
     var pair = nacl.sign.keyPair();
-    var publicKey = this.uint8ArrayToHexadecimal(pair.publicKey);
-    var secretKey = this.uint8ArrayToHexadecimal(pair.secretKey);
+    var publicKey = convert.uint8ArrayToHexadecimal(pair.publicKey);
+    var secretKey = convert.uint8ArrayToHexadecimal(pair.secretKey);
 
     return {
         publicKey: publicKey,

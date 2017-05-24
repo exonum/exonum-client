@@ -1,6 +1,12 @@
 'use strict';
 
 import objectAssign from 'object-assign';
+import * as helpers from '../helpers';
+import * as primitive from '../types/primitive';
+import {newType} from '../types/generic';
+import * as validate from '../types/validate';
+import * as convert from '../types/convert';
+import {hash} from '../crypto';
 
 const MERKLE_PATRICIA_KEY_LENGTH = 32;
 
@@ -13,29 +19,28 @@ const MERKLE_PATRICIA_KEY_LENGTH = 32;
  * @return {Object}
  */
 export function merklePatriciaProof(rootHash, proofNode, key, type) {
-    var self = this;
-    var DBKey = this.newType({
+    var DBKey = newType({
         size: 34,
         fields: {
-            variant: {type: this.Uint8, size: 1, from: 0, to: 1},
-            key: {type: this.Hash, size: 32, from: 1, to: 33},
-            length: {type: this.Uint8, size: 1, from: 33, to: 34}
+            variant: {type: primitive.Uint8, size: 1, from: 0, to: 1},
+            key: {type: primitive.Hash, size: 32, from: 1, to: 33},
+            length: {type: primitive.Uint8, size: 1, from: 33, to: 34}
         }
     });
-    var Branch = this.newType({
+    var Branch = newType({
         size: 132,
         fields: {
-            left_hash: {type: this.Hash, size: 32, from: 0, to: 32},
-            right_hash: {type: this.Hash, size: 32, from: 32, to: 64},
+            left_hash: {type: primitive.Hash, size: 32, from: 0, to: 32},
+            right_hash: {type: primitive.Hash, size: 32, from: 32, to: 64},
             left_key: {type: DBKey, size: 34, from: 64, to: 98},
             right_key: {type: DBKey, size: 34, from: 98, to: 132}
         }
     });
-    var RootBranch = this.newType({
+    var RootBranch = newType({
         size: 66,
         fields: {
             key: {type: DBKey, size: 34, from: 0, to: 34},
-            hash: {type: this.Hash, size: 32, from: 34, to: 66}
+            hash: {type: primitive.Hash, size: 32, from: 34, to: 66}
         }
     });
 
@@ -48,23 +53,23 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
         var elementsHash;
 
         if (typeof data === 'string') {
-            if (self.validateHexHash.call(self, data) === true) {
+            if (validate.validateHexHash(data) === true) {
                 element = data;
-                elementsHash = self.hash.call(self, self.hexadecimalToUint8Array.call(self, element));
+                elementsHash = hash(convert.hexadecimalToUint8Array(element));
             } else {
                 console.error('Invalid hexadecimal string is passed as value in tree.');
                 return;
             }
         } else if (Array.isArray(data)) {
-            if (self.validateBytesArray.call(self, data) === true) {
+            if (validate.validateBytesArray(data) === true) {
                 element = data.slice(0); // clone array of 8-bit integers
-                elementsHash = self.hash.call(self, element);
+                elementsHash = hash(element);
             } else {
                 return;
             }
-        } else if (self.isObject.call(self, data) === true) {
+        } else if (helpers.isObject(data) === true) {
             element = objectAssign(data); // deep copy
-            elementsHash = self.hash.call(self, element, type);
+            elementsHash = hash(element, type);
         } else {
             console.error('Invalid value node in tree. Object expected.');
             return;
@@ -95,7 +100,7 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
      * @returns {String}
      */
     function recursive(node, keyPrefix) {
-        if (self.getObjectLength.call(self, node) !== 2) {
+        if (helpers.getObjectLength(node) !== 2) {
             console.error('Invalid number of children in the tree node.');
             return null;
         }
@@ -109,7 +114,7 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
             }
 
             // validate key
-            if (self.validateBinaryString.call(self, keySuffix) === false) {
+            if (validate.validateBinaryString(keySuffix) === false) {
                 return null;
             }
 
@@ -123,12 +128,12 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
 
             if (fullKey.length === MERKLE_PATRICIA_KEY_LENGTH * 8) {
                 if (typeof nodeValue === 'string') {
-                    if (self.validateHexHash.call(self, nodeValue) === false) {
+                    if (validate.validateHexHash(nodeValue) === false) {
                         return null;
                     }
                     branchValueHash = nodeValue;
                     branchType = 'hash';
-                } else if (self.isObject.call(self, nodeValue) === true) {
+                } else if (helpers.isObject(nodeValue) === true) {
                     if (typeof nodeValue.val === 'undefined') {
                         console.error('Leaf tree contains invalid data.');
                         return null;
@@ -147,7 +152,7 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
                     return null;
                 }
 
-                branchKeyHash = self.binaryStringToHexadecimal.call(self, fullKey);
+                branchKeyHash = convert.binaryStringToHexadecimal(fullKey);
                 branchKey = {
                     variant: 1,
                     key: branchKeyHash,
@@ -155,12 +160,12 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
                 };
             } else if (fullKey.length < MERKLE_PATRICIA_KEY_LENGTH * 8) { // node is branch
                 if (typeof nodeValue === 'string') {
-                    if (self.validateHexHash.call(self, nodeValue) === false) {
+                    if (validate.validateHexHash(nodeValue) === false) {
                         return null;
                     }
                     branchValueHash = nodeValue;
                     branchType = 'hash';
-                } else if (self.isObject.call(self, nodeValue) === true) {
+                } else if (helpers.isObject(nodeValue) === true) {
                     if (typeof nodeValue.val !== 'undefined') {
                         console.error('Node with value is at non-leaf position in tree.');
                         return null;
@@ -183,7 +188,7 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
                     binaryKey += '0';
                 }
 
-                branchKeyHash = self.binaryStringToHexadecimal.call(self, binaryKey);
+                branchKeyHash = convert.binaryStringToHexadecimal(binaryKey);
                 branchKey = {
                     variant: 0,
                     key: branchKeyHash,
@@ -233,7 +238,7 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
             }
         }
 
-        return self.hash.call(self, {
+        return hash({
             left_hash: levelData.left.hash,
             right_hash: levelData.right.hash,
             left_key: levelData.left.key,
@@ -244,35 +249,35 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
     var element;
 
     // validate rootHash parameter
-    if (this.validateHexHash(rootHash) === false) {
+    if (validate.validateHexHash(rootHash) === false) {
         return undefined;
     }
     rootHash = rootHash.toLowerCase();
 
     // validate proofNode parameter
-    if (this.isObject(proofNode) === false) {
+    if (helpers.isObject(proofNode) === false) {
         console.error('Invalid type of proofNode parameter. Object expected.');
         return undefined;
     }
 
     // validate key parameter
     if (Array.isArray(key)) {
-        if (this.validateBytesArray(key, MERKLE_PATRICIA_KEY_LENGTH) === true) {
-            key = this.uint8ArrayToHexadecimal(key);
+        if (validate.validateBytesArray(key, MERKLE_PATRICIA_KEY_LENGTH) === true) {
+            key = convert.uint8ArrayToHexadecimal(key);
         } else {
             return undefined;
         }
     } else if (typeof key === 'string') {
-        if (this.validateHexHash(key, MERKLE_PATRICIA_KEY_LENGTH) === false) {
+        if (validate.validateHexHash(key, MERKLE_PATRICIA_KEY_LENGTH) === false) {
             return undefined;
         }
     } else {
         console.error('Invalid type of key parameter. Array of 8-bit integers or hexadecimal string is expected.');
         return undefined;
     }
-    var keyBinary = this.hexadecimalToBinaryString(key);
+    var keyBinary = convert.hexadecimalToBinaryString(key);
 
-    var proofNodeRootNumberOfNodes = this.getObjectLength(proofNode);
+    var proofNodeRootNumberOfNodes = helpers.getObjectLength(proofNode);
     if (proofNodeRootNumberOfNodes === 0) {
         if (rootHash === (new Uint8Array(MERKLE_PATRICIA_KEY_LENGTH * 2)).join('')) {
             return null;
@@ -286,21 +291,21 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
                 continue;
             }
 
-            if (this.validateBinaryString(i, 256) === false) {
+            if (validate.validateBinaryString(i, 256) === false) {
                 return undefined;
             }
 
             var data = proofNode[i];
-            var nodeKeyBuffer = this.binaryStringToUint8Array(i);
-            var nodeKey = this.uint8ArrayToHexadecimal(nodeKeyBuffer);
+            var nodeKeyBuffer = convert.binaryStringToUint8Array(i);
+            var nodeKey = convert.uint8ArrayToHexadecimal(nodeKeyBuffer);
             var nodeHash;
 
             if (typeof data === 'string') {
-                if (this.validateHexHash(data) === false) {
+                if (validate.validateHexHash(data) === false) {
                     return undefined;
                 }
 
-                nodeHash = this.hash({
+                nodeHash = hash({
                     key: {
                         variant: 1,
                         key: nodeKey,
@@ -320,13 +325,13 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
                     console.error('rootHash parameter is not equal to actual hash.');
                     return undefined;
                 }
-            } else if (this.isObject(data)) {
+            } else if (helpers.isObject(data)) {
                 var elementsHash = getHash(data.val);
                 if (typeof elementsHash === 'undefined') {
                     return undefined;
                 }
 
-                nodeHash = this.hash({
+                nodeHash = hash({
                     key: {
                         variant: 1,
                         key: nodeKey,

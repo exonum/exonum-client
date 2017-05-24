@@ -1,14 +1,16 @@
 'use strict';
 
+import * as serialization from './serialization';
+import * as crypto from '../crypto';
+
 /**
  * @constructor
  * @param {Object} type
  */
 class NewType {
-    constructor(type, parent) {
+    constructor(type) {
         this.size = type.size;
         this.fields = type.fields;
-        this.parent = parent;
     }
 
     /**
@@ -17,19 +19,19 @@ class NewType {
      * @returns {Array}
      */
     serialize(data) {
-        return this.parent.serialize.call(this.parent, [], 0, data, this);
+        return serialization.serialize([], 0, data, this);
     }
 
     hash(data) {
-        return this.parent.hash.call(this.parent, data, this);
+        return crypto.hash(data, this);
     }
 
     sign(data, secretKey) {
-        return this.parent.sign.call(this.parent, data, this, secretKey);
+        return crypto.sign(data, this, secretKey);
     }
 
     verifySignature(data, signature, publicKey) {
-        return this.parent.verifySignature.call(this.parent, data, this, signature, publicKey);
+        return crypto.verifySignature(data, this, signature, publicKey);
     }
 }
 
@@ -39,9 +41,9 @@ class NewType {
  * @returns {NewType}
  */
 export function newType(type) {
-    return new NewType(type, this);
+    return new NewType(type);
 }
 
 export function isInstanceofOfNewType(type) {
     return type instanceof NewType;
-};
+}

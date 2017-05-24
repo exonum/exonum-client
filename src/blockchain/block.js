@@ -1,5 +1,12 @@
 'use strict';
 
+import * as helpers from '../helpers';
+import * as primitive from '../types/primitive';
+import {newType} from '../types/generic';
+import {newMessage} from '../types/message';
+import {validateHexHash} from '../types/validate';
+import {hash, verifySignature} from '../crypto';
+
 /**
  * Verifies block
  * @param {Object} data
@@ -7,34 +14,34 @@
  * @return {Boolean}
  */
 export function verifyBlock(data, validators) {
-    var Block = this.newType({
+    var Block = newType({
         size: 116,
         fields: {
-            height: {type: this.Uint64, size: 8, from: 0, to: 8},
-            propose_round: {type: this.Uint32, size: 4, from: 8, to: 12},
-            time: {type: this.Timespec, size: 8, from: 12, to: 20},
-            prev_hash: {type: this.Hash, size: 32, from: 20, to: 52},
-            tx_hash: {type: this.Hash, size: 32, from: 52, to: 84},
-            state_hash: {type: this.Hash, size: 32, from: 84, to: 116}
+            height: {type: primitive.Uint64, size: 8, from: 0, to: 8},
+            propose_round: {type: primitive.Uint32, size: 4, from: 8, to: 12},
+            time: {type: primitive.Timespec, size: 8, from: 12, to: 20},
+            prev_hash: {type: primitive.Hash, size: 32, from: 20, to: 52},
+            tx_hash: {type: primitive.Hash, size: 32, from: 52, to: 84},
+            state_hash: {type: primitive.Hash, size: 32, from: 84, to: 116}
         }
     });
-    var Precommit = this.newMessage({
+    var Precommit = newMessage({
         size: 84,
         service_id: 0,
         message_id: 4,
         fields: {
-            validator: {type: this.Uint32, size: 4, from: 0, to: 4},
-            height: {type: this.Uint64, size: 8, from: 8, to: 16},
-            round: {type: this.Uint32, size: 4, from: 16, to: 20},
-            propose_hash: {type: this.Hash, size: 32, from: 20, to: 52},
-            block_hash: {type: this.Hash, size: 32, from: 52, to: 84}
+            validator: {type: primitive.Uint32, size: 4, from: 0, to: 4},
+            height: {type: primitive.Uint64, size: 8, from: 8, to: 16},
+            round: {type: primitive.Uint32, size: 4, from: 16, to: 20},
+            propose_hash: {type: primitive.Hash, size: 32, from: 20, to: 52},
+            block_hash: {type: primitive.Hash, size: 32, from: 52, to: 84}
         }
     });
 
-    if (this.isObject(data) === false) {
+    if (helpers.isObject(data) === false) {
         console.error('Wrong type of data parameter. Object is expected.');
         return false;
-    } else if (this.isObject(data.block) === false) {
+    } else if (helpers.isObject(data.block) === false) {
         console.error('Wrong type of block field in data parameter. Object is expected.');
         return false;
     } else if (Array.isArray(data.precommits) === false) {
@@ -46,7 +53,7 @@ export function verifyBlock(data, validators) {
     }
 
     for (var i = 0; i < validators.length; i++) {
-        if (this.validateHexHash(validators[i]) === false) {
+        if (validateHexHash(validators[i]) === false) {
             return false;
         }
     }
@@ -54,15 +61,15 @@ export function verifyBlock(data, validators) {
     var validatorsTotalNumber = validators.length;
     var uniqueValidators = [];
     var round;
-    var blockHash = this.hash(data.block, Block);
+    var blockHash = hash(data.block, Block);
 
     for (var i = 0; i < data.precommits.length; i++) {
         var precommit = data.precommits[i];
 
-        if (this.isObject(precommit.body) === false) {
+        if (helpers.isObject(precommit.body) === false) {
             console.error('Wrong type of precommits body. Object is expected.');
             return false;
-        } else if (this.validateHexHash(precommit.signature, 64) === false) {
+        } else if (validateHexHash(precommit.signature, 64) === false) {
             console.error('Wrong type of precommits signature. Hexadecimal of 64 length is expected.');
             return false;
         }
@@ -93,7 +100,7 @@ export function verifyBlock(data, validators) {
 
         var publicKey = validators[precommit.body.validator];
 
-        if (this.verifySignature(precommit.body, Precommit, precommit.signature, publicKey) === false) {
+        if (verifySignature(precommit.body, Precommit, precommit.signature, publicKey) === false) {
             console.error('Wrong signature of precommit.');
             return false;
         }
