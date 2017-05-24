@@ -10,7 +10,7 @@ import nacl from 'tweetnacl';
  * 2) {Array} buffer
  * @return {String}
  */
-exports.hash = function(data, type) {
+export function hash(data, type) {
     var buffer;
     if (this.isInstanceofOfNewType(type)) {
         if (this.isObject(data) === true) {
@@ -44,7 +44,7 @@ exports.hash = function(data, type) {
     }
 
     return sha('sha256').update(buffer, 'utf8').digest('hex');
-};
+}
 
 /**
  * Get ED25519 signature
@@ -53,7 +53,7 @@ exports.hash = function(data, type) {
  * 2) {Array} buffer, {String} secretKey
  * @return {String}
  */
-exports.sign = function(data, type, secretKey) {
+export function sign(data, type, secretKey) {
     var buffer;
     var signature;
 
@@ -94,7 +94,7 @@ exports.sign = function(data, type, secretKey) {
     signature = nacl.sign.detached(buffer, secretKey);
 
     return this.uint8ArrayToHexadecimal(signature);
-};
+}
 
 /**
  * Verifies ED25519 signature
@@ -103,7 +103,7 @@ exports.sign = function(data, type, secretKey) {
  * 2) {Array} buffer, {String} signature, {String} publicKey
  * @return {Boolean}
  */
-exports.verifySignature = function(data, type, signature, publicKey) {
+export function verifySignature(data, type, signature, publicKey) {
     var buffer;
 
     if (typeof publicKey !== 'undefined') {
@@ -147,7 +147,7 @@ exports.verifySignature = function(data, type, signature, publicKey) {
     publicKey = this.hexadecimalToUint8Array(publicKey);
 
     return nacl.sign.detached.verify(buffer, signature, publicKey);
-};
+}
 
 /**
  * Generate random pair of publicKey and secretKey
@@ -155,7 +155,7 @@ exports.verifySignature = function(data, type, signature, publicKey) {
  *  publicKey {String}
  *  secretKey {String}
  */
-exports.keyPair = function() {
+export function keyPair() {
     var pair = nacl.sign.keyPair();
     var publicKey = this.uint8ArrayToHexadecimal(pair.publicKey);
     var secretKey = this.uint8ArrayToHexadecimal(pair.secretKey);
@@ -164,5 +164,4 @@ exports.keyPair = function() {
         publicKey: publicKey,
         secretKey: secretKey
     };
-};
-
+}

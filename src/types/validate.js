@@ -2,7 +2,7 @@
 
 import bigInt from 'big-integer';
 
-exports.validateInteger = function(value, min, max, from, to, length) {
+export function validateInteger(value, min, max, from, to, length) {
     if (typeof value !== 'number') {
         console.error('Wrong data type is passed as number. Should be of type Number.');
         return false;
@@ -18,10 +18,10 @@ exports.validateInteger = function(value, min, max, from, to, length) {
     }
 
     return true;
-};
+}
 
 // value can be of type string or number
-exports.validateBigInteger = function(value, min, max, from, to, length) {
+export function validateBigInteger(value, min, max, from, to, length) {
     var val;
 
     if (!(typeof value === 'number' || typeof value === 'string')) {
@@ -46,9 +46,9 @@ exports.validateBigInteger = function(value, min, max, from, to, length) {
         console.error('Wrong data type is passed as number. Should be of type Number or String.');
         return false;
     }
-};
+}
 
-exports.validateHexHash = function(hash, bytes) {
+export function validateHexHash(hash, bytes) {
     bytes = bytes || 32;
 
     if (typeof hash !== 'string') {
@@ -67,9 +67,9 @@ exports.validateHexHash = function(hash, bytes) {
     }
 
     return true;
-};
+}
 
-exports.validateBytesArray = function(arr, bytes) {
+export function validateBytesArray(arr, bytes) {
     if (bytes && arr.length !== bytes) {
         console.error('Array of 8-bit integers validity is of wrong length. ' + bytes * 2 + ' char symbols long is required. ' + arr.length + ' is passed.');
         return false;
@@ -86,9 +86,9 @@ exports.validateBytesArray = function(arr, bytes) {
     }
 
     return true;
-};
+}
 
-exports.validateBinaryString = function(str, bits) {
+export function validateBinaryString(str, bits) {
     if (typeof bits !== 'undefined' && str.length !== bits) {
         console.error('Binary string is of wrong length.');
         return null;
@@ -106,4 +106,4 @@ exports.validateBinaryString = function(str, bits) {
     }
 
     return true;
-};
+}

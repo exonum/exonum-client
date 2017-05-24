@@ -38,10 +38,10 @@ class NewType {
  * @param {Object} type
  * @returns {NewType}
  */
-exports.newType = function(type) {
+export function newType(type) {
     return new NewType(type, this);
-};
+}
 
-exports.isInstanceofOfNewType = function(type) {
+export function isInstanceofOfNewType(type) {
     return type instanceof NewType;
 };

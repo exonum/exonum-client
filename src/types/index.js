@@ -7,7 +7,7 @@
  * @param {Object} data
  * @param type - can be {NewType} or one of built-in types
  */
-exports.serialize = function(buffer, shift, data, type) {
+export function serialize(buffer, shift, data, type) {
     var self = this;
 
     function checkIfIsFixed(fields) {
@@ -64,7 +64,7 @@ exports.serialize = function(buffer, shift, data, type) {
     }
 
     return buffer;
-};
+}
 
 export * from './primitive';
 export * from './generic';

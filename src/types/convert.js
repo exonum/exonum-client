@@ -1,6 +1,6 @@
 'use strict';
 
-exports.hexadecimalToUint8Array = function(str) {
+export function hexadecimalToUint8Array(str) {
     if (typeof str !== 'string') {
         console.error('Wrong data type of hexadecimal string');
         return new Uint8Array([]);
@@ -12,17 +12,17 @@ exports.hexadecimalToUint8Array = function(str) {
     }
 
     return new Uint8Array(array);
-};
+}
 
-exports.hexadecimalToBinaryString = function(str) {
+export function hexadecimalToBinaryString(str) {
     var binaryStr = '';
     for (var i = 0, len = str.length; i < len; i += 2) {
         binaryStr += parseInt(str.substr(i, 2), 16).toString(2);
     }
     return binaryStr;
-};
+}
 
-exports.uint8ArrayToHexadecimal = function(uint8arr) {
+export function uint8ArrayToHexadecimal(uint8arr) {
     if (!(uint8arr instanceof Uint8Array)) {
         console.error('Wrong data type of array of 8-bit integers');
         return '';
@@ -36,18 +36,18 @@ exports.uint8ArrayToHexadecimal = function(uint8arr) {
     }
 
     return str.toLowerCase();
-};
+}
 
-exports.binaryStringToUint8Array = function(binaryStr) {
+export function binaryStringToUint8Array(binaryStr) {
     var array = [];
     for (var i = 0, len = binaryStr.length; i < len; i += 8) {
         array.push(parseInt(binaryStr.substr(i, 8), 2));
     }
 
     return new Uint8Array(array);
-};
+}
 
-exports.binaryStringToHexadecimal = function(binaryStr) {
+export function binaryStringToHexadecimal(binaryStr) {
     var str = '';
     for (var i = 0, len = binaryStr.length; i < len; i += 8) {
         var hex = (parseInt(binaryStr.substr(i, 8), 2)).toString(16);
@@ -56,4 +56,4 @@ exports.binaryStringToHexadecimal = function(binaryStr) {
     }
 
     return str.toLowerCase();
-};
+}

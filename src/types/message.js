@@ -75,10 +75,10 @@ class NewMessage {
  * @param {Object} type
  * @returns {NewMessage}
  */
-exports.newMessage = function(type) {
+export function newMessage(type) {
     return new NewMessage(type, this);
-};
+}
 
-exports.isInstanceofOfMessage = function(type) {
+export function isInstanceofOfMessage(type) {
     return type instanceof NewMessage;
-};
+}

@@ -6,7 +6,7 @@
  * @param {Array} validators
  * @return {Boolean}
  */
-exports.verifyBlock = function(data, validators) {
+export function verifyBlock(data, validators) {
     var Block = this.newType({
         size: 116,
         fields: {
@@ -105,4 +105,4 @@ exports.verifyBlock = function(data, validators) {
     }
 
     return true;
-};
+}

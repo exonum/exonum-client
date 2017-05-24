@@ -6561,7 +6561,11 @@ nacl.setPRNG = function(fn) {
  * @return {Boolean}
  */
 
-exports.verifyBlock = function (data, validators) {
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.verifyBlock = verifyBlock;
+function verifyBlock(data, validators) {
     var Block = this.newType({
         size: 116,
         fields: {
@@ -6660,7 +6664,7 @@ exports.verifyBlock = function (data, validators) {
     }
 
     return true;
-};
+}
 
 },{}],19:[function(require,module,exports){
 'use strict';
@@ -6708,6 +6712,11 @@ Object.keys(_block).forEach(function (key) {
 },{"./block":18,"./merkle":21,"./merkle-patricia":20}],20:[function(require,module,exports){
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.merklePatriciaProof = merklePatriciaProof;
+
 var _objectAssign = require('object-assign');
 
 var _objectAssign2 = _interopRequireDefault(_objectAssign);
@@ -6724,7 +6733,7 @@ var MERKLE_PATRICIA_KEY_LENGTH = 32;
  * @param {NewType} type (optional)
  * @return {Object}
  */
-exports.merklePatriciaProof = function (rootHash, proofNode, key, type) {
+function merklePatriciaProof(rootHash, proofNode, key, type) {
     var self = this;
     var DBKey = this.newType({
         size: 34,
@@ -7081,10 +7090,15 @@ exports.merklePatriciaProof = function (rootHash, proofNode, key, type) {
 
         return element;
     }
-};
+}
 
 },{"object-assign":8}],21:[function(require,module,exports){
 'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.merkleProof = merkleProof;
 
 var _bigInteger = require('big-integer');
 
@@ -7118,7 +7132,7 @@ function calcHeight(count) {
  * @param type (optional)
  * @return {Array}
  */
-exports.merkleProof = function (rootHash, count, proofNode, range, type) {
+function merkleProof(rootHash, count, proofNode, range, type) {
     var self = this;
     var elements = [];
     var rootBranch = 'left';
@@ -7342,10 +7356,18 @@ exports.merkleProof = function (rootHash, count, proofNode, range, type) {
     }
 
     return elements;
-};
+}
 
 },{"big-integer":2,"object-assign":8}],22:[function(require,module,exports){
 'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.hash = hash;
+exports.sign = sign;
+exports.verifySignature = verifySignature;
+exports.keyPair = keyPair;
 
 var _sha = require('sha.js');
 
@@ -7364,7 +7386,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * 2) {Array} buffer
  * @return {String}
  */
-exports.hash = function (data, type) {
+function hash(data, type) {
     var buffer;
     if (this.isInstanceofOfNewType(type)) {
         if (this.isObject(data) === true) {
@@ -7398,7 +7420,7 @@ exports.hash = function (data, type) {
     }
 
     return (0, _sha2.default)('sha256').update(buffer, 'utf8').digest('hex');
-};
+}
 
 /**
  * Get ED25519 signature
@@ -7407,7 +7429,7 @@ exports.hash = function (data, type) {
  * 2) {Array} buffer, {String} secretKey
  * @return {String}
  */
-exports.sign = function (data, type, secretKey) {
+function sign(data, type, secretKey) {
     var buffer;
     var signature;
 
@@ -7448,7 +7470,7 @@ exports.sign = function (data, type, secretKey) {
     signature = _tweetnacl2.default.sign.detached(buffer, secretKey);
 
     return this.uint8ArrayToHexadecimal(signature);
-};
+}
 
 /**
  * Verifies ED25519 signature
@@ -7457,7 +7479,7 @@ exports.sign = function (data, type, secretKey) {
  * 2) {Array} buffer, {String} signature, {String} publicKey
  * @return {Boolean}
  */
-exports.verifySignature = function (data, type, signature, publicKey) {
+function verifySignature(data, type, signature, publicKey) {
     var buffer;
 
     if (typeof publicKey !== 'undefined') {
@@ -7501,7 +7523,7 @@ exports.verifySignature = function (data, type, signature, publicKey) {
     publicKey = this.hexadecimalToUint8Array(publicKey);
 
     return _tweetnacl2.default.sign.detached.verify(buffer, signature, publicKey);
-};
+}
 
 /**
  * Generate random pair of publicKey and secretKey
@@ -7509,7 +7531,7 @@ exports.verifySignature = function (data, type, signature, publicKey) {
  *  publicKey {String}
  *  secretKey {String}
  */
-exports.keyPair = function () {
+function keyPair() {
     var pair = _tweetnacl2.default.sign.keyPair();
     var publicKey = this.uint8ArrayToHexadecimal(pair.publicKey);
     var secretKey = this.uint8ArrayToHexadecimal(pair.secretKey);
@@ -7518,7 +7540,7 @@ exports.keyPair = function () {
         publicKey: publicKey,
         secretKey: secretKey
     };
-};
+}
 
 },{"sha.js":10,"tweetnacl":17}],23:[function(require,module,exports){
 'use strict';
@@ -7595,7 +7617,15 @@ module.exports = new Exonum();
 },{"./blockchain/index":19,"./crypto/index":22,"./types/index":26}],24:[function(require,module,exports){
 'use strict';
 
-exports.hexadecimalToUint8Array = function (str) {
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.hexadecimalToUint8Array = hexadecimalToUint8Array;
+exports.hexadecimalToBinaryString = hexadecimalToBinaryString;
+exports.uint8ArrayToHexadecimal = uint8ArrayToHexadecimal;
+exports.binaryStringToUint8Array = binaryStringToUint8Array;
+exports.binaryStringToHexadecimal = binaryStringToHexadecimal;
+function hexadecimalToUint8Array(str) {
     if (typeof str !== 'string') {
         console.error('Wrong data type of hexadecimal string');
         return new Uint8Array([]);
@@ -7607,17 +7637,17 @@ exports.hexadecimalToUint8Array = function (str) {
     }
 
     return new Uint8Array(array);
-};
+}
 
-exports.hexadecimalToBinaryString = function (str) {
+function hexadecimalToBinaryString(str) {
     var binaryStr = '';
     for (var i = 0, len = str.length; i < len; i += 2) {
         binaryStr += parseInt(str.substr(i, 2), 16).toString(2);
     }
     return binaryStr;
-};
+}
 
-exports.uint8ArrayToHexadecimal = function (uint8arr) {
+function uint8ArrayToHexadecimal(uint8arr) {
     if (!(uint8arr instanceof Uint8Array)) {
         console.error('Wrong data type of array of 8-bit integers');
         return '';
@@ -7631,18 +7661,18 @@ exports.uint8ArrayToHexadecimal = function (uint8arr) {
     }
 
     return str.toLowerCase();
-};
+}
 
-exports.binaryStringToUint8Array = function (binaryStr) {
+function binaryStringToUint8Array(binaryStr) {
     var array = [];
     for (var i = 0, len = binaryStr.length; i < len; i += 8) {
         array.push(parseInt(binaryStr.substr(i, 8), 2));
     }
 
     return new Uint8Array(array);
-};
+}
 
-exports.binaryStringToHexadecimal = function (binaryStr) {
+function binaryStringToHexadecimal(binaryStr) {
     var str = '';
     for (var i = 0, len = binaryStr.length; i < len; i += 8) {
         var hex = parseInt(binaryStr.substr(i, 8), 2).toString(16);
@@ -7651,7 +7681,7 @@ exports.binaryStringToHexadecimal = function (binaryStr) {
     }
 
     return str.toLowerCase();
-};
+}
 
 },{}],25:[function(require,module,exports){
 'use strict';
@@ -7661,7 +7691,14 @@ exports.binaryStringToHexadecimal = function (binaryStr) {
  * @param {Object} type
  */
 
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+exports.newType = newType;
+exports.isInstanceofOfNewType = isInstanceofOfNewType;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -7713,11 +7750,11 @@ var NewType = function () {
  */
 
 
-exports.newType = function (type) {
+function newType(type) {
     return new NewType(type, this);
-};
+}
 
-exports.isInstanceofOfNewType = function (type) {
+function isInstanceofOfNewType(type) {
     return type instanceof NewType;
 };
 
@@ -7735,6 +7772,7 @@ exports.isInstanceofOfNewType = function (type) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.serialize = serialize;
 
 var _primitive = require('./primitive');
 
@@ -7795,7 +7833,7 @@ Object.keys(_convert).forEach(function (key) {
         }
     });
 });
-exports.serialize = function (buffer, shift, data, type) {
+function serialize(buffer, shift, data, type) {
     var self = this;
 
     function checkIfIsFixed(fields) {
@@ -7852,12 +7890,19 @@ exports.serialize = function (buffer, shift, data, type) {
     }
 
     return buffer;
-};
+}
 
 },{"./convert":24,"./generic":25,"./message":27,"./primitive":28,"./validate":29}],27:[function(require,module,exports){
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+exports.newMessage = newMessage;
+exports.isInstanceofOfMessage = isInstanceofOfMessage;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -7951,16 +7996,35 @@ var NewMessage = function () {
  */
 
 
-exports.newMessage = function (type) {
+function newMessage(type) {
     return new NewMessage(type, this);
-};
+}
 
-exports.isInstanceofOfMessage = function (type) {
+function isInstanceofOfMessage(type) {
     return type instanceof NewMessage;
-};
+}
 
 },{}],28:[function(require,module,exports){
 'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.Int8 = Int8;
+exports.Int16 = Int16;
+exports.Int32 = Int32;
+exports.Int64 = Int64;
+exports.Uint8 = Uint8;
+exports.Uint16 = Uint16;
+exports.Uint32 = Uint32;
+exports.Uint64 = Uint64;
+exports.randomUint64 = randomUint64;
+exports.String = String;
+exports.Hash = Hash;
+exports.Digest = Digest;
+exports.PublicKey = PublicKey;
+exports.Timespec = Timespec;
+exports.Bool = Bool;
 
 var _bigInteger = require('big-integer');
 
@@ -8050,7 +8114,7 @@ function insertStringToByteArray(str, buffer, from) {
     }
 }
 
-exports.Int8 = function (value, buffer, from, to) {
+function Int8(value, buffer, from, to) {
     if (this.validateInteger(value, MIN_INT8, MAX_INT8, from, to, 1) === false) {
         return;
     }
@@ -8062,9 +8126,9 @@ exports.Int8 = function (value, buffer, from, to) {
     insertIntegerToByteArray(value, buffer, from, to);
 
     return buffer;
-};
+}
 
-exports.Int16 = function (value, buffer, from, to) {
+function Int16(value, buffer, from, to) {
     if (this.validateInteger(value, MIN_INT16, MAX_INT16, from, to, 2) === false) {
         return;
     }
@@ -8076,9 +8140,9 @@ exports.Int16 = function (value, buffer, from, to) {
     insertIntegerToByteArray(value, buffer, from, to);
 
     return buffer;
-};
+}
 
-exports.Int32 = function (value, buffer, from, to) {
+function Int32(value, buffer, from, to) {
     if (this.validateInteger(value, MIN_INT32, MAX_INT32, from, to, 4) === false) {
         return;
     }
@@ -8090,10 +8154,10 @@ exports.Int32 = function (value, buffer, from, to) {
     insertIntegerToByteArray(value, buffer, from, to);
 
     return buffer;
-};
+}
 
 // value can be of type string or number
-exports.Int64 = function (value, buffer, from, to) {
+function Int64(value, buffer, from, to) {
     var val = this.validateBigInteger(value, MIN_INT64, MAX_INT64, from, to, 8);
 
     if (val === false) {
@@ -8109,9 +8173,9 @@ exports.Int64 = function (value, buffer, from, to) {
     insertBigIntegerToByteArray(val, buffer, from, to);
 
     return buffer;
-};
+}
 
-exports.Uint8 = function (value, buffer, from, to) {
+function Uint8(value, buffer, from, to) {
     if (this.validateInteger(value, 0, MAX_UINT8, from, to, 1) === false) {
         return;
     }
@@ -8119,9 +8183,9 @@ exports.Uint8 = function (value, buffer, from, to) {
     insertIntegerToByteArray(value, buffer, from, to);
 
     return buffer;
-};
+}
 
-exports.Uint16 = function (value, buffer, from, to) {
+function Uint16(value, buffer, from, to) {
     if (this.validateInteger(value, 0, MAX_UINT16, from, to, 2) === false) {
         return;
     }
@@ -8129,9 +8193,9 @@ exports.Uint16 = function (value, buffer, from, to) {
     insertIntegerToByteArray(value, buffer, from, to);
 
     return buffer;
-};
+}
 
-exports.Uint32 = function (value, buffer, from, to) {
+function Uint32(value, buffer, from, to) {
     if (this.validateInteger(value, 0, MAX_UINT32, from, to, 4) === false) {
         return;
     }
@@ -8139,10 +8203,10 @@ exports.Uint32 = function (value, buffer, from, to) {
     insertIntegerToByteArray(value, buffer, from, to);
 
     return buffer;
-};
+}
 
 // value can be of type string or number
-exports.Uint64 = function (value, buffer, from, to) {
+function Uint64(value, buffer, from, to) {
     var val = this.validateBigInteger(value, 0, MAX_UINT64, from, to, 8);
 
     if (val === false) {
@@ -8154,13 +8218,13 @@ exports.Uint64 = function (value, buffer, from, to) {
     insertBigIntegerToByteArray(val, buffer, from, to);
 
     return buffer;
-};
+}
 
-exports.randomUint64 = function () {
+function randomUint64() {
     return _bigInteger2.default.randBetween(0, MAX_UINT64).toString();
-};
+}
 
-exports.String = function (string, buffer, from, to) {
+function String(string, buffer, from, to) {
     if (typeof string !== 'string') {
         console.error('Wrong data type is passed as String. String is required');
         return;
@@ -8175,9 +8239,9 @@ exports.String = function (string, buffer, from, to) {
     this.Uint32(buffer.length - bufferLength, buffer, from + 4, from + 8); // string length
 
     return buffer;
-};
+}
 
-exports.Hash = function (hash, buffer, from, to) {
+function Hash(hash, buffer, from, to) {
     if (this.validateHexHash(hash) === false) {
         return;
     } else if (to - from !== 32) {
@@ -8188,9 +8252,9 @@ exports.Hash = function (hash, buffer, from, to) {
     insertHexadecimalToByteArray(hash, buffer, from, to);
 
     return buffer;
-};
+}
 
-exports.Digest = function (digest, buffer, from, to) {
+function Digest(digest, buffer, from, to) {
     if (this.validateHexHash(digest, 64) === false) {
         return;
     } else if (to - from !== 64) {
@@ -8201,9 +8265,9 @@ exports.Digest = function (digest, buffer, from, to) {
     insertHexadecimalToByteArray(digest, buffer, from, to);
 
     return buffer;
-};
+}
 
-exports.PublicKey = function (publicKey, buffer, from, to) {
+function PublicKey(publicKey, buffer, from, to) {
     if (this.validateHexHash(publicKey) === false) {
         return;
     } else if (to - from !== 32) {
@@ -8214,9 +8278,9 @@ exports.PublicKey = function (publicKey, buffer, from, to) {
     insertHexadecimalToByteArray(publicKey, buffer, from, to);
 
     return buffer;
-};
+}
 
-exports.Timespec = function (nanoseconds, buffer, from, to) {
+function Timespec(nanoseconds, buffer, from, to) {
     var val = this.validateBigInteger(nanoseconds, 0, MAX_UINT64, from, to, 8);
 
     if (val === false) {
@@ -8228,9 +8292,9 @@ exports.Timespec = function (nanoseconds, buffer, from, to) {
     insertBigIntegerToByteArray(val, buffer, from, to);
 
     return buffer;
-};
+}
 
-exports.Bool = function (value, buffer, from, to) {
+function Bool(value, buffer, from, to) {
     if (typeof value !== 'boolean') {
         console.error('Wrong data type is passed as Boolean. Boolean is required');
         return;
@@ -8242,10 +8306,19 @@ exports.Bool = function (value, buffer, from, to) {
     insertIntegerToByteArray(value ? 1 : 0, buffer, from, to);
 
     return buffer;
-};
+}
 
 },{"big-integer":2}],29:[function(require,module,exports){
 'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.validateInteger = validateInteger;
+exports.validateBigInteger = validateBigInteger;
+exports.validateHexHash = validateHexHash;
+exports.validateBytesArray = validateBytesArray;
+exports.validateBinaryString = validateBinaryString;
 
 var _bigInteger = require('big-integer');
 
@@ -8253,7 +8326,7 @@ var _bigInteger2 = _interopRequireDefault(_bigInteger);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.validateInteger = function (value, min, max, from, to, length) {
+function validateInteger(value, min, max, from, to, length) {
     if (typeof value !== 'number') {
         console.error('Wrong data type is passed as number. Should be of type Number.');
         return false;
@@ -8269,10 +8342,10 @@ exports.validateInteger = function (value, min, max, from, to, length) {
     }
 
     return true;
-};
+}
 
 // value can be of type string or number
-exports.validateBigInteger = function (value, min, max, from, to, length) {
+function validateBigInteger(value, min, max, from, to, length) {
     var val;
 
     if (!(typeof value === 'number' || typeof value === 'string')) {
@@ -8297,9 +8370,9 @@ exports.validateBigInteger = function (value, min, max, from, to, length) {
         console.error('Wrong data type is passed as number. Should be of type Number or String.');
         return false;
     }
-};
+}
 
-exports.validateHexHash = function (hash, bytes) {
+function validateHexHash(hash, bytes) {
     bytes = bytes || 32;
 
     if (typeof hash !== 'string') {
@@ -8318,9 +8391,9 @@ exports.validateHexHash = function (hash, bytes) {
     }
 
     return true;
-};
+}
 
-exports.validateBytesArray = function (arr, bytes) {
+function validateBytesArray(arr, bytes) {
     if (bytes && arr.length !== bytes) {
         console.error('Array of 8-bit integers validity is of wrong length. ' + bytes * 2 + ' char symbols long is required. ' + arr.length + ' is passed.');
         return false;
@@ -8337,9 +8410,9 @@ exports.validateBytesArray = function (arr, bytes) {
     }
 
     return true;
-};
+}
 
-exports.validateBinaryString = function (str, bits) {
+function validateBinaryString(str, bits) {
     if (typeof bits !== 'undefined' && str.length !== bits) {
         console.error('Binary string is of wrong length.');
         return null;
@@ -8357,7 +8430,7 @@ exports.validateBinaryString = function (str, bits) {
     }
 
     return true;
-};
+}
 
 },{"big-integer":2}]},{},[23])(23)
 });

@@ -84,7 +84,7 @@ function insertStringToByteArray(str, buffer, from) {
     }
 }
 
-exports.Int8 = function(value, buffer, from, to) {
+export function Int8(value, buffer, from, to) {
     if (this.validateInteger(value, MIN_INT8, MAX_INT8, from, to, 1) === false) {
         return;
     }
@@ -96,9 +96,9 @@ exports.Int8 = function(value, buffer, from, to) {
     insertIntegerToByteArray(value, buffer, from, to);
 
     return buffer;
-};
+}
 
-exports.Int16 = function(value, buffer, from, to) {
+export function Int16(value, buffer, from, to) {
     if (this.validateInteger(value, MIN_INT16, MAX_INT16, from, to, 2) === false) {
         return;
     }
@@ -110,9 +110,9 @@ exports.Int16 = function(value, buffer, from, to) {
     insertIntegerToByteArray(value, buffer, from, to);
 
     return buffer;
-};
+}
 
-exports.Int32 = function(value, buffer, from, to) {
+export function Int32(value, buffer, from, to) {
     if (this.validateInteger(value, MIN_INT32, MAX_INT32, from, to, 4) === false) {
         return;
     }
@@ -124,10 +124,10 @@ exports.Int32 = function(value, buffer, from, to) {
     insertIntegerToByteArray(value, buffer, from, to);
 
     return buffer;
-};
+}
 
 // value can be of type string or number
-exports.Int64 = function(value, buffer, from, to) {
+export function Int64(value, buffer, from, to) {
     var val = this.validateBigInteger(value, MIN_INT64, MAX_INT64, from, to, 8);
 
     if (val === false) {
@@ -143,9 +143,9 @@ exports.Int64 = function(value, buffer, from, to) {
     insertBigIntegerToByteArray(val, buffer, from, to);
 
     return buffer;
-};
+}
 
-exports.Uint8 = function(value, buffer, from, to) {
+export function Uint8(value, buffer, from, to) {
     if (this.validateInteger(value, 0, MAX_UINT8, from, to, 1) === false) {
         return;
     }
@@ -153,9 +153,9 @@ exports.Uint8 = function(value, buffer, from, to) {
     insertIntegerToByteArray(value, buffer, from, to);
 
     return buffer;
-};
+}
 
-exports.Uint16 = function(value, buffer, from, to) {
+export function Uint16(value, buffer, from, to) {
     if (this.validateInteger(value, 0, MAX_UINT16, from, to, 2) === false) {
         return;
     }
@@ -163,9 +163,9 @@ exports.Uint16 = function(value, buffer, from, to) {
     insertIntegerToByteArray(value, buffer, from, to);
 
     return buffer;
-};
+}
 
-exports.Uint32 = function(value, buffer, from, to) {
+export function Uint32(value, buffer, from, to) {
     if (this.validateInteger(value, 0, MAX_UINT32, from, to, 4) === false) {
         return;
     }
@@ -173,10 +173,10 @@ exports.Uint32 = function(value, buffer, from, to) {
     insertIntegerToByteArray(value, buffer, from, to);
 
     return buffer;
-};
+}
 
 // value can be of type string or number
-exports.Uint64 = function(value, buffer, from, to) {
+export function Uint64(value, buffer, from, to) {
     var val = this.validateBigInteger(value, 0, MAX_UINT64, from, to, 8);
 
     if (val === false) {
@@ -188,13 +188,13 @@ exports.Uint64 = function(value, buffer, from, to) {
     insertBigIntegerToByteArray(val, buffer, from, to);
 
     return buffer;
-};
+}
 
-exports.randomUint64 = function() {
+export function randomUint64() {
     return bigInt.randBetween(0, MAX_UINT64).toString();
-};
+}
 
-exports.String = function(string, buffer, from, to) {
+export function String(string, buffer, from, to) {
     if (typeof string !== 'string') {
         console.error('Wrong data type is passed as String. String is required');
         return;
@@ -209,9 +209,9 @@ exports.String = function(string, buffer, from, to) {
     this.Uint32(buffer.length - bufferLength, buffer, from + 4, from + 8); // string length
 
     return buffer;
-};
+}
 
-exports.Hash = function(hash, buffer, from, to) {
+export function Hash(hash, buffer, from, to) {
     if (this.validateHexHash(hash) === false) {
         return;
     } else if ((to - from) !== 32) {
@@ -222,9 +222,9 @@ exports.Hash = function(hash, buffer, from, to) {
     insertHexadecimalToByteArray(hash, buffer, from, to);
 
     return buffer;
-};
+}
 
-exports.Digest = function(digest, buffer, from, to) {
+export function Digest(digest, buffer, from, to) {
     if (this.validateHexHash(digest, 64) === false) {
         return;
     } else if ((to - from) !== 64) {
@@ -235,9 +235,9 @@ exports.Digest = function(digest, buffer, from, to) {
     insertHexadecimalToByteArray(digest, buffer, from, to);
 
     return buffer;
-};
+}
 
-exports.PublicKey = function(publicKey, buffer, from, to) {
+export function PublicKey(publicKey, buffer, from, to) {
     if (this.validateHexHash(publicKey) === false) {
         return;
     } else if ((to - from) !== 32) {
@@ -248,9 +248,9 @@ exports.PublicKey = function(publicKey, buffer, from, to) {
     insertHexadecimalToByteArray(publicKey, buffer, from, to);
 
     return buffer;
-};
+}
 
-exports.Timespec = function(nanoseconds, buffer, from, to) {
+export function Timespec(nanoseconds, buffer, from, to) {
     var val = this.validateBigInteger(nanoseconds, 0, MAX_UINT64, from, to, 8);
 
     if (val === false) {
@@ -262,9 +262,9 @@ exports.Timespec = function(nanoseconds, buffer, from, to) {
     insertBigIntegerToByteArray(val, buffer, from, to);
 
     return buffer;
-};
+}
 
-exports.Bool = function(value, buffer, from, to) {
+export function Bool(value, buffer, from, to) {
     if (typeof value !== 'boolean') {
         console.error('Wrong data type is passed as Boolean. Boolean is required');
         return;
@@ -276,4 +276,4 @@ exports.Bool = function(value, buffer, from, to) {
     insertIntegerToByteArray(value ? 1 : 0, buffer, from, to);
 
     return buffer;
-};
+}

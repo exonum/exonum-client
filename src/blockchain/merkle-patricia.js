@@ -12,7 +12,7 @@ const MERKLE_PATRICIA_KEY_LENGTH = 32;
  * @param {NewType} type (optional)
  * @return {Object}
  */
-exports.merklePatriciaProof = function(rootHash, proofNode, key, type) {
+export function merklePatriciaProof(rootHash, proofNode, key, type) {
     var self = this;
     var DBKey = this.newType({
         size: 34,
@@ -366,4 +366,4 @@ exports.merklePatriciaProof = function(rootHash, proofNode, key, type) {
 
         return element;
     }
-};
+}

@@ -25,7 +25,7 @@ function calcHeight(count) {
  * @param type (optional)
  * @return {Array}
  */
-exports.merkleProof = function(rootHash, count, proofNode, range, type) {
+export function merkleProof(rootHash, count, proofNode, range, type) {
     var self = this;
     var elements = [];
     var rootBranch = 'left';
@@ -248,4 +248,4 @@ exports.merkleProof = function(rootHash, count, proofNode, range, type) {
     }
 
     return elements;
-};
+}
