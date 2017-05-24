@@ -12,12 +12,14 @@ module.exports = function (grunt) {
             options: {
                 devel: true,
                 node: true,
-                funcscope: true
+                funcscope: true,
+                esversion: 6
             }
         },
         mochaTest: {
             options: {
-                reporter: 'spec'
+                reporter: 'spec',
+                require: ['babel-register']
             },
             src: ['./test/**/*.js']
         },

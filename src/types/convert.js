@@ -1,7 +1,6 @@
 'use strict';
-var Exonum = require('../src/core');
 
-Exonum.hexadecimalToUint8Array = function(str) {
+exports.hexadecimalToUint8Array = function(str) {
     if (typeof str !== 'string') {
         console.error('Wrong data type of hexadecimal string');
         return new Uint8Array([]);
@@ -15,7 +14,7 @@ Exonum.hexadecimalToUint8Array = function(str) {
     return new Uint8Array(array);
 };
 
-Exonum.hexadecimalToBinaryString = function(str) {
+exports.hexadecimalToBinaryString = function(str) {
     var binaryStr = '';
     for (var i = 0, len = str.length; i < len; i += 2) {
         binaryStr += parseInt(str.substr(i, 2), 16).toString(2);
@@ -23,7 +22,7 @@ Exonum.hexadecimalToBinaryString = function(str) {
     return binaryStr;
 };
 
-Exonum.uint8ArrayToHexadecimal = function(uint8arr) {
+exports.uint8ArrayToHexadecimal = function(uint8arr) {
     if (!(uint8arr instanceof Uint8Array)) {
         console.error('Wrong data type of array of 8-bit integers');
         return '';
@@ -39,7 +38,7 @@ Exonum.uint8ArrayToHexadecimal = function(uint8arr) {
     return str.toLowerCase();
 };
 
-Exonum.binaryStringToUint8Array = function(binaryStr) {
+exports.binaryStringToUint8Array = function(binaryStr) {
     var array = [];
     for (var i = 0, len = binaryStr.length; i < len; i += 8) {
         array.push(parseInt(binaryStr.substr(i, 8), 2));
@@ -48,7 +47,7 @@ Exonum.binaryStringToUint8Array = function(binaryStr) {
     return new Uint8Array(array);
 };
 
-Exonum.binaryStringToHexadecimal = function(binaryStr) {
+exports.binaryStringToHexadecimal = function(binaryStr) {
     var str = '';
     for (var i = 0, len = binaryStr.length; i < len; i += 8) {
         var hex = (parseInt(binaryStr.substr(i, 8), 2)).toString(16);
@@ -58,4 +57,3 @@ Exonum.binaryStringToHexadecimal = function(binaryStr) {
 
     return str.toLowerCase();
 };
-

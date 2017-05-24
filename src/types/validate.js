@@ -1,9 +1,8 @@
 'use strict';
-var Exonum = require('../src/core');
 
-var bigInt = require('big-integer');
+import bigInt from 'big-integer';
 
-Exonum.validateInteger = function(value, min, max, from, to, length) {
+exports.validateInteger = function(value, min, max, from, to, length) {
     if (typeof value !== 'number') {
         console.error('Wrong data type is passed as number. Should be of type Number.');
         return false;
@@ -22,7 +21,7 @@ Exonum.validateInteger = function(value, min, max, from, to, length) {
 };
 
 // value can be of type string or number
-Exonum.validateBigInteger = function(value, min, max, from, to, length) {
+exports.validateBigInteger = function(value, min, max, from, to, length) {
     var val;
 
     if (!(typeof value === 'number' || typeof value === 'string')) {
@@ -49,7 +48,7 @@ Exonum.validateBigInteger = function(value, min, max, from, to, length) {
     }
 };
 
-Exonum.validateHexHash = function(hash, bytes) {
+exports.validateHexHash = function(hash, bytes) {
     bytes = bytes || 32;
 
     if (typeof hash !== 'string') {
@@ -70,7 +69,7 @@ Exonum.validateHexHash = function(hash, bytes) {
     return true;
 };
 
-Exonum.validateBytesArray = function(arr, bytes) {
+exports.validateBytesArray = function(arr, bytes) {
     if (bytes && arr.length !== bytes) {
         console.error('Array of 8-bit integers validity is of wrong length. ' + bytes * 2 + ' char symbols long is required. ' + arr.length + ' is passed.');
         return false;
@@ -89,7 +88,7 @@ Exonum.validateBytesArray = function(arr, bytes) {
     return true;
 };
 
-Exonum.validateBinaryString = function(str, bits) {
+exports.validateBinaryString = function(str, bits) {
     if (typeof bits !== 'undefined' && str.length !== bits) {
         console.error('Binary string is of wrong length.');
         return null;
