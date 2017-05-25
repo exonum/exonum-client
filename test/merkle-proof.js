@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var Exonum = require('../src/index');
+var Exonum = require('../lib/index');
 var fs = require('fs');
 
 describe('Check proof of Merkle tree', function() {

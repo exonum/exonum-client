@@ -11,13 +11,6 @@ module.exports = function (grunt) {
                 esversion: 6
             }
         },
-        mochaTest: {
-            options: {
-                reporter: 'spec',
-                require: ['babel-register']
-            },
-            src: ['./test/**/*.js']
-        },
         clean: {
             dist: {
                 src: ['./dist', './lib']
@@ -49,6 +42,13 @@ module.exports = function (grunt) {
                 src: './dist/<%= pkg.name %>.js',
                 dest: './dist/<%= pkg.name %>.min.js'
             }
+        },
+        mochaTest: {
+            options: {
+                reporter: 'spec',
+                require: ['babel-register']
+            },
+            src: ['./test/**/*.js']
         }
     });
 
@@ -59,8 +59,8 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-contrib-uglify');
 
-    grunt.registerTask('test', ['jshint', 'mochaTest']);
-    grunt.registerTask('prepublish', ['clean', 'babel', 'browserify', 'uglify']);
-    grunt.registerTask('default', ['test', 'prepublish']);
+    grunt.registerTask('prepublish', ['jshint', 'clean', 'babel', 'browserify', 'uglify']);
+    grunt.registerTask('test', ['mochaTest']);
+    grunt.registerTask('default', ['prepublish', 'test']);
 
 };
