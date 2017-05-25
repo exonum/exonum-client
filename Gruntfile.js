@@ -2,11 +2,6 @@ module.exports = function (grunt) {
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
-        clean: {
-            dist: {
-                src: ['./dist']
-            }
-        },
         jshint: {
             files: ['./src/index.js'],
             options: {
@@ -22,6 +17,23 @@ module.exports = function (grunt) {
                 require: ['babel-register']
             },
             src: ['./test/**/*.js']
+        },
+        clean: {
+            dist: {
+                src: ['./dist', './lib']
+            }
+        },
+        babel: {
+            options: {
+                sourceMap: true,
+                presets: ['babel-preset-es2015']
+            },
+            dist: {
+                expand: true,
+                cwd: './src/',
+                src: ['**/*.js'],
+                dest: './lib/'
+            }
         },
         browserify: {
             dist: {
@@ -42,11 +54,14 @@ module.exports = function (grunt) {
     });
 
     grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-browserify');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-mocha-test');
     grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-babel');
+    grunt.loadNpmTasks('grunt-browserify');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
 
-    grunt.registerTask('default', ['clean', 'jshint', 'mochaTest', 'browserify', 'uglify']);
+    grunt.registerTask('test', ['jshint', 'mochaTest']);
+    grunt.registerTask('prepublish', ['clean', 'babel', 'browserify', 'uglify']);
+    grunt.registerTask('default', ['test', 'prepublish']);
 
 };

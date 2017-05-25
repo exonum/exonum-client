@@ -5,9 +5,14 @@
   "license": "",
   "author": "BitFury Group Limited",
   "private": true,
-  "main": "src/index.js",
+  "main": "./lib/index.js",
+  "files": [
+    "dist",
+    "lib"
+  ],
   "scripts": {
-    "test": "grunt mochaTest"
+    "test": "grunt test",
+    "prepublish": "grunt prepublish"
   },
   "dependencies": {
     "big-integer": "^1.6.17",
@@ -21,6 +26,7 @@
     "babelify": "^7.3.0",
     "chai": "^3.5.0",
     "grunt": "^1.0.1",
+    "grunt-babel": "^6.0.0",
     "grunt-browserify": "^5.0.0",
     "grunt-contrib-clean": "^1.0.0",
     "grunt-contrib-jshint": "^1.1.0",

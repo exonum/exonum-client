@@ -7615,12 +7615,6 @@ function keyPair() {
 },{"../helpers":23,"../types/convert":25,"../types/generic":26,"../types/message":28,"../types/validate":31,"sha.js":10,"tweetnacl":17}],23:[function(require,module,exports){
 'use strict';
 
-/**
- * Check if element is of type {Object}
- * @param obj
- * @returns {boolean}
- */
-
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
@@ -7629,6 +7623,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 exports.isObject = isObject;
 exports.getObjectLength = getObjectLength;
+/**
+ * Check if element is of type {Object}
+ * @param obj
+ * @returns {boolean}
+ */
 function isObject(obj) {
     return (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object' && Array.isArray(obj) === false && obj !== null && !(obj instanceof Date);
 }
