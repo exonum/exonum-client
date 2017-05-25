@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var Exonum = require('../lib/index');
+var Exonum = require('..');
 
 describe('Check cryptography', function() {
 
