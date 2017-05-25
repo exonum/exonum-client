@@ -1,5 +1,3 @@
-'use strict';
-
 export function hexadecimalToUint8Array(str) {
     if (typeof str !== 'string') {
         console.error('Wrong data type of hexadecimal string');

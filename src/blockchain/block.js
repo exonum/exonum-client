@@ -1,5 +1,3 @@
-'use strict';
-
 import * as helpers from '../helpers';
 import * as primitive from '../types/primitive';
 import {newType} from '../types/generic';

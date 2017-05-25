@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Check if element is of type {Object}
  * @param obj

@@ -1,5 +1,3 @@
-'use strict';
-
 import objectAssign from 'object-assign';
 import * as helpers from '../helpers';
 import * as primitive from '../types/primitive';

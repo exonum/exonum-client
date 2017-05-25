@@ -1,5 +1,3 @@
-'use strict';
-
 import * as serialization from './serialization';
 import * as crypto from '../crypto';
 

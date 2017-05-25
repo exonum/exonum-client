@@ -1,5 +1,3 @@
-'use strict';
-
 import * as primitive from './primitive';
 import {newType} from './generic';
 import * as serialization from './serialization';

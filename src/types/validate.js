@@ -1,5 +1,3 @@
-'use strict';
-
 import bigInt from 'big-integer';
 
 export function validateInteger(value, min, max, from, to, length) {

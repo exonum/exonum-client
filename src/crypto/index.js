@@ -1,5 +1,3 @@
-'use strict';
-
 import sha from 'sha.js';
 import nacl from 'tweetnacl';
 import * as helpers from '../helpers';

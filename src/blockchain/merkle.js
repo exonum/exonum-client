@@ -1,5 +1,3 @@
-'use strict';
-
 import bigInt from 'big-integer';
 import objectAssign from 'object-assign';
 import * as helpers from '../helpers';

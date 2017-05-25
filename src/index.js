@@ -1,5 +1,3 @@
-'use strict';
-
 import * as types from './types/index';
 import * as crypto from './crypto/index';
 import * as blockchain from './blockchain/index';

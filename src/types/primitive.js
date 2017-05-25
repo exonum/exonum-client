@@ -1,5 +1,3 @@
-'use strict';
-
 import bigInt from 'big-integer';
 import * as validate from './validate';
 
