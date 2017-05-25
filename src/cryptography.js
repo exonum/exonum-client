@@ -20,9 +20,9 @@ Exonum.hash = function(data, type) {
     var buffer;
 
     if (Exonum.isInstanceofOfNewType(type)) {
-        if (Exonum.isObject(data) === true) {
+        if (Exonum.isObject(data)) {
             buffer = type.serialize(data);
-            if (typeof buffer === 'undefined') {
+            if (buffer === undefined) {
                 console.error('Invalid data parameter. Instance of NewType is expected.');
                 return;
             }
@@ -31,9 +31,9 @@ Exonum.hash = function(data, type) {
             return;
         }
     } else if (Exonum.isInstanceofOfNewMessage(type)) {
-        if (Exonum.isObject(data) === true) {
+        if (Exonum.isObject(data)) {
             buffer = type.serialize(data);
-            if (typeof buffer === 'undefined') {
+            if (buffer === undefined) {
                 console.error('Invalid data parameter. Instance of NewMessage is expected.');
                 return;
             }
@@ -41,7 +41,7 @@ Exonum.hash = function(data, type) {
             console.error('Wrong type of data parameter. Object is expected.');
             return;
         }
-    } else if (typeof type === 'undefined') {
+    } else if (type === undefined) {
         if (Exonum.validateBytesArray(data)) {
             if (Array.isArray(data)) {
                 buffer = data;
@@ -79,11 +79,11 @@ Exonum.sign = function(secretKey, data, type) {
 
     secretKeyUint8Array = Exonum.hexadecimalToUint8Array(secretKey);
 
-    if (Exonum.isInstanceofOfNewType(type)) {
-        if (Exonum.isObject(data) === true) {
+    if (Exonum.isInstanceofOfNewType(type) || Exonum.isInstanceofOfNewMessage(type)) {
+        if (Exonum.isObject(data)) {
             buffer = type.serialize(data);
-            if (typeof buffer === 'undefined') {
-                console.error('Invalid data parameter. Instance of NewType is expected.');
+            if (buffer === undefined) {
+                console.error('Invalid data parameter. Instance of NewType or NewMessage is expected.');
                 return;
             } else {
                 buffer = new Uint8Array(buffer);
@@ -92,20 +92,7 @@ Exonum.sign = function(secretKey, data, type) {
             console.error('Wrong type of data. Should be object.');
             return;
         }
-    } else if (Exonum.isInstanceofOfNewMessage(type)) {
-        if (Exonum.isObject(data) === true) {
-            buffer = type.serialize(data);
-            if (typeof buffer === 'undefined') {
-                console.error('Invalid data parameter. Instance of NewMessage is expected.');
-                return;
-            } else {
-                buffer = new Uint8Array(buffer);
-            }
-        } else {
-            console.error('Wrong type of data. Should be object.');
-            return;
-        }
-    } else if (typeof type === 'undefined') {
+    } else if (type === undefined) {
         if (Exonum.validateBytesArray(data)) {
             if (data instanceof Uint8Array) {
                 buffer = data;
@@ -154,9 +141,9 @@ Exonum.verifySignature = function(signature, publicKey, data, type) {
     publicKeyUint8Array = Exonum.hexadecimalToUint8Array(publicKey);
 
     if (Exonum.isInstanceofOfNewType(type)) {
-        if (Exonum.isObject(data) === true) {
+        if (Exonum.isObject(data)) {
             buffer = type.serialize(data);
-            if (typeof buffer === 'undefined') {
+            if (buffer === undefined) {
                 console.error('Invalid data parameter. Instance of NewType is expected.');
                 return;
             } else {
@@ -167,9 +154,9 @@ Exonum.verifySignature = function(signature, publicKey, data, type) {
             return;
         }
     } else if (Exonum.isInstanceofOfNewMessage(type)) {
-        if (Exonum.isObject(data) === true) {
+        if (Exonum.isObject(data)) {
             buffer = type.serialize(data, true);
-            if (typeof buffer === 'undefined') {
+            if (buffer === undefined) {
                 console.error('Invalid data parameter. Instance of NewMessage is expected.');
                 return;
             } else {
@@ -179,7 +166,7 @@ Exonum.verifySignature = function(signature, publicKey, data, type) {
             console.error('Wrong type of data. Should be object.');
             return;
         }
-    } else if (typeof type === 'undefined') {
+    } else if (type === undefined) {
         if (Exonum.validateBytesArray(data)) {
             if (data instanceof Uint8Array) {
                 buffer = data;

@@ -95,7 +95,7 @@ Exonum.verifyBlock = function(data, validators) {
             return false;
         }
 
-        if (typeof round === 'undefined') {
+        if (round === undefined) {
             round = precommit.body.round;
         } else if (precommit.body.round !== round) {
             console.error('Wrong round in precommit.');

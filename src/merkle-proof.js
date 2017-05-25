@@ -72,7 +72,7 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
                 console.error('Invalid array of 8-bit integers in tree.');
                 return;
             }
-        } else if (Exonum.isObject(data) === true) {
+        } else if (Exonum.isObject(data)) {
             if (Exonum.isInstanceofOfNewType(type) === true) {
                 element = objectAssign(data); // deep copy
                 elementsHash = Exonum.hash(element, type);
@@ -85,7 +85,7 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
             return;
         }
 
-        if (typeof elementsHash === 'undefined') {
+        if (elementsHash === undefined) {
             return;
         }
 
@@ -106,23 +106,23 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
         var summingBuffer;
 
         // case with single node in tree
-        if (depth === 0 && typeof node.val !== 'undefined') {
+        if (depth === 0 && node.val !== undefined) {
             return getHash(node.val, depth, index * 2);
         }
 
-        if (typeof node.left !== 'undefined') {
+        if (node.left !== undefined) {
             if (typeof node.left === 'string') {
                 if (Exonum.validateHexHash(node.left) === false) {
                     return null;
                 }
                 hashLeft = node.left;
-            } else if (Exonum.isObject(node.left) === true) {
-                if (typeof node.left.val !== 'undefined') {
+            } else if (Exonum.isObject(node.left)) {
+                if (node.left.val !== undefined) {
                     hashLeft = getHash(node.left.val, depth, index * 2);
                 } else {
                     hashLeft = recursive(node.left, depth + 1, index * 2);
                 }
-                if (typeof hashLeft === 'undefined' || hashLeft === null) {
+                if (hashLeft === undefined || hashLeft === null) {
                     return null;
                 }
             } else {
@@ -138,19 +138,19 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
             rootBranch = 'right';
         }
 
-        if (typeof node.right !== 'undefined') {
+        if (node.right !== undefined) {
             if (typeof node.right === 'string') {
                 if (Exonum.validateHexHash(node.right) === false) {
                     return null;
                 }
                 hashRight = node.right;
-            } else if (Exonum.isObject(node.right) === true) {
-                if (typeof node.right.val !== 'undefined') {
+            } else if (Exonum.isObject(node.right)) {
+                if (node.right.val !== undefined) {
                     hashRight = getHash(node.right.val, depth, index * 2 + 1);
                 } else {
                     hashRight = recursive(node.right, depth + 1, index * 2 + 1);
                 }
-                if (typeof hashRight === 'undefined' || hashRight === null) {
+                if (hashRight === undefined || hashRight === null) {
                     return null;
                 }
             } else {
@@ -241,7 +241,7 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
     var end = rangeEnd.lt(count) ? rangeEnd : count.minus(1);
     var actualHash = recursive(proofNode, 0, 0);
 
-    if (typeof actualHash === 'undefined') { // tree is invalid
+    if (actualHash === undefined) { // tree is invalid
         return undefined;
     } else if (rootHash.toLowerCase() !== actualHash) {
         console.error('rootHash parameter is not equal to actual hash.');

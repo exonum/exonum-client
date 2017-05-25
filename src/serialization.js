@@ -37,7 +37,7 @@ Exonum.serialize = function(buffer, shift, data, type) {
 
         var fieldType = type.fields[fieldName];
 
-        if (typeof fieldType === 'undefined') {
+        if (fieldType === undefined) {
             console.error(fieldName + ' field was not found in configuration of type.');
             return;
         }
@@ -58,7 +58,7 @@ Exonum.serialize = function(buffer, shift, data, type) {
             }
         } else {
             buffer = fieldType.type(fieldData, buffer, from, shift + fieldType.to);
-            if (typeof buffer === 'undefined') {
+            if (buffer === undefined) {
                 return;
             }
         }

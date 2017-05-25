@@ -86,7 +86,7 @@ Exonum.binaryStringToUint8Array = function(binaryStr) {
         return;
     }
 
-    for (var i = 0, len = binaryStr.length; i < len; i += 8) {
+    for (var i = 0; i < binaryStr.length; i += 8) {
         array.push(parseInt(binaryStr.substr(i, 8), 2));
     }
 
@@ -104,12 +104,10 @@ Exonum.uint8ArrayToHexadecimal = function(uint8arr) {
     if (!(uint8arr instanceof Uint8Array)) {
         console.error('Wrong data type of array of 8-bit integers. Uint8Array is expected');
         return;
-    } else if (Exonum.validateBytesArray(uint8arr) === false) {
-        return;
     }
 
     for (var i = 0, len = uint8arr.length; i < len; i++) {
-        var hex = (uint8arr[i]).toString(16);
+        var hex = uint8arr[i].toString(16);
         hex = (hex.length === 1) ? '0' + hex : hex;
         str += hex;
     }
@@ -157,8 +155,8 @@ Exonum.hexadecimalToBinaryString = function(str) {
     }
 
     for (var i = 0, len = str.length; i < len; i++) {
-        var bin = parseInt(str.substr(i, 1), 16).toString(2);
-        for (var j = bin.length; j < 4; j++) {
+        var bin = parseInt(str[i], 16).toString(2);
+        while (bin.length < 4) {
             bin = '0' + bin;
         }
         binaryStr += bin;

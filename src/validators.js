@@ -127,7 +127,7 @@ Exonum.validateBytesArray = function(arr, bytes) {
  * @returns {*}
  */
 Exonum.validateBinaryString = function(str, bits) {
-    if (typeof bits !== 'undefined' && str.length !== bits) {
+    if (bits !== undefined && str.length !== bits) {
         console.error('Binary string is of wrong length.');
         return null;
     }

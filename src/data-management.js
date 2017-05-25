@@ -111,7 +111,7 @@ NewMessage.prototype.serialize = function(data, cutSignature) {
 
     // serialize and append message body
     buffer = Exonum.serialize(buffer, MessageHead.size, data, this);
-    if (typeof buffer === 'undefined') {
+    if (buffer === undefined) {
         return;
     }
 

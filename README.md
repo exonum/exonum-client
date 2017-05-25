@@ -122,6 +122,8 @@ Value can be passed as `Number` or as `String`.
 
 Please note that JavaScript limits minimum and maximum integer number. Minimum safe integer in JavaScript is `-(2^53-1)` which is equal to `-9007199254740991`. Maximum safe integer in JavaScript is `2^53-1` which is equal to `9007199254740991`. For unsafe numbers use `String` only.
 
+To determine either number is safe use [Number.isSafeInteger()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isSafeInteger).
+
 ```
 var someType = Exonum.newType({
     size: 8,
@@ -380,7 +382,7 @@ var hash = someType.hash(data);
 
 | Name | Type | Description |
 |---|---|---|
-| secretKey | `string` | A 64 bit hexadecimal string. |
+| secretKey | `string` | A 64-byte hexadecimal string. |
 | data | `Object` ||
 
 Returns ED25519 signature of the data as hexadecimal string.
@@ -407,8 +409,8 @@ var signature = someType.sign(secretKey, data);
 
 | Name | Type | Description |
 |---|---|---|
-| signature | `string` | A 64 bit hexadecimal string. |
-| publicKey | `string` | A 32 bit hexadecimal string. |
+| signature | `string` | A 64-byte hexadecimal string. |
+| publicKey | `string` | A 32-byte hexadecimal string. |
 | data | `Object` ||
 
 Returns `true` if verification succeeded or `false` if it failed.
@@ -456,8 +458,8 @@ Can be used to retrieve representation of data of type `newMessage` as array of 
 
 | Name | Type | Description |
 |---|---|---|
-| signature | `string` | A 64 bit hexadecimal string. |
-| publicKey | `string` | A 32 bit hexadecimal string. |
+| signature | `string` | A 64-byte hexadecimal string. |
+| publicKey | `string` | A 32-byte hexadecimal string. |
 | data | `Object` ||
 | cutSignature | `boolean` | Optional boolean flag. If set to `true` signature will not be appended to serialized data. |
 
@@ -516,7 +518,7 @@ var hash = someMessage.hash(data);
 
 | Name | Type | Description |
 |---|---|---|
-| secretKey | `string` | A 64 bit hexadecimal string. |
+| secretKey | `string` | A 64-byte hexadecimal string. |
 | data | `Object` ||
 
 Returns ED25519 signature of the data as hexadecimal string.
@@ -546,8 +548,8 @@ var signature = someMessage.sign(secretKey, data);
 
 | Name | Type | Description |
 |---|---|---|
-| signature | `string` | A 64 bit hexadecimal string. |
-| publicKey | `string` | A 32 bit hexadecimal string. |
+| signature | `string` | A 64-byte hexadecimal string. |
+| publicKey | `string` | A 32-byte hexadecimal string. |
 | data | `Object` ||
 
 Returns `true` if verification succeeded or `false` if it failed.
@@ -629,7 +631,7 @@ var hash = Exonum.hash(data, someMessage);
 
 | Name | Type | Description |
 |---|---|---|
-| buffer | `Array` | An array of 8-bit integers |
+| buffer | `Array-like object` | An array of 8-bit integers |
 
 ```javascript
 var buffer = [218, 0, 3, 12, 33, 68, 105, 0];
@@ -649,7 +651,7 @@ Accept two combinations of an arguments:
 
 | Name | Type | Description |
 |---|---|---|
-| secretKey | `string` | A 64 bit hexadecimal string. |
+| secretKey | `string` | A 64-byte hexadecimal string. |
 | data | `Object` ||
 | type | `NewType` or `NewMessage` ||
 
@@ -694,8 +696,8 @@ var signature = Exonum.sign(secretKey, data, someMessage);
 
 | Name | Type | Description |
 |---|---|---|
-| secretKey | `string` | A 64 bit hexadecimal string. |
-| buffer | `Array` | An array of 8-bit integers |
+| secretKey | `string` | A 64-byte hexadecimal string. |
+| buffer | `Array-like object` | An array of 8-bit integers |
 
 ```javascript
 var buffer = [218, 0, 3, 12, 33, 68, 105, 0];
@@ -717,8 +719,8 @@ Accept two combinations of an arguments:
 
 | Name | Type | Description |
 |---|---|---|
-| signature | `string` | A 64 bit hexadecimal string. |
-| publicKey | `string` | A 32 bit hexadecimal string. |
+| signature | `string` | A 64-byte hexadecimal string. |
+| publicKey | `string` | A 32-byte hexadecimal string. |
 | data | `Object` ||
 | type | `NewType` or `NewMessage` ||
 
@@ -767,9 +769,9 @@ Exonum.verifySignature(signature, publicKey, data, someMessage);
 
 | Name | Type | Description |
 |---|---|---|
-| signature | `string` | A 64 bit hexadecimal string. |
-| publicKey | `string` | A 32 bit hexadecimal string. |
-| buffer | `Array` | An array of 8-bit integers |
+| signature | `string` | A 64-byte hexadecimal string. |
+| publicKey | `string` | A 32-byte hexadecimal string. |
+| buffer | `Array-like object` | An array of 8-bit integers |
 
 ```javascript
 var buffer = [218, 0, 3, 12, 33, 68, 105, 0];
@@ -812,7 +814,7 @@ Check proof of Merkle tree.
 
 | Name | Type | Description |
 |---|---|---|
-| rootHash | `string` | A 32 bit hexadecimal string. |
+| rootHash | `string` | A 32-byte hexadecimal string. |
 | count | `number` | A total count of elements in tree. |
 | proofNode | `Object` | A tree with proof in JSON format. |
 | range | `Array` | An array of two numbers. Represents list of obtained elements: `[startIndex; endIndex)`. |
@@ -828,9 +830,9 @@ This methods can check proof of Merkle Patricia tree.
 
 | Name | Type | Description |
 |---|---|---|
-| rootHash | `string` | A 32 bit hexadecimal string. |
+| rootHash | `string` | A 32-byte hexadecimal string. |
 | proofNode | `Object` | A tree with proof in JSON format. |
-| key | `string` | A 32 bit hexadecimal string. |
+| key | `string` | A 32-byte hexadecimal string. |
 | type | `NewType` | Optional parameter. MerkleProof method expects to find arrays of 8-bit integers as values in tree in the case when it is not passed. |
 
 Returns elements data in JSON format if tree is valid and element is found. Returns `null` if tree is valid but element is not found or `undefined` if tree is not valid.
