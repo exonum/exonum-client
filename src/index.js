@@ -1,3 +1,3 @@
-export * from './types/index';
-export * from './crypto/index';
-export * from './blockchain/index';
+export * from './types';
+export * from './crypto';
+export * from './blockchain';
