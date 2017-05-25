@@ -506,7 +506,7 @@ describe('Check cryptography', function() {
                 hash: 'Hello world'
             };
 
-            expect(Exonum.verifySignature(signature, publicKey, userData, User)).to.equal(undefined);
+            expect(Exonum.verifySignature(signature, publicKey, userData, User)).to.equal(false);
         });
 
         it('should return undefined when the data parameter is of wrong NewMessage type', function() {
@@ -528,7 +528,7 @@ describe('Check cryptography', function() {
                 hash: 'Hello world'
             };
 
-            expect(Exonum.verifySignature(signature, publicKey, someData, CustomMessage)).to.equal(undefined);
+            expect(Exonum.verifySignature(signature, publicKey, someData, CustomMessage)).to.equal(false);
         });
 
         it('should return undefined when the type parameter is of wrong type', function() {
@@ -542,7 +542,7 @@ describe('Check cryptography', function() {
                 hash: 'Hello world'
             };
 
-            expect(Exonum.verifySignature(signature, publicKey, userData, User)).to.equal(undefined);
+            expect(Exonum.verifySignature(signature, publicKey, userData, User)).to.equal(false);
         });
 
         it('should return undefined when the signature parameter is of wrong length', function() {
@@ -561,7 +561,7 @@ describe('Check cryptography', function() {
             };
             var buffer = User.serialize(userData);
 
-            expect(Exonum.verifySignature(signature, publicKey, buffer)).to.equal(undefined);
+            expect(Exonum.verifySignature(signature, publicKey, buffer)).to.equal(false);
         });
 
         it('should return undefined when the signature parameter is invalid', function() {
@@ -580,7 +580,7 @@ describe('Check cryptography', function() {
             };
             var buffer = User.serialize(userData);
 
-            expect(Exonum.verifySignature(signature, publicKey, buffer)).to.equal(undefined);
+            expect(Exonum.verifySignature(signature, publicKey, buffer)).to.equal(false);
         });
 
         it('should return undefined when the signature parameter is of wrong type', function() {
@@ -600,7 +600,7 @@ describe('Check cryptography', function() {
             var args = [true, null, undefined, [], {}, 51, new Date()];
 
             function test(signature) {
-                expect(Exonum.verifySignature(signature, publicKey, buffer)).to.equal(undefined);
+                expect(Exonum.verifySignature(signature, publicKey, buffer)).to.equal(false);
             }
 
             for (var i in args) {
@@ -624,7 +624,7 @@ describe('Check cryptography', function() {
             };
             var buffer = User.serialize(userData);
 
-            expect(Exonum.verifySignature(signature, publicKey, buffer)).to.equal(undefined);
+            expect(Exonum.verifySignature(signature, publicKey, buffer)).to.equal(false);
         });
 
         it('should return undefined when the publicKey parameter is invalid', function() {
@@ -643,7 +643,7 @@ describe('Check cryptography', function() {
             };
             var buffer = User.serialize(userData);
 
-            expect(Exonum.verifySignature(signature, publicKey, buffer)).to.equal(undefined);
+            expect(Exonum.verifySignature(signature, publicKey, buffer)).to.equal(false);
         });
 
         it('should return undefined when the publicKey parameter is of wrong type', function() {
@@ -663,7 +663,7 @@ describe('Check cryptography', function() {
             var args = [true, null, undefined, [], {}, 51, new Date()];
 
             function test(publicKey) {
-                expect(Exonum.verifySignature(signature, publicKey, buffer)).to.equal(undefined);
+                expect(Exonum.verifySignature(signature, publicKey, buffer)).to.equal(false);
             }
 
             for (var i in args) {

@@ -6995,14 +6995,14 @@ Exonum.verifySignature = function(signature, publicKey, data, type) {
 
     if (Exonum.validateHexHash(signature, 64) === false) {
         console.error('Invalid signature parameter.');
-        return;
+        return false;
     }
 
     signatureUint8Array = Exonum.hexadecimalToUint8Array(signature);
 
     if (Exonum.validateHexHash(publicKey) === false) {
         console.error('Invalid publicKey parameter.');
-        return;
+        return false;
     }
 
     publicKeyUint8Array = Exonum.hexadecimalToUint8Array(publicKey);
@@ -7012,26 +7012,26 @@ Exonum.verifySignature = function(signature, publicKey, data, type) {
             buffer = type.serialize(data);
             if (buffer === undefined) {
                 console.error('Invalid data parameter. Instance of NewType is expected.');
-                return;
+                return false;
             } else {
                 buffer = new Uint8Array(buffer);
             }
         } else {
             console.error('Wrong type of data. Should be object.');
-            return;
+            return false;
         }
     } else if (Exonum.isInstanceofOfNewMessage(type)) {
         if (Exonum.isObject(data)) {
             buffer = type.serialize(data, true);
             if (buffer === undefined) {
                 console.error('Invalid data parameter. Instance of NewMessage is expected.');
-                return;
+                return false;
             } else {
                 buffer = new Uint8Array(buffer);
             }
         } else {
             console.error('Wrong type of data. Should be object.');
-            return;
+            return false;
         }
     } else if (type === undefined) {
         if (Exonum.validateBytesArray(data)) {
@@ -7042,11 +7042,11 @@ Exonum.verifySignature = function(signature, publicKey, data, type) {
             }
         } else {
             console.error('Invalid data parameter.');
-            return;
+            return false;
         }
     } else {
         console.error('Invalid type parameter.');
-        return;
+        return false;
     }
 
     return nacl.sign.detached.verify(buffer, signatureUint8Array, publicKeyUint8Array);
