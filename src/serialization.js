@@ -26,7 +26,7 @@ Exonum.serialize = function(buffer, shift, data, type) {
         return true;
     }
 
-    for (var i = 0, len = type.size; i < len; i++) {
+    for (var i = 0; i < type.size; i++) {
         buffer[shift + i] = 0;
     }
 

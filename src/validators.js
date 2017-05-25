@@ -84,7 +84,7 @@ Exonum.validateHexHash = function(hash, bytes) {
         return false;
     }
 
-    for (var i = 0, len = hash.length; i < len; i++) {
+    for (var i = 0; i < hash.length; i++) {
         if (isNaN(parseInt(hash[i], 16))) {
             console.error('Invalid symbol in hexadecimal string.');
             return false;
@@ -108,7 +108,7 @@ Exonum.validateBytesArray = function(arr, bytes) {
         return false;
     }
 
-    for (var i = 0, len = arr.length; i < len; i++) {
+    for (var i = 0; i < arr.length; i++) {
         if (typeof arr[i] !== 'number') {
             console.error('Wrong data type is passed as byte. Number is required');
             return false;

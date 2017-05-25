@@ -25,7 +25,7 @@ var bigInt = require('big-integer');
  * @param {number} to
  */
 function insertHexadecimalToByteArray(str, buffer, from, to) {
-    for (var i = 0, len = str.length; i < len; i += 2) {
+    for (var i = 0; i < str.length; i += 2) {
         buffer[from] = parseInt(str.substr(i, 2), 16);
         from++;
 

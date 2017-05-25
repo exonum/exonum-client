@@ -6689,20 +6689,20 @@ require('../src/types');
  * @returns {Uint8Array}
  */
 Exonum.hexadecimalToUint8Array = function(str) {
-    var array = [];
-
     if (typeof str !== 'string') {
         console.error('Wrong data type passed to convertor. Hexadecimal string is expected');
         return;
-    } else if (Exonum.validateHexHash(str, Math.ceil(str.length / 2)) === false) {
+    } else if (Exonum.validateHexHash(str, str.length / 2) === false) {
         return;
     }
 
-    for (var i = 0, len = str.length; i < len; i += 2) {
-        array.push(parseInt(str.substr(i, 2), 16));
+    var uint8arr = new Uint8Array(str.length / 2);
+
+    for (var i = 0, j = 0; i < str.length; i += 2, j++) {
+        uint8arr[j] = parseInt(str.substr(i, 2), 16);
     }
 
-    return new Uint8Array(array);
+    return uint8arr;
 };
 
 /**
@@ -6712,7 +6712,7 @@ Exonum.hexadecimalToUint8Array = function(str) {
  * @returns {Uint8Array}
  */
 Exonum.stringToUint8Array = function(str, len) {
-    var array = [];
+    var array;
     var from = 0;
 
     if (typeof str !== 'string') {
@@ -6721,9 +6721,10 @@ Exonum.stringToUint8Array = function(str, len) {
     }
 
     if (len > 0) {
-        for (var i = 0; i < len; i++) {
-            array.push(0);
-        }
+        array = new Array(len);
+        array.fill(0);
+    } else {
+        array = [];
     }
 
     for (var i = 0; i < str.length; i++) {
@@ -6786,7 +6787,7 @@ Exonum.uint8ArrayToHexadecimal = function(uint8arr) {
         return;
     }
 
-    for (var i = 0, len = uint8arr.length; i < len; i++) {
+    for (var i = 0; i < uint8arr.length; i++) {
         var hex = uint8arr[i].toString(16);
         hex = (hex.length === 1) ? '0' + hex : hex;
         str += hex;
@@ -6810,7 +6811,7 @@ Exonum.binaryStringToHexadecimal = function(binaryStr) {
         return;
     }
 
-    for (var i = 0, len = binaryStr.length; i < len; i += 8) {
+    for (var i = 0; i < binaryStr.length; i += 8) {
         var hex = (parseInt(binaryStr.substr(i, 8), 2)).toString(16);
         hex = (hex.length === 1) ? '0' + hex : hex;
         str += hex;
@@ -6834,7 +6835,7 @@ Exonum.hexadecimalToBinaryString = function(str) {
         return;
     }
 
-    for (var i = 0, len = str.length; i < len; i++) {
+    for (var i = 0; i < str.length; i++) {
         var bin = parseInt(str[i], 16).toString(2);
         while (bin.length < 4) {
             bin = '0' + bin;
@@ -7930,7 +7931,7 @@ Exonum.serialize = function(buffer, shift, data, type) {
         return true;
     }
 
-    for (var i = 0, len = type.size; i < len; i++) {
+    for (var i = 0; i < type.size; i++) {
         buffer[shift + i] = 0;
     }
 
@@ -7999,7 +8000,7 @@ var bigInt = require('big-integer');
  * @param {number} to
  */
 function insertHexadecimalToByteArray(str, buffer, from, to) {
-    for (var i = 0, len = str.length; i < len; i += 2) {
+    for (var i = 0; i < str.length; i += 2) {
         buffer[from] = parseInt(str.substr(i, 2), 16);
         from++;
 
@@ -8448,7 +8449,7 @@ Exonum.validateHexHash = function(hash, bytes) {
         return false;
     }
 
-    for (var i = 0, len = hash.length; i < len; i++) {
+    for (var i = 0; i < hash.length; i++) {
         if (isNaN(parseInt(hash[i], 16))) {
             console.error('Invalid symbol in hexadecimal string.');
             return false;
@@ -8472,7 +8473,7 @@ Exonum.validateBytesArray = function(arr, bytes) {
         return false;
     }
 
-    for (var i = 0, len = arr.length; i < len; i++) {
+    for (var i = 0; i < arr.length; i++) {
         if (typeof arr[i] !== 'number') {
             console.error('Wrong data type is passed as byte. Number is required');
             return false;
