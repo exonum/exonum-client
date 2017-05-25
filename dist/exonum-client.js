@@ -6554,46 +6554,64 @@ nacl.setPRNG = function(fn) {
 },{"crypto":3}],18:[function(require,module,exports){
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.verifyBlock = verifyBlock;
+
+var _helpers = require('../helpers');
+
+var helpers = _interopRequireWildcard(_helpers);
+
+var _primitive = require('../types/primitive');
+
+var primitive = _interopRequireWildcard(_primitive);
+
+var _generic = require('../types/generic');
+
+var _message = require('../types/message');
+
+var _validate = require('../types/validate');
+
+var _crypto = require('../crypto');
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 /**
  * Verifies block
  * @param {Object} data
  * @param {Array} validators
  * @return {Boolean}
  */
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.verifyBlock = verifyBlock;
 function verifyBlock(data, validators) {
-    var Block = this.newType({
+    var Block = (0, _generic.newType)({
         size: 116,
         fields: {
-            height: { type: this.Uint64, size: 8, from: 0, to: 8 },
-            propose_round: { type: this.Uint32, size: 4, from: 8, to: 12 },
-            time: { type: this.Timespec, size: 8, from: 12, to: 20 },
-            prev_hash: { type: this.Hash, size: 32, from: 20, to: 52 },
-            tx_hash: { type: this.Hash, size: 32, from: 52, to: 84 },
-            state_hash: { type: this.Hash, size: 32, from: 84, to: 116 }
+            height: { type: primitive.Uint64, size: 8, from: 0, to: 8 },
+            propose_round: { type: primitive.Uint32, size: 4, from: 8, to: 12 },
+            time: { type: primitive.Timespec, size: 8, from: 12, to: 20 },
+            prev_hash: { type: primitive.Hash, size: 32, from: 20, to: 52 },
+            tx_hash: { type: primitive.Hash, size: 32, from: 52, to: 84 },
+            state_hash: { type: primitive.Hash, size: 32, from: 84, to: 116 }
         }
     });
-    var Precommit = this.newMessage({
+    var Precommit = (0, _message.newMessage)({
         size: 84,
         service_id: 0,
         message_id: 4,
         fields: {
-            validator: { type: this.Uint32, size: 4, from: 0, to: 4 },
-            height: { type: this.Uint64, size: 8, from: 8, to: 16 },
-            round: { type: this.Uint32, size: 4, from: 16, to: 20 },
-            propose_hash: { type: this.Hash, size: 32, from: 20, to: 52 },
-            block_hash: { type: this.Hash, size: 32, from: 52, to: 84 }
+            validator: { type: primitive.Uint32, size: 4, from: 0, to: 4 },
+            height: { type: primitive.Uint64, size: 8, from: 8, to: 16 },
+            round: { type: primitive.Uint32, size: 4, from: 16, to: 20 },
+            propose_hash: { type: primitive.Hash, size: 32, from: 20, to: 52 },
+            block_hash: { type: primitive.Hash, size: 32, from: 52, to: 84 }
         }
     });
 
-    if (this.isObject(data) === false) {
+    if (helpers.isObject(data) === false) {
         console.error('Wrong type of data parameter. Object is expected.');
         return false;
-    } else if (this.isObject(data.block) === false) {
+    } else if (helpers.isObject(data.block) === false) {
         console.error('Wrong type of block field in data parameter. Object is expected.');
         return false;
     } else if (Array.isArray(data.precommits) === false) {
@@ -6605,7 +6623,7 @@ function verifyBlock(data, validators) {
     }
 
     for (var i = 0; i < validators.length; i++) {
-        if (this.validateHexHash(validators[i]) === false) {
+        if ((0, _validate.validateHexHash)(validators[i]) === false) {
             return false;
         }
     }
@@ -6613,15 +6631,15 @@ function verifyBlock(data, validators) {
     var validatorsTotalNumber = validators.length;
     var uniqueValidators = [];
     var round;
-    var blockHash = this.hash(data.block, Block);
+    var blockHash = (0, _crypto.hash)(data.block, Block);
 
     for (var i = 0; i < data.precommits.length; i++) {
         var precommit = data.precommits[i];
 
-        if (this.isObject(precommit.body) === false) {
+        if (helpers.isObject(precommit.body) === false) {
             console.error('Wrong type of precommits body. Object is expected.');
             return false;
-        } else if (this.validateHexHash(precommit.signature, 64) === false) {
+        } else if ((0, _validate.validateHexHash)(precommit.signature, 64) === false) {
             console.error('Wrong type of precommits signature. Hexadecimal of 64 length is expected.');
             return false;
         }
@@ -6652,7 +6670,7 @@ function verifyBlock(data, validators) {
 
         var publicKey = validators[precommit.body.validator];
 
-        if (this.verifySignature(precommit.body, Precommit, precommit.signature, publicKey) === false) {
+        if ((0, _crypto.verifySignature)(precommit.body, Precommit, precommit.signature, publicKey) === false) {
             console.error('Wrong signature of precommit.');
             return false;
         }
@@ -6666,7 +6684,7 @@ function verifyBlock(data, validators) {
     return true;
 }
 
-},{}],19:[function(require,module,exports){
+},{"../crypto":22,"../helpers":23,"../types/generic":26,"../types/message":28,"../types/primitive":29,"../types/validate":31}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6721,6 +6739,28 @@ var _objectAssign = require('object-assign');
 
 var _objectAssign2 = _interopRequireDefault(_objectAssign);
 
+var _helpers = require('../helpers');
+
+var helpers = _interopRequireWildcard(_helpers);
+
+var _primitive = require('../types/primitive');
+
+var primitive = _interopRequireWildcard(_primitive);
+
+var _generic = require('../types/generic');
+
+var _validate = require('../types/validate');
+
+var validate = _interopRequireWildcard(_validate);
+
+var _convert = require('../types/convert');
+
+var convert = _interopRequireWildcard(_convert);
+
+var _crypto = require('../crypto');
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var MERKLE_PATRICIA_KEY_LENGTH = 32;
@@ -6734,29 +6774,28 @@ var MERKLE_PATRICIA_KEY_LENGTH = 32;
  * @return {Object}
  */
 function merklePatriciaProof(rootHash, proofNode, key, type) {
-    var self = this;
-    var DBKey = this.newType({
+    var DBKey = (0, _generic.newType)({
         size: 34,
         fields: {
-            variant: { type: this.Uint8, size: 1, from: 0, to: 1 },
-            key: { type: this.Hash, size: 32, from: 1, to: 33 },
-            length: { type: this.Uint8, size: 1, from: 33, to: 34 }
+            variant: { type: primitive.Uint8, size: 1, from: 0, to: 1 },
+            key: { type: primitive.Hash, size: 32, from: 1, to: 33 },
+            length: { type: primitive.Uint8, size: 1, from: 33, to: 34 }
         }
     });
-    var Branch = this.newType({
+    var Branch = (0, _generic.newType)({
         size: 132,
         fields: {
-            left_hash: { type: this.Hash, size: 32, from: 0, to: 32 },
-            right_hash: { type: this.Hash, size: 32, from: 32, to: 64 },
+            left_hash: { type: primitive.Hash, size: 32, from: 0, to: 32 },
+            right_hash: { type: primitive.Hash, size: 32, from: 32, to: 64 },
             left_key: { type: DBKey, size: 34, from: 64, to: 98 },
             right_key: { type: DBKey, size: 34, from: 98, to: 132 }
         }
     });
-    var RootBranch = this.newType({
+    var RootBranch = (0, _generic.newType)({
         size: 66,
         fields: {
             key: { type: DBKey, size: 34, from: 0, to: 34 },
-            hash: { type: this.Hash, size: 32, from: 34, to: 66 }
+            hash: { type: primitive.Hash, size: 32, from: 34, to: 66 }
         }
     });
 
@@ -6769,23 +6808,23 @@ function merklePatriciaProof(rootHash, proofNode, key, type) {
         var elementsHash;
 
         if (typeof data === 'string') {
-            if (self.validateHexHash.call(self, data) === true) {
+            if (validate.validateHexHash(data) === true) {
                 element = data;
-                elementsHash = self.hash.call(self, self.hexadecimalToUint8Array.call(self, element));
+                elementsHash = (0, _crypto.hash)(convert.hexadecimalToUint8Array(element));
             } else {
                 console.error('Invalid hexadecimal string is passed as value in tree.');
                 return;
             }
         } else if (Array.isArray(data)) {
-            if (self.validateBytesArray.call(self, data) === true) {
+            if (validate.validateBytesArray(data) === true) {
                 element = data.slice(0); // clone array of 8-bit integers
-                elementsHash = self.hash.call(self, element);
+                elementsHash = (0, _crypto.hash)(element);
             } else {
                 return;
             }
-        } else if (self.isObject.call(self, data) === true) {
+        } else if (helpers.isObject(data) === true) {
             element = (0, _objectAssign2.default)(data); // deep copy
-            elementsHash = self.hash.call(self, element, type);
+            elementsHash = (0, _crypto.hash)(element, type);
         } else {
             console.error('Invalid value node in tree. Object expected.');
             return;
@@ -6816,7 +6855,7 @@ function merklePatriciaProof(rootHash, proofNode, key, type) {
      * @returns {String}
      */
     function recursive(node, keyPrefix) {
-        if (self.getObjectLength.call(self, node) !== 2) {
+        if (helpers.getObjectLength(node) !== 2) {
             console.error('Invalid number of children in the tree node.');
             return null;
         }
@@ -6830,7 +6869,7 @@ function merklePatriciaProof(rootHash, proofNode, key, type) {
             }
 
             // validate key
-            if (self.validateBinaryString.call(self, keySuffix) === false) {
+            if (validate.validateBinaryString(keySuffix) === false) {
                 return null;
             }
 
@@ -6844,12 +6883,12 @@ function merklePatriciaProof(rootHash, proofNode, key, type) {
 
             if (fullKey.length === MERKLE_PATRICIA_KEY_LENGTH * 8) {
                 if (typeof nodeValue === 'string') {
-                    if (self.validateHexHash.call(self, nodeValue) === false) {
+                    if (validate.validateHexHash(nodeValue) === false) {
                         return null;
                     }
                     branchValueHash = nodeValue;
                     branchType = 'hash';
-                } else if (self.isObject.call(self, nodeValue) === true) {
+                } else if (helpers.isObject(nodeValue) === true) {
                     if (typeof nodeValue.val === 'undefined') {
                         console.error('Leaf tree contains invalid data.');
                         return null;
@@ -6868,7 +6907,7 @@ function merklePatriciaProof(rootHash, proofNode, key, type) {
                     return null;
                 }
 
-                branchKeyHash = self.binaryStringToHexadecimal.call(self, fullKey);
+                branchKeyHash = convert.binaryStringToHexadecimal(fullKey);
                 branchKey = {
                     variant: 1,
                     key: branchKeyHash,
@@ -6877,12 +6916,12 @@ function merklePatriciaProof(rootHash, proofNode, key, type) {
             } else if (fullKey.length < MERKLE_PATRICIA_KEY_LENGTH * 8) {
                 // node is branch
                 if (typeof nodeValue === 'string') {
-                    if (self.validateHexHash.call(self, nodeValue) === false) {
+                    if (validate.validateHexHash(nodeValue) === false) {
                         return null;
                     }
                     branchValueHash = nodeValue;
                     branchType = 'hash';
-                } else if (self.isObject.call(self, nodeValue) === true) {
+                } else if (helpers.isObject(nodeValue) === true) {
                     if (typeof nodeValue.val !== 'undefined') {
                         console.error('Node with value is at non-leaf position in tree.');
                         return null;
@@ -6905,7 +6944,7 @@ function merklePatriciaProof(rootHash, proofNode, key, type) {
                     binaryKey += '0';
                 }
 
-                branchKeyHash = self.binaryStringToHexadecimal.call(self, binaryKey);
+                branchKeyHash = convert.binaryStringToHexadecimal(binaryKey);
                 branchKey = {
                     variant: 0,
                     key: branchKeyHash,
@@ -6957,7 +6996,7 @@ function merklePatriciaProof(rootHash, proofNode, key, type) {
             }
         }
 
-        return self.hash.call(self, {
+        return (0, _crypto.hash)({
             left_hash: levelData.left.hash,
             right_hash: levelData.right.hash,
             left_key: levelData.left.key,
@@ -6968,35 +7007,35 @@ function merklePatriciaProof(rootHash, proofNode, key, type) {
     var element;
 
     // validate rootHash parameter
-    if (this.validateHexHash(rootHash) === false) {
+    if (validate.validateHexHash(rootHash) === false) {
         return undefined;
     }
     rootHash = rootHash.toLowerCase();
 
     // validate proofNode parameter
-    if (this.isObject(proofNode) === false) {
+    if (helpers.isObject(proofNode) === false) {
         console.error('Invalid type of proofNode parameter. Object expected.');
         return undefined;
     }
 
     // validate key parameter
     if (Array.isArray(key)) {
-        if (this.validateBytesArray(key, MERKLE_PATRICIA_KEY_LENGTH) === true) {
-            key = this.uint8ArrayToHexadecimal(key);
+        if (validate.validateBytesArray(key, MERKLE_PATRICIA_KEY_LENGTH) === true) {
+            key = convert.uint8ArrayToHexadecimal(key);
         } else {
             return undefined;
         }
     } else if (typeof key === 'string') {
-        if (this.validateHexHash(key, MERKLE_PATRICIA_KEY_LENGTH) === false) {
+        if (validate.validateHexHash(key, MERKLE_PATRICIA_KEY_LENGTH) === false) {
             return undefined;
         }
     } else {
         console.error('Invalid type of key parameter. Array of 8-bit integers or hexadecimal string is expected.');
         return undefined;
     }
-    var keyBinary = this.hexadecimalToBinaryString(key);
+    var keyBinary = convert.hexadecimalToBinaryString(key);
 
-    var proofNodeRootNumberOfNodes = this.getObjectLength(proofNode);
+    var proofNodeRootNumberOfNodes = helpers.getObjectLength(proofNode);
     if (proofNodeRootNumberOfNodes === 0) {
         if (rootHash === new Uint8Array(MERKLE_PATRICIA_KEY_LENGTH * 2).join('')) {
             return null;
@@ -7010,21 +7049,21 @@ function merklePatriciaProof(rootHash, proofNode, key, type) {
                 continue;
             }
 
-            if (this.validateBinaryString(i, 256) === false) {
+            if (validate.validateBinaryString(i, 256) === false) {
                 return undefined;
             }
 
             var data = proofNode[i];
-            var nodeKeyBuffer = this.binaryStringToUint8Array(i);
-            var nodeKey = this.uint8ArrayToHexadecimal(nodeKeyBuffer);
+            var nodeKeyBuffer = convert.binaryStringToUint8Array(i);
+            var nodeKey = convert.uint8ArrayToHexadecimal(nodeKeyBuffer);
             var nodeHash;
 
             if (typeof data === 'string') {
-                if (this.validateHexHash(data) === false) {
+                if (validate.validateHexHash(data) === false) {
                     return undefined;
                 }
 
-                nodeHash = this.hash({
+                nodeHash = (0, _crypto.hash)({
                     key: {
                         variant: 1,
                         key: nodeKey,
@@ -7044,13 +7083,13 @@ function merklePatriciaProof(rootHash, proofNode, key, type) {
                     console.error('rootHash parameter is not equal to actual hash.');
                     return undefined;
                 }
-            } else if (this.isObject(data)) {
+            } else if (helpers.isObject(data)) {
                 var elementsHash = getHash(data.val);
                 if (typeof elementsHash === 'undefined') {
                     return undefined;
                 }
 
-                nodeHash = this.hash({
+                nodeHash = (0, _crypto.hash)({
                     key: {
                         variant: 1,
                         key: nodeKey,
@@ -7092,7 +7131,7 @@ function merklePatriciaProof(rootHash, proofNode, key, type) {
     }
 }
 
-},{"object-assign":8}],21:[function(require,module,exports){
+},{"../crypto":22,"../helpers":23,"../types/convert":25,"../types/generic":26,"../types/primitive":29,"../types/validate":31,"object-assign":8}],21:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7107,6 +7146,20 @@ var _bigInteger2 = _interopRequireDefault(_bigInteger);
 var _objectAssign = require('object-assign');
 
 var _objectAssign2 = _interopRequireDefault(_objectAssign);
+
+var _helpers = require('../helpers');
+
+var helpers = _interopRequireWildcard(_helpers);
+
+var _generic = require('../types/generic');
+
+var _validate = require('../types/validate');
+
+var _convert = require('../types/convert');
+
+var _crypto = require('../crypto');
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7133,7 +7186,6 @@ function calcHeight(count) {
  * @return {Array}
  */
 function merkleProof(rootHash, count, proofNode, range, type) {
-    var self = this;
     var elements = [];
     var rootBranch = 'left';
 
@@ -7160,25 +7212,25 @@ function merkleProof(rootHash, count, proofNode, range, type) {
         }
 
         if (typeof data === 'string') {
-            if (self.validateHexHash.call(self, data) === true) {
+            if ((0, _validate.validateHexHash)(data) === true) {
                 element = data;
-                elementsHash = self.hash.call(self, self.hexadecimalToUint8Array.call(self, element));
+                elementsHash = (0, _crypto.hash)((0, _convert.hexadecimalToUint8Array)(element));
             } else {
                 console.error('Invalid hexadecimal string is passed as value in tree.');
                 return;
             }
         } else if (Array.isArray(data)) {
-            if (self.validateBytesArray.call(self, data) === true) {
+            if ((0, _validate.validateBytesArray)(data) === true) {
                 element = data.slice(0); // clone array of 8-bit integers
-                elementsHash = self.hash.call(self, element);
+                elementsHash = (0, _crypto.hash)(element);
             } else {
                 console.error('Invalid array of 8-bit integers in tree.');
                 return;
             }
-        } else if (self.isObject.call(self, data) === true) {
-            if (self.isInstanceofOfNewType.call(self, type) === true) {
+        } else if (helpers.isObject(data) === true) {
+            if ((0, _generic.isInstanceofOfNewType)(type) === true) {
                 element = (0, _objectAssign2.default)(data); // deep copy
-                elementsHash = self.hash.call(self, element, type);
+                elementsHash = (0, _crypto.hash)(element, type);
             } else {
                 console.error('Invalid type of type parameter.');
                 return;
@@ -7215,11 +7267,11 @@ function merkleProof(rootHash, count, proofNode, range, type) {
 
         if (typeof node.left !== 'undefined') {
             if (typeof node.left === 'string') {
-                if (self.validateHexHash.call(self, node.left) === false) {
+                if ((0, _validate.validateHexHash)(node.left) === false) {
                     return null;
                 }
                 hashLeft = node.left;
-            } else if (self.isObject.call(self, node.left) === true) {
+            } else if (helpers.isObject(node.left) === true) {
                 if (typeof node.left.val !== 'undefined') {
                     hashLeft = getHash(node.left.val, depth, index * 2);
                 } else {
@@ -7243,11 +7295,11 @@ function merkleProof(rootHash, count, proofNode, range, type) {
 
         if (typeof node.right !== 'undefined') {
             if (typeof node.right === 'string') {
-                if (self.validateHexHash.call(self, node.right) === false) {
+                if ((0, _validate.validateHexHash)(node.right) === false) {
                     return null;
                 }
                 hashRight = node.right;
-            } else if (self.isObject.call(self, node.right) === true) {
+            } else if (helpers.isObject(node.right) === true) {
                 if (typeof node.right.val !== 'undefined') {
                     hashRight = getHash(node.right.val, depth, index * 2 + 1);
                 } else {
@@ -7262,20 +7314,20 @@ function merkleProof(rootHash, count, proofNode, range, type) {
             }
 
             summingBuffer = new Uint8Array(64);
-            summingBuffer.set(self.hexadecimalToUint8Array.call(self, hashLeft));
-            summingBuffer.set(self.hexadecimalToUint8Array.call(self, hashRight), 32);
+            summingBuffer.set((0, _convert.hexadecimalToUint8Array)(hashLeft));
+            summingBuffer.set((0, _convert.hexadecimalToUint8Array)(hashRight), 32);
         } else if (depth === 0 || rootBranch === 'left') {
             console.error('Right leaf is missed in left branch of tree.');
             return null;
         } else {
-            summingBuffer = self.hexadecimalToUint8Array.call(self, hashLeft);
+            summingBuffer = (0, _convert.hexadecimalToUint8Array)(hashLeft);
         }
 
-        return self.hash.call(self, summingBuffer);
+        return (0, _crypto.hash)(summingBuffer);
     }
 
     // validate rootHash
-    if (this.validateHexHash(rootHash) === false) {
+    if ((0, _validate.validateHexHash)(rootHash) === false) {
         return undefined;
     }
 
@@ -7334,7 +7386,7 @@ function merkleProof(rootHash, count, proofNode, range, type) {
     }
 
     // validate proofNode
-    if (this.isObject(proofNode) === false) {
+    if (helpers.isObject(proofNode) === false) {
         console.error('Invalid type of proofNode parameter. Object expected.');
         return undefined;
     }
@@ -7358,7 +7410,7 @@ function merkleProof(rootHash, count, proofNode, range, type) {
     return elements;
 }
 
-},{"big-integer":2,"object-assign":8}],22:[function(require,module,exports){
+},{"../crypto":22,"../helpers":23,"../types/convert":25,"../types/generic":26,"../types/validate":31,"big-integer":2,"object-assign":8}],22:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7377,6 +7429,24 @@ var _tweetnacl = require('tweetnacl');
 
 var _tweetnacl2 = _interopRequireDefault(_tweetnacl);
 
+var _helpers = require('../helpers');
+
+var helpers = _interopRequireWildcard(_helpers);
+
+var _generic = require('../types/generic');
+
+var _message = require('../types/message');
+
+var _validate = require('../types/validate');
+
+var validate = _interopRequireWildcard(_validate);
+
+var _convert = require('../types/convert');
+
+var convert = _interopRequireWildcard(_convert);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
@@ -7388,8 +7458,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  */
 function hash(data, type) {
     var buffer;
-    if (this.isInstanceofOfNewType(type)) {
-        if (this.isObject(data) === true) {
+    if ((0, _generic.isInstanceofOfNewType)(type)) {
+        if (helpers.isObject(data) === true) {
             buffer = type.serialize(data);
             if (typeof buffer === 'undefined') {
                 console.error('Invalid data parameter. Instance of NewType is expected.');
@@ -7399,8 +7469,8 @@ function hash(data, type) {
             console.error('Wrong type of data. Should be object.');
             return;
         }
-    } else if (this.isInstanceofOfMessage(type)) {
-        if (this.isObject(data) === true) {
+    } else if ((0, _message.isInstanceofOfMessage)(type)) {
+        if (helpers.isObject(data) === true) {
             buffer = type.serialize(data);
             if (typeof buffer === 'undefined') {
                 console.error('Invalid data parameter. Instance of NewMessage is expected.');
@@ -7434,13 +7504,13 @@ function sign(data, type, secretKey) {
     var signature;
 
     if (typeof secretKey !== 'undefined') {
-        if (this.isInstanceofOfNewType(type)) {
+        if ((0, _generic.isInstanceofOfNewType)(type)) {
             buffer = type.serialize(data);
             if (typeof buffer === 'undefined') {
                 console.error('Invalid data parameter. Instance of NewType is expected.');
                 return;
             }
-        } else if (this.isInstanceofOfMessage(type)) {
+        } else if ((0, _message.isInstanceofOfMessage)(type)) {
             buffer = type.serialize(data, true);
             if (typeof buffer === 'undefined') {
                 console.error('Invalid data parameter. Instance of NewMessage is expected.');
@@ -7451,7 +7521,7 @@ function sign(data, type, secretKey) {
             return;
         }
     } else {
-        if (this.validateBytesArray(data) === false) {
+        if (validate.validateBytesArray(data) === false) {
             console.error('Invalid data parameter.');
             return;
         }
@@ -7460,16 +7530,16 @@ function sign(data, type, secretKey) {
         secretKey = type;
     }
 
-    if (this.validateHexHash(secretKey, 64) === false) {
+    if (validate.validateHexHash(secretKey, 64) === false) {
         console.error('Invalid secretKey parameter.');
         return;
     }
 
     buffer = new Uint8Array(buffer);
-    secretKey = this.hexadecimalToUint8Array(secretKey);
+    secretKey = convert.hexadecimalToUint8Array(secretKey);
     signature = _tweetnacl2.default.sign.detached(buffer, secretKey);
 
-    return this.uint8ArrayToHexadecimal(signature);
+    return convert.uint8ArrayToHexadecimal(signature);
 }
 
 /**
@@ -7483,13 +7553,13 @@ function verifySignature(data, type, signature, publicKey) {
     var buffer;
 
     if (typeof publicKey !== 'undefined') {
-        if (this.isInstanceofOfNewType(type)) {
+        if ((0, _generic.isInstanceofOfNewType)(type)) {
             buffer = type.serialize(data);
             if (typeof buffer === 'undefined') {
                 console.error('Invalid data parameter. Instance of NewType is expected.');
                 return;
             }
-        } else if (this.isInstanceofOfMessage(type)) {
+        } else if ((0, _message.isInstanceofOfMessage)(type)) {
             buffer = type.serialize(data, true);
             if (typeof buffer === 'undefined') {
                 console.error('Invalid data parameter. Instance of NewMessage is expected.');
@@ -7500,7 +7570,7 @@ function verifySignature(data, type, signature, publicKey) {
             return;
         }
     } else {
-        if (this.validateBytesArray(data) === false) {
+        if (validate.validateBytesArray(data) === false) {
             console.error('Invalid data parameter.');
             return;
         }
@@ -7510,17 +7580,17 @@ function verifySignature(data, type, signature, publicKey) {
         signature = type;
     }
 
-    if (this.validateHexHash(publicKey) === false) {
+    if (validate.validateHexHash(publicKey) === false) {
         console.error('Invalid publicKey parameter.');
         return;
-    } else if (this.validateHexHash(signature, 64) === false) {
+    } else if (validate.validateHexHash(signature, 64) === false) {
         console.error('Invalid signature parameter.');
         return;
     }
 
     buffer = new Uint8Array(buffer);
-    signature = this.hexadecimalToUint8Array(signature);
-    publicKey = this.hexadecimalToUint8Array(publicKey);
+    signature = convert.hexadecimalToUint8Array(signature);
+    publicKey = convert.hexadecimalToUint8Array(publicKey);
 
     return _tweetnacl2.default.sign.detached.verify(buffer, signature, publicKey);
 }
@@ -7533,8 +7603,8 @@ function verifySignature(data, type, signature, publicKey) {
  */
 function keyPair() {
     var pair = _tweetnacl2.default.sign.keyPair();
-    var publicKey = this.uint8ArrayToHexadecimal(pair.publicKey);
-    var secretKey = this.uint8ArrayToHexadecimal(pair.secretKey);
+    var publicKey = convert.uint8ArrayToHexadecimal(pair.publicKey);
+    var secretKey = convert.uint8ArrayToHexadecimal(pair.secretKey);
 
     return {
         publicKey: publicKey,
@@ -7542,12 +7612,44 @@ function keyPair() {
     };
 }
 
-},{"sha.js":10,"tweetnacl":17}],23:[function(require,module,exports){
+},{"../helpers":23,"../types/convert":25,"../types/generic":26,"../types/message":28,"../types/validate":31,"sha.js":10,"tweetnacl":17}],23:[function(require,module,exports){
 'use strict';
+
+/**
+ * Check if element is of type {Object}
+ * @param obj
+ * @returns {boolean}
+ */
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+exports.isObject = isObject;
+exports.getObjectLength = getObjectLength;
+function isObject(obj) {
+    return (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object' && Array.isArray(obj) === false && obj !== null && !(obj instanceof Date);
+}
+
+/**
+ * Get length of object
+ * @param {Object} obj
+ * @returns {Number}
+ */
+function getObjectLength(obj) {
+    var l = 0;
+    for (var prop in obj) {
+        if (obj.hasOwnProperty(prop)) {
+            l++;
+        }
+    }
+    return l;
+}
+
+},{}],24:[function(require,module,exports){
+'use strict';
 
 var _index = require('./types/index');
 
@@ -7565,47 +7667,9 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Exonum = function () {
-    function Exonum() {
-        _classCallCheck(this, Exonum);
-
-        this.NETWORK_ID = 0;
-    }
-
-    /**
-     * Check if element is of type {Object}
-     * @param obj
-     * @returns {boolean}
-     */
-
-
-    _createClass(Exonum, [{
-        key: 'isObject',
-        value: function isObject(obj) {
-            return (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object' && Array.isArray(obj) === false && obj !== null && !(obj instanceof Date);
-        }
-
-        /**
-         * Get length of object
-         * @param {Object} obj
-         * @returns {Number}
-         */
-
-    }, {
-        key: 'getObjectLength',
-        value: function getObjectLength(obj) {
-            var l = 0;
-            for (var prop in obj) {
-                if (obj.hasOwnProperty(prop)) {
-                    l++;
-                }
-            }
-            return l;
-        }
-    }]);
-
-    return Exonum;
-}();
+var Exonum = function Exonum() {
+    _classCallCheck(this, Exonum);
+};
 
 var methods = Object.assign(types, crypto, blockchain);
 for (var i in methods) {
@@ -7614,7 +7678,7 @@ for (var i in methods) {
 
 module.exports = new Exonum();
 
-},{"./blockchain/index":19,"./crypto/index":22,"./types/index":26}],24:[function(require,module,exports){
+},{"./blockchain/index":19,"./crypto/index":22,"./types/index":27}],25:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7683,13 +7747,8 @@ function binaryStringToHexadecimal(binaryStr) {
     return str.toLowerCase();
 }
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 'use strict';
-
-/**
- * @constructor
- * @param {Object} type
- */
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -7700,15 +7759,28 @@ var _createClass = function () { function defineProperties(target, props) { for 
 exports.newType = newType;
 exports.isInstanceofOfNewType = isInstanceofOfNewType;
 
+var _serialization = require('./serialization');
+
+var serialization = _interopRequireWildcard(_serialization);
+
+var _crypto = require('../crypto');
+
+var crypto = _interopRequireWildcard(_crypto);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ * @constructor
+ * @param {Object} type
+ */
 var NewType = function () {
-    function NewType(type, parent) {
+    function NewType(type) {
         _classCallCheck(this, NewType);
 
         this.size = type.size;
         this.fields = type.fields;
-        this.parent = parent;
     }
 
     /**
@@ -7721,22 +7793,22 @@ var NewType = function () {
     _createClass(NewType, [{
         key: 'serialize',
         value: function serialize(data) {
-            return this.parent.serialize.call(this.parent, [], 0, data, this);
+            return serialization.serialize([], 0, data, this);
         }
     }, {
         key: 'hash',
         value: function hash(data) {
-            return this.parent.hash.call(this.parent, data, this);
+            return crypto.hash(data, this);
         }
     }, {
         key: 'sign',
         value: function sign(data, secretKey) {
-            return this.parent.sign.call(this.parent, data, this, secretKey);
+            return crypto.sign(data, this, secretKey);
         }
     }, {
         key: 'verifySignature',
         value: function verifySignature(data, signature, publicKey) {
-            return this.parent.verifySignature.call(this.parent, data, this, signature, publicKey);
+            return crypto.verifySignature(data, this, signature, publicKey);
         }
     }]);
 
@@ -7751,148 +7823,57 @@ var NewType = function () {
 
 
 function newType(type) {
-    return new NewType(type, this);
+    return new NewType(type);
 }
 
 function isInstanceofOfNewType(type) {
     return type instanceof NewType;
-};
+}
 
-},{}],26:[function(require,module,exports){
+},{"../crypto":22,"./serialization":30}],27:[function(require,module,exports){
 'use strict';
 
-/**
- * Serialize data into array of 8-bit integers and insert into buffer
- * @param {Array} buffer
- * @param {Number} shift - the index to start write into buffer
- * @param {Object} data
- * @param type - can be {NewType} or one of built-in types
- */
-
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
-exports.serialize = serialize;
 
 var _primitive = require('./primitive');
 
 Object.keys(_primitive).forEach(function (key) {
-    if (key === "default" || key === "__esModule") return;
-    Object.defineProperty(exports, key, {
-        enumerable: true,
-        get: function get() {
-            return _primitive[key];
-        }
-    });
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _primitive[key];
+    }
+  });
 });
 
 var _generic = require('./generic');
 
 Object.keys(_generic).forEach(function (key) {
-    if (key === "default" || key === "__esModule") return;
-    Object.defineProperty(exports, key, {
-        enumerable: true,
-        get: function get() {
-            return _generic[key];
-        }
-    });
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _generic[key];
+    }
+  });
 });
 
 var _message = require('./message');
 
 Object.keys(_message).forEach(function (key) {
-    if (key === "default" || key === "__esModule") return;
-    Object.defineProperty(exports, key, {
-        enumerable: true,
-        get: function get() {
-            return _message[key];
-        }
-    });
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _message[key];
+    }
+  });
 });
 
-var _validate = require('./validate');
-
-Object.keys(_validate).forEach(function (key) {
-    if (key === "default" || key === "__esModule") return;
-    Object.defineProperty(exports, key, {
-        enumerable: true,
-        get: function get() {
-            return _validate[key];
-        }
-    });
-});
-
-var _convert = require('./convert');
-
-Object.keys(_convert).forEach(function (key) {
-    if (key === "default" || key === "__esModule") return;
-    Object.defineProperty(exports, key, {
-        enumerable: true,
-        get: function get() {
-            return _convert[key];
-        }
-    });
-});
-function serialize(buffer, shift, data, type) {
-    var self = this;
-
-    function checkIfIsFixed(fields) {
-        for (var fieldName in fields) {
-            if (!fields.hasOwnProperty(fieldName)) {
-                continue;
-            }
-
-            if (self.isInstanceofOfNewType(fields[fieldName].type)) {
-                checkIfIsFixed(fields[fieldName].type.fields);
-            } else if (fields[fieldName].type === String) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    for (var i = 0, len = type.size; i < len; i++) {
-        buffer[shift + i] = 0;
-    }
-
-    for (var fieldName in data) {
-        if (!data.hasOwnProperty(fieldName)) {
-            continue;
-        }
-
-        var fieldType = type.fields[fieldName];
-
-        if (typeof fieldType === 'undefined') {
-            console.error(fieldName + ' field was not found in configuration of type.');
-            return;
-        }
-
-        var fieldData = data[fieldName];
-        var from = shift + fieldType.from;
-
-        if (self.isInstanceofOfNewType(fieldType.type)) {
-            var isFixed = checkIfIsFixed(fieldType.type.fields);
-
-            if (isFixed === true) {
-                self.serialize(buffer, from, fieldData, fieldType.type);
-            } else {
-                var end = buffer.length;
-                self.Uint32(end, buffer, from, from + 4);
-                self.serialize(buffer, end, fieldData, fieldType.type);
-                self.Uint32(buffer.length - end, buffer, from + 4, from + 8);
-            }
-        } else {
-            buffer = fieldType.type.call(self, fieldData, buffer, from, shift + fieldType.to);
-            if (typeof buffer === 'undefined') {
-                return;
-            }
-        }
-    }
-
-    return buffer;
-}
-
-},{"./convert":24,"./generic":25,"./message":27,"./primitive":28,"./validate":29}],27:[function(require,module,exports){
+},{"./generic":26,"./message":28,"./primitive":29}],28:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7904,6 +7885,22 @@ var _createClass = function () { function defineProperties(target, props) { for 
 exports.newMessage = newMessage;
 exports.isInstanceofOfMessage = isInstanceofOfMessage;
 
+var _primitive = require('./primitive');
+
+var primitive = _interopRequireWildcard(_primitive);
+
+var _generic = require('./generic');
+
+var _serialization = require('./serialization');
+
+var serialization = _interopRequireWildcard(_serialization);
+
+var _crypto = require('../crypto');
+
+var crypto = _interopRequireWildcard(_crypto);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var SIGNATURE_LENGTH = 64;
@@ -7914,7 +7911,7 @@ var SIGNATURE_LENGTH = 64;
  */
 
 var NewMessage = function () {
-    function NewMessage(type, parent) {
+    function NewMessage(type) {
         _classCallCheck(this, NewMessage);
 
         this.size = type.size;
@@ -7922,7 +7919,6 @@ var NewMessage = function () {
         this.service_id = type.service_id;
         this.signature = type.signature;
         this.fields = type.fields;
-        this.parent = parent;
     }
 
     /**
@@ -7936,35 +7932,35 @@ var NewMessage = function () {
     _createClass(NewMessage, [{
         key: 'serialize',
         value: function serialize(data, cutSignature) {
-            var MessageHead = this.parent.newType({
+            var MessageHead = (0, _generic.newType)({
                 size: 10,
                 fields: {
-                    network_id: { type: this.parent.Uint8, size: 1, from: 0, to: 1 },
-                    version: { type: this.parent.Uint8, size: 1, from: 1, to: 2 },
-                    message_id: { type: this.parent.Uint16, size: 2, from: 2, to: 4 },
-                    service_id: { type: this.parent.Uint16, size: 2, from: 4, to: 6 },
-                    payload: { type: this.parent.Uint32, size: 4, from: 6, to: 10 }
+                    network_id: { type: primitive.Uint8, size: 1, from: 0, to: 1 },
+                    version: { type: primitive.Uint8, size: 1, from: 1, to: 2 },
+                    message_id: { type: primitive.Uint16, size: 2, from: 2, to: 4 },
+                    service_id: { type: primitive.Uint16, size: 2, from: 4, to: 6 },
+                    payload: { type: primitive.Uint32, size: 4, from: 6, to: 10 }
                 }
             });
             var buffer = MessageHead.serialize({
-                network_id: this.parent.NETWORK_ID,
+                network_id: 0,
                 version: 0,
                 message_id: this.message_id,
                 service_id: this.service_id
             });
 
             // serialize and append message body
-            buffer = this.parent.serialize.call(this.parent, buffer, MessageHead.size, data, this);
+            buffer = serialization.serialize(buffer, MessageHead.size, data, this);
             if (typeof buffer === 'undefined') {
                 return;
             }
 
             // calculate payload and insert it into buffer
-            this.parent.Uint32(buffer.length + SIGNATURE_LENGTH, buffer, MessageHead.fields.payload.from, MessageHead.fields.payload.to);
+            primitive.Uint32(buffer.length + SIGNATURE_LENGTH, buffer, MessageHead.fields.payload.from, MessageHead.fields.payload.to);
 
             if (cutSignature !== true) {
                 // append signature
-                this.parent.Digest(this.signature, buffer, buffer.length, buffer.length + SIGNATURE_LENGTH);
+                primitive.Digest(this.signature, buffer, buffer.length, buffer.length + SIGNATURE_LENGTH);
             }
 
             return buffer;
@@ -7972,17 +7968,17 @@ var NewMessage = function () {
     }, {
         key: 'hash',
         value: function hash(data) {
-            return this.parent.hash.call(this.parent, data, this);
+            return crypto.hash(data, this);
         }
     }, {
         key: 'sign',
         value: function sign(data, secretKey) {
-            return this.parent.sign.call(this.parent, data, this, secretKey);
+            return crypto.sign(data, this, secretKey);
         }
     }, {
         key: 'verifySignature',
         value: function verifySignature(data, signature, publicKey) {
-            return this.parent.verifySignature.call(this.parent, data, this, signature, publicKey);
+            return crypto.verifySignature(data, this, signature, publicKey);
         }
     }]);
 
@@ -7997,14 +7993,14 @@ var NewMessage = function () {
 
 
 function newMessage(type) {
-    return new NewMessage(type, this);
+    return new NewMessage(type);
 }
 
 function isInstanceofOfMessage(type) {
     return type instanceof NewMessage;
 }
 
-},{}],28:[function(require,module,exports){
+},{"../crypto":22,"./generic":26,"./primitive":29,"./serialization":30}],29:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8029,6 +8025,12 @@ exports.Bool = Bool;
 var _bigInteger = require('big-integer');
 
 var _bigInteger2 = _interopRequireDefault(_bigInteger);
+
+var _validate = require('./validate');
+
+var validate = _interopRequireWildcard(_validate);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8115,7 +8117,7 @@ function insertStringToByteArray(str, buffer, from) {
 }
 
 function Int8(value, buffer, from, to) {
-    if (this.validateInteger(value, MIN_INT8, MAX_INT8, from, to, 1) === false) {
+    if (validate.validateInteger(value, MIN_INT8, MAX_INT8, from, to, 1) === false) {
         return;
     }
 
@@ -8129,7 +8131,7 @@ function Int8(value, buffer, from, to) {
 }
 
 function Int16(value, buffer, from, to) {
-    if (this.validateInteger(value, MIN_INT16, MAX_INT16, from, to, 2) === false) {
+    if (validate.validateInteger(value, MIN_INT16, MAX_INT16, from, to, 2) === false) {
         return;
     }
 
@@ -8143,7 +8145,7 @@ function Int16(value, buffer, from, to) {
 }
 
 function Int32(value, buffer, from, to) {
-    if (this.validateInteger(value, MIN_INT32, MAX_INT32, from, to, 4) === false) {
+    if (validate.validateInteger(value, MIN_INT32, MAX_INT32, from, to, 4) === false) {
         return;
     }
 
@@ -8158,7 +8160,7 @@ function Int32(value, buffer, from, to) {
 
 // value can be of type string or number
 function Int64(value, buffer, from, to) {
-    var val = this.validateBigInteger(value, MIN_INT64, MAX_INT64, from, to, 8);
+    var val = validate.validateBigInteger(value, MIN_INT64, MAX_INT64, from, to, 8);
 
     if (val === false) {
         return;
@@ -8176,7 +8178,7 @@ function Int64(value, buffer, from, to) {
 }
 
 function Uint8(value, buffer, from, to) {
-    if (this.validateInteger(value, 0, MAX_UINT8, from, to, 1) === false) {
+    if (validate.validateInteger(value, 0, MAX_UINT8, from, to, 1) === false) {
         return;
     }
 
@@ -8186,7 +8188,7 @@ function Uint8(value, buffer, from, to) {
 }
 
 function Uint16(value, buffer, from, to) {
-    if (this.validateInteger(value, 0, MAX_UINT16, from, to, 2) === false) {
+    if (validate.validateInteger(value, 0, MAX_UINT16, from, to, 2) === false) {
         return;
     }
 
@@ -8196,7 +8198,7 @@ function Uint16(value, buffer, from, to) {
 }
 
 function Uint32(value, buffer, from, to) {
-    if (this.validateInteger(value, 0, MAX_UINT32, from, to, 4) === false) {
+    if (validate.validateInteger(value, 0, MAX_UINT32, from, to, 4) === false) {
         return;
     }
 
@@ -8207,7 +8209,7 @@ function Uint32(value, buffer, from, to) {
 
 // value can be of type string or number
 function Uint64(value, buffer, from, to) {
-    var val = this.validateBigInteger(value, 0, MAX_UINT64, from, to, 8);
+    var val = validate.validateBigInteger(value, 0, MAX_UINT64, from, to, 8);
 
     if (val === false) {
         return;
@@ -8234,15 +8236,15 @@ function String(string, buffer, from, to) {
     }
 
     var bufferLength = buffer.length;
-    this.Uint32(bufferLength, buffer, from, from + 4); // index where string content starts in buffer
+    Uint32(bufferLength, buffer, from, from + 4); // index where string content starts in buffer
     insertStringToByteArray(string, buffer, bufferLength); // string content
-    this.Uint32(buffer.length - bufferLength, buffer, from + 4, from + 8); // string length
+    Uint32(buffer.length - bufferLength, buffer, from + 4, from + 8); // string length
 
     return buffer;
 }
 
 function Hash(hash, buffer, from, to) {
-    if (this.validateHexHash(hash) === false) {
+    if (validate.validateHexHash(hash) === false) {
         return;
     } else if (to - from !== 32) {
         console.error('Hash segment is of wrong length. 32 bytes long is required to store transmitted value.');
@@ -8255,7 +8257,7 @@ function Hash(hash, buffer, from, to) {
 }
 
 function Digest(digest, buffer, from, to) {
-    if (this.validateHexHash(digest, 64) === false) {
+    if (validate.validateHexHash(digest, 64) === false) {
         return;
     } else if (to - from !== 64) {
         console.error('Digest segment is of wrong length. 64 bytes long is required to store transmitted value.');
@@ -8268,7 +8270,7 @@ function Digest(digest, buffer, from, to) {
 }
 
 function PublicKey(publicKey, buffer, from, to) {
-    if (this.validateHexHash(publicKey) === false) {
+    if (validate.validateHexHash(publicKey) === false) {
         return;
     } else if (to - from !== 32) {
         console.error('PublicKey segment is of wrong length. 32 bytes long is required to store transmitted value.');
@@ -8281,7 +8283,7 @@ function PublicKey(publicKey, buffer, from, to) {
 }
 
 function Timespec(nanoseconds, buffer, from, to) {
-    var val = this.validateBigInteger(nanoseconds, 0, MAX_UINT64, from, to, 8);
+    var val = validate.validateBigInteger(nanoseconds, 0, MAX_UINT64, from, to, 8);
 
     if (val === false) {
         return;
@@ -8308,7 +8310,83 @@ function Bool(value, buffer, from, to) {
     return buffer;
 }
 
-},{"big-integer":2}],29:[function(require,module,exports){
+},{"./validate":31,"big-integer":2}],30:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.serialize = serialize;
+
+var _generic = require('./generic');
+
+var _primitive = require('./primitive');
+
+/**
+ * Serialize data into array of 8-bit integers and insert into buffer
+ * @param {Array} buffer
+ * @param {Number} shift - the index to start write into buffer
+ * @param {Object} data
+ * @param type - can be {NewType} or one of built-in types
+ */
+function serialize(buffer, shift, data, type) {
+    function checkIfIsFixed(fields) {
+        for (var fieldName in fields) {
+            if (!fields.hasOwnProperty(fieldName)) {
+                continue;
+            }
+
+            if ((0, _generic.isInstanceofOfNewType)(fields[fieldName].type)) {
+                checkIfIsFixed(fields[fieldName].type.fields);
+            } else if (fields[fieldName].type === String) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    for (var i = 0, len = type.size; i < len; i++) {
+        buffer[shift + i] = 0;
+    }
+
+    for (var fieldName in data) {
+        if (!data.hasOwnProperty(fieldName)) {
+            continue;
+        }
+
+        var fieldType = type.fields[fieldName];
+
+        if (typeof fieldType === 'undefined') {
+            console.error(fieldName + ' field was not found in configuration of type.');
+            return;
+        }
+
+        var fieldData = data[fieldName];
+        var from = shift + fieldType.from;
+
+        if ((0, _generic.isInstanceofOfNewType)(fieldType.type)) {
+            var isFixed = checkIfIsFixed(fieldType.type.fields);
+
+            if (isFixed === true) {
+                serialize(buffer, from, fieldData, fieldType.type);
+            } else {
+                var end = buffer.length;
+                (0, _primitive.Uint32)(end, buffer, from, from + 4);
+                serialize(buffer, end, fieldData, fieldType.type);
+                (0, _primitive.Uint32)(buffer.length - end, buffer, from + 4, from + 8);
+            }
+        } else {
+            buffer = fieldType.type(fieldData, buffer, from, shift + fieldType.to);
+            if (typeof buffer === 'undefined') {
+                return;
+            }
+        }
+    }
+
+    return buffer;
+}
+
+},{"./generic":26,"./primitive":29}],31:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8432,5 +8510,5 @@ function validateBinaryString(str, bits) {
     return true;
 }
 
-},{"big-integer":2}]},{},[23])(23)
+},{"big-integer":2}]},{},[24])(24)
 });

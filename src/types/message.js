@@ -12,13 +12,12 @@ const SIGNATURE_LENGTH = 64;
  * @param {Object} type
  */
 class NewMessage {
-    constructor(type, self) {
+    constructor(type) {
         this.size = type.size;
         this.message_id = type.message_id;
         this.service_id = type.service_id;
         this.signature = type.signature;
         this.fields = type.fields;
-        this.self = self;
     }
 
     /**
@@ -39,7 +38,7 @@ class NewMessage {
             }
         });
         var buffer = MessageHead.serialize({
-            network_id: this.self.NETWORK_ID, // TODO undefined
+            network_id: 0,
             version: 0,
             message_id: this.message_id,
             service_id: this.service_id
@@ -81,7 +80,7 @@ class NewMessage {
  * @returns {NewMessage}
  */
 export function newMessage(type) {
-    return new NewMessage(type, this);
+    return new NewMessage(type);
 }
 
 export function isInstanceofOfMessage(type) {
