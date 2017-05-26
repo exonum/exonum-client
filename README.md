@@ -631,7 +631,7 @@ var hash = Exonum.hash(data, someMessage);
 
 | Name | Type | Description |
 |---|---|---|
-| buffer | `Array-like object` | An array of 8-bit integers |
+| buffer | Array-like object | An array of 8-bit integers |
 
 ```javascript
 var buffer = [218, 0, 3, 12, 33, 68, 105, 0];
@@ -697,7 +697,7 @@ var signature = Exonum.sign(secretKey, data, someMessage);
 | Name | Type | Description |
 |---|---|---|
 | secretKey | `string` | A 64-byte hexadecimal string. |
-| buffer | `Array-like object` | An array of 8-bit integers |
+| buffer | Array-like object | An array of 8-bit integers |
 
 ```javascript
 var buffer = [218, 0, 3, 12, 33, 68, 105, 0];
@@ -771,7 +771,7 @@ Exonum.verifySignature(signature, publicKey, data, someMessage);
 |---|---|---|
 | signature | `string` | A 64-byte hexadecimal string. |
 | publicKey | `string` | A 32-byte hexadecimal string. |
-| buffer | `Array-like object` | An array of 8-bit integers |
+| buffer | Array-like object | An array of 8-bit integers |
 
 ```javascript
 var buffer = [218, 0, 3, 12, 33, 68, 105, 0];

@@ -101,7 +101,6 @@ function insertStringToByteArray(str, buffer, from) {
  * @param {number} from
  * @param {number} to
  * @returns {Array}
- * @constructor
  */
 Exonum.Int8 = function(value, buffer, from, to) {
     if (Exonum.validateInteger(value, MIN_INT8, MAX_INT8, from, to, 1) === false) {
@@ -123,7 +122,6 @@ Exonum.Int8 = function(value, buffer, from, to) {
  * @param {number} from
  * @param {number} to
  * @returns {Array}
- * @constructor
  */
 Exonum.Int16 = function(value, buffer, from, to) {
     if (Exonum.validateInteger(value, MIN_INT16, MAX_INT16, from, to, 2) === false) {
@@ -145,7 +143,6 @@ Exonum.Int16 = function(value, buffer, from, to) {
  * @param {number} from
  * @param {number} to
  * @returns {Array}
- * @constructor
  */
 Exonum.Int32 = function(value, buffer, from, to) {
     if (Exonum.validateInteger(value, MIN_INT32, MAX_INT32, from, to, 4) === false) {
@@ -190,7 +187,6 @@ Exonum.Int64 = function(value, buffer, from, to) {
  * @param {number} from
  * @param {number} to
  * @returns {Array}
- * @constructor
  */
 Exonum.Uint8 = function(value, buffer, from, to) {
     if (Exonum.validateInteger(value, 0, MAX_UINT8, from, to, 1) === false) {
@@ -208,7 +204,6 @@ Exonum.Uint8 = function(value, buffer, from, to) {
  * @param {number} from
  * @param {number} to
  * @returns {Array}
- * @constructor
  */
 Exonum.Uint16 = function(value, buffer, from, to) {
     if (Exonum.validateInteger(value, 0, MAX_UINT16, from, to, 2) === false) {
@@ -226,7 +221,6 @@ Exonum.Uint16 = function(value, buffer, from, to) {
  * @param {number} from
  * @param {number} to
  * @returns {Array}
- * @constructor
  */
 Exonum.Uint32 = function(value, buffer, from, to) {
     if (Exonum.validateInteger(value, 0, MAX_UINT32, from, to, 4) === false) {
@@ -263,7 +257,6 @@ Exonum.Uint64 = function(value, buffer, from, to) {
  * @param {number} from
  * @param {number} to
  * @returns {Array}
- * @constructor
  */
 Exonum.String = function(string, buffer, from, to) {
     if (typeof string !== 'string') {
@@ -288,7 +281,6 @@ Exonum.String = function(string, buffer, from, to) {
  * @param {number} from
  * @param {number} to
  * @returns {Array}
- * @constructor
  */
 Exonum.Hash = function(hash, buffer, from, to) {
     if (Exonum.validateHexHash(hash) === false) {
@@ -309,7 +301,6 @@ Exonum.Hash = function(hash, buffer, from, to) {
  * @param {number} from
  * @param {number} to
  * @returns {Array}
- * @constructor
  */
 Exonum.Digest = function(digest, buffer, from, to) {
     if (Exonum.validateHexHash(digest, 64) === false) {
@@ -330,7 +321,6 @@ Exonum.Digest = function(digest, buffer, from, to) {
  * @param {number} from
  * @param {number} to
  * @returns {Array}
- * @constructor
  */
 Exonum.PublicKey = function(publicKey, buffer, from, to) {
     if (Exonum.validateHexHash(publicKey) === false) {
@@ -351,7 +341,6 @@ Exonum.PublicKey = function(publicKey, buffer, from, to) {
  * @param {number} from
  * @param {number} to
  * @returns {Array}
- * @constructor
  */
 Exonum.Bool = function(value, buffer, from, to) {
     if (typeof value !== 'boolean') {
@@ -373,7 +362,6 @@ Exonum.Bool = function(value, buffer, from, to) {
  * @param {number} from
  * @param {number} to
  * @returns {Array}
- * @constructor
  */
 Exonum.Timespec = function(nanoseconds, buffer, from, to) {
     var val = Exonum.validateBigInteger(nanoseconds, 0, MAX_UINT64, from, to, 8);
