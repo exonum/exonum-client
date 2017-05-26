@@ -6,7 +6,6 @@ require('../src/data-management');
 require('../src/validators');
 
 var bigInt = require('big-integer');
-var objectAssign = require('object-assign');
 
 /**
  * Calculate height of merkle tree
@@ -74,7 +73,7 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
             }
         } else if (Exonum.isObject(data)) {
             if (Exonum.isInstanceofOfNewType(type) === true) {
-                element = objectAssign(data); // deep copy
+                element = data;
                 elementsHash = Exonum.hash(element, type);
             } else {
                 console.error('Invalid type of type parameter.');

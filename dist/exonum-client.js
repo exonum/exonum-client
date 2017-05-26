@@ -3264,98 +3264,6 @@ module.exports = Array.isArray || function (arr) {
 };
 
 },{}],8:[function(require,module,exports){
-/*
-object-assign
-(c) Sindre Sorhus
-@license MIT
-*/
-
-'use strict';
-/* eslint-disable no-unused-vars */
-var getOwnPropertySymbols = Object.getOwnPropertySymbols;
-var hasOwnProperty = Object.prototype.hasOwnProperty;
-var propIsEnumerable = Object.prototype.propertyIsEnumerable;
-
-function toObject(val) {
-	if (val === null || val === undefined) {
-		throw new TypeError('Object.assign cannot be called with null or undefined');
-	}
-
-	return Object(val);
-}
-
-function shouldUseNative() {
-	try {
-		if (!Object.assign) {
-			return false;
-		}
-
-		// Detect buggy property enumeration order in older V8 versions.
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
-		var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
-		test1[5] = 'de';
-		if (Object.getOwnPropertyNames(test1)[0] === '5') {
-			return false;
-		}
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-		var test2 = {};
-		for (var i = 0; i < 10; i++) {
-			test2['_' + String.fromCharCode(i)] = i;
-		}
-		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
-			return test2[n];
-		});
-		if (order2.join('') !== '0123456789') {
-			return false;
-		}
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-		var test3 = {};
-		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
-			test3[letter] = letter;
-		});
-		if (Object.keys(Object.assign({}, test3)).join('') !==
-				'abcdefghijklmnopqrst') {
-			return false;
-		}
-
-		return true;
-	} catch (err) {
-		// We don't expect any of the above to throw, but better to be safe.
-		return false;
-	}
-}
-
-module.exports = shouldUseNative() ? Object.assign : function (target, source) {
-	var from;
-	var to = toObject(target);
-	var symbols;
-
-	for (var s = 1; s < arguments.length; s++) {
-		from = Object(arguments[s]);
-
-		for (var key in from) {
-			if (hasOwnProperty.call(from, key)) {
-				to[key] = from[key];
-			}
-		}
-
-		if (getOwnPropertySymbols) {
-			symbols = getOwnPropertySymbols(from);
-			for (var i = 0; i < symbols.length; i++) {
-				if (propIsEnumerable.call(from, symbols[i])) {
-					to[symbols[i]] = from[symbols[i]];
-				}
-			}
-		}
-	}
-
-	return to;
-};
-
-},{}],9:[function(require,module,exports){
 (function (Buffer){
 // prototype class for hash functions
 function Hash (blockSize, finalSize) {
@@ -3428,7 +3336,7 @@ Hash.prototype._update = function () {
 module.exports = Hash
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":4}],10:[function(require,module,exports){
+},{"buffer":4}],9:[function(require,module,exports){
 var exports = module.exports = function SHA (algorithm) {
   algorithm = algorithm.toLowerCase()
 
@@ -3445,7 +3353,7 @@ exports.sha256 = require('./sha256')
 exports.sha384 = require('./sha384')
 exports.sha512 = require('./sha512')
 
-},{"./sha":11,"./sha1":12,"./sha224":13,"./sha256":14,"./sha384":15,"./sha512":16}],11:[function(require,module,exports){
+},{"./sha":10,"./sha1":11,"./sha224":12,"./sha256":13,"./sha384":14,"./sha512":15}],10:[function(require,module,exports){
 (function (Buffer){
 /*
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-0, as defined
@@ -3542,7 +3450,7 @@ Sha.prototype._hash = function () {
 module.exports = Sha
 
 }).call(this,require("buffer").Buffer)
-},{"./hash":9,"buffer":4,"inherits":6}],12:[function(require,module,exports){
+},{"./hash":8,"buffer":4,"inherits":6}],11:[function(require,module,exports){
 (function (Buffer){
 /*
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-1, as defined
@@ -3644,7 +3552,7 @@ Sha1.prototype._hash = function () {
 module.exports = Sha1
 
 }).call(this,require("buffer").Buffer)
-},{"./hash":9,"buffer":4,"inherits":6}],13:[function(require,module,exports){
+},{"./hash":8,"buffer":4,"inherits":6}],12:[function(require,module,exports){
 (function (Buffer){
 /**
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
@@ -3700,7 +3608,7 @@ Sha224.prototype._hash = function () {
 module.exports = Sha224
 
 }).call(this,require("buffer").Buffer)
-},{"./hash":9,"./sha256":14,"buffer":4,"inherits":6}],14:[function(require,module,exports){
+},{"./hash":8,"./sha256":13,"buffer":4,"inherits":6}],13:[function(require,module,exports){
 (function (Buffer){
 /**
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
@@ -3838,7 +3746,7 @@ Sha256.prototype._hash = function () {
 module.exports = Sha256
 
 }).call(this,require("buffer").Buffer)
-},{"./hash":9,"buffer":4,"inherits":6}],15:[function(require,module,exports){
+},{"./hash":8,"buffer":4,"inherits":6}],14:[function(require,module,exports){
 (function (Buffer){
 var inherits = require('inherits')
 var SHA512 = require('./sha512')
@@ -3898,7 +3806,7 @@ Sha384.prototype._hash = function () {
 module.exports = Sha384
 
 }).call(this,require("buffer").Buffer)
-},{"./hash":9,"./sha512":16,"buffer":4,"inherits":6}],16:[function(require,module,exports){
+},{"./hash":8,"./sha512":15,"buffer":4,"inherits":6}],15:[function(require,module,exports){
 (function (Buffer){
 var inherits = require('inherits')
 var Hash = require('./hash')
@@ -4161,7 +4069,7 @@ Sha512.prototype._hash = function () {
 module.exports = Sha512
 
 }).call(this,require("buffer").Buffer)
-},{"./hash":9,"buffer":4,"inherits":6}],17:[function(require,module,exports){
+},{"./hash":8,"buffer":4,"inherits":6}],16:[function(require,module,exports){
 (function(nacl) {
 'use strict';
 
@@ -6551,7 +6459,7 @@ nacl.setPRNG = function(fn) {
 
 })(typeof module !== 'undefined' && module.exports ? module.exports : (self.nacl = self.nacl || {}));
 
-},{"crypto":3}],18:[function(require,module,exports){
+},{"crypto":3}],17:[function(require,module,exports){
 'use strict';
 var Exonum = require('../src/core');
 
@@ -6672,12 +6580,12 @@ Exonum.verifyBlock = function(data, validators) {
     return true;
 };
 
-},{"../src/core":21,"../src/data-management":23,"../src/validators":29}],19:[function(require,module,exports){
+},{"../src/core":20,"../src/data-management":22,"../src/validators":28}],18:[function(require,module,exports){
 var Exonum = require('./index.js');
 
 window.Exonum = window.Exonum || Exonum;
 
-},{"./index.js":24}],20:[function(require,module,exports){
+},{"./index.js":23}],19:[function(require,module,exports){
 'use strict';
 var Exonum = require('../src/core');
 
@@ -6846,7 +6754,7 @@ Exonum.hexadecimalToBinaryString = function(str) {
     return binaryStr;
 };
 
-},{"../src/core":21,"../src/types":28}],21:[function(require,module,exports){
+},{"../src/core":20,"../src/types":27}],20:[function(require,module,exports){
 'use strict';
 
 var Exonum = {
@@ -6864,7 +6772,7 @@ Exonum.isObject = function(obj) {
 
 module.exports = Exonum;
 
-},{}],22:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 'use strict';
 var Exonum = require('../src/core');
 
@@ -7063,7 +6971,7 @@ Exonum.randomUint64 = function() {
     return bigInt(hex, 16).toString();
 };
 
-},{"../src/convertors":20,"../src/core":21,"../src/data-management":23,"../src/serialization":27,"../src/validators":29,"big-integer":2,"sha.js":10,"tweetnacl":17}],23:[function(require,module,exports){
+},{"../src/convertors":19,"../src/core":20,"../src/data-management":22,"../src/serialization":26,"../src/validators":28,"big-integer":2,"sha.js":9,"tweetnacl":16}],22:[function(require,module,exports){
 'use strict';
 var Exonum = require('../src/core');
 
@@ -7241,7 +7149,7 @@ Exonum.isInstanceofOfNewMessage = function(type) {
 };
 
 
-},{"../src/core":21,"../src/cryptography":22,"../src/serialization":27,"../src/types":28}],24:[function(require,module,exports){
+},{"../src/core":20,"../src/cryptography":21,"../src/serialization":26,"../src/types":27}],23:[function(require,module,exports){
 'use strict';
 var Exonum = require('../src/core');
 
@@ -7253,7 +7161,7 @@ require('../src/blockchain');
 
 module.exports = Exonum;
 
-},{"../src/blockchain":18,"../src/core":21,"../src/cryptography":22,"../src/data-management":23,"../src/merkle-patricia-proof":25,"../src/merkle-proof":26}],25:[function(require,module,exports){
+},{"../src/blockchain":17,"../src/core":20,"../src/cryptography":21,"../src/data-management":22,"../src/merkle-patricia-proof":24,"../src/merkle-proof":25}],24:[function(require,module,exports){
 'use strict';
 var Exonum = require('../src/core');
 
@@ -7263,7 +7171,6 @@ require('../src/validators');
 
 const MERKLE_PATRICIA_KEY_LENGTH = 32;
 
-var objectAssign = require('object-assign');
 var DBKey = Exonum.newType({
     size: 34,
     fields: {
@@ -7322,7 +7229,7 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
                 return;
             }
         } else if (Exonum.isObject(data)) {
-            element = objectAssign(data); // deep copy
+            element = data;
             elementsHash = Exonum.hash(element, type);
         } else {
             console.error('Invalid value node in tree. Object expected.');
@@ -7628,7 +7535,7 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
     }
 };
 
-},{"../src/convertors":20,"../src/core":21,"../src/data-management":23,"../src/validators":29,"object-assign":8}],26:[function(require,module,exports){
+},{"../src/convertors":19,"../src/core":20,"../src/data-management":22,"../src/validators":28}],25:[function(require,module,exports){
 'use strict';
 var Exonum = require('../src/core');
 
@@ -7637,7 +7544,6 @@ require('../src/data-management');
 require('../src/validators');
 
 var bigInt = require('big-integer');
-var objectAssign = require('object-assign');
 
 /**
  * Calculate height of merkle tree
@@ -7705,7 +7611,7 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
             }
         } else if (Exonum.isObject(data)) {
             if (Exonum.isInstanceofOfNewType(type) === true) {
-                element = objectAssign(data); // deep copy
+                element = data;
                 elementsHash = Exonum.hash(element, type);
             } else {
                 console.error('Invalid type of type parameter.');
@@ -7885,7 +7791,7 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
     return elements;
 };
 
-},{"../src/convertors":20,"../src/core":21,"../src/data-management":23,"../src/validators":29,"big-integer":2,"object-assign":8}],27:[function(require,module,exports){
+},{"../src/convertors":19,"../src/core":20,"../src/data-management":22,"../src/validators":28,"big-integer":2}],26:[function(require,module,exports){
 'use strict';
 var Exonum = require('../src/core');
 
@@ -7955,7 +7861,7 @@ Exonum.serialize = function(buffer, shift, data, type) {
     return buffer;
 };
 
-},{"../src/core":21,"../src/types":28}],28:[function(require,module,exports){
+},{"../src/core":20,"../src/types":27}],27:[function(require,module,exports){
 'use strict';
 var Exonum = require('../src/core');
 
@@ -8345,7 +8251,7 @@ Exonum.Timespec = function(nanoseconds, buffer, from, to) {
     return buffer;
 };
 
-},{"../src/core":21,"../src/validators":29,"big-integer":2}],29:[function(require,module,exports){
+},{"../src/core":20,"../src/validators":28,"big-integer":2}],28:[function(require,module,exports){
 'use strict';
 var Exonum = require('../src/core');
 
@@ -8494,4 +8400,4 @@ Exonum.validateBinaryString = function(str, bits) {
     return true;
 };
 
-},{"../src/core":21,"big-integer":2}]},{},[19]);
+},{"../src/core":20,"big-integer":2}]},{},[18]);

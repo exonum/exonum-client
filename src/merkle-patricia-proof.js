@@ -7,7 +7,6 @@ require('../src/validators');
 
 const MERKLE_PATRICIA_KEY_LENGTH = 32;
 
-var objectAssign = require('object-assign');
 var DBKey = Exonum.newType({
     size: 34,
     fields: {
@@ -66,7 +65,7 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
                 return;
             }
         } else if (Exonum.isObject(data)) {
-            element = objectAssign(data); // deep copy
+            element = data;
             elementsHash = Exonum.hash(element, type);
         } else {
             console.error('Invalid value node in tree. Object expected.');
