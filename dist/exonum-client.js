@@ -6886,7 +6886,7 @@ var bigInt = require('big-integer');
 Exonum.hash = function(data, type) {
     var buffer;
 
-    if (Exonum.isInstanceofOfNewType(type)) {
+    if (Exonum.isInstanceofOfNewType(type) || Exonum.isInstanceofOfNewMessage(type)) {
         if (Exonum.isObject(data)) {
             buffer = type.serialize(data);
             if (buffer === undefined) {
@@ -6897,24 +6897,11 @@ Exonum.hash = function(data, type) {
             console.error('Wrong type of data parameter. Object is expected.');
             return;
         }
-    } else if (Exonum.isInstanceofOfNewMessage(type)) {
-        if (Exonum.isObject(data)) {
-            buffer = type.serialize(data);
-            if (buffer === undefined) {
-                console.error('Invalid data parameter. Instance of NewMessage is expected.');
-                return;
-            }
-        } else {
-            console.error('Wrong type of data parameter. Object is expected.');
-            return;
-        }
     } else if (type === undefined) {
-        if (Exonum.validateBytesArray(data)) {
-            if (Array.isArray(data)) {
-                buffer = data;
-            } else {
-                buffer = Array.from(data);
-            }
+        if (data instanceof Uint8Array) {
+            buffer = data;
+        } else if (Array.isArray(data)) {
+            buffer = new Uint8Array(data);
         } else {
             console.error('Invalid data parameter.');
             return;
@@ -6960,12 +6947,10 @@ Exonum.sign = function(secretKey, data, type) {
             return;
         }
     } else if (type === undefined) {
-        if (Exonum.validateBytesArray(data)) {
-            if (data instanceof Uint8Array) {
-                buffer = data;
-            } else {
-                buffer = new Uint8Array(data);
-            }
+        if (data instanceof Uint8Array) {
+            buffer = data;
+        } else if (Array.isArray(data)) {
+            buffer = new Uint8Array(data);
         } else {
             console.error('Invalid data parameter.');
             return;
@@ -7034,15 +7019,13 @@ Exonum.verifySignature = function(signature, publicKey, data, type) {
             return false;
         }
     } else if (type === undefined) {
-        if (Exonum.validateBytesArray(data)) {
-            if (data instanceof Uint8Array) {
-                buffer = data;
-            } else {
-                buffer = new Uint8Array(data);
-            }
+        if (data instanceof Uint8Array) {
+            buffer = data;
+        } else if (Array.isArray(data)) {
+            buffer = new Uint8Array(data);
         } else {
             console.error('Invalid data parameter.');
-            return false;
+            return;
         }
     } else {
         console.error('Invalid type parameter.');
