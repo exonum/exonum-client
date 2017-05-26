@@ -7080,7 +7080,8 @@ NewMessage.prototype.serialize = function(data, cutSignature) {
         network_id: Exonum.NETWORK_ID,
         version: 0,
         message_id: this.message_id,
-        service_id: this.service_id
+        service_id: this.service_id,
+        payload: 0 // placeholder, real value will be inserted later
     });
 
     // serialize and append message body
@@ -7805,14 +7806,14 @@ require('../src/types');
  * @param type - can be {NewType} or one of built-in types
  */
 Exonum.serialize = function(buffer, shift, data, type) {
-    function checkIfIsFixed(fields) {
+    function isFixed(fields) {
         for (var fieldName in fields) {
             if (!fields.hasOwnProperty(fieldName)) {
                 continue;
             }
 
             if (Exonum.isInstanceofOfNewType(fields[fieldName].type)) {
-                checkIfIsFixed(fields[fieldName].type.fields);
+                isFixed(fields[fieldName].type.fields);
             } else if (fields[fieldName].type === String) {
                 return false;
             }
@@ -7824,37 +7825,31 @@ Exonum.serialize = function(buffer, shift, data, type) {
         buffer[shift + i] = 0;
     }
 
-    for (var fieldName in data) {
-        if (!data.hasOwnProperty(fieldName)) {
+    for (var fieldName in type.fields) {
+        if (!type.fields.hasOwnProperty(fieldName)) {
             continue;
         }
 
-        var fieldType = type.fields[fieldName];
+        var fieldData = data[fieldName];
 
-        if (fieldType === undefined) {
-            console.error(fieldName + ' field was not found in configuration of type.');
+        if (fieldData === undefined) {
             return;
         }
 
-        var fieldData = data[fieldName];
+        var fieldType = type.fields[fieldName];
         var from = shift + fieldType.from;
 
         if (Exonum.isInstanceofOfNewType(fieldType.type)) {
-            var isFixed = checkIfIsFixed(fieldType.type.fields);
-
-            if (isFixed === true) {
-                Exonum.serialize(buffer, from, fieldData, fieldType.type);
+            if (isFixed(fieldType.type.fields)) {
+                buffer = Exonum.serialize(buffer, from, fieldData, fieldType.type);
             } else {
                 var end = buffer.length;
                 Exonum.Uint32(end, buffer, from, from + 4);
-                Exonum.serialize(buffer, end, fieldData, fieldType.type);
+                buffer = Exonum.serialize(buffer, end, fieldData, fieldType.type);
                 Exonum.Uint32(buffer.length - end, buffer, from + 4, from + 8);
             }
         } else {
             buffer = fieldType.type(fieldData, buffer, from, shift + fieldType.to);
-            if (buffer === undefined) {
-                return;
-            }
         }
     }
 
@@ -7965,7 +7960,6 @@ function insertStringToByteArray(str, buffer, from) {
  * @param {number} from
  * @param {number} to
  * @returns {Array}
- * @constructor
  */
 Exonum.Int8 = function(value, buffer, from, to) {
     if (Exonum.validateInteger(value, MIN_INT8, MAX_INT8, from, to, 1) === false) {
@@ -7987,7 +7981,6 @@ Exonum.Int8 = function(value, buffer, from, to) {
  * @param {number} from
  * @param {number} to
  * @returns {Array}
- * @constructor
  */
 Exonum.Int16 = function(value, buffer, from, to) {
     if (Exonum.validateInteger(value, MIN_INT16, MAX_INT16, from, to, 2) === false) {
@@ -8009,7 +8002,6 @@ Exonum.Int16 = function(value, buffer, from, to) {
  * @param {number} from
  * @param {number} to
  * @returns {Array}
- * @constructor
  */
 Exonum.Int32 = function(value, buffer, from, to) {
     if (Exonum.validateInteger(value, MIN_INT32, MAX_INT32, from, to, 4) === false) {
@@ -8054,7 +8046,6 @@ Exonum.Int64 = function(value, buffer, from, to) {
  * @param {number} from
  * @param {number} to
  * @returns {Array}
- * @constructor
  */
 Exonum.Uint8 = function(value, buffer, from, to) {
     if (Exonum.validateInteger(value, 0, MAX_UINT8, from, to, 1) === false) {
@@ -8072,7 +8063,6 @@ Exonum.Uint8 = function(value, buffer, from, to) {
  * @param {number} from
  * @param {number} to
  * @returns {Array}
- * @constructor
  */
 Exonum.Uint16 = function(value, buffer, from, to) {
     if (Exonum.validateInteger(value, 0, MAX_UINT16, from, to, 2) === false) {
@@ -8090,7 +8080,6 @@ Exonum.Uint16 = function(value, buffer, from, to) {
  * @param {number} from
  * @param {number} to
  * @returns {Array}
- * @constructor
  */
 Exonum.Uint32 = function(value, buffer, from, to) {
     if (Exonum.validateInteger(value, 0, MAX_UINT32, from, to, 4) === false) {
@@ -8127,7 +8116,6 @@ Exonum.Uint64 = function(value, buffer, from, to) {
  * @param {number} from
  * @param {number} to
  * @returns {Array}
- * @constructor
  */
 Exonum.String = function(string, buffer, from, to) {
     if (typeof string !== 'string') {
@@ -8152,7 +8140,6 @@ Exonum.String = function(string, buffer, from, to) {
  * @param {number} from
  * @param {number} to
  * @returns {Array}
- * @constructor
  */
 Exonum.Hash = function(hash, buffer, from, to) {
     if (Exonum.validateHexHash(hash) === false) {
@@ -8173,7 +8160,6 @@ Exonum.Hash = function(hash, buffer, from, to) {
  * @param {number} from
  * @param {number} to
  * @returns {Array}
- * @constructor
  */
 Exonum.Digest = function(digest, buffer, from, to) {
     if (Exonum.validateHexHash(digest, 64) === false) {
@@ -8194,7 +8180,6 @@ Exonum.Digest = function(digest, buffer, from, to) {
  * @param {number} from
  * @param {number} to
  * @returns {Array}
- * @constructor
  */
 Exonum.PublicKey = function(publicKey, buffer, from, to) {
     if (Exonum.validateHexHash(publicKey) === false) {
@@ -8215,7 +8200,6 @@ Exonum.PublicKey = function(publicKey, buffer, from, to) {
  * @param {number} from
  * @param {number} to
  * @returns {Array}
- * @constructor
  */
 Exonum.Bool = function(value, buffer, from, to) {
     if (typeof value !== 'boolean') {
@@ -8237,7 +8221,6 @@ Exonum.Bool = function(value, buffer, from, to) {
  * @param {number} from
  * @param {number} to
  * @returns {Array}
- * @constructor
  */
 Exonum.Timespec = function(nanoseconds, buffer, from, to) {
     var val = Exonum.validateBigInteger(nanoseconds, 0, MAX_UINT64, from, to, 8);

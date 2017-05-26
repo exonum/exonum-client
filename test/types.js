@@ -349,8 +349,8 @@ describe('Check built-in types', function() {
             });
             var args = ['Hello world', null, undefined, 57, [], {}, new Date()];
 
-            function test(since) {
-                var buffer = Type.serialize({since: since});
+            function test(active) {
+                var buffer = Type.serialize({active: active});
                 expect(buffer).to.equal(undefined);
             }
 

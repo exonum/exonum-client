@@ -106,7 +106,8 @@ NewMessage.prototype.serialize = function(data, cutSignature) {
         network_id: Exonum.NETWORK_ID,
         version: 0,
         message_id: this.message_id,
-        service_id: this.service_id
+        service_id: this.service_id,
+        payload: 0 // placeholder, real value will be inserted later
     });
 
     // serialize and append message body
