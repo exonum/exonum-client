@@ -10,10 +10,9 @@ describe('Convert data from one type to another', function() {
         });
 
         it('should return undefined when convert invalid hexadecimal into Uint8Array', function() {
-            var invalidValues = [null, false, 42, new Date(), {}, [], '0438082601f8b38ae010a621a48f4b4cd021c4e6e69219e3c2d8abab482039ez'];
-            for (var i = 0, len = invalidValues.length; i < len; i++) {
-                expect(Exonum.hexadecimalToUint8Array(invalidValues[i])).to.equal(undefined);
-            }
+            [null, false, 42, new Date(), {}, [], '0438082601f8b38ae010a621a48f4b4cd021c4e6e69219e3c2d8abab482039ez'].forEach(function(value) {
+                expect(Exonum.hexadecimalToUint8Array(value)).to.be.undefined;
+            });
         });
     });
 
@@ -24,10 +23,9 @@ describe('Convert data from one type to another', function() {
         });
 
         it('should return undefined when convert invalid string into Uint8Array', function() {
-            var invalidValues = [null, false, 42, new Date(), {}, []];
-            for (var i = 0, len = invalidValues.length; i < len; i++) {
-                expect(Exonum.hexadecimalToUint8Array(invalidValues[i])).to.equal(undefined);
-            }
+            [null, false, 42, new Date(), {}, []].forEach(function(value) {
+                expect(Exonum.stringToUint8Array(value)).to.be.undefined;
+            });
         });
     });
 
@@ -38,10 +36,9 @@ describe('Convert data from one type to another', function() {
         });
 
         it('should return undefined when convert invalid binaryString into Uint8Array', function() {
-            var invalidValues = [null, false, 42, new Date(), {}, [], '102'];
-            for (var i = 0, len = invalidValues.length; i < len; i++) {
-                expect(Exonum.binaryStringToUint8Array(invalidValues[i])).to.equal(undefined);
-            }
+            [null, false, 42, new Date(), {}, [], '102'].forEach(function(value) {
+                expect(Exonum.binaryStringToUint8Array(value)).to.be.undefined;
+            });
         });
     });
 
@@ -52,10 +49,9 @@ describe('Convert data from one type to another', function() {
         });
 
         it('should return undefined when convert invalid Uint8Array into hexadecimal', function() {
-            var invalidValues = [null, false, 42, new Date(), {}, 'Hello world', [4,56]];
-            for (var i = 0, len = invalidValues.length; i < len; i++) {
-                expect(Exonum.uint8ArrayToHexadecimal(invalidValues[i])).to.equal(undefined);
-            }
+            [null, false, 42, new Date(), {}, 'Hello world', [4,56]].forEach(function(value) {
+                expect(Exonum.uint8ArrayToHexadecimal(value)).to.be.undefined;
+            });
         });
     });
 
@@ -66,10 +62,9 @@ describe('Convert data from one type to another', function() {
         });
 
         it('should return undefined when convert invalid binaryString into hexadecimal', function() {
-            var invalidValues = [null, false, 42, new Date(), {}, [], '102'];
-            for (var i = 0, len = invalidValues.length; i < len; i++) {
-                expect(Exonum.binaryStringToHexadecimal(invalidValues[i])).to.equal(undefined);
-            }
+            [null, false, 42, new Date(), {}, [], '102'].forEach(function(value) {
+                expect(Exonum.binaryStringToHexadecimal(value)).to.be.undefined;
+            });
         });
     });
 
@@ -80,10 +75,9 @@ describe('Convert data from one type to another', function() {
         });
 
         it('should return undefined when convert invalid hexadecimal into BinaryString', function() {
-            var invalidValues = [null, false, 42, new Date(), {}, [], 'az'];
-            for (var i = 0, len = invalidValues.length; i < len; i++) {
-                expect(Exonum.hexadecimalToBinaryString(invalidValues[i])).to.equal(undefined);
-            }
+            [null, false, 42, new Date(), {}, [], 'az'].forEach(function(value) {
+                expect(Exonum.hexadecimalToBinaryString(value)).to.be.undefined;
+            });
         });
     });
 

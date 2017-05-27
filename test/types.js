@@ -24,7 +24,7 @@ describe('Check built-in types', function() {
             var data = {hash: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value is invalid string', function() {
@@ -35,7 +35,7 @@ describe('Check built-in types', function() {
             var data = {hash: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3z'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value is too long string', function() {
@@ -46,7 +46,7 @@ describe('Check built-in types', function() {
             var data = {hash: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value is too short string', function() {
@@ -57,7 +57,7 @@ describe('Check built-in types', function() {
             var data = {hash: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value of invalid type', function() {
@@ -65,16 +65,10 @@ describe('Check built-in types', function() {
                 size: 32,
                 fields: {hash: {type: Exonum.Hash, size: 32, from: 0, to: 32}}
             });
-            var args = [true, null, undefined, 57, [], {}, new Date()];
 
-            function test(hash) {
-                var buffer = Type.serialize({hash: hash});
-                expect(buffer).to.equal(undefined);
-            }
-
-            for (var i in args) {
-                test(args[i])
-            }
+            [true, null, undefined, 57, [], {}, new Date()].forEach(function(hash) {
+                expect(Type.serialize({hash: hash})).to.be.undefined;
+            });
         });
 
     });
@@ -100,7 +94,7 @@ describe('Check built-in types', function() {
             var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value is invalid string', function() {
@@ -111,7 +105,7 @@ describe('Check built-in types', function() {
             var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3z'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value is too long string', function() {
@@ -122,7 +116,7 @@ describe('Check built-in types', function() {
             var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value is too short string', function() {
@@ -133,7 +127,7 @@ describe('Check built-in types', function() {
             var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value of invalid type', function() {
@@ -141,16 +135,10 @@ describe('Check built-in types', function() {
                 size: 32,
                 fields: {key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32}}
             });
-            var args = [true, null, undefined, 57, [], {}, new Date()];
 
-            function test(key) {
-                var buffer = Type.serialize({key: key});
-                expect(buffer).to.equal(undefined);
-            }
-
-            for (var i in args) {
-                test(args[i])
-            }
+            [true, null, undefined, 57, [], {}, new Date()].forEach(function(key) {
+                expect(Type.serialize({key: key})).to.be.undefined;
+            });
         });
 
     });
@@ -176,7 +164,7 @@ describe('Check built-in types', function() {
             var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value is invalid string', function() {
@@ -187,7 +175,7 @@ describe('Check built-in types', function() {
             var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3zf5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3z'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value is too long string', function() {
@@ -198,7 +186,7 @@ describe('Check built-in types', function() {
             var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value is too short string', function() {
@@ -209,7 +197,7 @@ describe('Check built-in types', function() {
             var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value of invalid type', function() {
@@ -217,16 +205,10 @@ describe('Check built-in types', function() {
                 size: 64,
                 fields: {key: {type: Exonum.Digest, size: 64, from: 0, to: 64}}
             });
-            var args = [true, null, undefined, 57, [], {}, new Date()];
 
-            function test(key) {
-                var buffer = Type.serialize({key: key});
-                expect(buffer).to.equal(undefined);
-            }
-
-            for (var i in args) {
-                test(args[i])
-            }
+            [true, null, undefined, 57, [], {}, new Date()].forEach(function(key) {
+                expect(Type.serialize({key: key})).to.be.undefined;
+            });
         });
 
     });
@@ -263,7 +245,7 @@ describe('Check built-in types', function() {
             var data = {since: -1483979894237};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the range of segment is invalid', function() {
@@ -274,7 +256,7 @@ describe('Check built-in types', function() {
             var data = {since: 1483979894237};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value is out of range', function() {
@@ -285,7 +267,7 @@ describe('Check built-in types', function() {
             var data = {since: '18446744073709551616'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value of invalid type', function() {
@@ -293,16 +275,10 @@ describe('Check built-in types', function() {
                 size: 8,
                 fields: {since: {type: Exonum.Timespec, size: 8, from: 0, to: 8}}
             });
-            var args = [true, null, undefined, [], {}, new Date()];
 
-            function test(since) {
-                var buffer = Type.serialize({since: since});
-                expect(buffer).to.equal(undefined);
-            }
-
-            for (var i in args) {
-                test(args[i])
-            }
+            [true, null, undefined, [], {}, new Date()].forEach(function(since) {
+                expect(Type.serialize({since: since})).to.be.undefined;
+            });
         });
 
     });
@@ -339,7 +315,7 @@ describe('Check built-in types', function() {
             var data = {active: true};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value of invalid type', function() {
@@ -347,16 +323,10 @@ describe('Check built-in types', function() {
                 size: 1,
                 fields: {active: {type: Exonum.Bool, size: 1, from: 0, to: 1}}
             });
-            var args = ['Hello world', null, undefined, 57, [], {}, new Date()];
 
-            function test(active) {
-                var buffer = Type.serialize({active: active});
-                expect(buffer).to.equal(undefined);
-            }
-
-            for (var i in args) {
-                test(args[i])
-            }
+            ['Hello world', null, undefined, 57, [], {}, new Date()].forEach(function(active) {
+                expect(Type.serialize({active: active})).to.be.undefined;
+            });
         });
 
     });
@@ -382,7 +352,7 @@ describe('Check built-in types', function() {
             var data = {text: 'Hello world'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value of invalid type', function() {
@@ -390,16 +360,10 @@ describe('Check built-in types', function() {
                 size: 8,
                 fields: {text: {type: Exonum.String, size: 8, from: 0, to: 8}}
             });
-            var args = [true, null, undefined, 57, [], {}, new Date()];
 
-            function test(text) {
-                var buffer = Type.serialize({text: text});
-                expect(buffer).to.equal(undefined);
-            }
-
-            for (var i in args) {
-                test(args[i])
-            }
+            [true, null, undefined, 57, [], {}, new Date()].forEach(function(text) {
+                expect(Type.serialize({text: text})).to.be.undefined;
+            });
         });
 
     });
@@ -436,7 +400,7 @@ describe('Check built-in types', function() {
             var data = {balance: 120};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value is too big positive number', function() {
@@ -447,7 +411,7 @@ describe('Check built-in types', function() {
             var data = {balance: 130};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value is too big negative number', function() {
@@ -458,7 +422,7 @@ describe('Check built-in types', function() {
             var data = {balance: -130};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value of invalid type', function() {
@@ -466,16 +430,10 @@ describe('Check built-in types', function() {
                 size: 1,
                 fields: {balance: {type: Exonum.Int8, size: 1, from: 0, to: 1}}
             });
-            var args = [true, null, undefined, [], {}, new Date()];
 
-            function test(balance) {
-                var buffer = Type.serialize({balance: balance});
-                expect(buffer).to.equal(undefined);
-            }
-
-            for (var i in args) {
-                test(args[i])
-            }
+            [true, null, undefined, [], {}, new Date()].forEach(function(balance) {
+                expect(Type.serialize({balance: balance})).to.be.undefined;
+            });
         });
 
     });
@@ -512,7 +470,7 @@ describe('Check built-in types', function() {
             var data = {balance: 30767};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value is too big positive number', function() {
@@ -523,7 +481,7 @@ describe('Check built-in types', function() {
             var data = {balance: 32769};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value is too big negative number', function() {
@@ -534,7 +492,7 @@ describe('Check built-in types', function() {
             var data = {balance: -32770};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value of invalid type', function() {
@@ -542,16 +500,10 @@ describe('Check built-in types', function() {
                 size: 2,
                 fields: {balance: {type: Exonum.Int16, size: 2, from: 0, to: 2}}
             });
-            var args = [true, null, undefined, [], {}, new Date()];
 
-            function test(balance) {
-                var buffer = Type.serialize({balance: balance});
-                expect(buffer).to.equal(undefined);
-            }
-
-            for (var i in args) {
-                test(args[i])
-            }
+            [true, null, undefined, [], {}, new Date()].forEach(function(balance) {
+                expect(Type.serialize({balance: balance})).to.be.undefined;
+            });
         });
 
     });
@@ -588,7 +540,7 @@ describe('Check built-in types', function() {
             var data = {balance: 613228};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value is too big positive number', function() {
@@ -599,7 +551,7 @@ describe('Check built-in types', function() {
             var data = {balance: 2147483649};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value is too big negative number', function() {
@@ -610,7 +562,7 @@ describe('Check built-in types', function() {
             var data = {balance: -2147483650};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value of invalid type', function() {
@@ -618,16 +570,10 @@ describe('Check built-in types', function() {
                 size: 4,
                 fields: {balance: {type: Exonum.Int32, size: 4, from: 0, to: 4}}
             });
-            var args = [true, null, undefined, [], {}, new Date()];
 
-            function test(balance) {
-                var buffer = Type.serialize({balance: balance});
-                expect(buffer).to.equal(undefined);
-            }
-
-            for (var i in args) {
-                test(args[i])
-            }
+            [true, null, undefined, [], {}, new Date()].forEach(function(balance) {
+                expect(Type.serialize({balance: balance})).to.be.undefined;
+            });
         });
 
     });
@@ -686,7 +632,7 @@ describe('Check built-in types', function() {
             var data = {balance: 613228};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value is too big positive number', function() {
@@ -697,7 +643,7 @@ describe('Check built-in types', function() {
             var data = {balance: '9223372036854775808'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value is too big negative number', function() {
@@ -708,7 +654,7 @@ describe('Check built-in types', function() {
             var data = {balance: '-9223372036854775809'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value of invalid type', function() {
@@ -716,16 +662,10 @@ describe('Check built-in types', function() {
                 size: 8,
                 fields: {balance: {type: Exonum.Int64, size: 8, from: 0, to: 8}}
             });
-            var args = [true, null, undefined, [], {}, new Date()];
 
-            function test(balance) {
-                var buffer = Type.serialize({balance: balance});
-                expect(buffer).to.equal(undefined);
-            }
-
-            for (var i in args) {
-                test(args[i])
-            }
+            [true, null, undefined, [], {}, new Date()].forEach(function(balance) {
+                expect(Type.serialize({balance: balance})).to.be.undefined;
+            });
         });
 
     });
@@ -751,7 +691,7 @@ describe('Check built-in types', function() {
             var data = {balance: 230};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value is negative number', function() {
@@ -762,7 +702,7 @@ describe('Check built-in types', function() {
             var data = {balance: -1};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value is out of range', function() {
@@ -773,7 +713,7 @@ describe('Check built-in types', function() {
             var data = {balance: 256};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value of invalid type', function() {
@@ -781,16 +721,10 @@ describe('Check built-in types', function() {
                 size: 1,
                 fields: {balance: {type: Exonum.Uint8, size: 1, from: 0, to: 1}}
             });
-            var args = [true, null, undefined, [], {}, new Date()];
 
-            function test(balance) {
-                var buffer = Type.serialize({balance: balance});
-                expect(buffer).to.equal(undefined);
-            }
-
-            for (var i in args) {
-                test(args[i])
-            }
+            [true, null, undefined, [], {}, new Date()].forEach(function(balance) {
+                expect(Type.serialize({balance: balance})).to.be.undefined;
+            });
         });
 
     });
@@ -816,7 +750,7 @@ describe('Check built-in types', function() {
             var data = {balance: 60535};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value is negative number', function() {
@@ -827,7 +761,7 @@ describe('Check built-in types', function() {
             var data = {balance: -1};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value is out of range', function() {
@@ -838,7 +772,7 @@ describe('Check built-in types', function() {
             var data = {balance: 65536};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value of invalid type', function() {
@@ -846,16 +780,10 @@ describe('Check built-in types', function() {
                 size: 2,
                 fields: {balance: {type: Exonum.Uint16, size: 2, from: 0, to: 2}}
             });
-            var args = [true, null, undefined, [], {}, new Date()];
 
-            function test(balance) {
-                var buffer = Type.serialize({balance: balance});
-                expect(buffer).to.equal(undefined);
-            }
-
-            for (var i in args) {
-                test(args[i])
-            }
+            [true, null, undefined, [], {}, new Date()].forEach(function(balance) {
+                expect(Type.serialize({balance: balance})).to.be.undefined;
+            });
         });
 
     });
@@ -881,7 +809,7 @@ describe('Check built-in types', function() {
             var data = {balance: 613228};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value is negative number', function() {
@@ -892,7 +820,7 @@ describe('Check built-in types', function() {
             var data = {balance: -1};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value is out of range', function() {
@@ -903,7 +831,7 @@ describe('Check built-in types', function() {
             var data = {balance: 4294967296};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value of invalid type', function() {
@@ -911,16 +839,10 @@ describe('Check built-in types', function() {
                 size: 4,
                 fields: {balance: {type: Exonum.Uint32, size: 4, from: 0, to: 4}}
             });
-            var args = [true, null, undefined, [], {}, new Date()];
 
-            function test(balance) {
-                var buffer = Type.serialize({balance: balance});
-                expect(buffer).to.equal(undefined);
-            }
-
-            for (var i in args) {
-                test(args[i])
-            }
+            [true, null, undefined, [], {}, new Date()].forEach(function(balance) {
+                expect(Type.serialize({balance: balance})).to.be.undefined;
+            });
         });
 
     });
@@ -957,7 +879,7 @@ describe('Check built-in types', function() {
             var data = {balance: 613228};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value is negative number', function() {
@@ -968,7 +890,7 @@ describe('Check built-in types', function() {
             var data = {balance: -613228};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value is out of range', function() {
@@ -979,7 +901,7 @@ describe('Check built-in types', function() {
             var data = {balance: '18446744073709551616'};
             var buffer = Type.serialize(data);
 
-            expect(buffer).to.equal(undefined);
+            expect(buffer).to.be.undefined;
         });
 
         it('should return undefined when the value of invalid type', function() {
@@ -987,16 +909,10 @@ describe('Check built-in types', function() {
                 size: 8,
                 fields: {balance: {type: Exonum.Uint64, size: 8, from: 0, to: 8}}
             });
-            var args = [true, null, undefined, [], {}, new Date()];
 
-            function test(balance) {
-                var buffer = Type.serialize({balance: balance});
-                expect(buffer).to.equal(undefined);
-            }
-
-            for (var i in args) {
-                test(args[i])
-            }
+            [true, null, undefined, [], {}, new Date()].forEach(function(balance) {
+                expect(Type.serialize({balance: balance})).to.be.undefined;
+            });
         });
 
     });

@@ -223,7 +223,7 @@ describe('Check cryptocurrency functions', function() {
             var data = require('./data/cryprocurrency/wallet-query/not-found.json');
             var publicKey = '72a3466b65ed9b5deb868120fc5424312dadf4bfb6258a6be32b051b47604064';
 
-            expect(getWallet(publicKey, data)).to.equal(null);
+            expect(getWallet(publicKey, data)).to.be.null;
         });
 
         it('should return wallet info and list of transactions if wallet with single transaction is found', function() {

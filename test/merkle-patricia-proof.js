@@ -11,7 +11,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             data.proof,
             data.searched_key
         );
-        expect(element).to.equal(null);
+        expect(element).to.be.null;
     });
 
     it('should return null when valid tree with leaf exclusive', function() {
@@ -21,7 +21,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             data.proof,
             data.searched_key
         );
-        expect(element).to.equal(null);
+        expect(element).to.be.null;
     });
 
     it('should return the child of valid tree with leaf inclusive', function() {
@@ -41,7 +41,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             data.proof,
             data.searched_key
         );
-        expect(element).to.equal(null);
+        expect(element).to.be.null;
     });
 
     it('should return the child of an valid tree with nested node inclusive', function() {
@@ -71,30 +71,25 @@ describe('Check proof of Merkle Patricia tree', function() {
             true, null, undefined, [], {}, 42, new Date()
         ];
 
-        function test(rootHash) {
-            expect(Exonum.merklePatriciaProof(rootHash)).to.equal(undefined);
-        }
-
-        for (var i in args) {
-            test(args[i]);
-        }
+        args.forEach(function(rootHash) {
+            expect(Exonum.merklePatriciaProof(rootHash)).to.be.undefined;
+        });
     });
 
     it('should return undefined when invalid proofNode parameter', function() {
+        var rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13';
         var args = [
             true, null, undefined, [], 42, 'Hello world', new Date()
         ];
 
-        function test(proofNode) {
-            expect(Exonum.merklePatriciaProof('6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13', proofNode)).to.equal(undefined);
-        }
-
-        for (var i in args) {
-            test(args[i]);
-        }
+        args.forEach(function(proofNode) {
+            expect(Exonum.merklePatriciaProof(rootHash, proofNode)).to.be.undefined;
+        });
     });
 
     it('should return undefined when invalid byte array key parameter', function() {
+        var rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13';
+        var proofNode = {};
         var args = [
             [1, 114],
             [1, true, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0],
@@ -106,55 +101,35 @@ describe('Check proof of Merkle Patricia tree', function() {
             [1, -1, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0]
         ];
 
-        function test(key) {
-            expect(Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {},
-                key
-            )).to.equal(undefined);
-        }
-
-        for (var i in args) {
-            test(args[i]);
-        }
+        args.forEach(function(key) {
+            expect(Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.be.undefined;
+        });
     });
 
     it('should return undefined when invalid string key parameter', function() {
+        var rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13';
+        var proofNode = {};
         var args = [
             '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff1',
             '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff1z',
             ''
         ];
 
-        function test(key) {
-            expect(Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {},
-                key
-            )).to.equal(undefined);
-        }
-
-        for (var i in args) {
-            test(args[i]);
-        }
+        args.forEach(function(key) {
+            expect(Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.be.undefined;
+        });
     });
 
     it('should return undefined when key parameter of wrong type', function() {
+        var rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13';
+        var proofNode = {};
         var args = [
             true, null, undefined, 42, [], {}, new Date()
         ];
 
-        function test(key) {
-            expect(Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {},
-                key
-            )).to.equal(undefined);
-        }
-
-        for (var i in args) {
-            test(args[i]);
-        }
+        args.forEach(function(key) {
+            expect(Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.be.undefined;
+        });
     });
 
     it('should return undefined when root is empty but rootHash is wrong', function() {
@@ -163,7 +138,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             {},
             '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
         );
-        expect(elements).to.equal(undefined);
+        expect(elements).to.be.undefined;
     });
 
     it('should return undefined when key of node is invalid binary string', function() {
@@ -171,150 +146,130 @@ describe('Check proof of Merkle Patricia tree', function() {
 
         elements = Exonum.merklePatriciaProof(
             '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-            {
-                '11110000111100': {}
-            },
+            {'11110000111100': {}},
             '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
         );
-        expect(elements).to.equal(undefined);
+        expect(elements).to.be.undefined;
 
         elements = Exonum.merklePatriciaProof(
             '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-            {
-                '111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001a': {}
-            },
+            {'111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001a': {}},
             '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
         );
-        expect(elements).to.equal(undefined);
+        expect(elements).to.be.undefined;
 
         elements = Exonum.merklePatriciaProof(
             '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-            {
-                '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110013': {}
-            },
+            {'1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110013': {}},
             '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
         );
-        expect(elements).to.equal(undefined);
+        expect(elements).to.be.undefined;
     });
 
     it('should return undefined when it is invalid hash is value of tree node', function() {
+        var rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13';
+        var key = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13';
         var args = [
             '',
             '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff1',
             '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff1z'
         ];
 
-        function test(val) {
+        args.forEach(function(val) {
             expect(Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {
-                    '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': val
-                },
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-            )).to.equal(undefined);
-        }
-
-        for (var i in args) {
-            test(args[i]);
-        }
+                rootHash,
+                {'1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': val},
+                key
+            )).to.be.undefined;
+        });
     });
 
     it('should return undefined when wrong rootHash parameter is passed (element is not found)', function() {
         var elements = Exonum.merklePatriciaProof(
             '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-            {
-                '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-            },
+            {'1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'},
             '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
         );
-        expect(elements).to.equal(undefined);
+        expect(elements).to.be.undefined;
     });
 
     it('should return undefined when invalid key with hash is in the root (element is not found)', function() {
         var elements = Exonum.merklePatriciaProof(
             '335ec501d811725a9e60f89a1b67103e6fa5e65712a007ed33324719a6e2de3a',
-            {
-                '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-            },
+            {'1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'},
             'f0f1f2f3f0f1f2f3f0f1f2f3f0f1f2f3f0f1f2f3f0f1f2f3f0f1f2f3f0f1f2f3'
         );
-        expect(elements).to.equal(undefined);
+        expect(elements).to.be.undefined;
     });
 
     it('should return undefined when value is of invalid type', function() {
+        var rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13';
+        var key = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13';
         var args = [
             false, null, undefined, 'Hello world', 42, new Date()
         ];
 
-        function test(val) {
+        args.forEach(function(val) {
             expect(Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+                rootHash,
                 {
                     '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': {
                         val: val
                     }
                 },
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-            )).to.equal(undefined);
-        }
-
-        for (var i in args) {
-            test(args[i]);
-        }
+                key
+            )).to.be.undefined;
+        });
     });
 
     it('should return undefined when invalid bytes array is on value position', function() {
+        var rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13';
+        var key = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13';
         var args = [
             [1, 'a', 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4],
             [1, -1, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4],
             [1, 256, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4]
         ];
 
-        function test(val) {
+        args.forEach(function(val) {
             expect(Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+                rootHash,
                 {
                     '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': {
                         val: val
                     }
                 },
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-            )).to.equal(undefined);
-        }
-
-        for (var i in args) {
-            test(args[i]);
-        }
+                key
+            )).to.be.undefined;
+        });
     });
 
     it('should return undefined when invalid value type', function() {
+        var rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13';
+        var key = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13';
         var args = [
             false, undefined, [], 42, new Date()
         ];
 
-        function test(val) {
+        args.forEach(function(val) {
             expect(Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                {
-                    '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': val
-                },
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-            )).to.equal(undefined);
-        }
-
-        for (var i in args) {
-            test(args[i]);
-        }
+                rootHash,
+                {'1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': val},
+                key
+            )).to.be.undefined;
+        });
     });
 
     it('should return undefined when invalid type parameter', function() {
+        var rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13';
+        var key = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13';
         var args = [
             null, false, 42, {}, [], new Date()
         ];
 
-        function test(type) {
+        args.forEach(function(val) {
             expect(Exonum.merklePatriciaProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+                rootHash,
                 {
                     '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': {
                         val: {
@@ -323,14 +278,9 @@ describe('Check proof of Merkle Patricia tree', function() {
                         }
                     }
                 },
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                type
-            )).to.equal(undefined);
-        }
-
-        for (var i in args) {
-            test(args[i]);
-        }
+                key
+            )).to.be.undefined;
+        });
     });
 
     it('should return undefined when single node tree with wrong type parameter', function() {
@@ -353,7 +303,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
             Type
         );
-        expect(elements).to.equal(undefined);
+        expect(elements).to.be.undefined;
     });
 
     it('should return undefined when single node tree with rootHash parameter not equal to actual hash (element is found)', function() {
@@ -375,7 +325,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
             Type
         );
-        expect(elements).to.equal(undefined);
+        expect(elements).to.be.undefined;
     });
 
     it('should return undefined when single node tree with invalid key with value in the root (element is found)', function() {
@@ -397,7 +347,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
             Type
         );
-        expect(elements).to.equal(undefined);
+        expect(elements).to.be.undefined;
     });
 
     it('should return undefined when single node tree with invalid key in the root of proofNode parameter', function() {
@@ -410,7 +360,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             },
             'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
         );
-        expect(elements).to.equal(undefined);
+        expect(elements).to.be.undefined;
     });
 
     it('should return undefined when single node tree with invalid key with value in the root', function() {
@@ -427,7 +377,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             },
             'f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4'
         );
-        expect(elements).to.equal(undefined);
+        expect(elements).to.be.undefined;
     });
 
     it('should return undefined when invalid number of children in the root node', function() {
@@ -440,7 +390,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             },
             '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
         );
-        expect(elements).to.equal(undefined);
+        expect(elements).to.be.undefined;
     });
 
     it('should return null when tree with array as key parameter is passed ', function() {
@@ -451,7 +401,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             },
             [244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244]
         );
-        expect(elements).to.equal(null);
+        expect(elements).to.be.null;
     });
 
     it('should return undefined when wrong rootHash parameter', function() {
@@ -477,91 +427,77 @@ describe('Check proof of Merkle Patricia tree', function() {
     });
 
     it('should return undefined when tree contains non full key and value of wrong type', function() {
-        var args = [
-            true, null, undefined, [], 42, new Date()
-        ];
+        var rootHash = '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55';
+        var key = '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3';
 
-        function test(val) {
+        [true, null, undefined, [], 42, new Date()].forEach(function(val) {
             expect(Exonum.merklePatriciaProof(
-                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                rootHash,
                 {
                     '0': val,
                     '1': {}
                 },
-                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-            )).to.equal(undefined);
-        }
-
-        for (var i in args) {
-            test(args[i]);
-        }
+                key
+            )).to.be.undefined;
+        });
     });
 
     it('should return undefined when tree contains full key and value of wrong type', function() {
-        var args = [
-            true, null, undefined, [], 42, new Date()
-        ];
+        var rootHash = '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55';
+        var key = '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3';
 
-        function test(val) {
+        [true, null, undefined, [], 42, new Date()].forEach(function(val) {
             expect(Exonum.merklePatriciaProof(
-                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                rootHash,
                 {
                     '0011001010001111110000101101101011111110000101010111001100101110011110010011110000111001011111111011110110100101111111111110111001110011111110011111001110011110111100001100100101110011010010111111011110001001000010000110000001000101101111100000101010100': val,
                     '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
                 },
-                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-            )).to.equal(undefined);
-        }
-
-        for (var i in args) {
-            test(args[i]);
-        }
+                key
+            )).to.be.undefined;
+        });
     });
 
     it('should return undefined when tree contains non full key and invalid hash', function() {
+        var rootHash = '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55';
+        var key = '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3';
         var args = [
             'Hello world',
             'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6ez',
             ''
         ];
 
-        function test(val) {
+        args.forEach(function(val) {
             expect(Exonum.merklePatriciaProof(
-                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                rootHash,
                 {
                     '0': val,
                     '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
                 },
-                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-            )).to.equal(undefined);
-        }
-
-        for (var i in args) {
-            test(args[i]);
-        }
+                key
+            )).to.be.undefined;
+        });
     });
 
     it('should return undefined when tree contains full key and invalid hash', function() {
+        var rootHash = '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55';
+        var key = '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3';
         var args = [
             'Hello world',
             'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6ez',
             ''
         ];
 
-        function test(val) {
+        args.forEach(function(val) {
             expect(Exonum.merklePatriciaProof(
-                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                rootHash,
                 {
                     '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': val,
                     '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
                 },
-                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-            )).to.equal(undefined);
-        }
-
-        for (var i in args) {
-            test(args[i]);
-        }
+                key
+            )).to.be.undefined;
+        });
     });
 
     it('should return undefined when tree contains full key and missed value', function() {
@@ -623,49 +559,37 @@ describe('Check proof of Merkle Patricia tree', function() {
     });
 
     it('should return undefined when tree contains full key and value of wrong type', function() {
-        var args = [
-            false, null, 42, 'Hello world'
-        ];
+        var rootHash = '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55';
+        var key = '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3';
 
-        function test(val) {
+        [false, null, 42, 'Hello world'].forEach(function(val) {
             expect(Exonum.merklePatriciaProof(
-                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                rootHash,
                 {
-                    '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
-                        val: val
-                    },
-                    '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+                    '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': val,
+                    '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
                 },
-                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-            )).to.equal(undefined);
-        }
-
-        for (var i in args) {
-            test(args[i]);
-        }
+                key
+            )).to.be.undefined;
+        });
     });
 
     it('should return undefined when tree contains full key and value as invalid binary array', function() {
-        var args = [
-            [false], [null], [257], ['Hello world'], [[]], [{}], [new Date()]
-        ];
+        var rootHash = '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55';
+        var key = '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3';
 
-        function test(val) {
+        [[false], [null], [257], ['Hello world'], [[]], [{}], [new Date()]].forEach(function(val) {
             expect(Exonum.merklePatriciaProof(
-                '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55',
+                rootHash,
                 {
                     '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
                         val: val
                     },
                     '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
                 },
-                '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-            )).to.equal(undefined);
-        }
-
-        for (var i in args) {
-            test(args[i]);
-        }
+                key
+            )).to.be.undefined;
+        });
     });
 
     it('should return undefined when tree contains full key and wrong type parameter', function() {
@@ -771,7 +695,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             },
             'ecdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdc'
         );
-        expect(element).to.equal(undefined);
+        expect(element).to.be.undefined;
     });
 
     it('should return undefined when tree contains right key which is part of search key but branch is not expanded', function() {
@@ -786,7 +710,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             },
             'fcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdc'
         );
-        expect(element).to.equal(undefined);
+        expect(element).to.be.undefined;
     });
 
 });
