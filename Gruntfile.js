@@ -21,6 +21,9 @@ module.exports = function(grunt) {
             },
             src: ['./test/**/*.js']
         },
+        mocha_istanbul: {
+            src: ['./test']
+        },
         browserify: {
             dist: {
                 src: './src/browser.js',
@@ -39,6 +42,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-mocha-test');
+    grunt.loadNpmTasks('grunt-mocha-istanbul');
     grunt.loadNpmTasks('grunt-contrib-clean');
 
     grunt.registerTask('test', ['jshint', 'mochaTest']);
