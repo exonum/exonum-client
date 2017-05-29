@@ -7411,14 +7411,14 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
 
     // validate rootHash parameter
     if (Exonum.validateHexHash(rootHash) === false) {
-        return undefined;
+        return;
     }
     rootHash = rootHash.toLowerCase();
 
     // validate proofNode parameter
     if (Exonum.isObject(proofNode) === false) {
         console.error('Invalid type of proofNode parameter. Object expected.');
-        return undefined;
+        return;
     }
 
     // validate key parameter
@@ -7426,15 +7426,15 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
         if (Exonum.validateBytesArray(key, MERKLE_PATRICIA_KEY_LENGTH)) {
             key = Exonum.uint8ArrayToHexadecimal(key);
         } else {
-            return undefined;
+            return;
         }
     } else if (typeof key === 'string') {
         if (Exonum.validateHexHash(key, MERKLE_PATRICIA_KEY_LENGTH) === false) {
-            return undefined;
+            return;
         }
     } else {
         console.error('Invalid type of key parameter. Array of 8-bit integers or hexadecimal string is expected.');
-        return undefined;
+        return;
     }
     var keyBinary = Exonum.hexadecimalToBinaryString(key);
 
@@ -7444,7 +7444,7 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
             return null;
         } else {
             console.error('Invalid rootHash parameter of empty tree.');
-            return undefined;
+            return;
         }
     } else if (proofNodeRootNumberOfNodes === 1) {
         for (var i in proofNode) {
@@ -7453,7 +7453,7 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
             }
 
             if (Exonum.validateBinaryString(i, 256) === false) {
-                return undefined;
+                return;
             }
 
             var data = proofNode[i];
@@ -7463,7 +7463,7 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
 
             if (typeof data === 'string') {
                 if (Exonum.validateHexHash(data) === false) {
-                    return undefined;
+                    return;
                 }
 
                 nodeHash = Exonum.hash({
@@ -7480,16 +7480,16 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
                         return null; // no element with data in tree
                     } else {
                         console.error('Invalid key with hash is in the root of proofNode parameter.');
-                        return undefined;
+                        return;
                     }
                 } else {
                     console.error('rootHash parameter is not equal to actual hash.');
-                    return undefined;
+                    return;
                 }
             } else if (Exonum.isObject(data)) {
                 var elementsHash = getHash(data.val);
                 if (elementsHash === undefined) {
-                    return undefined;
+                    return;
                 }
 
                 nodeHash = Exonum.hash({
@@ -7506,15 +7506,15 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
                         return element;
                     } else {
                         console.error('Invalid key with value is in the root of proofNode parameter.');
-                        return undefined;
+                        return;
                     }
                 } else {
                     console.error('rootHash parameter is not equal to actual hash.');
-                    return undefined;
+                    return;
                 }
             } else {
                 console.error('Invalid type of value in the root of proofNode parameter.');
-                return undefined;
+                return;
             }
 
         }
@@ -7522,10 +7522,10 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
         var actualHash = recursive(proofNode, '');
 
         if (actualHash === null) { // tree is invalid
-            return undefined;
+            return;
         } else if (rootHash !== actualHash) {
             console.error('rootHash parameter is not equal to actual hash.');
-            return undefined;
+            return;
         } else if (element === undefined) {
             return null; // no element with data in tree
         }
@@ -7709,59 +7709,59 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
 
     // validate rootHash
     if (Exonum.validateHexHash(rootHash) === false) {
-        return undefined;
+        return;
     }
 
     // validate count
     if (!(typeof count === 'number' || typeof count === 'string')) {
         console.error('Invalid value is passed as count parameter. Number or string is expected.');
-        return undefined;
+        return;
     }
     try {
         count = bigInt(count);
     } catch (e) {
         console.error('Invalid value is passed as count parameter.');
-        return undefined;
+        return;
     }
     if (count.lt(0)) {
         console.error('Invalid count parameter. Count can\'t be below zero.');
-        return undefined;
+        return;
     }
 
     // validate range
     if (Array.isArray(range) === false || range.length !== 2) {
         console.error('Invalid type of range parameter. Array of two elements expected.');
-        return undefined;
+        return;
     } else if (!(typeof range[0] === 'number' || typeof range[0] === 'string')) {
         console.error('Invalid value is passed as start of range parameter.');
-        return undefined;
+        return;
     } else if (!(typeof range[1] === 'number' || typeof range[1] === 'string')) {
         console.error('Invalid value is passed as end of range parameter.');
-        return undefined;
+        return;
     }
     var rangeStart;
     try {
         rangeStart = bigInt(range[0]);
     } catch (e) {
         console.error('Invalid value is passed as start of range parameter. Number or string is expected.');
-        return undefined;
+        return;
     }
     var rangeEnd;
     try {
         rangeEnd = bigInt(range[1]);
     } catch (e) {
         console.error('Invalid value is passed as end of range parameter. Number or string is expected.');
-        return undefined;
+        return;
     }
     if (rangeStart.gt(rangeEnd)) {
         console.error('Invalid range parameter. Start index can\'t be out of range.');
-        return undefined;
+        return;
     } else if (rangeStart.lt(0)) {
         console.error('Invalid range parameter. Start index can\'t be below zero.');
-        return undefined;
+        return;
     } else if (rangeEnd.lt(0)) {
         console.error('Invalid range parameter. End index can\'t be below zero.');
-        return undefined;
+        return;
     } else if (rangeStart.gt(count.minus(1))) {
         return [];
     }
@@ -7769,7 +7769,7 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
     // validate proofNode
     if (Exonum.isObject(proofNode) === false) {
         console.error('Invalid type of proofNode parameter. Object expected.');
-        return undefined;
+        return;
     }
 
     var height = calcHeight(count);
@@ -7778,13 +7778,13 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
     var actualHash = recursive(proofNode, 0, 0);
 
     if (actualHash === undefined) { // tree is invalid
-        return undefined;
+        return;
     } else if (rootHash.toLowerCase() !== actualHash) {
         console.error('rootHash parameter is not equal to actual hash.');
-        return undefined;
+        return;
     } else if (bigInt(elements.length).neq(end.eq(start) ? 1 : end.minus(start).plus(1))) {
         console.error('Actual elements in tree amount is not equal to requested.');
-        return undefined;
+        return;
     }
 
     return elements;

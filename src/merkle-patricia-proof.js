@@ -248,14 +248,14 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
 
     // validate rootHash parameter
     if (Exonum.validateHexHash(rootHash) === false) {
-        return undefined;
+        return;
     }
     rootHash = rootHash.toLowerCase();
 
     // validate proofNode parameter
     if (Exonum.isObject(proofNode) === false) {
         console.error('Invalid type of proofNode parameter. Object expected.');
-        return undefined;
+        return;
     }
 
     // validate key parameter
@@ -263,15 +263,15 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
         if (Exonum.validateBytesArray(key, MERKLE_PATRICIA_KEY_LENGTH)) {
             key = Exonum.uint8ArrayToHexadecimal(key);
         } else {
-            return undefined;
+            return;
         }
     } else if (typeof key === 'string') {
         if (Exonum.validateHexHash(key, MERKLE_PATRICIA_KEY_LENGTH) === false) {
-            return undefined;
+            return;
         }
     } else {
         console.error('Invalid type of key parameter. Array of 8-bit integers or hexadecimal string is expected.');
-        return undefined;
+        return;
     }
     var keyBinary = Exonum.hexadecimalToBinaryString(key);
 
@@ -281,7 +281,7 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
             return null;
         } else {
             console.error('Invalid rootHash parameter of empty tree.');
-            return undefined;
+            return;
         }
     } else if (proofNodeRootNumberOfNodes === 1) {
         for (var i in proofNode) {
@@ -290,7 +290,7 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
             }
 
             if (Exonum.validateBinaryString(i, 256) === false) {
-                return undefined;
+                return;
             }
 
             var data = proofNode[i];
@@ -300,7 +300,7 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
 
             if (typeof data === 'string') {
                 if (Exonum.validateHexHash(data) === false) {
-                    return undefined;
+                    return;
                 }
 
                 nodeHash = Exonum.hash({
@@ -317,16 +317,16 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
                         return null; // no element with data in tree
                     } else {
                         console.error('Invalid key with hash is in the root of proofNode parameter.');
-                        return undefined;
+                        return;
                     }
                 } else {
                     console.error('rootHash parameter is not equal to actual hash.');
-                    return undefined;
+                    return;
                 }
             } else if (Exonum.isObject(data)) {
                 var elementsHash = getHash(data.val);
                 if (elementsHash === undefined) {
-                    return undefined;
+                    return;
                 }
 
                 nodeHash = Exonum.hash({
@@ -343,15 +343,15 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
                         return element;
                     } else {
                         console.error('Invalid key with value is in the root of proofNode parameter.');
-                        return undefined;
+                        return;
                     }
                 } else {
                     console.error('rootHash parameter is not equal to actual hash.');
-                    return undefined;
+                    return;
                 }
             } else {
                 console.error('Invalid type of value in the root of proofNode parameter.');
-                return undefined;
+                return;
             }
 
         }
@@ -359,10 +359,10 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
         var actualHash = recursive(proofNode, '');
 
         if (actualHash === null) { // tree is invalid
-            return undefined;
+            return;
         } else if (rootHash !== actualHash) {
             console.error('rootHash parameter is not equal to actual hash.');
-            return undefined;
+            return;
         } else if (element === undefined) {
             return null; // no element with data in tree
         }
