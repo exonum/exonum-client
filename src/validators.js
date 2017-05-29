@@ -59,7 +59,7 @@ Exonum.validateBigInteger = function(value, min, max, from, to, length) {
             console.error('Number should be less or equal to ' + max + '.');
             return false;
         }
-        return val;
+        return true;
     } catch (e) {
         console.error('Wrong data type is passed as number. Should be of type Number or String.');
         return false;
@@ -127,7 +127,7 @@ Exonum.validateBytesArray = function(arr, bytes) {
 Exonum.validateBinaryString = function(str, bits) {
     if (bits !== undefined && str.length !== bits) {
         console.error('Binary string is of wrong length.');
-        return null;
+        return false;
     }
 
     for (var i = 0; i < str.length; i++) {

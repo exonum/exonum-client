@@ -161,11 +161,11 @@ Exonum.Int32 = function(value, buffer, from, to) {
  * @returns {Array}
  */
 Exonum.Int64 = function(value, buffer, from, to) {
-    var val = Exonum.validateBigInteger(value, MIN_INT64, MAX_INT64, from, to, 8);
-
-    if (val === false) {
+    if (Exonum.validateBigInteger(value, MIN_INT64, MAX_INT64, from, to, 8) === false) {
         return;
     }
+
+    var val = bigInt(value);
 
     if (val.isNegative()) {
         val = bigInt(MAX_UINT64).plus(1).plus(val);
@@ -235,11 +235,11 @@ Exonum.Uint32 = function(value, buffer, from, to) {
  * @returns {Array}
  */
 Exonum.Uint64 = function(value, buffer, from, to) {
-    var val = Exonum.validateBigInteger(value, 0, MAX_UINT64, from, to, 8);
-
-    if (val === false) {
+    if (Exonum.validateBigInteger(value, 0, MAX_UINT64, from, to, 8) === false) {
         return;
     }
+
+    var val = bigInt(value);
 
     insertIntegerToByteArray(val, buffer, from, to);
 
@@ -359,11 +359,11 @@ Exonum.Bool = function(value, buffer, from, to) {
  * @returns {Array}
  */
 Exonum.Timespec = function(nanoseconds, buffer, from, to) {
-    var val = Exonum.validateBigInteger(nanoseconds, 0, MAX_UINT64, from, to, 8);
-
-    if (val === false) {
+    if (Exonum.validateBigInteger(nanoseconds, 0, MAX_UINT64, from, to, 8) === false) {
         return;
     }
+
+    var val = bigInt(nanoseconds);
 
     insertIntegerToByteArray(val, buffer, from, to);
 

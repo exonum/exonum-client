@@ -7213,7 +7213,7 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
         var elementsHash;
 
         if (typeof data === 'string') {
-            if (Exonum.validateHexHash(data) === true) {
+            if (Exonum.validateHexHash(data)) {
                 element = data;
                 elementsHash = Exonum.hash(Exonum.hexadecimalToUint8Array(element));
             } else {
@@ -7221,7 +7221,7 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
                 return;
             }
         } else if (Array.isArray(data)) {
-            if (Exonum.validateBytesArray(data) === true) {
+            if (Exonum.validateBytesArray(data)) {
                 element = data.slice(0); // clone array of 8-bit integers
                 elementsHash = Exonum.hash(element);
             } else {
@@ -7423,7 +7423,7 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
 
     // validate key parameter
     if (Array.isArray(key)) {
-        if (Exonum.validateBytesArray(key, MERKLE_PATRICIA_KEY_LENGTH) === true) {
+        if (Exonum.validateBytesArray(key, MERKLE_PATRICIA_KEY_LENGTH)) {
             key = Exonum.uint8ArrayToHexadecimal(key);
         } else {
             return undefined;
@@ -7593,7 +7593,7 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
         }
 
         if (typeof data === 'string') {
-            if (Exonum.validateHexHash(data) === true) {
+            if (Exonum.validateHexHash(data)) {
                 element = data;
                 elementsHash = Exonum.hash(Exonum.hexadecimalToUint8Array(element));
             } else {
@@ -7601,7 +7601,7 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
                 return;
             }
         } else if (Array.isArray(data)) {
-            if (Exonum.validateBytesArray(data) === true) {
+            if (Exonum.validateBytesArray(data)) {
                 element = data.slice(0); // clone array of 8-bit integers
                 elementsHash = Exonum.hash(element);
             } else {
@@ -7896,7 +7896,7 @@ function insertHexadecimalToByteArray(str, buffer, from, to) {
 
 /**
  * Insert number into array as as little-endian
- * @param {number} number
+ * @param {number|bigInt} number
  * @param {Array} buffer
  * @param {number} from
  * @param {number} to
@@ -8020,11 +8020,11 @@ Exonum.Int32 = function(value, buffer, from, to) {
  * @returns {Array}
  */
 Exonum.Int64 = function(value, buffer, from, to) {
-    var val = Exonum.validateBigInteger(value, MIN_INT64, MAX_INT64, from, to, 8);
-
-    if (val === false) {
+    if (Exonum.validateBigInteger(value, MIN_INT64, MAX_INT64, from, to, 8) === false) {
         return;
     }
+
+    var val = bigInt(value);
 
     if (val.isNegative()) {
         val = bigInt(MAX_UINT64).plus(1).plus(val);
@@ -8094,11 +8094,11 @@ Exonum.Uint32 = function(value, buffer, from, to) {
  * @returns {Array}
  */
 Exonum.Uint64 = function(value, buffer, from, to) {
-    var val = Exonum.validateBigInteger(value, 0, MAX_UINT64, from, to, 8);
-
-    if (val === false) {
+    if (Exonum.validateBigInteger(value, 0, MAX_UINT64, from, to, 8) === false) {
         return;
     }
+
+    var val = bigInt(value);
 
     insertIntegerToByteArray(val, buffer, from, to);
 
@@ -8218,11 +8218,11 @@ Exonum.Bool = function(value, buffer, from, to) {
  * @returns {Array}
  */
 Exonum.Timespec = function(nanoseconds, buffer, from, to) {
-    var val = Exonum.validateBigInteger(nanoseconds, 0, MAX_UINT64, from, to, 8);
-
-    if (val === false) {
+    if (Exonum.validateBigInteger(nanoseconds, 0, MAX_UINT64, from, to, 8) === false) {
         return;
     }
+
+    var val = bigInt(nanoseconds);
 
     insertIntegerToByteArray(val, buffer, from, to);
 
@@ -8291,7 +8291,7 @@ Exonum.validateBigInteger = function(value, min, max, from, to, length) {
             console.error('Number should be less or equal to ' + max + '.');
             return false;
         }
-        return val;
+        return true;
     } catch (e) {
         console.error('Wrong data type is passed as number. Should be of type Number or String.');
         return false;
@@ -8359,7 +8359,7 @@ Exonum.validateBytesArray = function(arr, bytes) {
 Exonum.validateBinaryString = function(str, bits) {
     if (bits !== undefined && str.length !== bits) {
         console.error('Binary string is of wrong length.');
-        return null;
+        return false;
     }
 
     for (var i = 0; i < str.length; i++) {

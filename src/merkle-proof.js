@@ -56,7 +56,7 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
         }
 
         if (typeof data === 'string') {
-            if (Exonum.validateHexHash(data) === true) {
+            if (Exonum.validateHexHash(data)) {
                 element = data;
                 elementsHash = Exonum.hash(Exonum.hexadecimalToUint8Array(element));
             } else {
@@ -64,7 +64,7 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
                 return;
             }
         } else if (Array.isArray(data)) {
-            if (Exonum.validateBytesArray(data) === true) {
+            if (Exonum.validateBytesArray(data)) {
                 element = data.slice(0); // clone array of 8-bit integers
                 elementsHash = Exonum.hash(element);
             } else {

@@ -50,7 +50,7 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
         var elementsHash;
 
         if (typeof data === 'string') {
-            if (Exonum.validateHexHash(data) === true) {
+            if (Exonum.validateHexHash(data)) {
                 element = data;
                 elementsHash = Exonum.hash(Exonum.hexadecimalToUint8Array(element));
             } else {
@@ -58,7 +58,7 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
                 return;
             }
         } else if (Array.isArray(data)) {
-            if (Exonum.validateBytesArray(data) === true) {
+            if (Exonum.validateBytesArray(data)) {
                 element = data.slice(0); // clone array of 8-bit integers
                 elementsHash = Exonum.hash(element);
             } else {
@@ -260,7 +260,7 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
 
     // validate key parameter
     if (Array.isArray(key)) {
-        if (Exonum.validateBytesArray(key, MERKLE_PATRICIA_KEY_LENGTH) === true) {
+        if (Exonum.validateBytesArray(key, MERKLE_PATRICIA_KEY_LENGTH)) {
             key = Exonum.uint8ArrayToHexadecimal(key);
         } else {
             return undefined;
