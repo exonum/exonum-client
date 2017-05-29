@@ -8284,9 +8284,7 @@ Exonum.validateBigInteger = function(value, min, max, from, to, length) {
 
     try {
         val = bigInt(value);
-        if (!bigInt.isInstance(val)) {
-            return false;
-        } else if (val.lt(min)) {
+        if (val.lt(min)) {
             console.error('Number should be more or equal to ' + min + '.');
             return false;
         } else if (val.gt(max)) {
