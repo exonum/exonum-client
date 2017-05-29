@@ -7905,11 +7905,6 @@ function insertHexadecimalToByteArray(str, buffer, from, to) {
 function insertIntegerToByteArray(number, buffer, from, to) {
     var str = number.toString(16);
 
-    if (str.length < 3) {
-        buffer[from] = parseInt(str, 16);
-        return true;
-    }
-
     for (var i = str.length; i > 0; i -= 2) {
         if (i > 1) {
             buffer[from] = parseInt(str.substr(i - 2, 2), 16);
