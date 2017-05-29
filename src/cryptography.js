@@ -191,7 +191,5 @@ Exonum.keyPair = function() {
  */
 Exonum.randomUint64 = function() {
     var buffer = nacl.randomBytes(8);
-    var hex = Exonum.uint8ArrayToHexadecimal(buffer);
-
-    return bigInt(hex, 16).toString();
+    return bigInt.fromArray(Array.from(buffer), 256).toString();
 };

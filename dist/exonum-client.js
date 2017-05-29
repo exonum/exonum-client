@@ -6966,9 +6966,7 @@ Exonum.keyPair = function() {
  */
 Exonum.randomUint64 = function() {
     var buffer = nacl.randomBytes(8);
-    var hex = Exonum.uint8ArrayToHexadecimal(buffer);
-
-    return bigInt(hex, 16).toString();
+    return bigInt.fromArray(Array.from(buffer), 256).toString();
 };
 
 },{"../src/convertors":19,"../src/core":20,"../src/data-management":22,"../src/serialization":26,"../src/validators":28,"big-integer":2,"sha.js":9,"tweetnacl":16}],22:[function(require,module,exports){
