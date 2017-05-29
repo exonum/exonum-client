@@ -37,7 +37,7 @@ function insertHexadecimalToByteArray(str, buffer, from, to) {
 
 /**
  * Insert number into array as as little-endian
- * @param {number} number
+ * @param {number|bigInt} number
  * @param {Array} buffer
  * @param {number} from
  * @param {number} to
