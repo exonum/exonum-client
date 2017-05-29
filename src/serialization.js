@@ -18,7 +18,9 @@ Exonum.serialize = function(buffer, shift, data, type) {
             }
 
             if (Exonum.isInstanceofOfNewType(fields[fieldName].type)) {
-                isFixed(fields[fieldName].type.fields);
+                if (!isFixed(fields[fieldName].type.fields)) {
+                    return false;
+                }
             } else if (fields[fieldName].type === String) {
                 return false;
             }
