@@ -6,25 +6,31 @@ import {validateHexHash} from '../types/validate';
 import {hash, verifySignature} from '../crypto';
 
 /**
- * Verifies block
+ * Validate block and each precommit in block
  * @param {Object} data
  * @param {Array} validators
- * @return {Boolean}
+ * @return {boolean}
  */
 export function verifyBlock(data, validators) {
     var Block = newType({
-        size: 116,
+        size: 108,
         fields: {
             height: {type: primitive.Uint64, size: 8, from: 0, to: 8},
             propose_round: {type: primitive.Uint32, size: 4, from: 8, to: 12},
-            time: {type: primitive.Timespec, size: 8, from: 12, to: 20},
-            prev_hash: {type: primitive.Hash, size: 32, from: 20, to: 52},
-            tx_hash: {type: primitive.Hash, size: 32, from: 52, to: 84},
-            state_hash: {type: primitive.Hash, size: 32, from: 84, to: 116}
+            prev_hash: {type: primitive.Hash, size: 32, from: 12, to: 44},
+            tx_hash: {type: primitive.Hash, size: 32, from: 44, to: 76},
+            state_hash: {type: primitive.Hash, size: 32, from: 76, to: 108}
+        }
+    });
+    var SystemTime = newType({
+        size: 12,
+        fields: {
+            secs: {type: primitive.Uint64, size: 8, from: 0, to: 8},
+            nanos: {type: primitive.Uint32, size: 4, from: 8, to: 12}
         }
     });
     var Precommit = newMessage({
-        size: 84,
+        size: 96,
         service_id: 0,
         message_id: 4,
         fields: {
@@ -32,7 +38,8 @@ export function verifyBlock(data, validators) {
             height: {type: primitive.Uint64, size: 8, from: 8, to: 16},
             round: {type: primitive.Uint32, size: 4, from: 16, to: 20},
             propose_hash: {type: primitive.Hash, size: 32, from: 20, to: 52},
-            block_hash: {type: primitive.Hash, size: 32, from: 52, to: 84}
+            block_hash: {type: primitive.Hash, size: 32, from: 52, to: 84},
+            time: {type: SystemTime, size: 12, from: 84, to: 96}
         }
     });
 
@@ -89,7 +96,7 @@ export function verifyBlock(data, validators) {
             return false;
         }
 
-        if (typeof round === 'undefined') {
+        if (round === undefined) {
             round = precommit.body.round;
         } else if (precommit.body.round !== round) {
             console.error('Wrong round in precommit.');

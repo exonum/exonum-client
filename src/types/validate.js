@@ -1,5 +1,14 @@
 import bigInt from 'big-integer';
 
+/**
+ * @param {number} value
+ * @param {number} min
+ * @param {number} max
+ * @param {number} from
+ * @param {number} to
+ * @param {number} length
+ * @returns {boolean}
+ */
 export function validateInteger(value, min, max, from, to, length) {
     if (typeof value !== 'number') {
         console.error('Wrong data type is passed as number. Should be of type Number.');
@@ -18,7 +27,15 @@ export function validateInteger(value, min, max, from, to, length) {
     return true;
 }
 
-// value can be of type string or number
+/**
+ * @param {number|string} value
+ * @param {number} min
+ * @param {number} max
+ * @param {number} from
+ * @param {number} to
+ * @param {number} length
+ * @returns {*}
+ */
 export function validateBigInteger(value, min, max, from, to, length) {
     var val;
 
@@ -39,13 +56,18 @@ export function validateBigInteger(value, min, max, from, to, length) {
             console.error('Number should be less or equal to ' + max + '.');
             return false;
         }
-        return val;
+        return true;
     } catch (e) {
         console.error('Wrong data type is passed as number. Should be of type Number or String.');
         return false;
     }
 }
 
+/**
+ * @param {string} hash
+ * @param {number} [bytes=32] - optional
+ * @returns {boolean}
+ */
 export function validateHexHash(hash, bytes) {
     bytes = bytes || 32;
 
@@ -57,7 +79,7 @@ export function validateHexHash(hash, bytes) {
         return false;
     }
 
-    for (var i = 0, len = hash.length; i < len; i++) {
+    for (var i = 0; i < hash.length; i++) {
         if (isNaN(parseInt(hash[i], 16))) {
             console.error('Invalid symbol in hexadecimal string.');
             return false;
@@ -67,13 +89,21 @@ export function validateHexHash(hash, bytes) {
     return true;
 }
 
+/**
+ * @param {Array} arr
+ * @param {number} [bytes] - optional
+ * @returns {boolean}
+ */
 export function validateBytesArray(arr, bytes) {
-    if (bytes && arr.length !== bytes) {
+    if (Array.isArray(arr) === false && !(arr instanceof Uint8Array)) {
+        console.error('Wrong data type is passed. Array is required');
+        return false;
+    } if (bytes && arr.length !== bytes) {
         console.error('Array of 8-bit integers validity is of wrong length. ' + bytes * 2 + ' char symbols long is required. ' + arr.length + ' is passed.');
         return false;
     }
 
-    for (var i = 0, len = arr.length; i < len; i++) {
+    for (var i = 0; i < arr.length; i++) {
         if (typeof arr[i] !== 'number') {
             console.error('Wrong data type is passed as byte. Number is required');
             return false;
@@ -86,10 +116,15 @@ export function validateBytesArray(arr, bytes) {
     return true;
 }
 
+/**
+ * @param {string} str
+ * @param {number} [bits] - optional
+ * @returns {*}
+ */
 export function validateBinaryString(str, bits) {
-    if (typeof bits !== 'undefined' && str.length !== bits) {
+    if (bits !== undefined && str.length !== bits) {
         console.error('Binary string is of wrong length.');
-        return null;
+        return false;
     }
 
     for (var i = 0; i < str.length; i++) {

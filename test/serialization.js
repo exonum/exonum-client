@@ -140,7 +140,7 @@ describe('Serialize data into array of 8-bit integers', function() {
         var walletData = {fake: 123};
         var buffer = Wallet.serialize(walletData);
 
-        expect(buffer).to.equal(undefined);
+        expect(buffer).to.be.undefined;
     });
 
 });

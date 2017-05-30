@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "big-integer": "^1.6.17",
-    "object-assign": "^4.1.0",
     "sha.js": "^2.4.8",
     "tweetnacl": "^0.14.5"
   },
@@ -31,7 +30,9 @@
     "grunt-contrib-clean": "^1.0.0",
     "grunt-contrib-jshint": "^1.1.0",
     "grunt-contrib-uglify": "^2.2.0",
+    "grunt-mocha-istanbul": "^5.0.2",
     "grunt-mocha-test": "^0.13.2",
-    "mocha": "^3.2.0"
+    "istanbul": "^0.4.5",
+    "mocha": "^3.4.2"
   }
 }

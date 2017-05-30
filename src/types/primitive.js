@@ -14,8 +14,14 @@ const MAX_UINT16 = 65535;
 const MAX_UINT32 = 4294967295;
 const MAX_UINT64 = '18446744073709551615';
 
+/**
+ * @param {string} str
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ */
 function insertHexadecimalToByteArray(str, buffer, from, to) {
-    for (var i = 0, len = str.length; i < len; i += 2) {
+    for (var i = 0; i < str.length; i += 2) {
         buffer[from] = parseInt(str.substr(i, 2), 16);
         from++;
 
@@ -25,30 +31,22 @@ function insertHexadecimalToByteArray(str, buffer, from, to) {
     }
 }
 
+/**
+ * Insert number into array as as little-endian
+ * @param {number|bigInt} number
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {boolean}
+ */
 function insertIntegerToByteArray(number, buffer, from, to) {
     var str = number.toString(16);
 
-    insertNumberAsHexToByteArray(str, buffer, from, to);
-}
-
-function insertBigIntegerToByteArray(number, buffer, from, to) {
-    var str = number.toString(16);
-
-    insertNumberAsHexToByteArray(str, buffer, from, to);
-}
-
-function insertNumberAsHexToByteArray(number, buffer, from, to) {
-    // store Number as little-endian
-    if (number.length < 3) {
-        buffer[from] = parseInt(number, 16);
-        return true;
-    }
-
-    for (var i = number.length; i > 0; i -= 2) {
+    for (var i = str.length; i > 0; i -= 2) {
         if (i > 1) {
-            buffer[from] = parseInt(number.substr(i - 2, 2), 16);
+            buffer[from] = parseInt(str.substr(i - 2, 2), 16);
         } else {
-            buffer[from] = parseInt(number.substr(0, 1), 16);
+            buffer[from] = parseInt(str.substr(0, 1), 16);
         }
 
         from++;
@@ -59,6 +57,11 @@ function insertNumberAsHexToByteArray(number, buffer, from, to) {
     }
 }
 
+/**
+ * @param {string} str
+ * @param {Array} buffer
+ * @param {number} from
+ */
 function insertStringToByteArray(str, buffer, from) {
     for (var i = 0; i < str.length; i++) {
         var c = str.charCodeAt(i);
@@ -83,6 +86,13 @@ function insertStringToByteArray(str, buffer, from) {
     }
 }
 
+/**
+ * @param {number} value
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {Array}
+ */
 export function Int8(value, buffer, from, to) {
     if (validate.validateInteger(value, MIN_INT8, MAX_INT8, from, to, 1) === false) {
         return;
@@ -97,6 +107,13 @@ export function Int8(value, buffer, from, to) {
     return buffer;
 }
 
+/**
+ * @param {number} value
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {Array}
+ */
 export function Int16(value, buffer, from, to) {
     if (validate.validateInteger(value, MIN_INT16, MAX_INT16, from, to, 2) === false) {
         return;
@@ -111,6 +128,13 @@ export function Int16(value, buffer, from, to) {
     return buffer;
 }
 
+/**
+ * @param {number} value
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {Array}
+ */
 export function Int32(value, buffer, from, to) {
     if (validate.validateInteger(value, MIN_INT32, MAX_INT32, from, to, 4) === false) {
         return;
@@ -125,25 +149,36 @@ export function Int32(value, buffer, from, to) {
     return buffer;
 }
 
-// value can be of type string or number
+/**
+ * @param {number|string} value
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {Array}
+ */
 export function Int64(value, buffer, from, to) {
-    var val = validate.validateBigInteger(value, MIN_INT64, MAX_INT64, from, to, 8);
-
-    if (val === false) {
-        return;
-    } else if (!bigInt.isInstance(val)) {
+    if (validate.validateBigInteger(value, MIN_INT64, MAX_INT64, from, to, 8) === false) {
         return;
     }
+
+    var val = bigInt(value);
 
     if (val.isNegative()) {
         val = bigInt(MAX_UINT64).plus(1).plus(val);
     }
 
-    insertBigIntegerToByteArray(val, buffer, from, to);
+    insertIntegerToByteArray(val, buffer, from, to);
 
     return buffer;
 }
 
+/**
+ * @param {number} value
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {Array}
+ */
 export function Uint8(value, buffer, from, to) {
     if (validate.validateInteger(value, 0, MAX_UINT8, from, to, 1) === false) {
         return;
@@ -154,6 +189,13 @@ export function Uint8(value, buffer, from, to) {
     return buffer;
 }
 
+/**
+ * @param {number} value
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {Array}
+ */
 export function Uint16(value, buffer, from, to) {
     if (validate.validateInteger(value, 0, MAX_UINT16, from, to, 2) === false) {
         return;
@@ -164,6 +206,13 @@ export function Uint16(value, buffer, from, to) {
     return buffer;
 }
 
+/**
+ * @param {number} value
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {Array}
+ */
 export function Uint32(value, buffer, from, to) {
     if (validate.validateInteger(value, 0, MAX_UINT32, from, to, 4) === false) {
         return;
@@ -174,25 +223,32 @@ export function Uint32(value, buffer, from, to) {
     return buffer;
 }
 
-// value can be of type string or number
+/**
+ * @param {number|string} value
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {Array}
+ */
 export function Uint64(value, buffer, from, to) {
-    var val = validate.validateBigInteger(value, 0, MAX_UINT64, from, to, 8);
-
-    if (val === false) {
-        return;
-    } else if (!bigInt.isInstance(val)) {
+    if (validate.validateBigInteger(value, 0, MAX_UINT64, from, to, 8) === false) {
         return;
     }
 
-    insertBigIntegerToByteArray(val, buffer, from, to);
+    var val = bigInt(value);
+
+    insertIntegerToByteArray(val, buffer, from, to);
 
     return buffer;
 }
 
-export function randomUint64() {
-    return bigInt.randBetween(0, MAX_UINT64).toString();
-}
-
+/**
+ * @param {string} string
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {Array}
+ */
 export function String(string, buffer, from, to) {
     if (typeof string !== 'string') {
         console.error('Wrong data type is passed as String. String is required');
@@ -210,6 +266,13 @@ export function String(string, buffer, from, to) {
     return buffer;
 }
 
+/**
+ * @param {string} hash
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {Array}
+ */
 export function Hash(hash, buffer, from, to) {
     if (validate.validateHexHash(hash) === false) {
         return;
@@ -223,6 +286,13 @@ export function Hash(hash, buffer, from, to) {
     return buffer;
 }
 
+/**
+ * @param {string} digest
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {Array}
+ */
 export function Digest(digest, buffer, from, to) {
     if (validate.validateHexHash(digest, 64) === false) {
         return;
@@ -236,6 +306,13 @@ export function Digest(digest, buffer, from, to) {
     return buffer;
 }
 
+/**
+ * @param {string} publicKey
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {Array}
+ */
 export function PublicKey(publicKey, buffer, from, to) {
     if (validate.validateHexHash(publicKey) === false) {
         return;
@@ -249,20 +326,13 @@ export function PublicKey(publicKey, buffer, from, to) {
     return buffer;
 }
 
-export function Timespec(nanoseconds, buffer, from, to) {
-    var val = validate.validateBigInteger(nanoseconds, 0, MAX_UINT64, from, to, 8);
-
-    if (val === false) {
-        return;
-    } else if (!bigInt.isInstance(val)) {
-        return;
-    }
-
-    insertBigIntegerToByteArray(val, buffer, from, to);
-
-    return buffer;
-}
-
+/**
+ * @param {boolean} value
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {Array}
+ */
 export function Bool(value, buffer, from, to) {
     if (typeof value !== 'boolean') {
         console.error('Wrong data type is passed as Boolean. Boolean is required');
@@ -276,3 +346,22 @@ export function Bool(value, buffer, from, to) {
 
     return buffer;
 }
+
+/**
+ * @param {number|string} nanoseconds
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {Array}
+ */
+export function Timespec(nanoseconds, buffer, from, to) {
+    if (validate.validateBigInteger(nanoseconds, 0, MAX_UINT64, from, to, 8) === false) {
+        return;
+    }
+
+    var val = bigInt(nanoseconds);
+
+    insertIntegerToByteArray(val, buffer, from, to);
+
+    return buffer;
+};

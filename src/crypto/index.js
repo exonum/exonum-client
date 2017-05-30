@@ -8,39 +8,33 @@ import * as convert from '../types/convert';
 
 /**
  * Get SHA256 hash
- * Method with overloading. Accept two combinations of arguments:
- * 1) {Object} data, type
- * 2) {Array} buffer
- * @return {String}
+ * @param {Object|Array|Uint8Array} data - object of NewType type or array of 8-bit integers
+ * @param {NewType|NewMessage} [type] - optional, used only if data of {Object} type is passed
+ * @return {string}
  */
 export function hash(data, type) {
     var buffer;
-    if (isInstanceofOfNewType(type)) {
-        if (helpers.isObject(data) === true) {
+
+    if (isInstanceofOfNewType(type) || Exonum.isInstanceofOfNewMessage(type)) {
+        if (helpers.isObject(data)) {
             buffer = type.serialize(data);
-            if (typeof buffer === 'undefined') {
+            if (buffer === undefined) {
                 console.error('Invalid data parameter. Instance of NewType is expected.');
                 return;
             }
         } else {
-            console.error('Wrong type of data. Should be object.');
+            console.error('Wrong type of data parameter. Object is expected.');
             return;
         }
-    } else if (isInstanceofOfMessage(type)) {
-        if (helpers.isObject(data) === true) {
-            buffer = type.serialize(data);
-            if (typeof buffer === 'undefined') {
-                console.error('Invalid data parameter. Instance of NewMessage is expected.');
-                return;
-            }
+    } else if (type === undefined) {
+        if (data instanceof Uint8Array) {
+            buffer = data;
+        } else if (Array.isArray(data)) {
+            buffer = new Uint8Array(data);
         } else {
-            console.error('Wrong type of data. Should be object.');
+            console.error('Invalid data parameter.');
             return;
         }
-    } else if (data instanceof Uint8Array) {
-        buffer = data;
-    } else if (Array.isArray(data)) {
-        buffer = new Uint8Array(data);
     } else {
         console.error('Invalid type parameter.');
         return;
@@ -51,112 +45,130 @@ export function hash(data, type) {
 
 /**
  * Get ED25519 signature
- * Method with overloading. Accept two combinations of arguments:
- * 1) {Object} data, type, {String} secretKey
- * 2) {Array} buffer, {String} secretKey
- * @return {String}
+ * @param {string} secretKey
+ * @param {Object|Array} data - object of NewType type or array of 8-bit integers
+ * @param {NewType|NewMessage} [type] - optional, used only if data of {Object} type is passed
+ * @return {string}
  */
-export function sign(data, type, secretKey) {
+export function sign(secretKey, data, type) {
+    var secretKeyUint8Array;
     var buffer;
     var signature;
-
-    if (typeof secretKey !== 'undefined') {
-        if (isInstanceofOfNewType(type)) {
-            buffer = type.serialize(data);
-            if (typeof buffer === 'undefined') {
-                console.error('Invalid data parameter. Instance of NewType is expected.');
-                return;
-            }
-        } else if (isInstanceofOfMessage(type)) {
-            buffer = type.serialize(data, true);
-            if (typeof buffer === 'undefined') {
-                console.error('Invalid data parameter. Instance of NewMessage is expected.');
-                return;
-            }
-        } else {
-            console.error('Invalid type parameter.');
-            return;
-        }
-    } else {
-        if (validate.validateBytesArray(data) === false) {
-            console.error('Invalid data parameter.');
-            return;
-        }
-
-        buffer = data;
-        secretKey = type;
-    }
 
     if (validate.validateHexHash(secretKey, 64) === false) {
         console.error('Invalid secretKey parameter.');
         return;
     }
 
-    buffer = new Uint8Array(buffer);
-    secretKey = convert.hexadecimalToUint8Array(secretKey);
-    signature = nacl.sign.detached(buffer, secretKey);
+    secretKeyUint8Array = Exonum.hexadecimalToUint8Array(secretKey);
+
+    if (isInstanceofOfNewType(type) || Exonum.isInstanceofOfNewMessage(type)) {
+        if (helpers.isObject(data)) {
+            buffer = type.serialize(data);
+            if (buffer === undefined) {
+                console.error('Invalid data parameter. Instance of NewType or NewMessage is expected.');
+                return;
+            } else {
+                buffer = new Uint8Array(buffer);
+            }
+        } else {
+            console.error('Wrong type of data. Should be object.');
+            return;
+        }
+    } else if (type === undefined) {
+        if (data instanceof Uint8Array) {
+            buffer = data;
+        } else if (Array.isArray(data)) {
+            buffer = new Uint8Array(data);
+        } else {
+            console.error('Invalid data parameter.');
+            return;
+        }
+    } else {
+        console.error('Invalid type parameter.');
+        return;
+    }
+
+    signature = nacl.sign.detached(buffer, secretKeyUint8Array);
 
     return convert.uint8ArrayToHexadecimal(signature);
 }
 
 /**
  * Verifies ED25519 signature
- * Method with overloading. Accept two combinations of arguments:
- * 1) {Object} data, type, {String} signature, {String} publicKey
- * 2) {Array} buffer, {String} signature, {String} publicKey
- * @return {Boolean}
+ * @param {string} signature
+ * @param {string} publicKey
+ * @param {Object|Array} data - object of NewType type or array of 8-bit integers
+ * @param {NewType|NewMessage} [type] - optional, used only if data of {Object} type is passed
+ * @return {boolean}
  */
-export function verifySignature(data, type, signature, publicKey) {
+export function verifySignature(signature, publicKey, data, type) {
+    var signatureUint8Array;
+    var publicKeyUint8Array;
     var buffer;
 
-    if (typeof publicKey !== 'undefined') {
-        if (isInstanceofOfNewType(type)) {
-            buffer = type.serialize(data);
-            if (typeof buffer === 'undefined') {
-                console.error('Invalid data parameter. Instance of NewType is expected.');
-                return;
-            }
-        } else if (isInstanceofOfMessage(type)) {
-            buffer = type.serialize(data, true);
-            if (typeof buffer === 'undefined') {
-                console.error('Invalid data parameter. Instance of NewMessage is expected.');
-                return;
-            }
-        } else {
-            console.error('Invalid type parameter.');
-            return;
-        }
-    } else {
-        if (validate.validateBytesArray(data) === false) {
-            console.error('Invalid data parameter.');
-            return;
-        }
-
-        buffer = data;
-        publicKey = signature;
-        signature = type;
+    if (validate.validateHexHash(signature, 64) === false) {
+        console.error('Invalid signature parameter.');
+        return false;
     }
+
+    signatureUint8Array = convert.hexadecimalToUint8Array(signature);
 
     if (validate.validateHexHash(publicKey) === false) {
         console.error('Invalid publicKey parameter.');
-        return;
-    } else if (validate.validateHexHash(signature, 64) === false) {
-        console.error('Invalid signature parameter.');
-        return;
+        return false;
     }
 
-    buffer = new Uint8Array(buffer);
-    signature = convert.hexadecimalToUint8Array(signature);
-    publicKey = convert.hexadecimalToUint8Array(publicKey);
+    publicKeyUint8Array = convert.hexadecimalToUint8Array(publicKey);
 
-    return nacl.sign.detached.verify(buffer, signature, publicKey);
-}
+    if (isInstanceofOfNewType(type)) {
+        if (helpers.isObject(data)) {
+            buffer = type.serialize(data);
+            if (buffer === undefined) {
+                console.error('Invalid data parameter. Instance of NewType is expected.');
+                return false;
+            } else {
+                buffer = new Uint8Array(buffer);
+            }
+        } else {
+            console.error('Wrong type of data. Should be object.');
+            return false;
+        }
+    } else if (isInstanceofOfNewMessage(type)) {
+        if (helpers.isObject(data)) {
+            buffer = type.serialize(data, true);
+            if (buffer === undefined) {
+                console.error('Invalid data parameter. Instance of NewMessage is expected.');
+                return false;
+            } else {
+                buffer = new Uint8Array(buffer);
+            }
+        } else {
+            console.error('Wrong type of data. Should be object.');
+            return false;
+        }
+    } else if (type === undefined) {
+        if (data instanceof Uint8Array) {
+            buffer = data;
+        } else if (Array.isArray(data)) {
+            buffer = new Uint8Array(data);
+        } else {
+            console.error('Invalid data parameter.');
+            return;
+        }
+    } else {
+        console.error('Invalid type parameter.');
+        return false;
+    }
+
+    return nacl.sign.detached.verify(buffer, signatureUint8Array, publicKeyUint8Array);
+};
 
 /**
  * Generate random pair of publicKey and secretKey
  * @return {Object}
- *  publicKey {String}
- *  secretKey {String}
+ *  publicKey {string}
+ *  secretKey {string}
  */
 export function keyPair() {
     var pair = nacl.sign.keyPair();
@@ -167,4 +179,13 @@ export function keyPair() {
         publicKey: publicKey,
         secretKey: secretKey
     };
+}
+
+/**
+ * Get random number of cryptographic quality
+ * @returns {string}
+ */
+export function randomUint64() {
+    var buffer = nacl.randomBytes(8);
+    return bigInt.fromArray(Array.from(buffer), 256).toString();
 }
