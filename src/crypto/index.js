@@ -163,7 +163,7 @@ export function verifySignature(signature, publicKey, data, type) {
     }
 
     return nacl.sign.detached.verify(buffer, signatureUint8Array, publicKeyUint8Array);
-};
+}
 
 /**
  * Generate random pair of publicKey and secretKey

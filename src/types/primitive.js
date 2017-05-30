@@ -364,4 +364,4 @@ export function Timespec(nanoseconds, buffer, from, to) {
     insertIntegerToByteArray(val, buffer, from, to);
 
     return buffer;
-};
+}

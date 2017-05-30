@@ -1,15 +1,10 @@
 module.exports = function (grunt) {
+    require('load-grunt-tasks')(grunt);
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
-        jshint: {
-            files: ['./src/index.js'],
-            options: {
-                devel: true,
-                node: true,
-                funcscope: true,
-                esversion: 6
-            }
+        eslint: {
+            target: ['./src/**/*.js']
         },
         clean: {
             dist: {
@@ -52,15 +47,7 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-mocha-test');
-    grunt.loadNpmTasks('grunt-contrib-clean');
-    grunt.loadNpmTasks('grunt-babel');
-    grunt.loadNpmTasks('grunt-browserify');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-
-    grunt.registerTask('prepublish', ['jshint', 'clean', 'babel', 'browserify', 'uglify']);
+    grunt.registerTask('prepublish', ['eslint', 'clean', 'babel', 'browserify', 'uglify']);
     grunt.registerTask('test', ['mochaTest']);
     grunt.registerTask('default', ['prepublish', 'test']);
-
 };
