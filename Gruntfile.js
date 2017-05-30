@@ -49,15 +49,11 @@ module.exports = function (grunt) {
                 require: ['babel-register']
             },
             src: ['./test/**/*.js']
-        },
-        mocha_istanbul: {
-            src: ['./test']
         }
     });
 
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-mocha-test');
-    grunt.loadNpmTasks('grunt-mocha-istanbul');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-babel');
     grunt.loadNpmTasks('grunt-browserify');

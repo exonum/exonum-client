@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var Exonum = require('../src/index');
+var Exonum = require('..');
 
 describe('Convert data from one type to another', function() {
 

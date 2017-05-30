@@ -1,3 +1,5 @@
+import * as validate from '../types/validate';
+
 /**
  * Convert hexadecimal string into uint8Array
  * @param {string} str
@@ -7,7 +9,7 @@ export function hexadecimalToUint8Array(str) {
     if (typeof str !== 'string') {
         console.error('Wrong data type passed to convertor. Hexadecimal string is expected');
         return;
-    } else if (Exonum.validateHexHash(str, str.length / 2) === false) {
+    } else if (validate.validateHexHash(str, str.length / 2) === false) {
         return;
     }
 
@@ -31,7 +33,7 @@ export function hexadecimalToBinaryString(str) {
     if (typeof str !== 'string') {
         console.error('Wrong data type passed to convertor. Hexadecimal string is expected');
         return;
-    } else if (Exonum.validateHexHash(str, Math.ceil(str.length / 2)) === false) {
+    } else if (validate.validateHexHash(str, Math.ceil(str.length / 2)) === false) {
         return;
     }
 
@@ -79,7 +81,7 @@ export function binaryStringToUint8Array(binaryStr) {
     if (typeof binaryStr !== 'string') {
         console.error('Wrong data type passed to convertor. Binary string is expected');
         return;
-    } else if (Exonum.validateBinaryString(binaryStr) === false) {
+    } else if (validate.validateBinaryString(binaryStr) === false) {
         return;
     }
 
@@ -101,7 +103,7 @@ export function binaryStringToHexadecimal(binaryStr) {
     if (typeof binaryStr !== 'string') {
         console.error('Wrong data type passed to convertor. Binary string is expected');
         return;
-    } else if (Exonum.validateBinaryString(binaryStr) === false) {
+    } else if (validate.validateBinaryString(binaryStr) === false) {
         return;
     }
 
@@ -159,4 +161,4 @@ export function stringToUint8Array(str, len) {
     }
 
     return new Uint8Array(array);
-};
+}

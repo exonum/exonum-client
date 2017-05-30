@@ -1,5 +1,5 @@
 import bigInt from 'big-integer';
-import * as helpers from '../helpers';
+import {isObject} from '../helpers';
 import {isInstanceofOfNewType} from '../types/generic';
 import {validateHexHash, validateBytesArray} from '../types/validate';
 import {hexadecimalToUint8Array} from '../types/convert';
@@ -69,7 +69,7 @@ export function merkleProof(rootHash, count, proofNode, range, type) {
                 console.error('Invalid array of 8-bit integers in tree.');
                 return;
             }
-        } else if (helpers.isObject(data)) {
+        } else if (isObject(data)) {
             if (isInstanceofOfNewType(type)) {
                 element = data;
                 elementsHash = hash(element, type);
@@ -113,7 +113,7 @@ export function merkleProof(rootHash, count, proofNode, range, type) {
                     return null;
                 }
                 hashLeft = node.left;
-            } else if (helpers.isObject(node.left)) {
+            } else if (isObject(node.left)) {
                 if (node.left.val !== undefined) {
                     hashLeft = getHash(node.left.val, depth, index * 2);
                 } else {
@@ -141,7 +141,7 @@ export function merkleProof(rootHash, count, proofNode, range, type) {
                     return null;
                 }
                 hashRight = node.right;
-            } else if (helpers.isObject(node.right)) {
+            } else if (isObject(node.right)) {
                 if (node.right.val !== undefined) {
                     hashRight = getHash(node.right.val, depth, index * 2 + 1);
                 } else {
@@ -228,7 +228,7 @@ export function merkleProof(rootHash, count, proofNode, range, type) {
     }
 
     // validate proofNode
-    if (helpers.isObject(proofNode) === false) {
+    if (isObject(proofNode) === false) {
         console.error('Invalid type of proofNode parameter. Object expected.');
         return;
     }

@@ -19,9 +19,9 @@ class NewMessage {
     }
 
     /**
-     * Built-in method to serialize data into array of 8-bit integers
+     * Serialize data of NewMessage type into array of 8-bit integers
      * @param {Object} data
-     * @param {Boolean} cutSignature
+     * @param {boolean} [cutSignature] - optional parameter used flag that signature should not be appended to serialized data
      * @returns {Array}
      */
     serialize(data, cutSignature) {
@@ -39,12 +39,13 @@ class NewMessage {
             network_id: 0,
             version: 0,
             message_id: this.message_id,
-            service_id: this.service_id
+            service_id: this.service_id,
+            payload: 0 // placeholder, real value will be inserted later
         });
 
         // serialize and append message body
         buffer = serialization.serialize(buffer, MessageHead.size, data, this);
-        if (typeof buffer === 'undefined') {
+        if (buffer === undefined) {
             return;
         }
 
@@ -59,16 +60,34 @@ class NewMessage {
         return buffer;
     }
 
+    /**
+     * Get SHA256 hash
+     * @param {Object} data
+     * @returns {string}
+     */
     hash(data) {
         return crypto.hash(data, this);
     }
 
-    sign(data, secretKey) {
-        return crypto.sign(data, this, secretKey);
+    /**
+     * Get ED25519 signature
+     * @param {string} secretKey
+     * @param {Object} data
+     * @returns {string}
+     */
+    sign(secretKey, data) {
+        return crypto.sign(secretKey, data, this);
     }
 
-    verifySignature(data, signature, publicKey) {
-        return crypto.verifySignature(data, this, signature, publicKey);
+    /**
+     * Verifies ED25519 signature
+     * @param {string} signature
+     * @param {string} publicKey
+     * @param {Object} data
+     * @returns {boolean}
+     */
+    verifySignature(signature, publicKey, data) {
+        return crypto.verifySignature(signature, publicKey, data, this);
     }
 }
 
@@ -81,6 +100,11 @@ export function newMessage(type) {
     return new NewMessage(type);
 }
 
-export function isInstanceofOfMessage(type) {
+/**
+ * Check if passed object is of type NewMessage
+ * @param type
+ * @returns {boolean}
+ */
+export function isInstanceofOfNewMessage(type) {
     return type instanceof NewMessage;
 }

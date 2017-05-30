@@ -12,7 +12,7 @@ class NewType {
     }
 
     /**
-     * Built-in method to serialize data into array of 8-bit integers
+     * Serialize data of NewType type into array of 8-bit integers
      * @param {Object} data
      * @returns {Array}
      */
@@ -20,16 +20,34 @@ class NewType {
         return serialization.serialize([], 0, data, this);
     }
 
+    /**
+     * Get SHA256 hash
+     * @param {Object} data
+     * @returns {string}
+     */
     hash(data) {
         return crypto.hash(data, this);
     }
 
-    sign(data, secretKey) {
-        return crypto.sign(data, this, secretKey);
+    /**
+     * Get ED25519 signature
+     * @param {string} secretKey
+     * @param {Object} data
+     * @returns {string}
+     */
+    sign(secretKey, data) {
+        return crypto.sign(secretKey, data, this);
     }
 
-    verifySignature(data, signature, publicKey) {
-        return crypto.verifySignature(data, this, signature, publicKey);
+    /**
+     * Verifies ED25519 signature
+     * @param {string} signature
+     * @param {string} publicKey
+     * @param {Object} data
+     * @returns {boolean}
+     */
+    verifySignature(signature, publicKey, data) {
+        return crypto.verifySignature(signature, publicKey, data, this);
     }
 }
 
@@ -42,6 +60,11 @@ export function newType(type) {
     return new NewType(type);
 }
 
+/**
+ * Check if passed object is of type NewType
+ * @param {Object} type
+ * @returns {boolean}
+ */
 export function isInstanceofOfNewType(type) {
     return type instanceof NewType;
 }

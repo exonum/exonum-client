@@ -1,8 +1,9 @@
+import bigInt from 'big-integer';
 import sha from 'sha.js';
 import nacl from 'tweetnacl';
-import * as helpers from '../helpers';
+import {isObject} from '../helpers';
 import {isInstanceofOfNewType} from '../types/generic';
-import {isInstanceofOfMessage} from '../types/message';
+import {isInstanceofOfNewMessage} from '../types/message';
 import * as validate from '../types/validate';
 import * as convert from '../types/convert';
 
@@ -15,8 +16,8 @@ import * as convert from '../types/convert';
 export function hash(data, type) {
     var buffer;
 
-    if (isInstanceofOfNewType(type) || Exonum.isInstanceofOfNewMessage(type)) {
-        if (helpers.isObject(data)) {
+    if (isInstanceofOfNewType(type) || isInstanceofOfNewMessage(type)) {
+        if (isObject(data)) {
             buffer = type.serialize(data);
             if (buffer === undefined) {
                 console.error('Invalid data parameter. Instance of NewType is expected.');
@@ -60,10 +61,10 @@ export function sign(secretKey, data, type) {
         return;
     }
 
-    secretKeyUint8Array = Exonum.hexadecimalToUint8Array(secretKey);
+    secretKeyUint8Array = convert.hexadecimalToUint8Array(secretKey);
 
-    if (isInstanceofOfNewType(type) || Exonum.isInstanceofOfNewMessage(type)) {
-        if (helpers.isObject(data)) {
+    if (isInstanceofOfNewType(type) || isInstanceofOfNewMessage(type)) {
+        if (isObject(data)) {
             buffer = type.serialize(data);
             if (buffer === undefined) {
                 console.error('Invalid data parameter. Instance of NewType or NewMessage is expected.');
@@ -122,7 +123,7 @@ export function verifySignature(signature, publicKey, data, type) {
     publicKeyUint8Array = convert.hexadecimalToUint8Array(publicKey);
 
     if (isInstanceofOfNewType(type)) {
-        if (helpers.isObject(data)) {
+        if (isObject(data)) {
             buffer = type.serialize(data);
             if (buffer === undefined) {
                 console.error('Invalid data parameter. Instance of NewType is expected.');
@@ -135,7 +136,7 @@ export function verifySignature(signature, publicKey, data, type) {
             return false;
         }
     } else if (isInstanceofOfNewMessage(type)) {
-        if (helpers.isObject(data)) {
+        if (isObject(data)) {
             buffer = type.serialize(data, true);
             if (buffer === undefined) {
                 console.error('Invalid data parameter. Instance of NewMessage is expected.');

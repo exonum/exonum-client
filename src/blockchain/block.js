@@ -1,4 +1,4 @@
-import * as helpers from '../helpers';
+import {isObject} from '../helpers';
 import * as primitive from '../types/primitive';
 import {newType} from '../types/generic';
 import {newMessage} from '../types/message';
@@ -43,10 +43,10 @@ export function verifyBlock(data, validators) {
         }
     });
 
-    if (helpers.isObject(data) === false) {
+    if (isObject(data) === false) {
         console.error('Wrong type of data parameter. Object is expected.');
         return false;
-    } else if (helpers.isObject(data.block) === false) {
+    } else if (isObject(data.block) === false) {
         console.error('Wrong type of block field in data parameter. Object is expected.');
         return false;
     } else if (Array.isArray(data.precommits) === false) {
@@ -71,7 +71,7 @@ export function verifyBlock(data, validators) {
     for (var i = 0; i < data.precommits.length; i++) {
         var precommit = data.precommits[i];
 
-        if (helpers.isObject(precommit.body) === false) {
+        if (isObject(precommit.body) === false) {
             console.error('Wrong type of precommits body. Object is expected.');
             return false;
         } else if (validateHexHash(precommit.signature, 64) === false) {
@@ -105,7 +105,7 @@ export function verifyBlock(data, validators) {
 
         var publicKey = validators[precommit.body.validator];
 
-        if (verifySignature(precommit.body, Precommit, precommit.signature, publicKey) === false) {
+        if (verifySignature(precommit.signature, publicKey, precommit.body, Precommit) === false) {
             console.error('Wrong signature of precommit.');
             return false;
         }

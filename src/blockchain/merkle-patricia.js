@@ -1,5 +1,4 @@
-import objectAssign from 'object-assign';
-import * as helpers from '../helpers';
+import {isObject} from '../helpers';
 import * as primitive from '../types/primitive';
 import {newType} from '../types/generic';
 import * as validate from '../types/validate';
@@ -56,7 +55,7 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
             if (validate.validateBytesArray(data)) {
                 return data.slice(0); // clone array of 8-bit integers
             }
-        } else if (helpers.isObject(data)) {
+        } else if (isObject(data)) {
             return JSON.parse(JSON.stringify(data)); // deep clone
         }
     }
@@ -68,10 +67,10 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
      */
     function getHash(element) {
         if (typeof element === 'string') {
-            return hash(Exonum.hexadecimalToUint8Array(element));
+            return hash(convert.hexadecimalToUint8Array(element));
         } else if (Array.isArray(element)) {
             return hash(element);
-        } else if (helpers.isObject(element)) {
+        } else if (isObject(element)) {
             return hash(element, type);
         }
     }
@@ -128,7 +127,7 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
                     }
                     branchValueHash = nodeValue;
                     branchType = 'hash';
-                } else if (helpers.isObject(nodeValue)) {
+                } else if (isObject(nodeValue)) {
                     if (nodeValue.val === undefined) {
                         console.error('Leaf tree contains invalid data.');
                         return null;
@@ -165,7 +164,7 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
                     }
                     branchValueHash = nodeValue;
                     branchType = 'hash';
-                } else if (helpers.isObject(nodeValue)) {
+                } else if (isObject(nodeValue)) {
                     if (nodeValue.val !== undefined) {
                         console.error('Node with value is at non-leaf position in tree.');
                         return null;
@@ -255,7 +254,7 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
     rootHash = rootHash.toLowerCase();
 
     // validate proofNode parameter
-    if (helpers.isObject(proofNode) === false) {
+    if (isObject(proofNode) === false) {
         console.error('Invalid type of proofNode parameter. Object expected.');
         return;
     }
@@ -325,7 +324,7 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
                     console.error('rootHash parameter is not equal to actual hash.');
                     return;
                 }
-            } else if (helpers.isObject(data)) {
+            } else if (isObject(data)) {
                 element = getElement(data.val);
                 if (element === undefined) {
                     return;
