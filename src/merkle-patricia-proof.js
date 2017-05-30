@@ -7,7 +7,6 @@ require('../src/validators');
 
 const MERKLE_PATRICIA_KEY_LENGTH = 32;
 
-var objectAssign = require('object-assign');
 var DBKey = Exonum.newType({
     size: 34,
     fields: {
@@ -35,70 +34,67 @@ var RootBranch = Exonum.newType({
 
 /**
  * Check Merkle Patricia tree proof and return element
- * @param {String} rootHash
+ * @param {string} rootHash
  * @param {Object} proofNode
- * @param key
- * @param {NewType} type (optional)
+ * @param {string} key
+ * @param {NewType} [type] - optional
  * @return {Object}
  */
 Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
     /**
-     * Get value from node
+     * Get element from node
      * @param data
-     * @returns {String || Array || Object}
+     * @returns {string} or {Array} or {Object}
      */
-    function getHash(data) {
-        var elementsHash;
-
+    function getElement(data) {
         if (typeof data === 'string') {
-            if (Exonum.validateHexHash(data) === true) {
-                element = data;
-                elementsHash = Exonum.hash(Exonum.hexadecimalToUint8Array(element));
-            } else {
-                console.error('Invalid hexadecimal string is passed as value in tree.');
-                return;
+            if (Exonum.validateHexHash(data)) {
+                return data;
             }
         } else if (Array.isArray(data)) {
-            if (Exonum.validateBytesArray(data) === true) {
-                element = data.slice(0); // clone array of 8-bit integers
-                elementsHash = Exonum.hash(element);
-            } else {
-                return;
+            if (Exonum.validateBytesArray(data)) {
+                return data.slice(0); // clone array of 8-bit integers
             }
-        } else if (Exonum.isObject(data) === true) {
-            element = objectAssign(data); // deep copy
-            elementsHash = Exonum.hash(element, type);
-        } else {
-            console.error('Invalid value node in tree. Object expected.');
-            return;
+        } else if (Exonum.isObject(data)) {
+            return JSON.parse(JSON.stringify(data)); // deep clone
         }
+    }
 
-        if (typeof elementsHash === 'undefined') {
-            return;
+    /**
+     * Get hash of element
+     * @param element
+     * @returns {string}
+     */
+    function getHash(element) {
+        if (typeof element === 'string') {
+            return Exonum.hash(Exonum.hexadecimalToUint8Array(element));
+        } else if (Array.isArray(element)) {
+            return Exonum.hash(element);
+        } else if (Exonum.isObject(element)) {
+            return Exonum.hash(element, type);
         }
-
-        return elementsHash;
     }
 
     /**
      * Check either suffix is a part of search key
-     * @param {String} prefix
-     * @param {String} suffix
-     * @returns {Boolean}
+     * @param {string} prefix
+     * @param {string} suffix
+     * @returns {boolean}
      */
     function isPartOfSearchKey(prefix, suffix) {
+        // remove prefix from searched binary key
         var diff = keyBinary.substr(prefix.length);
-        return diff[0] === suffix[0];
+        return diff.indexOf(suffix) === 0;
     }
 
     /**
      * Recursive tree traversal function
      * @param {Object} node
-     * @param {String} keyPrefix
-     * @returns {String}
+     * @param {string} keyPrefix
+     * @returns {string}
      */
     function recursive(node, keyPrefix) {
-        if (Exonum.getObjectLength(node) !== 2) {
+        if (Object.keys(node).length !== 2) {
             console.error('Invalid number of children in the tree node.');
             return null;
         }
@@ -131,19 +127,24 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
                     }
                     branchValueHash = nodeValue;
                     branchType = 'hash';
-                } else if (Exonum.isObject(nodeValue) === true) {
-                    if (typeof nodeValue.val === 'undefined') {
+                } else if (Exonum.isObject(nodeValue)) {
+                    if (nodeValue.val === undefined) {
                         console.error('Leaf tree contains invalid data.');
                         return null;
-                    } else if (typeof element !== 'undefined') {
+                    } else if (element !== undefined) {
                         console.error('Tree can not contains more than one node with value.');
                         return null;
                     }
 
-                    branchValueHash = getHash(nodeValue.val);
-                    if (typeof branchValueHash === 'undefined') {
+                    element = getElement(nodeValue.val);
+                    if (element === undefined) {
                         return null;
                     }
+                    branchValueHash = getHash(element);
+                    if (branchValueHash === undefined) {
+                        return null;
+                    }
+
                     branchType = 'value';
                 }  else {
                     console.error('Invalid type of node in tree leaf.');
@@ -163,8 +164,8 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
                     }
                     branchValueHash = nodeValue;
                     branchType = 'hash';
-                } else if (Exonum.isObject(nodeValue) === true) {
-                    if (typeof nodeValue.val !== 'undefined') {
+                } else if (Exonum.isObject(nodeValue)) {
+                    if (nodeValue.val !== undefined) {
                         console.error('Node with value is at non-leaf position in tree.');
                         return null;
                     }
@@ -198,7 +199,7 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
             }
 
             if (keySuffix[0] === '0') { // '0' at the beginning means left branch/leaf
-                if (typeof levelData.left === 'undefined') {
+                if (levelData.left === undefined) {
                     levelData.left = {
                         hash: branchValueHash,
                         key: branchKey,
@@ -211,7 +212,7 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
                     return null;
                 }
             } else { // '1' at the beginning means right branch/leaf
-                if (typeof levelData.right === 'undefined') {
+                if (levelData.right === undefined) {
                     levelData.right = {
                         hash: branchValueHash,
                         key: branchKey,
@@ -248,40 +249,40 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
 
     // validate rootHash parameter
     if (Exonum.validateHexHash(rootHash) === false) {
-        return undefined;
+        return;
     }
     rootHash = rootHash.toLowerCase();
 
     // validate proofNode parameter
     if (Exonum.isObject(proofNode) === false) {
         console.error('Invalid type of proofNode parameter. Object expected.');
-        return undefined;
+        return;
     }
 
     // validate key parameter
     if (Array.isArray(key)) {
-        if (Exonum.validateBytesArray(key, MERKLE_PATRICIA_KEY_LENGTH) === true) {
+        if (Exonum.validateBytesArray(key, MERKLE_PATRICIA_KEY_LENGTH)) {
             key = Exonum.uint8ArrayToHexadecimal(key);
         } else {
-            return undefined;
+            return;
         }
     } else if (typeof key === 'string') {
         if (Exonum.validateHexHash(key, MERKLE_PATRICIA_KEY_LENGTH) === false) {
-            return undefined;
+            return;
         }
     } else {
         console.error('Invalid type of key parameter. Array of 8-bit integers or hexadecimal string is expected.');
-        return undefined;
+        return;
     }
     var keyBinary = Exonum.hexadecimalToBinaryString(key);
 
-    var proofNodeRootNumberOfNodes = Exonum.getObjectLength(proofNode);
+    var proofNodeRootNumberOfNodes = Object.keys(proofNode).length;
     if (proofNodeRootNumberOfNodes === 0) {
         if (rootHash === (new Uint8Array(MERKLE_PATRICIA_KEY_LENGTH * 2)).join('')) {
             return null;
         } else {
             console.error('Invalid rootHash parameter of empty tree.');
-            return undefined;
+            return;
         }
     } else if (proofNodeRootNumberOfNodes === 1) {
         for (var i in proofNode) {
@@ -290,7 +291,7 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
             }
 
             if (Exonum.validateBinaryString(i, 256) === false) {
-                return undefined;
+                return;
             }
 
             var data = proofNode[i];
@@ -300,7 +301,7 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
 
             if (typeof data === 'string') {
                 if (Exonum.validateHexHash(data) === false) {
-                    return undefined;
+                    return;
                 }
 
                 nodeHash = Exonum.hash({
@@ -317,17 +318,19 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
                         return null; // no element with data in tree
                     } else {
                         console.error('Invalid key with hash is in the root of proofNode parameter.');
-                        return undefined;
+                        return;
                     }
                 } else {
                     console.error('rootHash parameter is not equal to actual hash.');
-                    return undefined;
+                    return;
                 }
             } else if (Exonum.isObject(data)) {
-                var elementsHash = getHash(data.val);
-                if (typeof elementsHash === 'undefined') {
-                    return undefined;
+                element = getElement(data.val);
+                if (element === undefined) {
+                    return;
                 }
+
+                var elementsHash = getHash(element);
 
                 nodeHash = Exonum.hash({
                     key: {
@@ -343,15 +346,15 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
                         return element;
                     } else {
                         console.error('Invalid key with value is in the root of proofNode parameter.');
-                        return undefined;
+                        return;
                     }
                 } else {
                     console.error('rootHash parameter is not equal to actual hash.');
-                    return undefined;
+                    return;
                 }
             } else {
                 console.error('Invalid type of value in the root of proofNode parameter.');
-                return undefined;
+                return;
             }
 
         }
@@ -359,11 +362,11 @@ Exonum.merklePatriciaProof = function(rootHash, proofNode, key, type) {
         var actualHash = recursive(proofNode, '');
 
         if (actualHash === null) { // tree is invalid
-            return undefined;
+            return;
         } else if (rootHash !== actualHash) {
             console.error('rootHash parameter is not equal to actual hash.');
-            return undefined;
-        } else if (typeof element === 'undefined') {
+            return;
+        } else if (element === undefined) {
             return null; // no element with data in tree
         }
 

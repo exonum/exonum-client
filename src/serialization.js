@@ -6,19 +6,21 @@ require('../src/types');
 /**
  * Serialize data into array of 8-bit integers and insert into buffer
  * @param {Array} buffer
- * @param {Number} shift - the index to start write into buffer
+ * @param {number} shift - the index to start write into buffer
  * @param {Object} data
  * @param type - can be {NewType} or one of built-in types
  */
 Exonum.serialize = function(buffer, shift, data, type) {
-    function checkIfIsFixed(fields) {
+    function isFixed(fields) {
         for (var fieldName in fields) {
             if (!fields.hasOwnProperty(fieldName)) {
                 continue;
             }
 
             if (Exonum.isInstanceofOfNewType(fields[fieldName].type)) {
-                checkIfIsFixed(fields[fieldName].type.fields);
+                if (!isFixed(fields[fieldName].type.fields)) {
+                    return false;
+                }
             } else if (fields[fieldName].type === String) {
                 return false;
             }
@@ -26,41 +28,35 @@ Exonum.serialize = function(buffer, shift, data, type) {
         return true;
     }
 
-    for (var i = 0, len = type.size; i < len; i++) {
+    for (var i = 0; i < type.size; i++) {
         buffer[shift + i] = 0;
     }
 
-    for (var fieldName in data) {
-        if (!data.hasOwnProperty(fieldName)) {
+    for (var fieldName in type.fields) {
+        if (!type.fields.hasOwnProperty(fieldName)) {
             continue;
         }
 
-        var fieldType = type.fields[fieldName];
+        var fieldData = data[fieldName];
 
-        if (typeof fieldType === 'undefined') {
-            console.error(fieldName + ' field was not found in configuration of type.');
+        if (fieldData === undefined) {
             return;
         }
 
-        var fieldData = data[fieldName];
+        var fieldType = type.fields[fieldName];
         var from = shift + fieldType.from;
 
         if (Exonum.isInstanceofOfNewType(fieldType.type)) {
-            var isFixed = checkIfIsFixed(fieldType.type.fields);
-
-            if (isFixed === true) {
-                Exonum.serialize(buffer, from, fieldData, fieldType.type);
+            if (isFixed(fieldType.type.fields)) {
+                buffer = Exonum.serialize(buffer, from, fieldData, fieldType.type);
             } else {
                 var end = buffer.length;
                 Exonum.Uint32(end, buffer, from, from + 4);
-                Exonum.serialize(buffer, end, fieldData, fieldType.type);
+                buffer = Exonum.serialize(buffer, end, fieldData, fieldType.type);
                 Exonum.Uint32(buffer.length - end, buffer, from + 4, from + 8);
             }
         } else {
             buffer = fieldType.type(fieldData, buffer, from, shift + fieldType.to);
-            if (typeof buffer === 'undefined') {
-                return;
-            }
         }
     }
 

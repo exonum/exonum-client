@@ -30,15 +30,10 @@ Exonum.hash(buffer);
 * [Uint64](#uint64)
 * [String](#string)
 * [Hash](#hash)
-* [PublicKey](#public-key)
+* [PublicKey](#publickey)
 * [Digest](#digest)
 * [Timespec](#timespec)
 * [Bool](#bool)
-
-
-#### Helpers
-
-* [randomUint64](#randomuint64)
 
 #### Custom data types:
 
@@ -51,6 +46,7 @@ Exonum.hash(buffer);
 * [Sign data](#sign)
 * [Verify signature](#verifysignature)
 * [Generate key pair](#keypair)
+* [Random Uint64](#randomuint64)
 
 #### Proofs of existence:
 
@@ -122,13 +118,11 @@ A Signed integer value of the length of `8` bytes.
 
 Values range is from `-9223372036854775808` to `9223372036854775807`.
 
-Please note that JavaScript limits minimum and maximum integer number.
+Value can be passed as `Number` or as `String`.
 
-Minimum safe integer in JavaScript is `-(2^53-1)` which is equal to `-9007199254740991`
+Please note that JavaScript limits minimum and maximum integer number. Minimum safe integer in JavaScript is `-(2^53-1)` which is equal to `-9007199254740991`. Maximum safe integer in JavaScript is `2^53-1` which is equal to `9007199254740991`. For unsafe numbers use `String` only.
 
-Maximum safe integer in JavaScript is `2^53-1` which is equal to `9007199254740991`.
-
-Work around is to use value not as `Number` but as `String`.
+To determine either number is safe use [Number.isSafeInteger()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isSafeInteger).
 
 ```
 var someType = Exonum.newType({
@@ -190,11 +184,9 @@ Unsigned integer value of the length of `8` bytes.
 
 Values range is from `0` to `18446744073709551615`.
 
-Please note that JavaScript limits maximum integer number.
+Value can be passed as `Number` or as `String`.
 
-Maximum safe integer in JavaScript is `2^53-1` which is equal to `9007199254740991`.
-
-Work around is to use value not as `Number` but as `String`.
+Please note that JavaScript limits maximum integer number. Maximum safe integer in JavaScript is `2^53-1` which is equal to `9007199254740991`. For numbers greater than safe use `String` only.
 
 ```
 var someType = Exonum.newType({
@@ -290,29 +282,18 @@ var someType = Exonum.newType({
 
 ---
 
-## Helpers
-
-#### randomUint64
-
-Returns random integer in range from `0` to `18446744073709551615` as string.
-
-```
-var randomNumber = Exonum.randomUint64();
-```
-
----
-
 ## Custom data types
 
 #### newType
 
-Used to describe custom data format to make it possible to serialize data of this format into array of 8-bit integers.
+Used to describe custom data format to make it possible to serialize data of this format into array of 8-bit integers. Allowed to contain fields of built-in types (such as String, Hash, Uint64 etc.) and fields of `newType` type.
 
-Allowed to contain fields of built-in types (such as String, Hash, Uint64 etc.) and fields on `newType` type.
+###### Options:
 
-The `size` parameter contains full length of listed fields.
-
-The `fields` parameter is a list of fields.
+| Name | Type | Description |
+|---|---|---|
+| size | `number` | Full length of listed fields. |
+| fields | `Object` | A list of fields. |
 
 Returns an object of format type.
 
@@ -320,7 +301,11 @@ Returns an object of format type.
 
 Can be used to retrieve representation of data of type `newType` as array of 8-bit integers.
 
-The `data` is a custom data in JSON format.
+###### Parameters:
+
+| Name | Type | Description |
+|---|---|---|
+| data | `Object` ||
 
 Example:
 
@@ -369,7 +354,11 @@ var buffer = someOtherType.serialize(data);
 
 ##### newType.hash(data)
 
-The `data` is a custom data in JSON format.
+###### Parameters:
+
+| Name | Type | Description |
+|---|---|---|
+| data | `Object` ||
 
 Returns SHA256 hash of the data as hexadecimal string.
 
@@ -387,11 +376,14 @@ var data = {id: 1, name: 'John Doe'};
 var hash = someType.hash(data);
 ```
 
-##### newType.sign(data, secretKey)
+##### newType.sign(secretKey, data)
 
-The `data` is a custom data in JSON format.
+###### Parameters:
 
-The `secretKey` is a 64 bit secret key.
+| Name | Type | Description |
+|---|---|---|
+| secretKey | `string` | A 64-byte hexadecimal string. |
+| data | `Object` ||
 
 Returns ED25519 signature of the data as hexadecimal string.
 
@@ -408,16 +400,18 @@ var data = {id: 1, name: 'John Doe'};
 
 var secretKey = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36';
 
-var signature = someType.sign(data, secretKey);
+var signature = someType.sign(secretKey, data);
 ```
 
-##### newType.verifySignature(data, signature, publicKey)
+##### newType.verifySignature(signature, publicKey, data)
 
-The `data` is a custom data in JSON format.
+###### Parameters:
 
-The `signature` is a 64 bit hexadecimal string.
-
-The `publicKey` is a 32 bit secret key.
+| Name | Type | Description |
+|---|---|---|
+| signature | `string` | A 64-byte hexadecimal string. |
+| publicKey | `string` | A 32-byte hexadecimal string. |
+| data | `Object` ||
 
 Returns `true` if verification succeeded or `false` if it failed.
 
@@ -436,24 +430,23 @@ var signature = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc03
 
 var publicKey = '280a704efafae9410d7b07140bb130e4995eeb381ba90939b4eaefcaf740ca25';
 
-someType.verifySignature(data, signature, publicKey);
+someType.verifySignature(signature, publicKey, data);
 ```
 
 #### newMessage
 
-Used to describe custom data format to make it possible to serialize data of this format into array of 8-bit integers.
-
-Allowed to contain fields of built-in types (such as String, Hash, Uint64 etc.) and fields of `newType` type.
+Used to describe custom data format to make it possible to serialize data of this format into array of 8-bit integers. Allowed to contain fields of built-in types (such as String, Hash, Uint64 etc.) and fields of `newType` type.
 
 This method is designed to represent messages. So method `newMessage` also contains header with fields that are specific for messages only.
 
-The `size` parameter contains full length of listed fields.
+###### Options:
 
-The `service_id` is a numeric parameter.
-
-The `message_id` is a numeric parameter.
-
-The `fields` parameter is a list of fields.
+| Name | Type | Description |
+|---|---|---|
+| size | `number` | Full length of listed fields. |
+| service_id | `number` ||
+| message_id | `number` ||
+| fields | `Object` | A list of fields. |
 
 Returns an object of format type.
 
@@ -461,9 +454,14 @@ Returns an object of format type.
 
 Can be used to retrieve representation of data of type `newMessage` as array of 8-bit integers.
 
-The `data` is a custom data in JSON format.
+###### Parameters:
 
-The `cutSignature` parameter is an optional boolean flag. If set to `true` signature will not be appended to serialized data.
+| Name | Type | Description |
+|---|---|---|
+| signature | `string` | A 64-byte hexadecimal string. |
+| publicKey | `string` | A 32-byte hexadecimal string. |
+| data | `Object` ||
+| cutSignature | `boolean` | Optional boolean flag. If set to `true` signature will not be appended to serialized data. |
 
 Example:
 
@@ -489,7 +487,11 @@ var buffer = someMessage.serialize(data);
 
 ##### newMessage.hash(data)
 
-The `data` is a custom data in JSON format.
+###### Parameters:
+
+| Name | Type | Description |
+|---|---|---|
+| data | `Object` ||
 
 Returns SHA256 hash of the data as hexadecimal string.
 
@@ -510,11 +512,14 @@ var data = {id: 1, name: 'John Doe'};
 var hash = someMessage.hash(data);
 ```
 
-##### newMessage.sign(data, secretKey)
+##### newMessage.sign(secretKey, data)
 
-The `data` is a custom data in JSON format.
+###### Parameters:
 
-The `secretKey` is a 64 bit secret key.
+| Name | Type | Description |
+|---|---|---|
+| secretKey | `string` | A 64-byte hexadecimal string. |
+| data | `Object` ||
 
 Returns ED25519 signature of the data as hexadecimal string.
 
@@ -534,16 +539,18 @@ var data = {id: 1, name: 'John Doe'};
 
 var secretKey = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36';
 
-var signature = someMessage.sign(data, secretKey);
+var signature = someMessage.sign(secretKey, data);
 ```
 
-##### newMessage.verifySignature(data, signature, publicKey)
+##### newMessage.verifySignature(signature, publicKey, data)
 
-The `data` is a custom data in JSON format.
+###### Parameters:
 
-The `signature` is a 64 bit hexadecimal string.
-
-The `publicKey` is a 32 bit secret key.
+| Name | Type | Description |
+|---|---|---|
+| signature | `string` | A 64-byte hexadecimal string. |
+| publicKey | `string` | A 32-byte hexadecimal string. |
+| data | `Object` ||
 
 Returns `true` if verification succeeded or `false` if it failed.
 
@@ -565,7 +572,7 @@ var signature = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc03
 
 var publicKey = '280a704efafae9410d7b07140bb130e4995eeb381ba90939b4eaefcaf740ca25';
 
-someMessage.verifySignature(data, signature, publicKey);
+someMessage.verifySignature(signature, publicKey, data);
 ```
 
 ---
@@ -580,9 +587,12 @@ Accept two combinations of an arguments:
 
 ##### hash(data, type)
 
-The `data` is a custom data in JSON format.
+###### Parameters:
 
-The `type` is a description of type in the one of the internal data formats: `newType` or `newMessage`.
+| Name | Type | Description |
+|---|---|---|
+| data | `Object` ||
+| type | `NewType` or `NewMessage` ||
 
 ```javascript
 var someType = Exonum.newType({
@@ -617,7 +627,11 @@ var hash = Exonum.hash(data, someMessage);
 
 ##### hash(buffer)
 
-The `buffer` is an array of 8-bit integers.
+###### Parameters:
+
+| Name | Type | Description |
+|---|---|---|
+| buffer | Array-like object | An array of 8-bit integers |
 
 ```javascript
 var buffer = [218, 0, 3, 12, 33, 68, 105, 0];
@@ -631,13 +645,15 @@ Returns ED25519 signature of the data as hexadecimal string.
 
 Accept two combinations of an arguments:
 
-##### sign(data, type, secretKey)
+##### sign(secretKey, data, type)
 
-The `data` is a custom data in JSON format.
+###### Parameters:
 
-The `type` is a description of type in the one of the internal data formats: `newType` or `newMessage`.
-
-The `secretKey` is a 64 bit secret key.
+| Name | Type | Description |
+|---|---|---|
+| secretKey | `string` | A 64-byte hexadecimal string. |
+| data | `Object` ||
+| type | `NewType` or `NewMessage` ||
 
 ```javascript
 var someType = Exonum.newType({
@@ -652,7 +668,7 @@ var data = {id: 1, name: 'John Doe'};
 
 var secretKey = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36';
 
-var signature = Exonum.sign(someType, data, secretKey);
+var signature = Exonum.sign(secretKey, data, someType);
 ```
 
 ```javascript
@@ -671,21 +687,24 @@ var data = {id: 1, name: 'John Doe'};
 
 var secretKey = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36';
 
-var signature = Exonum.sign(data, someMessage, secretKey);
+var signature = Exonum.sign(secretKey, data, someMessage);
 ```
 
-##### sign(buffer, secretKey)
+##### sign(secretKey, buffer)
 
-The `buffer` is an array of 8-bit integers.
+###### Parameters:
 
-The `secretKey` is a 64 bit secret key.
+| Name | Type | Description |
+|---|---|---|
+| secretKey | `string` | A 64-byte hexadecimal string. |
+| buffer | Array-like object | An array of 8-bit integers |
 
 ```javascript
 var buffer = [218, 0, 3, 12, 33, 68, 105, 0];
 
 var secretKey = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36';
 
-var signature = Exonum.sign(buffer, secretKey);
+var signature = Exonum.sign(secretKey, buffer);
 ```
 
 #### verifySignature
@@ -694,15 +713,16 @@ Returns `true` if verification succeeded or `false` if it failed.
 
 Accept two combinations of an arguments:
 
-##### verifySignature(data, type, signature, publicKey)
+##### verifySignature(signature, publicKey, data, type)
 
-The `data` is a custom data in JSON format.
+###### Parameters:
 
-The `type` is a description of type in the one of the internal data formats: `newType` or `newMessage`.
-
-The `signature` is a 64 bit hexadecimal string.
-
-The `publicKey` is a 32 bit secret key.
+| Name | Type | Description |
+|---|---|---|
+| signature | `string` | A 64-byte hexadecimal string. |
+| publicKey | `string` | A 32-byte hexadecimal string. |
+| data | `Object` ||
+| type | `NewType` or `NewMessage` ||
 
 ```javascript
 var someType = Exonum.newType({
@@ -719,7 +739,7 @@ var signature = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc03
 
 var publicKey = '280a704efafae9410d7b07140bb130e4995eeb381ba90939b4eaefcaf740ca25';
 
-Exonum.verifySignature(data, someType, signature, publicKey);
+Exonum.verifySignature(signature, publicKey, data, someType);
 ```
 
 ```javascript
@@ -740,16 +760,18 @@ var signature = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc03
 
 var publicKey = '280a704efafae9410d7b07140bb130e4995eeb381ba90939b4eaefcaf740ca25';
 
-Exonum.verifySignature(data, someMessage, signature, publicKey);
+Exonum.verifySignature(signature, publicKey, data, someMessage);
 ```
 
-##### verifySignature(buffer, signature, publicKey)
+##### verifySignature(signature, publicKey, buffer)
 
-The `buffer` is an array of 8-bit integers.
+###### Parameters:
 
-The `signature` is a 64 bit hexadecimal string.
-
-The `publicKey` is a 32 bit secret key.
+| Name | Type | Description |
+|---|---|---|
+| signature | `string` | A 64-byte hexadecimal string. |
+| publicKey | `string` | A 32-byte hexadecimal string. |
+| buffer | Array-like object | An array of 8-bit integers |
 
 ```javascript
 var buffer = [218, 0, 3, 12, 33, 68, 105, 0];
@@ -758,18 +780,26 @@ var signature = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc03
 
 var publicKey = '280a704efafae9410d7b07140bb130e4995eeb381ba90939b4eaefcaf740ca25';
 
-Exonum.verifySignature(buffer, signature, publicKey);
+Exonum.verifySignature(signature, publicKey, buffer);
 ```
 
 #### keyPair
 
 Returns random pair of `publicKey` and `secretKey` as hexadecimal strings.
 
-```javascript
+```
 {
-    publicKey: '...',
-    secretKey: '...'
+    "publicKey": ...,
+    "secretKey": ...
 }
+```
+
+#### randomUint64
+
+Returns random `Uint64` as a string.
+
+```
+var randomNumber = Exonum.randomUint64();
 ```
 
 ---
@@ -778,39 +808,34 @@ Returns random pair of `publicKey` and `secretKey` as hexadecimal strings.
 
 #### merkleProof(rootHash, count, proofNode, range, type)
 
-This methods can check proof of Merkle tree.
+Check proof of Merkle tree.
 
-The `rootHash` is a hash of root node as hexadecimal string.
+###### Parameters:
 
-The `count` is a total count of elements in tree.
+| Name | Type | Description |
+|---|---|---|
+| rootHash | `string` | A 32-byte hexadecimal string. |
+| count | `number` | A total count of elements in tree. |
+| proofNode | `Object` | A tree with proof in JSON format. |
+| range | `Array` | An array of two numbers. Represents list of obtained elements: `[startIndex; endIndex)`. |
+| type | `NewType` | Optional parameter. MerkleProof method expects to find arrays of 8-bit integers as values in tree in the case when it is not passed. | 
 
-The `proofNode` is a tree with proof in JSON format.
-
-The `range` is array of two values: start and end indexes. Represents list of obtained elements.
-
-The `type` is a format of data in a special format. It is an optional parameter. MerkleProof method expects to find arrays of 8-bit integers as values in tree in the case when it is not passed.
-
-Returns an array of elements if tree is valid.
-
-Returns `undefined` if tree is not valid.
+Returns an array of elements if tree is valid or `undefined` if tree is not valid.
 
 #### merklePatriciaProof(rootHash, proof, key)
 
 This methods can check proof of Merkle Patricia tree.
 
-The `rootHash` is a hash of root node represented as hexadecimal string.
+###### Parameters:
 
-The `proofNode` is a tree with proof in JSON format.
+| Name | Type | Description |
+|---|---|---|
+| rootHash | `string` | A 32-byte hexadecimal string. |
+| proofNode | `Object` | A tree with proof in JSON format. |
+| key | `string` | A 32-byte hexadecimal string. |
+| type | `NewType` | Optional parameter. MerkleProof method expects to find arrays of 8-bit integers as values in tree in the case when it is not passed. |
 
-The `key` is a key of element represented as hexadecimal string.
-
-The `type` is a format of data in a special format. It is an optional parameter. MerkleProof method expects to find arrays of 8-bit integers as values in tree in the case when it is not passed.
-
-Returns elements data in JSON format if tree is valid and element is found.
-
-Returns `null` if tree is valid but element is not found.
-
-Returns `undefined` if tree is not valid.
+Returns elements data in JSON format if tree is valid and element is found. Returns `null` if tree is valid but element is not found or `undefined` if tree is not valid.
 
 ---
 
@@ -818,11 +843,39 @@ Returns `undefined` if tree is not valid.
 
 #### verifyBlock(data, validators)
 
-This methods can verify block of precommits.
+Validate block and each precommit in block.
 
-The `data` is a custom data in JSON format.
+###### Parameters:
 
-The `validators` is an array of validators public keys. Each public key is hexadecimal string of a 32 bytes.
+| Name | Type | Description |
+|---|---|---|
+| data | `Object` | Object with `block` and `precommits`. |
+| validators | `Array` | An array of validators public keys. Each public key is hexadecimal string of a 32 bytes. |
+
+###### Structure of `data`:
+
+```
+{
+    "block": {
+        "height": ...,
+        "propose_round": ...,
+        "prev_hash": ...,
+        "tx_hash": ...,
+        "state_hash": ...
+    },
+    "precommits": [
+        {
+            "validator": ...,
+            "height": ...,
+            "round": ...,
+            "propose_hash": ...,
+            "block_hash": ...,
+            "time": ...,
+        },
+        ...
+    ]
+}
+```
 
 Returns `true` if verification is succeeded or `false` if it is failed.
 
@@ -849,7 +902,7 @@ $ grunt
 To run tests execute:
 
 ```
-$ grunt mochaTest
+$ grunt test
 ```
 
 #### License

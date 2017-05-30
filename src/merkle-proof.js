@@ -6,12 +6,11 @@ require('../src/data-management');
 require('../src/validators');
 
 var bigInt = require('big-integer');
-var objectAssign = require('object-assign');
 
 /**
  * Calculate height of merkle tree
  * @param {bigInt} count
- * @return {Number}
+ * @return {number}
  */
 function calcHeight(count) {
     var i = 0;
@@ -23,11 +22,11 @@ function calcHeight(count) {
 
 /**
  * Check proof of Merkle tree and return array of elements
- * @param {String} rootHash
- * @param {Number} count
+ * @param {string} rootHash
+ * @param {number} count
  * @param {Object} proofNode
  * @param {Array} range
- * @param type (optional)
+ * @param {NewType} [type] - optional
  * @return {Array}
  */
 Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
@@ -37,9 +36,9 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
     /**
      * Get value from node, insert into elements array and return its hash
      * @param data
-     * @param {Number} depth
-     * @param {Number} index
-     * @returns {String}
+     * @param {number} depth
+     * @param {number} index
+     * @returns {string}
      */
     function getHash(data, depth, index) {
         var element;
@@ -57,7 +56,7 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
         }
 
         if (typeof data === 'string') {
-            if (Exonum.validateHexHash(data) === true) {
+            if (Exonum.validateHexHash(data)) {
                 element = data;
                 elementsHash = Exonum.hash(Exonum.hexadecimalToUint8Array(element));
             } else {
@@ -65,16 +64,16 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
                 return;
             }
         } else if (Array.isArray(data)) {
-            if (Exonum.validateBytesArray(data) === true) {
+            if (Exonum.validateBytesArray(data)) {
                 element = data.slice(0); // clone array of 8-bit integers
                 elementsHash = Exonum.hash(element);
             } else {
                 console.error('Invalid array of 8-bit integers in tree.');
                 return;
             }
-        } else if (Exonum.isObject(data) === true) {
+        } else if (Exonum.isObject(data)) {
             if (Exonum.isInstanceofOfNewType(type) === true) {
-                element = objectAssign(data); // deep copy
+                element = data;
                 elementsHash = Exonum.hash(element, type);
             } else {
                 console.error('Invalid type of type parameter.');
@@ -85,7 +84,7 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
             return;
         }
 
-        if (typeof elementsHash === 'undefined') {
+        if (elementsHash === undefined) {
             return;
         }
 
@@ -96,9 +95,9 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
     /**
      * Recursive tree traversal function
      * @param {Object} node
-     * @param {Number} depth
-     * @param {Number} index
-     * @returns {String}
+     * @param {number} depth
+     * @param {number} index
+     * @returns {string}
      */
     function recursive(node, depth, index) {
         var hashLeft;
@@ -106,23 +105,23 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
         var summingBuffer;
 
         // case with single node in tree
-        if (depth === 0 && typeof node.val !== 'undefined') {
+        if (depth === 0 && node.val !== undefined) {
             return getHash(node.val, depth, index * 2);
         }
 
-        if (typeof node.left !== 'undefined') {
+        if (node.left !== undefined) {
             if (typeof node.left === 'string') {
                 if (Exonum.validateHexHash(node.left) === false) {
                     return null;
                 }
                 hashLeft = node.left;
-            } else if (Exonum.isObject(node.left) === true) {
-                if (typeof node.left.val !== 'undefined') {
+            } else if (Exonum.isObject(node.left)) {
+                if (node.left.val !== undefined) {
                     hashLeft = getHash(node.left.val, depth, index * 2);
                 } else {
                     hashLeft = recursive(node.left, depth + 1, index * 2);
                 }
-                if (typeof hashLeft === 'undefined') {
+                if (hashLeft === undefined || hashLeft === null) {
                     return null;
                 }
             } else {
@@ -138,19 +137,19 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
             rootBranch = 'right';
         }
 
-        if (typeof node.right !== 'undefined') {
+        if (node.right !== undefined) {
             if (typeof node.right === 'string') {
                 if (Exonum.validateHexHash(node.right) === false) {
                     return null;
                 }
                 hashRight = node.right;
-            } else if (Exonum.isObject(node.right) === true) {
-                if (typeof node.right.val !== 'undefined') {
+            } else if (Exonum.isObject(node.right)) {
+                if (node.right.val !== undefined) {
                     hashRight = getHash(node.right.val, depth, index * 2 + 1);
                 } else {
                     hashRight = recursive(node.right, depth + 1, index * 2 + 1);
                 }
-                if (typeof hashRight === 'undefined') {
+                if (hashRight === undefined || hashRight === null) {
                     return null;
                 }
             } else {
@@ -173,59 +172,59 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
 
     // validate rootHash
     if (Exonum.validateHexHash(rootHash) === false) {
-        return undefined;
+        return;
     }
 
     // validate count
     if (!(typeof count === 'number' || typeof count === 'string')) {
         console.error('Invalid value is passed as count parameter. Number or string is expected.');
-        return undefined;
+        return;
     }
     try {
         count = bigInt(count);
     } catch (e) {
         console.error('Invalid value is passed as count parameter.');
-        return undefined;
+        return;
     }
     if (count.lt(0)) {
         console.error('Invalid count parameter. Count can\'t be below zero.');
-        return undefined;
+        return;
     }
 
     // validate range
     if (Array.isArray(range) === false || range.length !== 2) {
         console.error('Invalid type of range parameter. Array of two elements expected.');
-        return undefined;
+        return;
     } else if (!(typeof range[0] === 'number' || typeof range[0] === 'string')) {
         console.error('Invalid value is passed as start of range parameter.');
-        return undefined;
+        return;
     } else if (!(typeof range[1] === 'number' || typeof range[1] === 'string')) {
         console.error('Invalid value is passed as end of range parameter.');
-        return undefined;
+        return;
     }
     var rangeStart;
     try {
         rangeStart = bigInt(range[0]);
     } catch (e) {
         console.error('Invalid value is passed as start of range parameter. Number or string is expected.');
-        return undefined;
+        return;
     }
     var rangeEnd;
     try {
         rangeEnd = bigInt(range[1]);
     } catch (e) {
         console.error('Invalid value is passed as end of range parameter. Number or string is expected.');
-        return undefined;
+        return;
     }
     if (rangeStart.gt(rangeEnd)) {
         console.error('Invalid range parameter. Start index can\'t be out of range.');
-        return undefined;
+        return;
     } else if (rangeStart.lt(0)) {
         console.error('Invalid range parameter. Start index can\'t be below zero.');
-        return undefined;
+        return;
     } else if (rangeEnd.lt(0)) {
         console.error('Invalid range parameter. End index can\'t be below zero.');
-        return undefined;
+        return;
     } else if (rangeStart.gt(count.minus(1))) {
         return [];
     }
@@ -233,7 +232,7 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
     // validate proofNode
     if (Exonum.isObject(proofNode) === false) {
         console.error('Invalid type of proofNode parameter. Object expected.');
-        return undefined;
+        return;
     }
 
     var height = calcHeight(count);
@@ -241,14 +240,14 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
     var end = rangeEnd.lt(count) ? rangeEnd : count.minus(1);
     var actualHash = recursive(proofNode, 0, 0);
 
-    if (typeof actualHash === 'undefined') { // tree is invalid
-        return undefined;
+    if (actualHash === undefined) { // tree is invalid
+        return;
     } else if (rootHash.toLowerCase() !== actualHash) {
         console.error('rootHash parameter is not equal to actual hash.');
-        return undefined;
+        return;
     } else if (bigInt(elements.length).neq(end.eq(start) ? 1 : end.minus(start).plus(1))) {
         console.error('Actual elements in tree amount is not equal to requested.');
-        return undefined;
+        return;
     }
 
     return elements;

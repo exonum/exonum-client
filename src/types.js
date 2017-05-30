@@ -18,8 +18,14 @@ const MAX_UINT64 = '18446744073709551615';
 
 var bigInt = require('big-integer');
 
+/**
+ * @param {string} str
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ */
 function insertHexadecimalToByteArray(str, buffer, from, to) {
-    for (var i = 0, len = str.length; i < len; i += 2) {
+    for (var i = 0; i < str.length; i += 2) {
         buffer[from] = parseInt(str.substr(i, 2), 16);
         from++;
 
@@ -29,30 +35,22 @@ function insertHexadecimalToByteArray(str, buffer, from, to) {
     }
 }
 
+/**
+ * Insert number into array as as little-endian
+ * @param {number|bigInt} number
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {boolean}
+ */
 function insertIntegerToByteArray(number, buffer, from, to) {
     var str = number.toString(16);
 
-    insertNumberAsHexToByteArray(str, buffer, from, to);
-}
-
-function insertBigIntegerToByteArray(number, buffer, from, to) {
-    var str = number.toString(16);
-
-    insertNumberAsHexToByteArray(str, buffer, from, to);
-}
-
-function insertNumberAsHexToByteArray(number, buffer, from, to) {
-    // store Number as little-endian
-    if (number.length < 3) {
-        buffer[from] = parseInt(number, 16);
-        return true;
-    }
-
-    for (var i = number.length; i > 0; i -= 2) {
+    for (var i = str.length; i > 0; i -= 2) {
         if (i > 1) {
-            buffer[from] = parseInt(number.substr(i - 2, 2), 16);
+            buffer[from] = parseInt(str.substr(i - 2, 2), 16);
         } else {
-            buffer[from] = parseInt(number.substr(0, 1), 16);
+            buffer[from] = parseInt(str.substr(0, 1), 16);
         }
 
         from++;
@@ -63,6 +61,11 @@ function insertNumberAsHexToByteArray(number, buffer, from, to) {
     }
 }
 
+/**
+ * @param {string} str
+ * @param {Array} buffer
+ * @param {number} from
+ */
 function insertStringToByteArray(str, buffer, from) {
     for (var i = 0; i < str.length; i++) {
         var c = str.charCodeAt(i);
@@ -87,6 +90,13 @@ function insertStringToByteArray(str, buffer, from) {
     }
 }
 
+/**
+ * @param {number} value
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {Array}
+ */
 Exonum.Int8 = function(value, buffer, from, to) {
     if (Exonum.validateInteger(value, MIN_INT8, MAX_INT8, from, to, 1) === false) {
         return;
@@ -101,6 +111,13 @@ Exonum.Int8 = function(value, buffer, from, to) {
     return buffer;
 };
 
+/**
+ * @param {number} value
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {Array}
+ */
 Exonum.Int16 = function(value, buffer, from, to) {
     if (Exonum.validateInteger(value, MIN_INT16, MAX_INT16, from, to, 2) === false) {
         return;
@@ -115,6 +132,13 @@ Exonum.Int16 = function(value, buffer, from, to) {
     return buffer;
 };
 
+/**
+ * @param {number} value
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {Array}
+ */
 Exonum.Int32 = function(value, buffer, from, to) {
     if (Exonum.validateInteger(value, MIN_INT32, MAX_INT32, from, to, 4) === false) {
         return;
@@ -129,25 +153,36 @@ Exonum.Int32 = function(value, buffer, from, to) {
     return buffer;
 };
 
-// value can be of type string or number
+/**
+ * @param {number|string} value
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {Array}
+ */
 Exonum.Int64 = function(value, buffer, from, to) {
-    var val = Exonum.validateBigInteger(value, MIN_INT64, MAX_INT64, from, to, 8);
-
-    if (val === false) {
-        return;
-    } else if (!bigInt.isInstance(val)) {
+    if (Exonum.validateBigInteger(value, MIN_INT64, MAX_INT64, from, to, 8) === false) {
         return;
     }
+
+    var val = bigInt(value);
 
     if (val.isNegative()) {
         val = bigInt(MAX_UINT64).plus(1).plus(val);
     }
 
-    insertBigIntegerToByteArray(val, buffer, from, to);
+    insertIntegerToByteArray(val, buffer, from, to);
 
     return buffer;
 };
 
+/**
+ * @param {number} value
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {Array}
+ */
 Exonum.Uint8 = function(value, buffer, from, to) {
     if (Exonum.validateInteger(value, 0, MAX_UINT8, from, to, 1) === false) {
         return;
@@ -158,6 +193,13 @@ Exonum.Uint8 = function(value, buffer, from, to) {
     return buffer;
 };
 
+/**
+ * @param {number} value
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {Array}
+ */
 Exonum.Uint16 = function(value, buffer, from, to) {
     if (Exonum.validateInteger(value, 0, MAX_UINT16, from, to, 2) === false) {
         return;
@@ -168,6 +210,13 @@ Exonum.Uint16 = function(value, buffer, from, to) {
     return buffer;
 };
 
+/**
+ * @param {number} value
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {Array}
+ */
 Exonum.Uint32 = function(value, buffer, from, to) {
     if (Exonum.validateInteger(value, 0, MAX_UINT32, from, to, 4) === false) {
         return;
@@ -178,25 +227,32 @@ Exonum.Uint32 = function(value, buffer, from, to) {
     return buffer;
 };
 
-// value can be of type string or number
+/**
+ * @param {number|string} value
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {Array}
+ */
 Exonum.Uint64 = function(value, buffer, from, to) {
-    var val = Exonum.validateBigInteger(value, 0, MAX_UINT64, from, to, 8);
-
-    if (val === false) {
-        return;
-    } else if (!bigInt.isInstance(val)) {
+    if (Exonum.validateBigInteger(value, 0, MAX_UINT64, from, to, 8) === false) {
         return;
     }
 
-    insertBigIntegerToByteArray(val, buffer, from, to);
+    var val = bigInt(value);
+
+    insertIntegerToByteArray(val, buffer, from, to);
 
     return buffer;
 };
 
-Exonum.randomUint64 = function() {
-    return bigInt.randBetween(0, MAX_UINT64).toString();
-};
-
+/**
+ * @param {string} string
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {Array}
+ */
 Exonum.String = function(string, buffer, from, to) {
     if (typeof string !== 'string') {
         console.error('Wrong data type is passed as String. String is required');
@@ -214,6 +270,13 @@ Exonum.String = function(string, buffer, from, to) {
     return buffer;
 };
 
+/**
+ * @param {string} hash
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {Array}
+ */
 Exonum.Hash = function(hash, buffer, from, to) {
     if (Exonum.validateHexHash(hash) === false) {
         return;
@@ -227,6 +290,13 @@ Exonum.Hash = function(hash, buffer, from, to) {
     return buffer;
 };
 
+/**
+ * @param {string} digest
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {Array}
+ */
 Exonum.Digest = function(digest, buffer, from, to) {
     if (Exonum.validateHexHash(digest, 64) === false) {
         return;
@@ -240,6 +310,13 @@ Exonum.Digest = function(digest, buffer, from, to) {
     return buffer;
 };
 
+/**
+ * @param {string} publicKey
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {Array}
+ */
 Exonum.PublicKey = function(publicKey, buffer, from, to) {
     if (Exonum.validateHexHash(publicKey) === false) {
         return;
@@ -253,20 +330,13 @@ Exonum.PublicKey = function(publicKey, buffer, from, to) {
     return buffer;
 };
 
-Exonum.Timespec = function(nanoseconds, buffer, from, to) {
-    var val = Exonum.validateBigInteger(nanoseconds, 0, MAX_UINT64, from, to, 8);
-
-    if (val === false) {
-        return;
-    } else if (!bigInt.isInstance(val)) {
-        return;
-    }
-
-    insertBigIntegerToByteArray(val, buffer, from, to);
-
-    return buffer;
-};
-
+/**
+ * @param {boolean} value
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {Array}
+ */
 Exonum.Bool = function(value, buffer, from, to) {
     if (typeof value !== 'boolean') {
         console.error('Wrong data type is passed as Boolean. Boolean is required');
@@ -277,6 +347,25 @@ Exonum.Bool = function(value, buffer, from, to) {
     }
 
     insertIntegerToByteArray(value ? 1 : 0, buffer, from, to);
+
+    return buffer;
+};
+
+/**
+ * @param {number|string} nanoseconds
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {Array}
+ */
+Exonum.Timespec = function(nanoseconds, buffer, from, to) {
+    if (Exonum.validateBigInteger(nanoseconds, 0, MAX_UINT64, from, to, 8) === false) {
+        return;
+    }
+
+    var val = bigInt(nanoseconds);
+
+    insertIntegerToByteArray(val, buffer, from, to);
 
     return buffer;
 };
