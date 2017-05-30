@@ -20,6 +20,10 @@
                     },
                     "validator": 0
                 },
+                "network_id": 0,
+                "protocol_version": 0,
+                "message_id": 4,
+                "service_id": 0,
                 "signature": "061e8155df95630d1d3ca238fa85c0910692113834541b60cce740fa3f67cbd6d3e8834b4fdc8bf49d24413de423fc1b7dc223d18603351ed79fa655837fd500"
             },
             {
@@ -34,6 +38,10 @@
                     },
                     "validator": 3
                 },
+                "network_id": 0,
+                "protocol_version": 0,
+                "message_id": 4,
+                "service_id": 0,
                 "signature": "adca3438dc577e78fb15ee5057c05f6b4fa1354b782e19a65ed3de5f7a5c4d55e02af358bb6cb80e7b0e7e6852aa313600774439f9b573c8030e909eb3edf002"
             },
             {
@@ -48,6 +56,10 @@
                     },
                     "validator": 2
                 },
+                "network_id": 0,
+                "protocol_version": 0,
+                "message_id": 4,
+                "service_id": 0,
                 "signature": "e7b7c4d12a3bcd5dc7687079d28ed857767cd3a4a8bd601938498c6d5cf7ca7204a3c29b843ed7ec4b357c167111ad1ae525cc7653e685e22e0dceec6864d304"
             }
         ]
@@ -96,6 +108,8 @@
                     "name": "Tina",
                     "pub_key": "72a3466b65ed9b5deb868120fc5424312dadf4bfb6258a6be32b051b47604068"
                 },
+                "network_id": 0,
+                "protocol_version": 0,
                 "message_id": 130,
                 "service_id": 128,
                 "signature": "26aca3191d9258b1766ed1103c720d608d6989ea31a917be6a5099b89c9f916b07d1608722ac003976708391cf2b1eee930af10296ea85d5f42e485984e78307"
@@ -106,6 +120,8 @@
                     "seed": "5577180130996353008",
                     "wallet": "72a3466b65ed9b5deb868120fc5424312dadf4bfb6258a6be32b051b47604068"
                 },
+                "network_id": 0,
+                "protocol_version": 0,
                 "message_id": 129,
                 "service_id": 128,
                 "signature": "48eb16c04e1a575cc2769ca2fa3e1248ac1ac7926245455c067ae44f85363ba9ab80d5df444ed46e7f4b0a2e76a0f7f1989847015ed4a95885ea6db6899e9a0e"

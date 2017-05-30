@@ -29,19 +29,6 @@ export function verifyBlock(data, validators) {
             nanos: {type: primitive.Uint32, size: 4, from: 8, to: 12}
         }
     });
-    var Precommit = newMessage({
-        size: 96,
-        service_id: 0,
-        message_id: 4,
-        fields: {
-            validator: {type: primitive.Uint32, size: 4, from: 0, to: 4},
-            height: {type: primitive.Uint64, size: 8, from: 8, to: 16},
-            round: {type: primitive.Uint32, size: 4, from: 16, to: 20},
-            propose_hash: {type: primitive.Hash, size: 32, from: 20, to: 52},
-            block_hash: {type: primitive.Hash, size: 32, from: 52, to: 84},
-            time: {type: SystemTime, size: 12, from: 84, to: 96}
-        }
-    });
 
     if (isObject(data) === false) {
         return false;
@@ -105,6 +92,21 @@ export function verifyBlock(data, validators) {
         }
 
         var publicKey = validators[precommit.body.validator];
+        var Precommit = newMessage({
+            size: 96,
+            network_id: precommit.network_id,
+            protocol_version: precommit.protocol_version,
+            message_id: precommit.message_id,
+            service_id: precommit.service_id,
+            fields: {
+                validator: {type: primitive.Uint32, size: 4, from: 0, to: 4},
+                height: {type: primitive.Uint64, size: 8, from: 8, to: 16},
+                round: {type: primitive.Uint32, size: 4, from: 16, to: 20},
+                propose_hash: {type: primitive.Hash, size: 32, from: 20, to: 52},
+                block_hash: {type: primitive.Hash, size: 32, from: 52, to: 84},
+                time: {type: SystemTime, size: 12, from: 84, to: 96}
+            }
+        });
 
         if (!verifySignature(precommit.signature, publicKey, precommit.body, Precommit)) {
             return false;

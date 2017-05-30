@@ -12,6 +12,8 @@ const SIGNATURE_LENGTH = 64;
 class NewMessage {
     constructor(type) {
         this.size = type.size;
+        this.network_id = type.network_id;
+        this.protocol_version = type.protocol_version;
         this.message_id = type.message_id;
         this.service_id = type.service_id;
         this.signature = type.signature;
@@ -29,7 +31,7 @@ class NewMessage {
             size: 10,
             fields: {
                 network_id: {type: primitive.Uint8, size: 1, from: 0, to: 1},
-                version: {type: primitive.Uint8, size: 1, from: 1, to: 2},
+                protocol_version: {type: primitive.Uint8, size: 1, from: 1, to: 2},
                 message_id: {type: primitive.Uint16, size: 2, from: 2, to: 4},
                 service_id: {type: primitive.Uint16, size: 2, from: 4, to: 6},
                 payload: {type: primitive.Uint32, size: 4, from: 6, to: 10}
@@ -37,8 +39,8 @@ class NewMessage {
         });
 
         var buffer = MessageHead.serialize({
-            network_id: 0,
-            version: 0,
+            network_id: this.network_id,
+            protocol_version: this.protocol_version,
             message_id: this.message_id,
             service_id: this.service_id,
             payload: 0 // placeholder, real value will be inserted later

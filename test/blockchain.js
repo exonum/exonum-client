@@ -123,6 +123,10 @@ describe('Verify block of precommits', function() {
                         'propose_hash': '1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a',
                         'block_hash': '1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a'
                     },
+                    'network_id': 0,
+                    'protocol_version': 0,
+                    'message_id': 4,
+                    'service_id': 0,
                     'signature': '4616ef4bfac86c8ded9aa9c7e84958574e3f9df4f7aadea8b37dcdb40ebedd8ac009f8a9b54bd907bf4f43289bfec72e47e6338912f282a6b5a5ce8c558ef50b'
                 },
                 {
@@ -133,6 +137,10 @@ describe('Verify block of precommits', function() {
                         'propose_hash': '1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a',
                         'block_hash': '1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a'
                     },
+                    'network_id': 0,
+                    'protocol_version': 0,
+                    'message_id': 4,
+                    'service_id': 0,
                     'signature': '5253cba87af1abac95c7c92f06b2b286af84353fd060ea1069f107094d97298473fe6431613c3e2d02d92624c82394b86cec047cd681e0f3fc98f0f877383a04'
                 },
                 {
@@ -143,6 +151,10 @@ describe('Verify block of precommits', function() {
                         'propose_hash': '1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a',
                         'block_hash': '1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a'
                     },
+                    'network_id': 0,
+                    'protocol_version': 0,
+                    'message_id': 4,
+                    'service_id': 0,
                     'signature': 'e35a3cb1ca834cce77d67d5945ef1d7021488a357a35e973cd1ef17099d4db55a28123d95f9c5dcedf34c86a12c20e91cc47622612039115f2a376d7e5f7ab00'
                 }
             ]
@@ -169,6 +181,10 @@ describe('Verify block of precommits', function() {
                         'propose_hash': '1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a',
                         'block_hash': 'c2513f88478a32767c3cf7c068d60523212a005374d8d7398473c9601bf3d369'
                     },
+                    'network_id': 0,
+                    'protocol_version': 0,
+                    'message_id': 4,
+                    'service_id': 0,
                     'signature': '4616ef4bfac86c8ded9aa9c7e84958574e3f9df4f7aadea8b37dcdb40ebedd8ac009f8a9b54bd907bf4f43289bfec72e47e6338912f282a6b5a5ce8c558ef50b'
                 },
                 {
@@ -179,6 +195,10 @@ describe('Verify block of precommits', function() {
                         'propose_hash': '1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a',
                         'block_hash': 'c2513f88478a32767c3cf7c068d60523212a005374d8d7398473c9601bf3d369'
                     },
+                    'network_id': 0,
+                    'protocol_version': 0,
+                    'message_id': 4,
+                    'service_id': 0,
                     'signature': '5253cba87af1abac95c7c92f06b2b286af84353fd060ea1069f107094d97298473fe6431613c3e2d02d92624c82394b86cec047cd681e0f3fc98f0f877383a04'
                 },
                 {
@@ -189,6 +209,10 @@ describe('Verify block of precommits', function() {
                         'propose_hash': '1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a',
                         'block_hash': 'c2513f88478a32767c3cf7c068d60523212a005374d8d7398473c9601bf3d369'
                     },
+                    'network_id': 0,
+                    'protocol_version': 0,
+                    'message_id': 4,
+                    'service_id': 0,
                     'signature': 'fc7d8d9150db263f03cb8a141b6a372a0bed1fa21128907b52485ad37ea19e71342ebbd8f80e76c81e42d125e3a2e4e15189212f6f78a307005c63c0eade6c06'
                 }
             ]
@@ -215,6 +239,10 @@ describe('Verify block of precommits', function() {
                         'propose_hash': '1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a',
                         'block_hash': 'c2513f88478a32767c3cf7c068d60523212a005374d8d7398473c9601bf3d369'
                     },
+                    'network_id': 0,
+                    'protocol_version': 0,
+                    'message_id': 4,
+                    'service_id': 0,
                     'signature': '5616ef4bfac86c8ded9aa9c7e84958574e3f9df4f7aadea8b37dcdb40ebedd8ac009f8a9b54bd907bf4f43289bfec72e47e6338912f282a6b5a5ce8c558ef50b'
                 }
             ]
@@ -241,6 +269,10 @@ describe('Verify block of precommits', function() {
                         'propose_hash': '1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a',
                         'block_hash': 'c2513f88478a32767c3cf7c068d60523212a005374d8d7398473c9601bf3d369'
                     },
+                    'network_id': 0,
+                    'protocol_version': 0,
+                    'message_id': 4,
+                    'service_id': 0,
                     'signature': '4616ef4bfac86c8ded9aa9c7e84958574e3f9df4f7aadea8b37dcdb40ebedd8ac009f8a9b54bd907bf4f43289bfec72e47e6338912f282a6b5a5ce8c558ef50b'
                 }
             ]
@@ -267,6 +299,10 @@ describe('Verify block of precommits', function() {
                         'propose_hash': '1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a',
                         'block_hash': 'c2513f88478a32767c3cf7c068d60523212a005374d8d7398473c9601bf3d369'
                     },
+                    'network_id': 0,
+                    'protocol_version': 0,
+                    'message_id': 4,
+                    'service_id': 0,
                     'signature': '4616ef4bfac86c8ded9aa9c7e84958574e3f9df4f7aadea8b37dcdb40ebedd8ac009f8a9b54bd907bf4f43289bfec72e47e6338912f282a6b5a5ce8c558ef50b'
                 },
                 {
@@ -277,6 +313,10 @@ describe('Verify block of precommits', function() {
                         'propose_hash': '1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a',
                         'block_hash': 'c2513f88478a32767c3cf7c068d60523212a005374d8d7398473c9601bf3d369'
                     },
+                    'network_id': 0,
+                    'protocol_version': 0,
+                    'message_id': 4,
+                    'service_id': 0,
                     'signature': '5253cba87af1abac95c7c92f06b2b286af84353fd060ea1069f107094d97298473fe6431613c3e2d02d92624c82394b86cec047cd681e0f3fc98f0f877383a04'
                 },
                 {
@@ -287,6 +327,10 @@ describe('Verify block of precommits', function() {
                         'propose_hash': '1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a',
                         'block_hash': 'c2513f88478a32767c3cf7c068d60523212a005374d8d7398473c9601bf3d369'
                     },
+                    'network_id': 0,
+                    'protocol_version': 0,
+                    'message_id': 4,
+                    'service_id': 0,
                     'signature': 'e35a3cb1ca834cce77d67d5945ef1d7021488a357a35e973cd1ef17099d4db55a28123d95f9c5dcedf34c86a12c20e91cc47622612039115f2a376d7e5f7ab00'
                 }
             ]
