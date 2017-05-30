@@ -5,9 +5,14 @@
   "license": "",
   "author": "BitFury Group Limited",
   "private": true,
-  "main": "src/index.js",
+  "main": "./lib/index.js",
+  "files": [
+    "dist",
+    "lib"
+  ],
   "scripts": {
-    "test": "grunt mochaTest"
+    "test": "grunt test",
+    "prepublish": "grunt prepublish"
   },
   "dependencies": {
     "big-integer": "^1.6.17",
@@ -15,15 +20,17 @@
     "tweetnacl": "^0.14.5"
   },
   "devDependencies": {
+    "babel-preset-es2015": "^6.24.1",
+    "babel-register": "^6.24.1",
+    "babelify": "^7.3.0",
     "chai": "^3.5.0",
     "grunt": "^1.0.1",
+    "grunt-babel": "^6.0.0",
     "grunt-browserify": "^5.0.0",
     "grunt-contrib-clean": "^1.0.0",
     "grunt-contrib-jshint": "^1.1.0",
     "grunt-contrib-uglify": "^2.2.0",
-    "grunt-mocha-istanbul": "^5.0.2",
     "grunt-mocha-test": "^0.13.2",
-    "istanbul": "^0.4.5",
     "mocha": "^3.4.2"
   }
 }

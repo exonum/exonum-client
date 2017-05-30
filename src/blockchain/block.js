@@ -1,39 +1,9 @@
-'use strict';
-var Exonum = require('../src/core');
-
-require('../src/data-management');
-require('../src/validators');
-
-var Block = Exonum.newType({
-    size: 108,
-    fields: {
-        height: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
-        propose_round: {type: Exonum.Uint32, size: 4, from: 8, to: 12},
-        prev_hash: {type: Exonum.Hash, size: 32, from: 12, to: 44},
-        tx_hash: {type: Exonum.Hash, size: 32, from: 44, to: 76},
-        state_hash: {type: Exonum.Hash, size: 32, from: 76, to: 108}
-    }
-});
-var SystemTime = Exonum.newType({
-    size: 12,
-    fields: {
-        secs: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
-        nanos: {type: Exonum.Uint32, size: 4, from: 8, to: 12}
-    }
-});
-var Precommit = Exonum.newMessage({
-    size: 96,
-    service_id: 0,
-    message_id: 4,
-    fields: {
-        validator: {type: Exonum.Uint32, size: 4, from: 0, to: 4},
-        height: {type: Exonum.Uint64, size: 8, from: 8, to: 16},
-        round: {type: Exonum.Uint32, size: 4, from: 16, to: 20},
-        propose_hash: {type: Exonum.Hash, size: 32, from: 20, to: 52},
-        block_hash: {type: Exonum.Hash, size: 32, from: 52, to: 84},
-        time: {type: SystemTime, size: 12, from: 84, to: 96}
-    }
-});
+import {isObject} from '../helpers';
+import * as primitive from '../types/primitive';
+import {newType} from '../types/generic';
+import {newMessage} from '../types/message';
+import {validateHexHash} from '../types/validate';
+import {hash, verifySignature} from '../crypto';
 
 /**
  * Validate block and each precommit in block
@@ -41,11 +11,42 @@ var Precommit = Exonum.newMessage({
  * @param {Array} validators
  * @return {boolean}
  */
-Exonum.verifyBlock = function(data, validators) {
-    if (Exonum.isObject(data) === false) {
+export function verifyBlock(data, validators) {
+    var Block = newType({
+        size: 108,
+        fields: {
+            height: {type: primitive.Uint64, size: 8, from: 0, to: 8},
+            propose_round: {type: primitive.Uint32, size: 4, from: 8, to: 12},
+            prev_hash: {type: primitive.Hash, size: 32, from: 12, to: 44},
+            tx_hash: {type: primitive.Hash, size: 32, from: 44, to: 76},
+            state_hash: {type: primitive.Hash, size: 32, from: 76, to: 108}
+        }
+    });
+    var SystemTime = newType({
+        size: 12,
+        fields: {
+            secs: {type: primitive.Uint64, size: 8, from: 0, to: 8},
+            nanos: {type: primitive.Uint32, size: 4, from: 8, to: 12}
+        }
+    });
+    var Precommit = newMessage({
+        size: 96,
+        service_id: 0,
+        message_id: 4,
+        fields: {
+            validator: {type: primitive.Uint32, size: 4, from: 0, to: 4},
+            height: {type: primitive.Uint64, size: 8, from: 8, to: 16},
+            round: {type: primitive.Uint32, size: 4, from: 16, to: 20},
+            propose_hash: {type: primitive.Hash, size: 32, from: 20, to: 52},
+            block_hash: {type: primitive.Hash, size: 32, from: 52, to: 84},
+            time: {type: SystemTime, size: 12, from: 84, to: 96}
+        }
+    });
+
+    if (isObject(data) === false) {
         console.error('Wrong type of data parameter. Object is expected.');
         return false;
-    } else if (Exonum.isObject(data.block) === false) {
+    } else if (isObject(data.block) === false) {
         console.error('Wrong type of block field in data parameter. Object is expected.');
         return false;
     } else if (Array.isArray(data.precommits) === false) {
@@ -57,7 +58,7 @@ Exonum.verifyBlock = function(data, validators) {
     }
 
     for (var i = 0; i < validators.length; i++) {
-        if (Exonum.validateHexHash(validators[i]) === false) {
+        if (validateHexHash(validators[i]) === false) {
             return false;
         }
     }
@@ -65,15 +66,15 @@ Exonum.verifyBlock = function(data, validators) {
     var validatorsTotalNumber = validators.length;
     var uniqueValidators = [];
     var round;
-    var blockHash = Exonum.hash(data.block, Block);
+    var blockHash = hash(data.block, Block);
 
     for (var i = 0; i < data.precommits.length; i++) {
         var precommit = data.precommits[i];
 
-        if (Exonum.isObject(precommit.body) === false) {
+        if (isObject(precommit.body) === false) {
             console.error('Wrong type of precommits body. Object is expected.');
             return false;
-        } else if (Exonum.validateHexHash(precommit.signature, 64) === false) {
+        } else if (validateHexHash(precommit.signature, 64) === false) {
             console.error('Wrong type of precommits signature. Hexadecimal of 64 length is expected.');
             return false;
         }
@@ -104,7 +105,7 @@ Exonum.verifyBlock = function(data, validators) {
 
         var publicKey = validators[precommit.body.validator];
 
-        if (Precommit.verifySignature(precommit.signature, publicKey, precommit.body) === false) {
+        if (verifySignature(precommit.signature, publicKey, precommit.body, Precommit) === false) {
             console.error('Wrong signature of precommit.');
             return false;
         }
@@ -116,4 +117,4 @@ Exonum.verifyBlock = function(data, validators) {
     }
 
     return true;
-};
+}

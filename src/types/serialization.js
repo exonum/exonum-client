@@ -1,7 +1,5 @@
-'use strict';
-var Exonum = require('../src/core');
-
-require('../src/types');
+import {isInstanceofOfNewType} from './generic';
+import {Uint32} from './primitive';
 
 /**
  * Serialize data into array of 8-bit integers and insert into buffer
@@ -10,14 +8,14 @@ require('../src/types');
  * @param {Object} data
  * @param type - can be {NewType} or one of built-in types
  */
-Exonum.serialize = function(buffer, shift, data, type) {
+export function serialize(buffer, shift, data, type) {
     function isFixed(fields) {
         for (var fieldName in fields) {
             if (!fields.hasOwnProperty(fieldName)) {
                 continue;
             }
 
-            if (Exonum.isInstanceofOfNewType(fields[fieldName].type)) {
+            if (isInstanceofOfNewType(fields[fieldName].type)) {
                 if (!isFixed(fields[fieldName].type.fields)) {
                     return false;
                 }
@@ -46,14 +44,14 @@ Exonum.serialize = function(buffer, shift, data, type) {
         var fieldType = type.fields[fieldName];
         var from = shift + fieldType.from;
 
-        if (Exonum.isInstanceofOfNewType(fieldType.type)) {
+        if (isInstanceofOfNewType(fieldType.type)) {
             if (isFixed(fieldType.type.fields)) {
-                buffer = Exonum.serialize(buffer, from, fieldData, fieldType.type);
+                buffer = serialize(buffer, from, fieldData, fieldType.type);
             } else {
                 var end = buffer.length;
-                Exonum.Uint32(end, buffer, from, from + 4);
-                buffer = Exonum.serialize(buffer, end, fieldData, fieldType.type);
-                Exonum.Uint32(buffer.length - end, buffer, from + 4, from + 8);
+                Uint32(end, buffer, from, from + 4);
+                buffer = serialize(buffer, end, fieldData, fieldType.type);
+                Uint32(buffer.length - end, buffer, from + 4, from + 8);
             }
         } else {
             buffer = fieldType.type(fieldData, buffer, from, shift + fieldType.to);
@@ -61,4 +59,4 @@ Exonum.serialize = function(buffer, shift, data, type) {
     }
 
     return buffer;
-};
+}

@@ -1,7 +1,5 @@
-'use strict';
-var Exonum = require('../src/core');
-
-require('../src/validators');
+import bigInt from 'big-integer';
+import * as validate from './validate';
 
 const MIN_INT8 = -128;
 const MAX_INT8 = 127;
@@ -15,8 +13,6 @@ const MAX_UINT8 = 255;
 const MAX_UINT16 = 65535;
 const MAX_UINT32 = 4294967295;
 const MAX_UINT64 = '18446744073709551615';
-
-var bigInt = require('big-integer');
 
 /**
  * @param {string} str
@@ -97,8 +93,8 @@ function insertStringToByteArray(str, buffer, from) {
  * @param {number} to
  * @returns {Array}
  */
-Exonum.Int8 = function(value, buffer, from, to) {
-    if (Exonum.validateInteger(value, MIN_INT8, MAX_INT8, from, to, 1) === false) {
+export function Int8(value, buffer, from, to) {
+    if (validate.validateInteger(value, MIN_INT8, MAX_INT8, from, to, 1) === false) {
         return;
     }
 
@@ -109,7 +105,7 @@ Exonum.Int8 = function(value, buffer, from, to) {
     insertIntegerToByteArray(value, buffer, from, to);
 
     return buffer;
-};
+}
 
 /**
  * @param {number} value
@@ -118,8 +114,8 @@ Exonum.Int8 = function(value, buffer, from, to) {
  * @param {number} to
  * @returns {Array}
  */
-Exonum.Int16 = function(value, buffer, from, to) {
-    if (Exonum.validateInteger(value, MIN_INT16, MAX_INT16, from, to, 2) === false) {
+export function Int16(value, buffer, from, to) {
+    if (validate.validateInteger(value, MIN_INT16, MAX_INT16, from, to, 2) === false) {
         return;
     }
 
@@ -130,7 +126,7 @@ Exonum.Int16 = function(value, buffer, from, to) {
     insertIntegerToByteArray(value, buffer, from, to);
 
     return buffer;
-};
+}
 
 /**
  * @param {number} value
@@ -139,8 +135,8 @@ Exonum.Int16 = function(value, buffer, from, to) {
  * @param {number} to
  * @returns {Array}
  */
-Exonum.Int32 = function(value, buffer, from, to) {
-    if (Exonum.validateInteger(value, MIN_INT32, MAX_INT32, from, to, 4) === false) {
+export function Int32(value, buffer, from, to) {
+    if (validate.validateInteger(value, MIN_INT32, MAX_INT32, from, to, 4) === false) {
         return;
     }
 
@@ -151,7 +147,7 @@ Exonum.Int32 = function(value, buffer, from, to) {
     insertIntegerToByteArray(value, buffer, from, to);
 
     return buffer;
-};
+}
 
 /**
  * @param {number|string} value
@@ -160,8 +156,8 @@ Exonum.Int32 = function(value, buffer, from, to) {
  * @param {number} to
  * @returns {Array}
  */
-Exonum.Int64 = function(value, buffer, from, to) {
-    if (Exonum.validateBigInteger(value, MIN_INT64, MAX_INT64, from, to, 8) === false) {
+export function Int64(value, buffer, from, to) {
+    if (validate.validateBigInteger(value, MIN_INT64, MAX_INT64, from, to, 8) === false) {
         return;
     }
 
@@ -174,7 +170,7 @@ Exonum.Int64 = function(value, buffer, from, to) {
     insertIntegerToByteArray(val, buffer, from, to);
 
     return buffer;
-};
+}
 
 /**
  * @param {number} value
@@ -183,15 +179,15 @@ Exonum.Int64 = function(value, buffer, from, to) {
  * @param {number} to
  * @returns {Array}
  */
-Exonum.Uint8 = function(value, buffer, from, to) {
-    if (Exonum.validateInteger(value, 0, MAX_UINT8, from, to, 1) === false) {
+export function Uint8(value, buffer, from, to) {
+    if (validate.validateInteger(value, 0, MAX_UINT8, from, to, 1) === false) {
         return;
     }
 
     insertIntegerToByteArray(value, buffer, from, to);
 
     return buffer;
-};
+}
 
 /**
  * @param {number} value
@@ -200,15 +196,15 @@ Exonum.Uint8 = function(value, buffer, from, to) {
  * @param {number} to
  * @returns {Array}
  */
-Exonum.Uint16 = function(value, buffer, from, to) {
-    if (Exonum.validateInteger(value, 0, MAX_UINT16, from, to, 2) === false) {
+export function Uint16(value, buffer, from, to) {
+    if (validate.validateInteger(value, 0, MAX_UINT16, from, to, 2) === false) {
         return;
     }
 
     insertIntegerToByteArray(value, buffer, from, to);
 
     return buffer;
-};
+}
 
 /**
  * @param {number} value
@@ -217,15 +213,15 @@ Exonum.Uint16 = function(value, buffer, from, to) {
  * @param {number} to
  * @returns {Array}
  */
-Exonum.Uint32 = function(value, buffer, from, to) {
-    if (Exonum.validateInteger(value, 0, MAX_UINT32, from, to, 4) === false) {
+export function Uint32(value, buffer, from, to) {
+    if (validate.validateInteger(value, 0, MAX_UINT32, from, to, 4) === false) {
         return;
     }
 
     insertIntegerToByteArray(value, buffer, from, to);
 
     return buffer;
-};
+}
 
 /**
  * @param {number|string} value
@@ -234,8 +230,8 @@ Exonum.Uint32 = function(value, buffer, from, to) {
  * @param {number} to
  * @returns {Array}
  */
-Exonum.Uint64 = function(value, buffer, from, to) {
-    if (Exonum.validateBigInteger(value, 0, MAX_UINT64, from, to, 8) === false) {
+export function Uint64(value, buffer, from, to) {
+    if (validate.validateBigInteger(value, 0, MAX_UINT64, from, to, 8) === false) {
         return;
     }
 
@@ -244,7 +240,7 @@ Exonum.Uint64 = function(value, buffer, from, to) {
     insertIntegerToByteArray(val, buffer, from, to);
 
     return buffer;
-};
+}
 
 /**
  * @param {string} string
@@ -253,7 +249,7 @@ Exonum.Uint64 = function(value, buffer, from, to) {
  * @param {number} to
  * @returns {Array}
  */
-Exonum.String = function(string, buffer, from, to) {
+export function String(string, buffer, from, to) {
     if (typeof string !== 'string') {
         console.error('Wrong data type is passed as String. String is required');
         return;
@@ -263,12 +259,12 @@ Exonum.String = function(string, buffer, from, to) {
     }
 
     var bufferLength = buffer.length;
-    Exonum.Uint32(bufferLength, buffer, from, from + 4); // index where string content starts in buffer
+    Uint32(bufferLength, buffer, from, from + 4); // index where string content starts in buffer
     insertStringToByteArray(string, buffer, bufferLength); // string content
-    Exonum.Uint32(buffer.length - bufferLength, buffer, from + 4, from + 8); // string length
+    Uint32(buffer.length - bufferLength, buffer, from + 4, from + 8); // string length
 
     return buffer;
-};
+}
 
 /**
  * @param {string} hash
@@ -277,8 +273,8 @@ Exonum.String = function(string, buffer, from, to) {
  * @param {number} to
  * @returns {Array}
  */
-Exonum.Hash = function(hash, buffer, from, to) {
-    if (Exonum.validateHexHash(hash) === false) {
+export function Hash(hash, buffer, from, to) {
+    if (validate.validateHexHash(hash) === false) {
         return;
     } else if ((to - from) !== 32) {
         console.error('Hash segment is of wrong length. 32 bytes long is required to store transmitted value.');
@@ -288,7 +284,7 @@ Exonum.Hash = function(hash, buffer, from, to) {
     insertHexadecimalToByteArray(hash, buffer, from, to);
 
     return buffer;
-};
+}
 
 /**
  * @param {string} digest
@@ -297,8 +293,8 @@ Exonum.Hash = function(hash, buffer, from, to) {
  * @param {number} to
  * @returns {Array}
  */
-Exonum.Digest = function(digest, buffer, from, to) {
-    if (Exonum.validateHexHash(digest, 64) === false) {
+export function Digest(digest, buffer, from, to) {
+    if (validate.validateHexHash(digest, 64) === false) {
         return;
     } else if ((to - from) !== 64) {
         console.error('Digest segment is of wrong length. 64 bytes long is required to store transmitted value.');
@@ -308,7 +304,7 @@ Exonum.Digest = function(digest, buffer, from, to) {
     insertHexadecimalToByteArray(digest, buffer, from, to);
 
     return buffer;
-};
+}
 
 /**
  * @param {string} publicKey
@@ -317,8 +313,8 @@ Exonum.Digest = function(digest, buffer, from, to) {
  * @param {number} to
  * @returns {Array}
  */
-Exonum.PublicKey = function(publicKey, buffer, from, to) {
-    if (Exonum.validateHexHash(publicKey) === false) {
+export function PublicKey(publicKey, buffer, from, to) {
+    if (validate.validateHexHash(publicKey) === false) {
         return;
     } else if ((to - from) !== 32) {
         console.error('PublicKey segment is of wrong length. 32 bytes long is required to store transmitted value.');
@@ -328,7 +324,7 @@ Exonum.PublicKey = function(publicKey, buffer, from, to) {
     insertHexadecimalToByteArray(publicKey, buffer, from, to);
 
     return buffer;
-};
+}
 
 /**
  * @param {boolean} value
@@ -337,7 +333,7 @@ Exonum.PublicKey = function(publicKey, buffer, from, to) {
  * @param {number} to
  * @returns {Array}
  */
-Exonum.Bool = function(value, buffer, from, to) {
+export function Bool(value, buffer, from, to) {
     if (typeof value !== 'boolean') {
         console.error('Wrong data type is passed as Boolean. Boolean is required');
         return;
@@ -349,7 +345,7 @@ Exonum.Bool = function(value, buffer, from, to) {
     insertIntegerToByteArray(value ? 1 : 0, buffer, from, to);
 
     return buffer;
-};
+}
 
 /**
  * @param {number|string} nanoseconds
@@ -358,8 +354,8 @@ Exonum.Bool = function(value, buffer, from, to) {
  * @param {number} to
  * @returns {Array}
  */
-Exonum.Timespec = function(nanoseconds, buffer, from, to) {
-    if (Exonum.validateBigInteger(nanoseconds, 0, MAX_UINT64, from, to, 8) === false) {
+export function Timespec(nanoseconds, buffer, from, to) {
+    if (validate.validateBigInteger(nanoseconds, 0, MAX_UINT64, from, to, 8) === false) {
         return;
     }
 

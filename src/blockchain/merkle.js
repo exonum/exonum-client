@@ -1,11 +1,9 @@
-'use strict';
-var Exonum = require('../src/core');
-
-require('../src/convertors');
-require('../src/data-management');
-require('../src/validators');
-
-var bigInt = require('big-integer');
+import bigInt from 'big-integer';
+import {isObject} from '../helpers';
+import {isInstanceofOfNewType} from '../types/generic';
+import {validateHexHash, validateBytesArray} from '../types/validate';
+import {hexadecimalToUint8Array} from '../types/convert';
+import {hash} from '../crypto';
 
 /**
  * Calculate height of merkle tree
@@ -29,7 +27,7 @@ function calcHeight(count) {
  * @param {NewType} [type] - optional
  * @return {Array}
  */
-Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
+export function merkleProof(rootHash, count, proofNode, range, type) {
     var elements = [];
     var rootBranch = 'left';
 
@@ -56,25 +54,25 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
         }
 
         if (typeof data === 'string') {
-            if (Exonum.validateHexHash(data)) {
+            if (validateHexHash(data)) {
                 element = data;
-                elementsHash = Exonum.hash(Exonum.hexadecimalToUint8Array(element));
+                elementsHash = hash(hexadecimalToUint8Array(element));
             } else {
                 console.error('Invalid hexadecimal string is passed as value in tree.');
                 return;
             }
         } else if (Array.isArray(data)) {
-            if (Exonum.validateBytesArray(data)) {
+            if (validateBytesArray(data)) {
                 element = data.slice(0); // clone array of 8-bit integers
-                elementsHash = Exonum.hash(element);
+                elementsHash = hash(element);
             } else {
                 console.error('Invalid array of 8-bit integers in tree.');
                 return;
             }
-        } else if (Exonum.isObject(data)) {
-            if (Exonum.isInstanceofOfNewType(type) === true) {
+        } else if (isObject(data)) {
+            if (isInstanceofOfNewType(type)) {
                 element = data;
-                elementsHash = Exonum.hash(element, type);
+                elementsHash = hash(element, type);
             } else {
                 console.error('Invalid type of type parameter.');
                 return;
@@ -111,11 +109,11 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
 
         if (node.left !== undefined) {
             if (typeof node.left === 'string') {
-                if (Exonum.validateHexHash(node.left) === false) {
+                if (validateHexHash(node.left) === false) {
                     return null;
                 }
                 hashLeft = node.left;
-            } else if (Exonum.isObject(node.left)) {
+            } else if (isObject(node.left)) {
                 if (node.left.val !== undefined) {
                     hashLeft = getHash(node.left.val, depth, index * 2);
                 } else {
@@ -139,11 +137,11 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
 
         if (node.right !== undefined) {
             if (typeof node.right === 'string') {
-                if (Exonum.validateHexHash(node.right) === false) {
+                if (validateHexHash(node.right) === false) {
                     return null;
                 }
                 hashRight = node.right;
-            } else if (Exonum.isObject(node.right)) {
+            } else if (isObject(node.right)) {
                 if (node.right.val !== undefined) {
                     hashRight = getHash(node.right.val, depth, index * 2 + 1);
                 } else {
@@ -158,20 +156,20 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
             }
 
             summingBuffer = new Uint8Array(64);
-            summingBuffer.set(Exonum.hexadecimalToUint8Array(hashLeft));
-            summingBuffer.set(Exonum.hexadecimalToUint8Array(hashRight), 32);
+            summingBuffer.set(hexadecimalToUint8Array(hashLeft));
+            summingBuffer.set(hexadecimalToUint8Array(hashRight), 32);
         } else if (depth === 0 || rootBranch === 'left') {
             console.error('Right leaf is missed in left branch of tree.');
             return null;
         } else {
-            summingBuffer = Exonum.hexadecimalToUint8Array(hashLeft);
+            summingBuffer = hexadecimalToUint8Array(hashLeft);
         }
 
-        return Exonum.hash(summingBuffer);
+        return hash(summingBuffer);
     }
 
     // validate rootHash
-    if (Exonum.validateHexHash(rootHash) === false) {
+    if (validateHexHash(rootHash) === false) {
         return;
     }
 
@@ -230,7 +228,7 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
     }
 
     // validate proofNode
-    if (Exonum.isObject(proofNode) === false) {
+    if (isObject(proofNode) === false) {
         console.error('Invalid type of proofNode parameter. Object expected.');
         return;
     }
@@ -251,4 +249,4 @@ Exonum.merkleProof = function(rootHash, count, proofNode, range, type) {
     }
 
     return elements;
-};
+}

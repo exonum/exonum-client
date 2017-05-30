@@ -1,14 +1,11 @@
-'use strict';
-var Exonum = require('../src/core');
-
-require('../src/convertors');
-require('../src/data-management');
-require('../src/serialization');
-require('../src/validators');
-
-var sha = require('sha.js');
-var nacl = require('tweetnacl');
-var bigInt = require('big-integer');
+import bigInt from 'big-integer';
+import sha from 'sha.js';
+import nacl from 'tweetnacl';
+import {isObject} from '../helpers';
+import {isInstanceofOfNewType} from '../types/generic';
+import {isInstanceofOfNewMessage} from '../types/message';
+import * as validate from '../types/validate';
+import * as convert from '../types/convert';
 
 /**
  * Get SHA256 hash
@@ -16,11 +13,11 @@ var bigInt = require('big-integer');
  * @param {NewType|NewMessage} [type] - optional, used only if data of {Object} type is passed
  * @return {string}
  */
-Exonum.hash = function(data, type) {
+export function hash(data, type) {
     var buffer;
 
-    if (Exonum.isInstanceofOfNewType(type) || Exonum.isInstanceofOfNewMessage(type)) {
-        if (Exonum.isObject(data)) {
+    if (isInstanceofOfNewType(type) || isInstanceofOfNewMessage(type)) {
+        if (isObject(data)) {
             buffer = type.serialize(data);
             if (buffer === undefined) {
                 console.error('Invalid data parameter. Instance of NewType is expected.');
@@ -45,7 +42,7 @@ Exonum.hash = function(data, type) {
     }
 
     return sha('sha256').update(buffer, 'utf8').digest('hex');
-};
+}
 
 /**
  * Get ED25519 signature
@@ -54,20 +51,20 @@ Exonum.hash = function(data, type) {
  * @param {NewType|NewMessage} [type] - optional, used only if data of {Object} type is passed
  * @return {string}
  */
-Exonum.sign = function(secretKey, data, type) {
+export function sign(secretKey, data, type) {
     var secretKeyUint8Array;
     var buffer;
     var signature;
 
-    if (Exonum.validateHexHash(secretKey, 64) === false) {
+    if (validate.validateHexHash(secretKey, 64) === false) {
         console.error('Invalid secretKey parameter.');
         return;
     }
 
-    secretKeyUint8Array = Exonum.hexadecimalToUint8Array(secretKey);
+    secretKeyUint8Array = convert.hexadecimalToUint8Array(secretKey);
 
-    if (Exonum.isInstanceofOfNewType(type) || Exonum.isInstanceofOfNewMessage(type)) {
-        if (Exonum.isObject(data)) {
+    if (isInstanceofOfNewType(type) || isInstanceofOfNewMessage(type)) {
+        if (isObject(data)) {
             buffer = type.serialize(data);
             if (buffer === undefined) {
                 console.error('Invalid data parameter. Instance of NewType or NewMessage is expected.');
@@ -95,8 +92,8 @@ Exonum.sign = function(secretKey, data, type) {
 
     signature = nacl.sign.detached(buffer, secretKeyUint8Array);
 
-    return Exonum.uint8ArrayToHexadecimal(signature);
-};
+    return convert.uint8ArrayToHexadecimal(signature);
+}
 
 /**
  * Verifies ED25519 signature
@@ -106,27 +103,27 @@ Exonum.sign = function(secretKey, data, type) {
  * @param {NewType|NewMessage} [type] - optional, used only if data of {Object} type is passed
  * @return {boolean}
  */
-Exonum.verifySignature = function(signature, publicKey, data, type) {
+export function verifySignature(signature, publicKey, data, type) {
     var signatureUint8Array;
     var publicKeyUint8Array;
     var buffer;
 
-    if (Exonum.validateHexHash(signature, 64) === false) {
+    if (validate.validateHexHash(signature, 64) === false) {
         console.error('Invalid signature parameter.');
         return false;
     }
 
-    signatureUint8Array = Exonum.hexadecimalToUint8Array(signature);
+    signatureUint8Array = convert.hexadecimalToUint8Array(signature);
 
-    if (Exonum.validateHexHash(publicKey) === false) {
+    if (validate.validateHexHash(publicKey) === false) {
         console.error('Invalid publicKey parameter.');
         return false;
     }
 
-    publicKeyUint8Array = Exonum.hexadecimalToUint8Array(publicKey);
+    publicKeyUint8Array = convert.hexadecimalToUint8Array(publicKey);
 
-    if (Exonum.isInstanceofOfNewType(type)) {
-        if (Exonum.isObject(data)) {
+    if (isInstanceofOfNewType(type)) {
+        if (isObject(data)) {
             buffer = type.serialize(data);
             if (buffer === undefined) {
                 console.error('Invalid data parameter. Instance of NewType is expected.');
@@ -138,8 +135,8 @@ Exonum.verifySignature = function(signature, publicKey, data, type) {
             console.error('Wrong type of data. Should be object.');
             return false;
         }
-    } else if (Exonum.isInstanceofOfNewMessage(type)) {
-        if (Exonum.isObject(data)) {
+    } else if (isInstanceofOfNewMessage(type)) {
+        if (isObject(data)) {
             buffer = type.serialize(data, true);
             if (buffer === undefined) {
                 console.error('Invalid data parameter. Instance of NewMessage is expected.');
@@ -174,22 +171,22 @@ Exonum.verifySignature = function(signature, publicKey, data, type) {
  *  publicKey {string}
  *  secretKey {string}
  */
-Exonum.keyPair = function() {
+export function keyPair() {
     var pair = nacl.sign.keyPair();
-    var publicKey = Exonum.uint8ArrayToHexadecimal(pair.publicKey);
-    var secretKey = Exonum.uint8ArrayToHexadecimal(pair.secretKey);
+    var publicKey = convert.uint8ArrayToHexadecimal(pair.publicKey);
+    var secretKey = convert.uint8ArrayToHexadecimal(pair.secretKey);
 
     return {
         publicKey: publicKey,
         secretKey: secretKey
     };
-};
+}
 
 /**
  * Get random number of cryptographic quality
  * @returns {string}
  */
-Exonum.randomUint64 = function() {
+export function randomUint64() {
     var buffer = nacl.randomBytes(8);
     return bigInt.fromArray(Array.from(buffer), 256).toString();
-};
+}
