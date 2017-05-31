@@ -179,15 +179,27 @@ describe('Check proof of Merkle tree', function() {
         var args = [
             true, null, undefined, [], {}, 'Hello world', 42, new Date(),
             [0], [0, 8, 16],
-            [true, 8], [null, 8], [undefined, 8], [[], 8], [{}, 8], ['Hello world', 8], [new Date(), 8], ['1', 8], ['-1', 8], [-1, 8],
-            [8, true], [8, null], [8, undefined], [8, []], [8, {}], [8, 'Hello world'], [8, new Date()], [0, '1'], [0, '-1'], [0, -1]
+            [true, 8], [null, 8], [undefined, 8], [[], 8], [{}, 8], ['Hello world', 8], [new Date(), 8],
+            [8, true], [8, null], [8, undefined], [8, []], [8, {}], [8, 'Hello world'], [8, new Date()]
         ];
 
         args.forEach(function(range) {
             try {
                 expect(Exonum.merkleProof(rootHash, 8, {}, range)).to.be.undefined;
             } catch (error) {
-                expect(error).to.be.an.instanceof(Error); // TODO WTH going here. should alert on wrong range, but alert of 'left node is missed'
+                expect(error).to.be.an.instanceof(TypeError);
+            }
+        });
+    });
+
+    it('should return undefined when the tree with invalid range', function() {
+        var rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13';
+
+        [[-1, 8], ['-1', 8], [0, -1], [0, '-1']].forEach(function(range) {
+            try {
+                expect(Exonum.merkleProof(rootHash, 8, {}, range)).to.be.undefined;
+            } catch (error) {
+                expect(error).to.be.an.instanceof(RangeError);
             }
         });
     });
