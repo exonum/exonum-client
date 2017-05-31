@@ -182,7 +182,7 @@ describe('Check cryptocurrency functions', function() {
             var hashes = Exonum.merkleProof(wallet.history_hash, wallet.history_len, data.wallet_history.mt_proof, [0, wallet.history_len], TransactionHash);
 
             if (data.wallet_history.values.length !== hashes.length) {
-                console.error('Number of transaction hashes is not equal to transactions number.');
+                throw new Error('Number of transaction hashes is not equal to transactions number.');
                 return;
             }
 
@@ -198,10 +198,10 @@ describe('Check cryptocurrency functions', function() {
                 transaction.status = hashes[i].execution_status;
 
                 if (transaction.hash !== hashes[i].tx_hash) {
-                    console.error('Wrong transaction hash.');
+                    throw new Error('Wrong transaction hash.');
                     return;
                 } else if (!type.verifySignature(transaction.signature, publicKeyOfTransaction, transaction.body)) {
-                    console.error('Wrong transaction signature.');
+                    throw new Error('Wrong transaction signature.');
                     return;
                 }
 

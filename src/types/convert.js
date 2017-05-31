@@ -7,7 +7,7 @@ import * as validate from '../types/validate';
  */
 export function hexadecimalToUint8Array(str) {
     if (typeof str !== 'string') {
-        console.error('Wrong data type passed to convertor. Hexadecimal string is expected');
+        throw new TypeError('Wrong data type passed to convertor. Hexadecimal string is expected');
         return;
     } else if (validate.validateHexHash(str, str.length / 2) === false) {
         return;
@@ -31,7 +31,7 @@ export function hexadecimalToBinaryString(str) {
     var binaryStr = '';
 
     if (typeof str !== 'string') {
-        console.error('Wrong data type passed to convertor. Hexadecimal string is expected');
+        throw new TypeError('Wrong data type passed to convertor. Hexadecimal string is expected');
         return;
     } else if (validate.validateHexHash(str, Math.ceil(str.length / 2)) === false) {
         return;
@@ -57,7 +57,7 @@ export function uint8ArrayToHexadecimal(uint8arr) {
     var str = '';
 
     if (!(uint8arr instanceof Uint8Array)) {
-        console.error('Wrong data type of array of 8-bit integers. Uint8Array is expected');
+        throw new TypeError('Wrong data type of array of 8-bit integers. Uint8Array is expected');
         return;
     }
 
@@ -79,7 +79,7 @@ export function binaryStringToUint8Array(binaryStr) {
     var array = [];
 
     if (typeof binaryStr !== 'string') {
-        console.error('Wrong data type passed to convertor. Binary string is expected');
+        throw new TypeError('Wrong data type passed to convertor. Binary string is expected');
         return;
     } else if (validate.validateBinaryString(binaryStr) === false) {
         return;
@@ -101,7 +101,7 @@ export function binaryStringToHexadecimal(binaryStr) {
     var str = '';
 
     if (typeof binaryStr !== 'string') {
-        console.error('Wrong data type passed to convertor. Binary string is expected');
+        throw new TypeError('Wrong data type passed to convertor. Binary string is expected');
         return;
     } else if (validate.validateBinaryString(binaryStr) === false) {
         return;
@@ -127,7 +127,7 @@ export function stringToUint8Array(str, len) {
     var from = 0;
 
     if (typeof str !== 'string') {
-        console.error('Wrong data type passed to convertor. String is expected');
+        ('Wrong data type passed to convertor. String is expected');
         return;
     }
 

@@ -20,11 +20,11 @@ export function hash(data, type) {
         if (isObject(data)) {
             buffer = type.serialize(data);
             if (buffer === undefined) {
-                console.error('Invalid data parameter. Instance of NewType is expected.');
+                throw new TypeError('Invalid data parameter. Instance of NewType or NewMessage is expected.');
                 return;
             }
         } else {
-            console.error('Wrong type of data parameter. Object is expected.');
+            throw new TypeError('Wrong type of data parameter. Object is expected.');
             return;
         }
     } else if (type === undefined) {
@@ -33,11 +33,11 @@ export function hash(data, type) {
         } else if (Array.isArray(data)) {
             buffer = new Uint8Array(data);
         } else {
-            console.error('Invalid data parameter.');
+            throw new TypeError('Invalid data parameter.');
             return;
         }
     } else {
-        console.error('Invalid type parameter.');
+        throw new TypeError('Invalid type parameter.');
         return;
     }
 
@@ -57,7 +57,7 @@ export function sign(secretKey, data, type) {
     var signature;
 
     if (validate.validateHexHash(secretKey, 64) === false) {
-        console.error('Invalid secretKey parameter.');
+        throw new TypeError('Invalid secretKey parameter.');
         return;
     }
 
@@ -67,13 +67,13 @@ export function sign(secretKey, data, type) {
         if (isObject(data)) {
             buffer = type.serialize(data);
             if (buffer === undefined) {
-                console.error('Invalid data parameter. Instance of NewType or NewMessage is expected.');
+                throw new TypeError('Invalid data parameter. Instance of NewType or NewMessage is expected.');
                 return;
             } else {
                 buffer = new Uint8Array(buffer);
             }
         } else {
-            console.error('Wrong type of data. Should be object.');
+            throw new TypeError('Wrong type of data. Should be object.');
             return;
         }
     } else if (type === undefined) {
@@ -82,11 +82,11 @@ export function sign(secretKey, data, type) {
         } else if (Array.isArray(data)) {
             buffer = new Uint8Array(data);
         } else {
-            console.error('Invalid data parameter.');
+            throw new TypeError('Invalid data parameter.');
             return;
         }
     } else {
-        console.error('Invalid type parameter.');
+        throw new TypeError('Invalid type parameter.');
         return;
     }
 
@@ -109,14 +109,14 @@ export function verifySignature(signature, publicKey, data, type) {
     var buffer;
 
     if (validate.validateHexHash(signature, 64) === false) {
-        console.error('Invalid signature parameter.');
+        throw new TypeError('Invalid signature parameter.');
         return false;
     }
 
     signatureUint8Array = convert.hexadecimalToUint8Array(signature);
 
     if (validate.validateHexHash(publicKey) === false) {
-        console.error('Invalid publicKey parameter.');
+        throw new TypeError('Invalid publicKey parameter.');
         return false;
     }
 
@@ -126,26 +126,26 @@ export function verifySignature(signature, publicKey, data, type) {
         if (isObject(data)) {
             buffer = type.serialize(data);
             if (buffer === undefined) {
-                console.error('Invalid data parameter. Instance of NewType is expected.');
+                throw new TypeError('Invalid data parameter. Instance of NewType is expected.');
                 return false;
             } else {
                 buffer = new Uint8Array(buffer);
             }
         } else {
-            console.error('Wrong type of data. Should be object.');
+            throw new TypeError('Wrong type of data. Should be object.');
             return false;
         }
     } else if (isInstanceofOfNewMessage(type)) {
         if (isObject(data)) {
             buffer = type.serialize(data, true);
             if (buffer === undefined) {
-                console.error('Invalid data parameter. Instance of NewMessage is expected.');
+                throw new TypeError('Invalid data parameter. Instance of NewMessage is expected.');
                 return false;
             } else {
                 buffer = new Uint8Array(buffer);
             }
         } else {
-            console.error('Wrong type of data. Should be object.');
+            throw new TypeError('Wrong type of data. Should be object.');
             return false;
         }
     } else if (type === undefined) {
@@ -154,11 +154,11 @@ export function verifySignature(signature, publicKey, data, type) {
         } else if (Array.isArray(data)) {
             buffer = new Uint8Array(data);
         } else {
-            console.error('Invalid data parameter.');
+            throw new TypeError('Invalid data parameter.');
             return;
         }
     } else {
-        console.error('Invalid type parameter.');
+        throw new TypeError('Invalid type parameter.');
         return false;
     }
 

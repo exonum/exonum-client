@@ -243,10 +243,10 @@ export function Uint64(value, buffer, from, to) {
  */
 export function String(string, buffer, from, to) {
     if (typeof string !== 'string') {
-        console.error('Wrong data type is passed as String. String is required');
+        throw new TypeError('Wrong data type is passed as String. String is required');
         return;
     } else if ((to - from) !== 8) {
-        console.error('String segment is of wrong length. 8 bytes long is required to store transmitted value.');
+        throw new Error('String segment is of wrong length. 8 bytes long is required to store transmitted value.');
         return;
     }
 
@@ -269,7 +269,7 @@ export function Hash(hash, buffer, from, to) {
     if (validate.validateHexHash(hash) === false) {
         return;
     } else if ((to - from) !== 32) {
-        console.error('Hash segment is of wrong length. 32 bytes long is required to store transmitted value.');
+        throw new Error('Hash segment is of wrong length. 32 bytes long is required to store transmitted value.');
         return;
     }
 
@@ -289,7 +289,7 @@ export function Digest(digest, buffer, from, to) {
     if (validate.validateHexHash(digest, 64) === false) {
         return;
     } else if ((to - from) !== 64) {
-        console.error('Digest segment is of wrong length. 64 bytes long is required to store transmitted value.');
+        throw new Error('Digest segment is of wrong length. 64 bytes long is required to store transmitted value.');
         return;
     }
 
@@ -309,7 +309,7 @@ export function PublicKey(publicKey, buffer, from, to) {
     if (validate.validateHexHash(publicKey) === false) {
         return;
     } else if ((to - from) !== 32) {
-        console.error('PublicKey segment is of wrong length. 32 bytes long is required to store transmitted value.');
+        throw new Error('PublicKey segment is of wrong length. 32 bytes long is required to store transmitted value.');
         return;
     }
 
@@ -327,10 +327,10 @@ export function PublicKey(publicKey, buffer, from, to) {
  */
 export function Bool(value, buffer, from, to) {
     if (typeof value !== 'boolean') {
-        console.error('Wrong data type is passed as Boolean. Boolean is required');
+        throw new TypeError('Wrong data type is passed as Boolean. Boolean is required');
         return;
     } else if ((to - from) !== 1) {
-        console.error('Bool segment is of wrong length. 1 bytes long is required to store transmitted value.');
+        throw new Error('Bool segment is of wrong length. 1 bytes long is required to store transmitted value.');
         return;
     }
 

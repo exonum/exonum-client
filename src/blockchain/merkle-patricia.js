@@ -95,7 +95,7 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
      */
     function recursive(node, keyPrefix) {
         if (Object.keys(node).length !== 2) {
-            console.error('Invalid number of children in the tree node.');
+            throw new Error('Invalid number of children in the tree node.');
             return null;
         }
 
@@ -129,10 +129,10 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
                     branchType = 'hash';
                 } else if (isObject(nodeValue)) {
                     if (nodeValue.val === undefined) {
-                        console.error('Leaf tree contains invalid data.');
+                        throw new TypeError('Leaf tree contains invalid data.');
                         return null;
                     } else if (element !== undefined) {
-                        console.error('Tree can not contains more than one node with value.');
+                        throw new Error('Tree can not contains more than one node with value.');
                         return null;
                     }
 
@@ -147,7 +147,7 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
 
                     branchType = 'value';
                 }  else {
-                    console.error('Invalid type of node in tree leaf.');
+                    throw new TypeError('Invalid type of node in tree leaf.');
                     return null;
                 }
 
@@ -166,7 +166,7 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
                     branchType = 'hash';
                 } else if (isObject(nodeValue)) {
                     if (nodeValue.val !== undefined) {
-                        console.error('Node with value is at non-leaf position in tree.');
+                        throw new Error('Node with value is at non-leaf position in tree.');
                         return null;
                     }
 
@@ -176,7 +176,7 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
                     }
                     branchType = 'branch';
                 }  else {
-                    console.error('Invalid type of node in tree.');
+                    throw new TypeError('Invalid type of node in tree.');
                     return null;
                 }
 
@@ -194,7 +194,7 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
                     length: binaryKeyLength
                 };
             } else {
-                console.error('Invalid length of key in tree.');
+                throw new Error('Invalid length of key in tree.');
                 return null;
             }
 
@@ -208,7 +208,7 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
                         size: fullKey.length
                     };
                 } else {
-                    console.error('Left node is duplicated in tree.');
+                    throw new Error('Left node is duplicated in tree.');
                     return null;
                 }
             } else { // '1' at the beginning means right branch/leaf
@@ -221,7 +221,7 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
                         size: fullKey.length
                     };
                 } else {
-                    console.error('Right node is duplicated in tree.');
+                    throw new Error('Right node is duplicated in tree.');
                     return null;
                 }
             }
@@ -229,10 +229,10 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
 
         if ((levelData.left.type === 'hash') && (levelData.right.type === 'hash') && (fullKey.length < MERKLE_PATRICIA_KEY_LENGTH * 8)) {
             if (isPartOfSearchKey(keyPrefix, levelData.left.suffix)) {
-                console.error('Tree is invalid. Left key is a part of search key but its branch is not expanded.');
+                throw new Error('Tree is invalid. Left key is a part of search key but its branch is not expanded.');
                 return null;
             } else if (isPartOfSearchKey(keyPrefix, levelData.right.suffix)) {
-                console.error('Tree is invalid. Right key is a part of search key but its branch is not expanded.');
+                throw new Error('Tree is invalid. Right key is a part of search key but its branch is not expanded.');
                 return null;
             }
         }
@@ -255,7 +255,7 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
 
     // validate proofNode parameter
     if (isObject(proofNode) === false) {
-        console.error('Invalid type of proofNode parameter. Object expected.');
+        throw new TypeError('Invalid type of proofNode parameter. Object expected.');
         return;
     }
 
@@ -271,7 +271,7 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
             return;
         }
     } else {
-        console.error('Invalid type of key parameter. Array of 8-bit integers or hexadecimal string is expected.');
+        throw new TypeError('Invalid type of key parameter. Array of 8-bit integers or hexadecimal string is expected.');
         return;
     }
     var keyBinary = convert.hexadecimalToBinaryString(key);
@@ -281,7 +281,7 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
         if (rootHash === (new Uint8Array(MERKLE_PATRICIA_KEY_LENGTH * 2)).join('')) {
             return null;
         } else {
-            console.error('Invalid rootHash parameter of empty tree.');
+            throw new Error('Invalid rootHash parameter of empty tree.');
             return;
         }
     } else if (proofNodeRootNumberOfNodes === 1) {
@@ -317,11 +317,11 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
                     if (key !== nodeKey) {
                         return null; // no element with data in tree
                     } else {
-                        console.error('Invalid key with hash is in the root of proofNode parameter.');
+                        throw new Error('Invalid key with hash is in the root of proofNode parameter.');
                         return;
                     }
                 } else {
-                    console.error('rootHash parameter is not equal to actual hash.');
+                    throw new Error('rootHash parameter is not equal to actual hash.');
                     return;
                 }
             } else if (isObject(data)) {
@@ -345,15 +345,15 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
                     if (key === nodeKey) {
                         return element;
                     } else {
-                        console.error('Invalid key with value is in the root of proofNode parameter.');
+                        throw new Error('Invalid key with value is in the root of proofNode parameter.');
                         return;
                     }
                 } else {
-                    console.error('rootHash parameter is not equal to actual hash.');
+                    throw new Error('rootHash parameter is not equal to actual hash.');
                     return;
                 }
             } else {
-                console.error('Invalid type of value in the root of proofNode parameter.');
+                throw new Error('Invalid type of value in the root of proofNode parameter.');
                 return;
             }
 
@@ -364,7 +364,7 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
         if (actualHash === null) { // tree is invalid
             return;
         } else if (rootHash !== actualHash) {
-            console.error('rootHash parameter is not equal to actual hash.');
+            throw new Error('rootHash parameter is not equal to actual hash.');
             return;
         } else if (element === undefined) {
             return null; // no element with data in tree
