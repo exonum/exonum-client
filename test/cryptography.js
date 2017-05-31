@@ -59,7 +59,8 @@ describe('Check cryptography', function() {
                     age: {type: Exonum.Uint8, size: 1, from: 8, to: 9},
                     balance: {type: Exonum.Uint64, size: 8, from: 9, to: 17},
                     status: {type: Exonum.Bool, size: 1, from: 17, to: 18}
-                }
+                },
+                signature: 'dad76b4c3b067d53265534bde4d9ff59987d00f87e0e1a633613576195a4cbc1e0a43a58c67c34c98019f791812699d010655c4eccec448e46e5524471a8c401'
             });
             var messageData = {
                 name: 'John Doe',
@@ -69,7 +70,7 @@ describe('Check cryptography', function() {
             };
             var hash = Exonum.hash(messageData, CustomMessage);
 
-            expect(hash).to.equal('21fea5e2dbd068fc51efb7ac26ad9a84b6bdd91e80c104e58e93af1ea39fc5d7');
+            expect(hash).to.equal('df2d0cf21d4fc1e2b0adf6dbff7daeb0d7292e9f51f529358c18b95b67539484');
         });
 
         it('should return hash of data of newMessage type using built-in method', function() {
@@ -82,7 +83,8 @@ describe('Check cryptography', function() {
                     age: {type: Exonum.Uint8, size: 1, from: 8, to: 9},
                     balance: {type: Exonum.Uint64, size: 8, from: 9, to: 17},
                     status: {type: Exonum.Bool, size: 1, from: 17, to: 18}
-                }
+                },
+                signature: 'dad76b4c3b067d53265534bde4d9ff59987d00f87e0e1a633613576195a4cbc1e0a43a58c67c34c98019f791812699d010655c4eccec448e46e5524471a8c401'
             });
             var messageData = {
                 name: 'John Doe',
@@ -92,7 +94,7 @@ describe('Check cryptography', function() {
             };
             var hash = CustomMessage.hash(messageData);
 
-            expect(hash).to.equal('21fea5e2dbd068fc51efb7ac26ad9a84b6bdd91e80c104e58e93af1ea39fc5d7');
+            expect(hash).to.equal('df2d0cf21d4fc1e2b0adf6dbff7daeb0d7292e9f51f529358c18b95b67539484');
         });
 
         it('should return hash of the array of 8-bit integers', function() {

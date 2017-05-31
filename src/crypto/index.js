@@ -63,11 +63,24 @@ export function sign(secretKey, data, type) {
 
     secretKeyUint8Array = convert.hexadecimalToUint8Array(secretKey);
 
-    if (isInstanceofOfNewType(type) || isInstanceofOfNewMessage(type)) {
+    if (isInstanceofOfNewType(type)) {
         if (isObject(data)) {
             buffer = type.serialize(data);
             if (buffer === undefined) {
-                throw new TypeError('Invalid data parameter. Instance of NewType or NewMessage is expected.');
+                throw new TypeError('Invalid data parameter. Instance of NewType is expected.');
+                return;
+            } else {
+                buffer = new Uint8Array(buffer);
+            }
+        } else {
+            throw new TypeError('Wrong type of data. Should be object.');
+            return;
+        }
+    } else if (isInstanceofOfNewMessage(type)) {
+        if (isObject(data)) {
+            buffer = type.serialize(data, true);
+            if (buffer === undefined) {
+                throw new TypeError('Invalid data parameter. Instance of NewMessage is expected.');
                 return;
             } else {
                 buffer = new Uint8Array(buffer);
