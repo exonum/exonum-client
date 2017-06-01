@@ -40,20 +40,12 @@ function insertHexadecimalToByteArray(str, buffer, from, to) {
  * @returns {boolean}
  */
 function insertIntegerToByteArray(number, buffer, from, to) {
-    var str = number.toString(16);
+    var value = bigInt(number); // convert a number-like object into a big integer
 
-    for (var i = str.length; i > 0; i -= 2) {
-        if (i > 1) {
-            buffer[from] = parseInt(str.substr(i - 2, 2), 16);
-        } else {
-            buffer[from] = parseInt(str.substr(0, 1), 16);
-        }
-
-        from++;
-
-        if (from >= to) {
-            break;
-        }
+    for (var pos = from; pos < to; pos++) {
+        var divmod = value.divmod(256);
+        buffer[pos] = divmod.remainder.value;
+        value = divmod.quotient;
     }
 }
 
