@@ -42,7 +42,6 @@ function insertHexadecimalToByteArray(str, buffer, from, to) {
 function insertIntegerToByteArray(number, buffer, from, to) {
     var value = bigInt(number); // convert a number-like object into a big integer
 
-    // modular arithmetic
     for (var pos = from; pos < to; pos++) {
         var divmod = value.divmod(256);
         buffer[pos] = divmod.remainder.value;
