@@ -68,7 +68,7 @@ export function verifyBlock(data, validators) {
     var round;
     var blockHash = hash(data.block, Block);
 
-    for (var i = 0; i < data.precommits.length; i++) {
+    for (i = 0; i < data.precommits.length; i++) {
         var precommit = data.precommits[i];
 
         if (isObject(precommit.body) === false) {

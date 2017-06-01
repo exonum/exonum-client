@@ -1,6 +1,7 @@
+/* eslint-env node, mocha */
+
 var expect = require('chai').expect;
 var Exonum = require('..');
-var fs = require('fs');
 
 describe('Check proof of Merkle tree', function() {
 
@@ -75,7 +76,7 @@ describe('Check proof of Merkle tree', function() {
             '0fcee0b2e0e62b423048578861e7a14d7a3191289ef68ce8e72abbdc53b3c677',
             1,
             {
-                "val": "fae96592ccc79963e15f22b7036b4a688224e5127592f6ea8ddd2355a33e4162"
+                'val': 'fae96592ccc79963e15f22b7036b4a688224e5127592f6ea8ddd2355a33e4162'
             },
             [0, 1]
         );

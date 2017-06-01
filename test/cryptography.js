@@ -1,3 +1,5 @@
+/* eslint-env node, mocha */
+
 var expect = require('chai').expect;
 var Exonum = require('..');
 
