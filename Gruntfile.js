@@ -4,7 +4,12 @@ module.exports = function (grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         eslint: {
-            target: ['./src/**/*.js']
+            dist: {
+                src: ['./src/**/*.js']
+            },
+            tests: {
+                src: ['./test/**/*.js']
+            }
         },
         clean: {
             dist: {
@@ -48,6 +53,6 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('prepublish', ['eslint', 'clean', 'babel', 'browserify', 'uglify']);
-    grunt.registerTask('test', ['mochaTest']);
+    grunt.registerTask('test', ['eslint:tests', 'mochaTest']);
     grunt.registerTask('default', ['prepublish', 'test']);
 };

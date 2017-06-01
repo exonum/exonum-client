@@ -1,6 +1,7 @@
+/* eslint-env node, mocha */
+
 var expect = require('chai').expect;
 var Exonum = require('..');
-var fs = require('fs');
 
 describe('Check cryptocurrency functions', function() {
 
@@ -118,30 +119,24 @@ describe('Check cryptocurrency functions', function() {
 
         function getTransactionTypeParams(id) {
             switch (id) {
-                case 128:
-                    return new Exonum.newMessage(TransferTransactionParams);
-                    break;
-                case 129:
-                    return new Exonum.newMessage(AddFundsTransactionParams);
-                    break;
-                case 130:
-                    return new Exonum.newMessage(CreateWalletTransactionParams);
-                    break;
+            case 128:
+                return new Exonum.newMessage(TransferTransactionParams);
+            case 129:
+                return new Exonum.newMessage(AddFundsTransactionParams);
+            case 130:
+                return new Exonum.newMessage(CreateWalletTransactionParams);
             }
         }
 
         function getWallet(publicKey, data) {
             function getPublicKeyOfTransaction(id, transaction) {
                 switch (id) {
-                    case 128:
-                        return transaction.from;
-                        break;
-                    case 129:
-                        return transaction.wallet;
-                        break;
-                    case 130:
-                        return transaction.pub_key;
-                        break;
+                case 128:
+                    return transaction.from;
+                case 129:
+                    return transaction.wallet;
+                case 130:
+                    return transaction.pub_key;
                 }
             }
 
@@ -232,11 +227,11 @@ describe('Check cryptocurrency functions', function() {
             var walletData = getWallet(publicKey, data);
 
             expect(walletData.wallet).to.deep.equal({
-                "balance": "0",
-                "history_hash": "9d998689eeeee43869b1704942bb21656fc1a15de91c69363f55c680e9e7b888",
-                "history_len": "1",
-                "name": "Tina",
-                "pub_key": "72a3466b65ed9b5deb868120fc5424312dadf4bfb6258a6be32b051b47604068"
+                'balance': '0',
+                'history_hash': '9d998689eeeee43869b1704942bb21656fc1a15de91c69363f55c680e9e7b888',
+                'history_len': '1',
+                'name': 'Tina',
+                'pub_key': '72a3466b65ed9b5deb868120fc5424312dadf4bfb6258a6be32b051b47604068'
             });
         });
 
@@ -246,11 +241,11 @@ describe('Check cryptocurrency functions', function() {
             var walletData = getWallet(publicKey, data);
 
             expect(walletData.wallet).to.deep.equal({
-                "balance": "10",
-                "history_hash": "b03f01be436eb85684e23214f7819e766eb6981006664b2d01fe8b7093c09103",
-                "history_len": "2",
-                "name": "Tina",
-                "pub_key": "72a3466b65ed9b5deb868120fc5424312dadf4bfb6258a6be32b051b47604068"
+                'balance': '10',
+                'history_hash': 'b03f01be436eb85684e23214f7819e766eb6981006664b2d01fe8b7093c09103',
+                'history_len': '2',
+                'name': 'Tina',
+                'pub_key': '72a3466b65ed9b5deb868120fc5424312dadf4bfb6258a6be32b051b47604068'
             });
         });
 
