@@ -19,8 +19,6 @@ export function validateInteger(value, min, max, from, to, length) {
     } else if ((to - from) !== length) {
         throw new Error('Number segment is of wrong length. ' + length + ' bytes long is required to store transmitted value.');
     }
-
-    return true; // TODO remove
 }
 
 /**
@@ -52,8 +50,6 @@ export function validateBigInteger(value, min, max, from, to, length) {
     } else if (val.gt(max)) {
         throw new RangeError('Number should be less or equal to ' + max + '.');
     }
-
-    return true; // TODO remove
 }
 
 /**
@@ -75,8 +71,6 @@ export function validateHexHash(hash, bytes) {
             throw new TypeError('Invalid symbol in hexadecimal string.');
         }
     }
-
-    return true; // TODO remove
 }
 
 /**
@@ -98,8 +92,6 @@ export function validateBytesArray(arr, bytes) {
             throw new RangeError('Byte should be in [0..255] range.');
         }
     }
-
-    return true; // TODO remove
 }
 
 /**
@@ -120,6 +112,4 @@ export function validateBinaryString(str, bits) {
             throw new RangeError('Wrong bit is passed in binary string. Bit should be 0 or 1.');
         }
     }
-
-    return true; // TODO remove
 }

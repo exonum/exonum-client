@@ -52,8 +52,10 @@ export function sign(secretKey, data, type) {
     var buffer;
     var signature;
 
-    if (validate.validateHexHash(secretKey, 64) === false) {
-        throw new TypeError('Invalid secretKey parameter.');
+    try {
+        validate.validateHexHash(secretKey, 64);
+    } catch (error) {
+        throw error;
     }
 
     secretKeyUint8Array = convert.hexadecimalToUint8Array(secretKey);
@@ -110,14 +112,18 @@ export function verifySignature(signature, publicKey, data, type) {
     var publicKeyUint8Array;
     var buffer;
 
-    if (validate.validateHexHash(signature, 64) === false) {
-        throw new TypeError('Invalid signature parameter.');
+    try {
+        validate.validateHexHash(signature, 64);
+    } catch (error) {
+        throw error;
     }
 
     signatureUint8Array = convert.hexadecimalToUint8Array(signature);
 
-    if (validate.validateHexHash(publicKey) === false) {
-        throw new TypeError('Invalid publicKey parameter.');
+    try {
+        validate.validateHexHash(publicKey);
+    } catch (error) {
+        throw error;
     }
 
     publicKeyUint8Array = convert.hexadecimalToUint8Array(publicKey);
