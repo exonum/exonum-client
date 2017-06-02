@@ -111,13 +111,13 @@ export function verifySignature(signature, publicKey, data, type) {
     var buffer;
 
     if (!validate.validateHexadecimal(signature, 64)) {
-        return false;
+        throw new TypeError('Signature of wrong type is passed. Hexadecimal expected.');
     }
 
     signatureUint8Array = convert.hexadecimalToUint8Array(signature);
 
     if (!validate.validateHexadecimal(publicKey)) {
-        return false;
+        throw new TypeError('publicKey of wrong type is passed. Hexadecimal expected.');
     }
 
     publicKeyUint8Array = convert.hexadecimalToUint8Array(publicKey);
@@ -127,20 +127,20 @@ export function verifySignature(signature, publicKey, data, type) {
             try {
                 buffer = new Uint8Array(type.serialize(data));
             } catch (error) {
-                return false;
+                throw error;
             }
         } else {
-            return false;
+            throw new TypeError('Wrong type of data. Entity of newType expected.');
         }
     } else if (isInstanceofOfNewMessage(type)) {
         if (isObject(data)) {
             try {
                 buffer = new Uint8Array(type.serialize(data, true));
             } catch (error) {
-                return false;
+                throw error;
             }
         } else {
-            return false;
+            throw new TypeError('Wrong type of data. Entity of newMessage expected.');
         }
     } else if (type === undefined) {
         if (data instanceof Uint8Array) {
@@ -148,10 +148,10 @@ export function verifySignature(signature, publicKey, data, type) {
         } else if (Array.isArray(data)) {
             buffer = new Uint8Array(data);
         } else {
-            return false;
+            throw new TypeError('Invalid data parameter.');
         }
     } else {
-        return false;
+        throw new TypeError('Invalid type parameter.');
     }
 
     return nacl.sign.detached.verify(buffer, signatureUint8Array, publicKeyUint8Array);
