@@ -19,25 +19,25 @@ describe('Verify block of precommits', function() {
 
     it('should return false when data of wrong type', function() {
         [null, undefined, 42, 'Hello world', [], {}, new Date()].forEach(function(data) {
-            expect(() => Exonum.verifyBlock(data, validators)).to.throw(TypeError);
+            expect(Exonum.verifyBlock(data, validators)).to.be.false;
         });
     });
 
     it('should return false when block info of wrong type', function() {
         [null, undefined, 42, 'Hello world', [], new Date()].forEach(function(data) {
-            expect(() => Exonum.verifyBlock({block: data}, validators)).to.throw(TypeError);
+            expect(Exonum.verifyBlock({block: data}, validators)).to.be.false;
         });
     });
 
     it('should return false when precommits info of wrong type', function() {
         [null, undefined, 42, 'Hello world', [], new Date()].forEach(function(precommits) {
-            expect(() => Exonum.verifyBlock({block: {}, precommits: precommits}, validators)).to.throw(TypeError);
+            expect(Exonum.verifyBlock({block: {}, precommits: precommits}, validators)).to.be.false;
         });
     });
 
     it('should return false when body field of wrong type in precommit', function() {
         [null, 42, 'Hello world', [], new Date()].forEach(function(body) {
-            expect(() => Exonum.verifyBlock({block: {}, precommits: [{body: body}]}, validators)).to.throw(TypeError);
+            expect(Exonum.verifyBlock({block: {}, precommits: [{body: body}]}, validators)).to.be.false;
         });
     });
 
@@ -54,7 +54,7 @@ describe('Verify block of precommits', function() {
                 validators
             ];
 
-            expect(() => Exonum.verifyBlock.apply(null, args)).to.throw(TypeError);
+            expect(Exonum.verifyBlock.apply(null, args)).to.be.false;
         });
     });
 
@@ -76,7 +76,7 @@ describe('Verify block of precommits', function() {
                 validators
             ];
 
-            expect(() => Exonum.verifyBlock.apply(null, args)).to.throw(TypeError);
+            expect(Exonum.verifyBlock.apply(null, args)).to.be.false;
         });
     });
 
@@ -94,7 +94,7 @@ describe('Verify block of precommits', function() {
             validators
         ];
 
-        expect(() => Exonum.verifyBlock.apply(null, args)).to.throw(TypeError);
+        expect(Exonum.verifyBlock.apply(null, args)).to.be.false;
     });
 
     it('should return false when wrong height of block in precommit', function() {
@@ -114,7 +114,7 @@ describe('Verify block of precommits', function() {
             validators
         ];
 
-        expect(() => Exonum.verifyBlock.apply(null, args)).to.throw(TypeError);
+        expect(Exonum.verifyBlock.apply(null, args)).to.be.false;
     });
 
     it('should return false when wrong hash of block in precommit', function() {
@@ -160,7 +160,7 @@ describe('Verify block of precommits', function() {
             ]
         };
 
-        expect(() => Exonum.verifyBlock(data, validators)).to.throw(Error);
+        expect(Exonum.verifyBlock(data, validators)).to.be.false;
     });
 
     it('should return false when wrong round in precommit', function() {
@@ -206,7 +206,7 @@ describe('Verify block of precommits', function() {
             ]
         };
 
-        expect(() => Exonum.verifyBlock(data, validators)).to.throw(Error);
+        expect(Exonum.verifyBlock(data, validators)).to.be.false;
     });
 
     it('should return false when wrong signature of precommit', function() {
@@ -232,7 +232,7 @@ describe('Verify block of precommits', function() {
             ]
         };
 
-        expect(() => Exonum.verifyBlock(data, validators)).to.throw(Error);
+        expect(Exonum.verifyBlock(data, validators)).to.be.false;
     });
 
     it('should return false when insufficient precommits from unique validators', function() {
@@ -258,7 +258,7 @@ describe('Verify block of precommits', function() {
             ]
         };
 
-        expect(() => Exonum.verifyBlock(data, validators)).to.throw(Error);
+        expect(Exonum.verifyBlock(data, validators)).to.be.false;
     });
 
     it('should return false when validators of wrong type', function() {
@@ -305,7 +305,7 @@ describe('Verify block of precommits', function() {
         };
 
         [undefined, [true], [undefined], [null], [42], [[]], [{}], [new Date()]].forEach(function(validators) {
-            expect(() => Exonum.verifyBlock(block, validators)).to.throw(TypeError);
+            expect(Exonum.verifyBlock(block, validators)).to.be.false;
         });
     });
 
@@ -353,7 +353,7 @@ describe('Verify block of precommits', function() {
         };
 
         [['asda123'], ['eb7e3ad55f97e5d5693fe0e69f4c26bd1173077dbffb5fff5b69f213f71bee3f']].forEach(function(validators) {
-            expect(() => Exonum.verifyBlock(block, validators)).to.throw(Error);
+            expect(Exonum.verifyBlock(block, validators)).to.be.false;
         });
     });
 

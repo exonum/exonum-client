@@ -111,38 +111,36 @@ export function verifySignature(signature, publicKey, data, type) {
     var buffer;
 
     if (!validate.validateHexadecimal(signature, 64)) {
-        throw new TypeError('Signature of wrong type is passed. Hexadecimal expected.');
+        return false;
     }
 
     signatureUint8Array = convert.hexadecimalToUint8Array(signature);
 
     if (!validate.validateHexadecimal(publicKey)) {
-        throw new TypeError('publicKey of wrong type is passed. Hexadecimal expected.');
+        return false;
     }
 
     publicKeyUint8Array = convert.hexadecimalToUint8Array(publicKey);
 
     if (isInstanceofOfNewType(type)) {
         if (isObject(data)) {
-            buffer = type.serialize(data);
-            if (buffer === undefined) {
-                throw new TypeError('Invalid data parameter. Instance of NewType is expected.');
-            } else {
-                buffer = new Uint8Array(buffer);
+            try {
+                buffer = new Uint8Array(type.serialize(data));
+            } catch (error) {
+                return false;
             }
         } else {
-            throw new TypeError('Wrong type of data. Should be object.');
+            return false;
         }
     } else if (isInstanceofOfNewMessage(type)) {
         if (isObject(data)) {
-            buffer = type.serialize(data, true);
-            if (buffer === undefined) {
-                throw new TypeError('Invalid data parameter. Instance of NewMessage is expected.');
-            } else {
-                buffer = new Uint8Array(buffer);
+            try {
+                buffer = new Uint8Array(type.serialize(data, true));
+            } catch (error) {
+                return false;
             }
         } else {
-            throw new TypeError('Wrong type of data. Should be object.');
+            return false;
         }
     } else if (type === undefined) {
         if (data instanceof Uint8Array) {
@@ -150,10 +148,10 @@ export function verifySignature(signature, publicKey, data, type) {
         } else if (Array.isArray(data)) {
             buffer = new Uint8Array(data);
         } else {
-            throw new TypeError('Invalid data parameter.');
+            return false;
         }
     } else {
-        throw new TypeError('Invalid type parameter.');
+        return false;
     }
 
     return nacl.sign.detached.verify(buffer, signatureUint8Array, publicKeyUint8Array);
