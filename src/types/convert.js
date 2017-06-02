@@ -8,9 +8,12 @@ import * as validate from '../types/validate';
 export function hexadecimalToUint8Array(str) {
     if (typeof str !== 'string') {
         throw new TypeError('Wrong data type passed to convertor. Hexadecimal string is expected');
-        return;
-    } else if (validate.validateHexHash(str, str.length / 2) === false) {
-        return;
+    }
+
+    try {
+        validate.validateHexHash(str, str.length / 2);
+    } catch (error) {
+        throw error;
     }
 
     var uint8arr = new Uint8Array(str.length / 2);
@@ -32,9 +35,12 @@ export function hexadecimalToBinaryString(str) {
 
     if (typeof str !== 'string') {
         throw new TypeError('Wrong data type passed to convertor. Hexadecimal string is expected');
-        return;
-    } else if (validate.validateHexHash(str, Math.ceil(str.length / 2)) === false) {
-        return;
+    }
+
+    try {
+        validate.validateHexHash(str, Math.ceil(str.length / 2));
+    } catch (error) {
+        throw error;
     }
 
     for (var i = 0; i < str.length; i++) {
@@ -58,7 +64,6 @@ export function uint8ArrayToHexadecimal(uint8arr) {
 
     if (!(uint8arr instanceof Uint8Array)) {
         throw new TypeError('Wrong data type of array of 8-bit integers. Uint8Array is expected');
-        return;
     }
 
     for (var i = 0; i < uint8arr.length; i++) {
@@ -80,9 +85,12 @@ export function binaryStringToUint8Array(binaryStr) {
 
     if (typeof binaryStr !== 'string') {
         throw new TypeError('Wrong data type passed to convertor. Binary string is expected');
-        return;
-    } else if (validate.validateBinaryString(binaryStr) === false) {
-        return;
+    }
+
+    try {
+        validate.validateBinaryString(binaryStr);
+    } catch (error) {
+        throw error;
     }
 
     for (var i = 0; i < binaryStr.length; i += 8) {
@@ -102,9 +110,12 @@ export function binaryStringToHexadecimal(binaryStr) {
 
     if (typeof binaryStr !== 'string') {
         throw new TypeError('Wrong data type passed to convertor. Binary string is expected');
-        return;
-    } else if (validate.validateBinaryString(binaryStr) === false) {
-        return;
+    }
+
+    try {
+        validate.validateBinaryString(binaryStr);
+    } catch (error) {
+        throw error;
     }
 
     for (var i = 0; i < binaryStr.length; i += 8) {
@@ -127,8 +138,7 @@ export function stringToUint8Array(str, len) {
     var from = 0;
 
     if (typeof str !== 'string') {
-        ('Wrong data type passed to convertor. String is expected');
-        return;
+        throw new TypeError('Wrong data type passed to convertor. String is expected');
     }
 
     if (len > 0) {

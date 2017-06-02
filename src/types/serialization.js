@@ -7,6 +7,7 @@ import {Uint32} from './primitive';
  * @param {number} shift - the index to start write into buffer
  * @param {Object} data
  * @param type - can be {NewType} or one of built-in types
+ * @returns {Array}
  */
 export function serialize(buffer, shift, data, type) {
     function isFixed(fields) {
@@ -38,7 +39,7 @@ export function serialize(buffer, shift, data, type) {
         var fieldData = data[fieldName];
 
         if (fieldData === undefined) {
-            return;
+            throw new TypeError('Field ' + fieldName + ' is not defined.');
         }
 
         var fieldType = type.fields[fieldName];
@@ -54,7 +55,11 @@ export function serialize(buffer, shift, data, type) {
                 Uint32(buffer.length - end, buffer, from + 4, from + 8);
             }
         } else {
-            buffer = fieldType.type(fieldData, buffer, from, shift + fieldType.to);
+            try {
+                buffer = fieldType.type(fieldData, buffer, from, shift + fieldType.to);
+            } catch (error) {
+                throw error;
+            }
         }
     }
 

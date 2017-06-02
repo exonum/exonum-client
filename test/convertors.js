@@ -11,13 +11,9 @@ describe('Convert data from one type to another', function() {
             expect(Exonum.hexadecimalToUint8Array(data.from)).to.deep.equal(new Uint8Array(data.to));
         });
 
-        it('should return undefined when convert invalid hexadecimal into Uint8Array', function() {
+        it('should throw error when convert invalid hexadecimal into Uint8Array', function() {
             [null, false, 42, new Date(), {}, [], '0438082601f8b38ae010a621a48f4b4cd021c4e6e69219e3c2d8abab482039ez'].forEach(function(value) {
-                try {
-                    expect(Exonum.hexadecimalToUint8Array(value)).to.be.undefined;
-                } catch (error) {
-                    expect(error).to.be.an.instanceof(TypeError);
-                }
+                expect(() => Exonum.hexadecimalToUint8Array(value)).to.throw(TypeError);
             });
         });
     });
@@ -28,13 +24,9 @@ describe('Convert data from one type to another', function() {
             expect(Exonum.stringToUint8Array(data.from)).to.deep.equal(new Uint8Array(data.to));
         });
 
-        it('should return undefined when convert invalid string into Uint8Array', function() {
+        it('should throw error when convert invalid string into Uint8Array', function() {
             [null, false, 42, new Date(), {}, []].forEach(function(value) {
-                try {
-                    expect(Exonum.stringToUint8Array(value)).to.be.undefined;
-                } catch (error) {
-                    expect(error).to.be.an.instanceof(TypeError);
-                }
+                expect(() => Exonum.stringToUint8Array(value)).to.throw(TypeError);
             });
         });
     });
@@ -45,23 +37,15 @@ describe('Convert data from one type to another', function() {
             expect(Exonum.binaryStringToUint8Array(data.from)).to.deep.equal(new Uint8Array(data.to));
         });
 
-        it('should return undefined when convert wrong binaryString into Uint8Array', function() {
+        it('should throw error when convert wrong binaryString into Uint8Array', function() {
             [null, false, new Date(), {}, [], 42].forEach(function(value) {
-                try {
-                    expect(Exonum.binaryStringToUint8Array(value)).to.be.undefined;
-                } catch (error) {
-                    expect(error).to.be.an.instanceof(TypeError);
-                }
+                expect(() => Exonum.binaryStringToUint8Array(value)).to.throw(TypeError);
             });
         });
 
-        it('should return undefined when convert invalid binaryString into Uint8Array', function() {
+        it('should throw error when convert invalid binaryString into Uint8Array', function() {
             ['102'].forEach(function(value) {
-                try {
-                    expect(Exonum.binaryStringToUint8Array(value)).to.be.undefined;
-                } catch (error) {
-                    expect(error).to.be.an.instanceof(RangeError);
-                }
+                expect(() => Exonum.binaryStringToUint8Array(value)).to.throw(RangeError);
             });
         });
     });
@@ -72,13 +56,9 @@ describe('Convert data from one type to another', function() {
             expect(Exonum.uint8ArrayToHexadecimal(new Uint8Array(data.from))).to.equal(data.to);
         });
 
-        it('should return undefined when convert invalid Uint8Array into hexadecimal', function() {
+        it('should throw error when convert invalid Uint8Array into hexadecimal', function() {
             [null, false, 42, new Date(), {}, 'Hello world', [4,56]].forEach(function(value) {
-                try {
-                    expect(Exonum.uint8ArrayToHexadecimal(value)).to.be.undefined;
-                } catch (error) {
-                    expect(error).to.be.an.instanceof(TypeError);
-                }
+                expect(() => Exonum.uint8ArrayToHexadecimal(value)).to.throw(TypeError);
             });
         });
     });
@@ -89,23 +69,15 @@ describe('Convert data from one type to another', function() {
             expect(Exonum.binaryStringToHexadecimal(data.from)).to.deep.equal(data.to);
         });
 
-        it('should return undefined when convert binaryString of wrong type into hexadecimal', function() {
+        it('should throw error when convert binaryString of wrong type into hexadecimal', function() {
             [null, false, 42, new Date(), {}, []].forEach(function(value) {
-                try {
-                    expect(Exonum.binaryStringToHexadecimal(value)).to.be.undefined;
-                } catch (error) {
-                    expect(error).to.be.an.instanceof(TypeError);
-                }
+                expect(() => Exonum.binaryStringToHexadecimal(value)).to.throw(TypeError);
             });
         });
 
-        it('should return undefined when convert invalid binaryString into hexadecimal', function() {
+        it('should throw error when convert invalid binaryString into hexadecimal', function() {
             ['102'].forEach(function(value) {
-                try {
-                    expect(Exonum.binaryStringToHexadecimal(value)).to.be.undefined;
-                } catch (error) {
-                    expect(error).to.be.an.instanceof(RangeError);
-                }
+                expect(() => Exonum.binaryStringToHexadecimal(value)).to.throw(RangeError);
             });
         });
     });
@@ -116,13 +88,9 @@ describe('Convert data from one type to another', function() {
             expect(Exonum.hexadecimalToBinaryString(data.from)).to.equal(data.to);
         });
 
-        it('should return undefined when convert invalid hexadecimal into BinaryString', function() {
+        it('should throw error when convert invalid hexadecimal into BinaryString', function() {
             [null, false, 42, new Date(), {}, [], 'az'].forEach(function(value) {
-                try {
-                    expect(Exonum.hexadecimalToBinaryString(value)).to.be.undefined;
-                } catch (error) {
-                    expect(error).to.be.an.instanceof(TypeError);
-                }
+                expect(() => Exonum.hexadecimalToBinaryString(value)).to.throw(TypeError);
             });
         });
     });

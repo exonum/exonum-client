@@ -19,62 +19,42 @@ describe('Verify block of precommits', function() {
 
     it('should return false when data of wrong type', function() {
         [null, undefined, 42, 'Hello world', [], {}, new Date()].forEach(function(data) {
-            try {
-                expect(Exonum.verifyBlock(data, validators)).to.be.false;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(TypeError);
-            }
+            expect(() => Exonum.verifyBlock(data, validators)).to.throw(TypeError);
         });
     });
 
     it('should return false when block info of wrong type', function() {
         [null, undefined, 42, 'Hello world', [], new Date()].forEach(function(data) {
-            try {
-                expect(Exonum.verifyBlock({block: data}, validators)).to.be.false;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(TypeError);
-            }
+            expect(() => Exonum.verifyBlock({block: data}, validators)).to.throw(TypeError);
         });
     });
 
     it('should return false when precommits info of wrong type', function() {
         [null, undefined, 42, 'Hello world', [], new Date()].forEach(function(precommits) {
-            try {
-                expect(Exonum.verifyBlock({block: {}, precommits: precommits}, validators)).to.be.false;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(TypeError);
-            }
+            expect(() => Exonum.verifyBlock({block: {}, precommits: precommits}, validators)).to.throw(TypeError);
         });
     });
 
     it('should return false when body field of wrong type in precommit', function() {
         [null, 42, 'Hello world', [], new Date()].forEach(function(body) {
-            try {
-                expect(Exonum.verifyBlock({
-                    block: {},
-                    precommits: [{
-                        body: body
-                    }]
-                }, validators)).to.be.false;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(TypeError);
-            }
+            expect(() => Exonum.verifyBlock({block: {}, precommits: [{body: body}]}, validators)).to.throw(TypeError);
         });
     });
 
     it('should return false when signature field of wrong type in precommit', function() {
         [null, undefined, 42, [], {}, new Date()].forEach(function(signature) {
-            try {
-                expect(Exonum.verifyBlock({
+            var args = [
+                {
                     block: {},
                     precommits: [{
                         body: {},
                         signature: signature
                     }]
-                }, validators)).to.be.false;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(TypeError);
-            }
+                },
+                validators
+            ];
+
+            expect(() => Exonum.verifyBlock.apply(this, args)).to.throw(TypeError);
         });
     });
 
@@ -85,23 +65,24 @@ describe('Verify block of precommits', function() {
         ];
 
         args.forEach(function(signature) {
-            try {
-                expect(Exonum.verifyBlock({
+            var args = [
+                {
                     block: {},
                     precommits: [{
                         body: {},
                         signature: signature
                     }]
-                }, validators)).to.be.false;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(TypeError);
-            }
+                },
+                validators
+            ];
+
+            expect(() => Exonum.verifyBlock.apply(this, args)).to.throw(TypeError);
         });
     });
 
     it('should return false when precommit from non existed validator', function() {
-        try {
-            expect(Exonum.verifyBlock({
+        var args = [
+            {
                 block: {},
                 precommits: [{
                     body: {
@@ -109,15 +90,16 @@ describe('Verify block of precommits', function() {
                     },
                     signature: '63b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d263b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d2'
                 }]
-            }, validators)).to.be.false;
-        } catch (error) {
-            expect(error).to.be.an.instanceof(TypeError);
-        }
+            },
+            validators
+        ];
+
+        expect(() => Exonum.verifyBlock.apply(this, args)).to.throw(TypeError);
     });
 
     it('should return false when wrong height of block in precommit', function() {
-        try {
-            expect(Exonum.verifyBlock({
+        var args = [
+            {
                 block: {
                     height: 1
                 },
@@ -128,10 +110,11 @@ describe('Verify block of precommits', function() {
                     },
                     signature: '63b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d263b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d2'
                 }]
-            }, validators)).to.be.false;
-        } catch (error) {
-            expect(error).to.be.an.instanceof(TypeError);
-        }
+            },
+            validators
+        ];
+
+        expect(() => Exonum.verifyBlock.apply(this, args)).to.throw(TypeError);
     });
 
     it('should return false when wrong hash of block in precommit', function() {
@@ -177,11 +160,7 @@ describe('Verify block of precommits', function() {
             ]
         };
 
-        try {
-            expect(Exonum.verifyBlock(data, validators)).to.be.false;
-        } catch (error) {
-            expect(error).to.be.an.instanceof(Error);
-        }
+        expect(() => Exonum.verifyBlock(data, validators)).to.throw(Error);
     });
 
     it('should return false when wrong round in precommit', function() {
@@ -227,11 +206,7 @@ describe('Verify block of precommits', function() {
             ]
         };
 
-        try {
-            expect(Exonum.verifyBlock(data, validators)).to.be.false;
-        } catch (error) {
-            expect(error).to.be.an.instanceof(Error);
-        }
+        expect(() => Exonum.verifyBlock(data, validators)).to.throw(Error);
     });
 
     it('should return false when wrong signature of precommit', function() {
@@ -257,11 +232,7 @@ describe('Verify block of precommits', function() {
             ]
         };
 
-        try {
-            expect(Exonum.verifyBlock(data, validators)).to.be.false;
-        } catch (error) {
-            expect(error).to.be.an.instanceof(Error);
-        }
+        expect(() => Exonum.verifyBlock(data, validators)).to.throw(Error);
     });
 
     it('should return false when insufficient precommits from unique validators', function() {
@@ -287,11 +258,7 @@ describe('Verify block of precommits', function() {
             ]
         };
 
-        try {
-            expect(Exonum.verifyBlock(data, validators)).to.be.false;
-        } catch (error) {
-            expect(error).to.be.an.instanceof(Error);
-        }
+        expect(() => Exonum.verifyBlock(data, validators)).to.throw(Error);
     });
 
     it('should return false when validators of wrong type', function() {
@@ -338,63 +305,55 @@ describe('Verify block of precommits', function() {
         };
 
         [undefined, [true], [undefined], [null], [42], [[]], [{}], [new Date()]].forEach(function(validators) {
-            try {
-                expect(Exonum.verifyBlock(block, validators)).to.be.false;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(TypeError);
-            }
+            expect(() => Exonum.verifyBlock(block, validators)).to.throw(TypeError);
         });
     });
 
     it('should return false when validators of wrong type', function() {
         var block = {
-            "block": {
-                "height": "5",
-                "propose_round": 3,
-                "prev_hash": "fe5c606da552b2a3ad0ff8ef400a7071e9e72ab3b5f5c2996416ceb86c7f2c1e",
-                "tx_hash": "136c7952ed9f26b477797c23cf3d02faa46863ecc70d595b0b227027aacd0f94",
-                "state_hash": "bea2a1defd3b2ab410a1f501805d10ad94d30a5b5a1240574cade1553a60e189"
+            'block': {
+                'height': '5',
+                'propose_round': 3,
+                'prev_hash': 'fe5c606da552b2a3ad0ff8ef400a7071e9e72ab3b5f5c2996416ceb86c7f2c1e',
+                'tx_hash': '136c7952ed9f26b477797c23cf3d02faa46863ecc70d595b0b227027aacd0f94',
+                'state_hash': 'bea2a1defd3b2ab410a1f501805d10ad94d30a5b5a1240574cade1553a60e189'
             },
-            "precommits": [
+            'precommits': [
                 {
-                    "body": {
-                        "validator": 0,
-                        "height": "5",
-                        "round": 3,
-                        "propose_hash": "1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a",
-                        "block_hash": "c2513f88478a32767c3cf7c068d60523212a005374d8d7398473c9601bf3d369"
+                    'body': {
+                        'validator': 0,
+                        'height': '5',
+                        'round': 3,
+                        'propose_hash': '1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a',
+                        'block_hash': 'c2513f88478a32767c3cf7c068d60523212a005374d8d7398473c9601bf3d369'
                     },
-                    "signature": "4616ef4bfac86c8ded9aa9c7e84958574e3f9df4f7aadea8b37dcdb40ebedd8ac009f8a9b54bd907bf4f43289bfec72e47e6338912f282a6b5a5ce8c558ef50b"
+                    'signature': '4616ef4bfac86c8ded9aa9c7e84958574e3f9df4f7aadea8b37dcdb40ebedd8ac009f8a9b54bd907bf4f43289bfec72e47e6338912f282a6b5a5ce8c558ef50b'
                 },
                 {
-                    "body": {
-                        "validator": 2,
-                        "height": "5",
-                        "round": 3,
-                        "propose_hash": "1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a",
-                        "block_hash": "c2513f88478a32767c3cf7c068d60523212a005374d8d7398473c9601bf3d369"
+                    'body': {
+                        'validator': 2,
+                        'height': '5',
+                        'round': 3,
+                        'propose_hash': '1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a',
+                        'block_hash': 'c2513f88478a32767c3cf7c068d60523212a005374d8d7398473c9601bf3d369'
                     },
-                    "signature": "5253cba87af1abac95c7c92f06b2b286af84353fd060ea1069f107094d97298473fe6431613c3e2d02d92624c82394b86cec047cd681e0f3fc98f0f877383a04"
+                    'signature': '5253cba87af1abac95c7c92f06b2b286af84353fd060ea1069f107094d97298473fe6431613c3e2d02d92624c82394b86cec047cd681e0f3fc98f0f877383a04'
                 },
                 {
-                    "body": {
-                        "validator": 3,
-                        "height": "5",
-                        "round": 3,
-                        "propose_hash": "1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a",
-                        "block_hash": "c2513f88478a32767c3cf7c068d60523212a005374d8d7398473c9601bf3d369"
+                    'body': {
+                        'validator': 3,
+                        'height': '5',
+                        'round': 3,
+                        'propose_hash': '1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a',
+                        'block_hash': 'c2513f88478a32767c3cf7c068d60523212a005374d8d7398473c9601bf3d369'
                     },
-                    "signature": "e35a3cb1ca834cce77d67d5945ef1d7021488a357a35e973cd1ef17099d4db55a28123d95f9c5dcedf34c86a12c20e91cc47622612039115f2a376d7e5f7ab00"
+                    'signature': 'e35a3cb1ca834cce77d67d5945ef1d7021488a357a35e973cd1ef17099d4db55a28123d95f9c5dcedf34c86a12c20e91cc47622612039115f2a376d7e5f7ab00'
                 }
             ]
         };
 
         [['asda123'], ['eb7e3ad55f97e5d5693fe0e69f4c26bd1173077dbffb5fff5b69f213f71bee3f']].forEach(function(validators) {
-            try {
-                expect(Exonum.verifyBlock(block, validators)).to.be.false;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Exonum.verifyBlock(block, validators)).to.throw(Error);
         });
     });
 

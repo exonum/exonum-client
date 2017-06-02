@@ -183,7 +183,6 @@ describe('Check cryptocurrency functions', function() {
 
             if (data.wallet_history.values.length !== hashes.length) {
                 throw new Error('Number of transaction hashes is not equal to transactions number.');
-                return;
             }
 
             // validate each transaction
@@ -199,10 +198,8 @@ describe('Check cryptocurrency functions', function() {
 
                 if (transaction.hash !== hashes[i].tx_hash) {
                     throw new Error('Wrong transaction hash.');
-                    return;
                 } else if (!type.verifySignature(transaction.signature, publicKeyOfTransaction, transaction.body)) {
                     throw new Error('Wrong transaction signature.');
-                    return;
                 }
 
                 transactions.push(transaction);

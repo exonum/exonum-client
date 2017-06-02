@@ -35,26 +35,40 @@ class NewMessage {
                 payload: {type: primitive.Uint32, size: 4, from: 6, to: 10}
             }
         });
-        var buffer = MessageHead.serialize({
-            network_id: 0,
-            version: 0,
-            message_id: this.message_id,
-            service_id: this.service_id,
-            payload: 0 // placeholder, real value will be inserted later
-        });
+
+        try {
+            var buffer = MessageHead.serialize({
+                network_id: 0,
+                version: 0,
+                message_id: this.message_id,
+                service_id: this.service_id,
+                payload: 0 // placeholder, real value will be inserted later
+            });
+        } catch (error) {
+            throw error;
+        }
 
         // serialize and append message body
-        buffer = serialization.serialize(buffer, MessageHead.size, data, this);
-        if (buffer === undefined) {
-            return;
+        try {
+            buffer = serialization.serialize(buffer, MessageHead.size, data, this);
+        } catch (error) {
+            throw error;
         }
 
         // calculate payload and insert it into buffer
-        primitive.Uint32(buffer.length + SIGNATURE_LENGTH, buffer, MessageHead.fields.payload.from, MessageHead.fields.payload.to);
+        try {
+            primitive.Uint32(buffer.length + SIGNATURE_LENGTH, buffer, MessageHead.fields.payload.from, MessageHead.fields.payload.to);
+        } catch (error) {
+            throw error;
+        }
 
         if (cutSignature !== true) {
             // append signature
-            primitive.Digest(this.signature, buffer, buffer.length, buffer.length + SIGNATURE_LENGTH);
+            try {
+                primitive.Digest(this.signature, buffer, buffer.length, buffer.length + SIGNATURE_LENGTH);
+            } catch (error) {
+                throw error;
+            }
         }
 
         return buffer;
@@ -66,7 +80,11 @@ class NewMessage {
      * @returns {string}
      */
     hash(data) {
-        return crypto.hash(data, this);
+        try {
+            return crypto.hash(data, this);
+        } catch (error) {
+            throw error;
+        }
     }
 
     /**
@@ -76,7 +94,11 @@ class NewMessage {
      * @returns {string}
      */
     sign(secretKey, data) {
-        return crypto.sign(secretKey, data, this);
+        try {
+            return crypto.sign(secretKey, data, this);
+        } catch (error) {
+            throw error;
+        }
     }
 
     /**
@@ -87,7 +109,11 @@ class NewMessage {
      * @returns {boolean}
      */
     verifySignature(signature, publicKey, data) {
-        return crypto.verifySignature(signature, publicKey, data, this);
+        try {
+            return crypto.verifySignature(signature, publicKey, data, this);
+        } catch (error) {
+            throw error;
+        }
     }
 }
 

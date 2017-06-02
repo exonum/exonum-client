@@ -18,74 +18,54 @@ describe('Check built-in types', function() {
             expect(buffer).to.deep.equal([245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161, 242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54]);
         });
 
-        it('should return undefined when the range of segment is invalid', function() {
+        it('should throw error when the range of segment is invalid', function() {
             var Type = Exonum.newType({
                 size: 32,
                 fields: {hash: {type: Exonum.Hash, size: 32, from: 0, to: 16}}
             });
             var data = {hash: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Type.serialize(data)).to.throw(Error);
         });
 
-        it('should return undefined when the value is invalid string', function() {
+        it('should throw error when the value is invalid string', function() {
             var Type = Exonum.newType({
                 size: 32,
                 fields: {hash: {type: Exonum.Hash, size: 32, from: 0, to: 32}}
             });
             var data = {hash: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3z'};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Type.serialize(data)).to.throw(Error);
         });
 
-        it('should return undefined when the value is too long string', function() {
+        it('should throw error when the value is too long string', function() {
             var Type = Exonum.newType({
                 size: 32,
                 fields: {hash: {type: Exonum.Hash, size: 32, from: 0, to: 32}}
             });
             var data = {hash: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365'};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Type.serialize(data)).to.throw(Error);
         });
 
-        it('should return undefined when the value is too short string', function() {
+        it('should throw error when the value is too short string', function() {
             var Type = Exonum.newType({
                 size: 32,
                 fields: {hash: {type: Exonum.Hash, size: 32, from: 0, to: 32}}
             });
             var data = {hash: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3'};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Type.serialize(data)).to.throw(Error);
         });
 
-        it('should return undefined when the value of invalid type', function() {
+        it('should throw error when the value of invalid type', function() {
             var Type = Exonum.newType({
                 size: 32,
                 fields: {hash: {type: Exonum.Hash, size: 32, from: 0, to: 32}}
             });
 
             [true, null, undefined, 57, [], {}, new Date()].forEach(function(hash) {
-                try {
-                    expect(Type.serialize({hash: hash})).to.be.undefined;
-                } catch (error) {
-                    expect(error).to.be.an.instanceof(TypeError);
-                }
+                expect(() => Type.serialize({hash: hash})).to.throw(TypeError);
             });
         });
 
@@ -104,74 +84,54 @@ describe('Check built-in types', function() {
             expect(buffer).to.deep.equal([245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161, 242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54]);
         });
 
-        it('should return undefined when the range of segment is invalid', function() {
+        it('should throw error when the range of segment is invalid', function() {
             var Type = Exonum.newType({
                 size: 32,
                 fields: {key: {type: Exonum.PublicKey, size: 32, from: 0, to: 16}}
             });
             var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Type.serialize(data)).to.throw(Error);
         });
 
-        it('should return undefined when the value is invalid string', function() {
+        it('should throw error when the value is invalid string', function() {
             var Type = Exonum.newType({
                 size: 32,
                 fields: {key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32}}
             });
             var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3z'};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Type.serialize(data)).to.throw(Error);
         });
 
-        it('should return undefined when the value is too long string', function() {
+        it('should throw error when the value is too long string', function() {
             var Type = Exonum.newType({
                 size: 32,
                 fields: {key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32}}
             });
             var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365'};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Type.serialize(data)).to.throw(Error);
         });
 
-        it('should return undefined when the value is too short string', function() {
+        it('should throw error when the value is too short string', function() {
             var Type = Exonum.newType({
                 size: 32,
                 fields: {key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32}}
             });
             var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3'};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Type.serialize(data)).to.throw(Error);
         });
 
-        it('should return undefined when the value of invalid type', function() {
+        it('should throw error when the value of invalid type', function() {
             var Type = Exonum.newType({
                 size: 32,
                 fields: {key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32}}
             });
 
             [true, null, undefined, 57, [], {}, new Date()].forEach(function(key) {
-                try {
-                    expect(Type.serialize({key: key})).to.be.undefined;
-                } catch (error) {
-                    expect(error).to.be.an.instanceof(TypeError);
-                }
+                expect(() => Type.serialize({key: key})).to.throw(TypeError);
             });
         });
 
@@ -190,74 +150,54 @@ describe('Check built-in types', function() {
             expect(buffer).to.deep.equal([245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161, 242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54, 245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161, 242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54]);
         });
 
-        it('should return undefined when the range of segment is invalid', function() {
+        it('should throw error when the range of segment is invalid', function() {
             var Type = Exonum.newType({
                 size: 64,
                 fields: {key: {type: Exonum.Digest, size: 64, from: 0, to: 32}}
             });
             var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Type.serialize(data)).to.throw(Error);
         });
 
-        it('should return undefined when the value is invalid string', function() {
+        it('should throw error when the value is invalid string', function() {
             var Type = Exonum.newType({
                 size: 64,
                 fields: {key: {type: Exonum.Digest, size: 64, from: 0, to: 64}}
             });
             var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3zf5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3z'};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Type.serialize(data)).to.throw(Error);
         });
 
-        it('should return undefined when the value is too long string', function() {
+        it('should throw error when the value is too long string', function() {
             var Type = Exonum.newType({
                 size: 64,
                 fields: {key: {type: Exonum.Digest, size: 64, from: 0, to: 64}}
             });
             var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365'};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Type.serialize(data)).to.throw(Error);
         });
 
-        it('should return undefined when the value is too short string', function() {
+        it('should throw error when the value is too short string', function() {
             var Type = Exonum.newType({
                 size: 64,
                 fields: {key: {type: Exonum.Digest, size: 64, from: 0, to: 64}}
             });
             var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3'};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Type.serialize(data)).to.throw(Error);
         });
 
-        it('should return undefined when the value of invalid type', function() {
+        it('should throw error when the value of invalid type', function() {
             var Type = Exonum.newType({
                 size: 64,
                 fields: {key: {type: Exonum.Digest, size: 64, from: 0, to: 64}}
             });
 
             [true, null, undefined, 57, [], {}, new Date()].forEach(function(key) {
-                try {
-                    expect(Type.serialize({key: key})).to.be.undefined;
-                } catch (error) {
-                    expect(error).to.be.an.instanceof(TypeError);
-                }
+                expect(() => Type.serialize({key: key})).to.throw(TypeError);
             });
         });
 
@@ -287,60 +227,41 @@ describe('Check built-in types', function() {
             expect(buffer).to.deep.equal([255, 255, 255, 255, 255, 255, 255, 255]);
         });
 
-        it('should return undefined when the value is negative number', function() {
+        it('should throw error when the value is negative number', function() {
             var Type = Exonum.newType({
                 size: 8,
                 fields: {since: {type: Exonum.Timespec, size: 8, from: 0, to: 8}}
             });
-            var data = {since: -1483979894237};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(RangeError);
-            }
+            expect(() => Type.serialize({since: -1483979894237})).to.throw(RangeError);
         });
 
-        it('should return undefined when the range of segment is invalid', function() {
+        it('should throw error when the range of segment is invalid', function() {
             var Type = Exonum.newType({
                 size: 8,
                 fields: {since: {type: Exonum.Timespec, size: 8, from: 0, to: 4}}
             });
-            var data = {since: 1483979894237};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Type.serialize({since: 1483979894237})).to.throw(Error);
         });
 
-        it('should return undefined when the value is out of range', function() {
+        it('should throw error when the value is out of range', function() {
             var Type = Exonum.newType({
                 size: 8,
                 fields: {since: {type: Exonum.Timespec, size: 8, from: 0, to: 8}}
             });
-            var data = {since: '18446744073709551616'};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(RangeError);
-            }
+            expect(() => Type.serialize({since: '18446744073709551616'})).to.throw(RangeError);
         });
 
-        it('should return undefined when the value of invalid type', function() {
+        it('should throw error when the value of invalid type', function() {
             var Type = Exonum.newType({
                 size: 8,
                 fields: {since: {type: Exonum.Timespec, size: 8, from: 0, to: 8}}
             });
 
             [true, null, undefined, [], {}, new Date()].forEach(function(since) {
-                try {
-                    expect(Type.serialize({since: since})).to.be.undefined;
-                } catch (error) {
-                    expect(error).to.be.an.instanceof(TypeError);
-                }
+                expect(() => Type.serialize({since: since})).to.throw(TypeError);
             });
         });
 
@@ -370,32 +291,22 @@ describe('Check built-in types', function() {
             expect(buffer).to.deep.equal([0]);
         });
 
-        it('should return undefined when the range of segment is invalid', function() {
+        it('should throw error when the range of segment is invalid', function() {
             var Type = Exonum.newType({
                 size: 1,
                 fields: {active: {type: Exonum.Bool, size: 1, from: 0, to: 0}}
             });
-            var data = {active: true};
-
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Type.serialize({active: true})).to.throw(Error);
         });
 
-        it('should return undefined when the value of invalid type', function() {
+        it('should throw error when the value of invalid type', function() {
             var Type = Exonum.newType({
                 size: 1,
                 fields: {active: {type: Exonum.Bool, size: 1, from: 0, to: 1}}
             });
 
             ['Hello world', null, undefined, 57, [], {}, new Date()].forEach(function(active) {
-                try {
-                    expect(Type.serialize({active: active})).to.be.undefined;
-                } catch (error) {
-                    expect(error).to.be.an.instanceof(TypeError);
-                }
+                expect(() => Type.serialize({active: active})).to.throw(TypeError);
             });
         });
 
@@ -414,32 +325,23 @@ describe('Check built-in types', function() {
             expect(buffer).to.deep.equal([8, 0, 0, 0, 11, 0, 0, 0, 72, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100]);
         });
 
-        it('should return undefined when the range of segment is invalid', function() {
+        it('should throw error when the range of segment is invalid', function() {
             var Type = Exonum.newType({
                 size: 8,
                 fields: {text: {type: Exonum.String, size: 8, from: 0, to: 4}}
             });
-            var data = {text: 'Hello world'};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Type.serialize({text: 'Hello world'})).to.throw(Error);
         });
 
-        it('should return undefined when the value of invalid type', function() {
+        it('should throw error when the value of invalid type', function() {
             var Type = Exonum.newType({
                 size: 8,
                 fields: {text: {type: Exonum.String, size: 8, from: 0, to: 8}}
             });
 
             [true, null, undefined, 57, [], {}, new Date()].forEach(function(text) {
-                try {
-                    expect(Type.serialize({text: text})).to.be.undefined;
-                } catch (error) {
-                    expect(error).to.be.an.instanceof(TypeError);
-                }
+                expect(() => Type.serialize({text: text})).to.throw(TypeError);
             });
         });
 
@@ -469,60 +371,38 @@ describe('Check built-in types', function() {
             expect(buffer).to.deep.equal([136]);
         });
 
-        it('should return undefined when the range of segment is invalid', function() {
+        it('should throw error when the range of segment is invalid', function() {
             var Type = Exonum.newType({
                 size: 1,
                 fields: {balance: {type: Exonum.Int8, size: 1, from: 0, to: 0}}
             });
-            var data = {balance: 120};
-
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Type.serialize({balance: 120})).to.throw(Error);
         });
 
-        it('should return undefined when the value is too big positive number', function() {
+        it('should throw error when the value is too big positive number', function() {
             var Type = Exonum.newType({
                 size: 1,
                 fields: {balance: {type: Exonum.Int8, size: 1, from: 0, to: 1}}
             });
-            var data = {balance: 130};
-
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(RangeError);
-            }
+            expect(() => Type.serialize({balance: 130})).to.throw(RangeError);
         });
 
-        it('should return undefined when the value is too big negative number', function() {
+        it('should throw error when the value is too big negative number', function() {
             var Type = Exonum.newType({
                 size: 1,
                 fields: {balance: {type: Exonum.Int8, size: 1, from: 0, to: 1}}
             });
-            var data = {balance: -130};
-
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(RangeError);
-            }
+            expect(() => Type.serialize({balance: -130})).to.throw(RangeError);
         });
 
-        it('should return undefined when the value of invalid type', function() {
+        it('should throw error when the value of invalid type', function() {
             var Type = Exonum.newType({
                 size: 1,
                 fields: {balance: {type: Exonum.Int8, size: 1, from: 0, to: 1}}
             });
 
             [true, null, undefined, [], {}, new Date()].forEach(function(balance) {
-                try {
-                    expect(Type.serialize({balance: balance})).to.be.undefined;
-                } catch (error) {
-                    expect(error).to.be.an.instanceof(TypeError);
-                }
+                expect(() => Type.serialize({balance: balance})).to.throw(TypeError);
             });
         });
 
@@ -552,60 +432,41 @@ describe('Check built-in types', function() {
             expect(buffer).to.deep.equal([209, 135]);
         });
 
-        it('should return undefined when the range of segment is invalid', function() {
+        it('should throw error when the range of segment is invalid', function() {
             var Type = Exonum.newType({
                 size: 2,
                 fields: {balance: {type: Exonum.Int16, size: 2, from: 0, to: 1}}
             });
-            var data = {balance: 30767};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Type.serialize({balance: 30767})).to.throw(Error);
         });
 
-        it('should return undefined when the value is too big positive number', function() {
+        it('should throw error when the value is too big positive number', function() {
             var Type = Exonum.newType({
                 size: 2,
                 fields: {balance: {type: Exonum.Int16, size: 2, from: 0, to: 2}}
             });
-            var data = {balance: 32769};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(RangeError);
-            }
+            expect(() => Type.serialize({balance: 32769})).to.throw(RangeError);
         });
 
-        it('should return undefined when the value is too big negative number', function() {
+        it('should throw error when the value is too big negative number', function() {
             var Type = Exonum.newType({
                 size: 2,
                 fields: {balance: {type: Exonum.Int16, size: 2, from: 0, to: 2}}
             });
-            var data = {balance: -32770};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(RangeError);
-            }
+            expect(() => Type.serialize({balance: -32770})).to.throw(RangeError);
         });
 
-        it('should return undefined when the value of invalid type', function() {
+        it('should throw error when the value of invalid type', function() {
             var Type = Exonum.newType({
                 size: 2,
                 fields: {balance: {type: Exonum.Int16, size: 2, from: 0, to: 2}}
             });
 
             [true, null, undefined, [], {}, new Date()].forEach(function(balance) {
-                try {
-                    expect(Type.serialize({balance: balance})).to.be.undefined;
-                } catch (error) {
-                    expect(error).to.be.an.instanceof(TypeError);
-                }
+                expect(() => Type.serialize({balance: balance})).to.throw(TypeError);
             });
         });
 
@@ -635,60 +496,41 @@ describe('Check built-in types', function() {
             expect(buffer).to.deep.equal([0, 202, 154, 187]);
         });
 
-        it('should return undefined when the range of segment is invalid', function() {
+        it('should throw error when the range of segment is invalid', function() {
             var Type = Exonum.newType({
                 size: 4,
                 fields: {balance: {type: Exonum.Int32, size: 4, from: 0, to: 3}}
             });
-            var data = {balance: 613228};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Type.serialize({balance: 613228})).to.throw(Error);
         });
 
-        it('should return undefined when the value is too big positive number', function() {
+        it('should throw error when the value is too big positive number', function() {
             var Type = Exonum.newType({
                 size: 4,
                 fields: {balance: {type: Exonum.Int32, size: 4, from: 0, to: 4}}
             });
-            var data = {balance: 2147483649};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(RangeError);
-            }
+            expect(() => Type.serialize({balance: 2147483649})).to.throw(RangeError);
         });
 
-        it('should return undefined when the value is too big negative number', function() {
+        it('should throw error when the value is too big negative number', function() {
             var Type = Exonum.newType({
                 size: 4,
                 fields: {balance: {type: Exonum.Int32, size: 4, from: 0, to: 4}}
             });
-            var data = {balance: -2147483650};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(RangeError);
-            }
+            expect(() => Type.serialize({balance: -2147483650})).to.throw(RangeError);
         });
 
-        it('should return undefined when the value of invalid type', function() {
+        it('should throw error when the value of invalid type', function() {
             var Type = Exonum.newType({
                 size: 4,
                 fields: {balance: {type: Exonum.Int32, size: 4, from: 0, to: 4}}
             });
 
             [true, null, undefined, [], {}, new Date()].forEach(function(balance) {
-                try {
-                    expect(Type.serialize({balance: balance})).to.be.undefined;
-                } catch (error) {
-                    expect(error).to.be.an.instanceof(TypeError);
-                }
+                expect(() => Type.serialize({balance: balance})).to.throw(TypeError);
             });
         });
 
@@ -740,60 +582,41 @@ describe('Check built-in types', function() {
             expect(buffer).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 128]);
         });
 
-        it('should return undefined when the range of segment is invalid', function() {
+        it('should throw error when the range of segment is invalid', function() {
             var Type = Exonum.newType({
                 size: 8,
                 fields: {balance: {type: Exonum.Int64, size: 8, from: 0, to: 4}}
             });
-            var data = {balance: 613228};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Type.serialize({balance: 613228})).to.throw(Error);
         });
 
-        it('should return undefined when the value is too big positive number', function() {
+        it('should throw error when the value is too big positive number', function() {
             var Type = Exonum.newType({
                 size: 8,
                 fields: {balance: {type: Exonum.Int64, size: 8, from: 0, to: 8}}
             });
-            var data = {balance: '9223372036854775808'};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(RangeError);
-            }
+            expect(() => Type.serialize({balance: '9223372036854775808'})).to.throw(RangeError);
         });
 
-        it('should return undefined when the value is too big negative number', function() {
+        it('should throw error when the value is too big negative number', function() {
             var Type = Exonum.newType({
                 size: 8,
                 fields: {balance: {type: Exonum.Int64, size: 8, from: 0, to: 8}}
             });
-            var data = {balance: '-9223372036854775809'};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(RangeError);
-            }
+            expect(() => Type.serialize({balance: '-9223372036854775809'})).to.throw(RangeError);
         });
 
-        it('should return undefined when the value of invalid type', function() {
+        it('should throw error when the value of invalid type', function() {
             var Type = Exonum.newType({
                 size: 8,
                 fields: {balance: {type: Exonum.Int64, size: 8, from: 0, to: 8}}
             });
 
             [true, null, undefined, [], {}, new Date()].forEach(function(balance) {
-                try {
-                    expect(Type.serialize({balance: balance})).to.be.undefined;
-                } catch (error) {
-                    expect(error).to.be.an.instanceof(TypeError);
-                }
+                expect(() => Type.serialize({balance: balance})).to.throw(TypeError);
             });
         });
 
@@ -812,60 +635,41 @@ describe('Check built-in types', function() {
             expect(buffer).to.deep.equal([230]);
         });
 
-        it('should return undefined when the range of segment is invalid', function() {
+        it('should throw error when the range of segment is invalid', function() {
             var Type = Exonum.newType({
                 size: 1,
                 fields: {balance: {type: Exonum.Uint8, size: 1, from: 0, to: 0}}
             });
-            var data = {balance: 230};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Type.serialize({balance: 230})).to.throw(Error);
         });
 
-        it('should return undefined when the value is negative number', function() {
+        it('should throw error when the value is negative number', function() {
             var Type = Exonum.newType({
                 size: 1,
                 fields: {balance: {type: Exonum.Uint8, size: 1, from: 0, to: 1}}
             });
-            var data = {balance: -1};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(RangeError);
-            }
+            expect(() => Type.serialize({balance: -1})).to.throw(RangeError);
         });
 
-        it('should return undefined when the value is out of range', function() {
+        it('should throw error when the value is out of range', function() {
             var Type = Exonum.newType({
                 size: 1,
                 fields: {balance: {type: Exonum.Uint8, size: 1, from: 0, to: 1}}
             });
-            var data = {balance: 256};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(RangeError);
-            }
+            expect(() => Type.serialize({balance: 256})).to.throw(RangeError);
         });
 
-        it('should return undefined when the value of invalid type', function() {
+        it('should throw error when the value of invalid type', function() {
             var Type = Exonum.newType({
                 size: 1,
                 fields: {balance: {type: Exonum.Uint8, size: 1, from: 0, to: 1}}
             });
 
             [true, null, undefined, [], {}, new Date()].forEach(function(balance) {
-                try {
-                    expect(Type.serialize({balance: balance})).to.be.undefined;
-                } catch (error) {
-                    expect(error).to.be.an.instanceof(TypeError);
-                }
+                expect(() => Type.serialize({balance: balance})).to.throw(TypeError);
             });
         });
 
@@ -884,60 +688,41 @@ describe('Check built-in types', function() {
             expect(buffer).to.deep.equal([119, 236]);
         });
 
-        it('should return undefined when the range of segment is invalid', function() {
+        it('should throw error when the range of segment is invalid', function() {
             var Type = Exonum.newType({
                 size: 2,
                 fields: {balance: {type: Exonum.Uint16, size: 2, from: 0, to: 1}}
             });
-            var data = {balance: 60535};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Type.serialize({balance: 60535})).to.throw(Error);
         });
 
-        it('should return undefined when the value is negative number', function() {
+        it('should throw error when the value is negative number', function() {
             var Type = Exonum.newType({
                 size: 2,
                 fields: {balance: {type: Exonum.Uint16, size: 2, from: 0, to: 2}}
             });
-            var data = {balance: -1};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(RangeError);
-            }
+            expect(() => Type.serialize({balance: -1})).to.throw(RangeError);
         });
 
-        it('should return undefined when the value is out of range', function() {
+        it('should throw error when the value is out of range', function() {
             var Type = Exonum.newType({
                 size: 2,
                 fields: {balance: {type: Exonum.Uint16, size: 2, from: 0, to: 2}}
             });
-            var data = {balance: 65536};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(RangeError);
-            }
+            expect(() => Type.serialize({balance: 65536})).to.throw(RangeError);
         });
 
-        it('should return undefined when the value of invalid type', function() {
+        it('should throw error when the value of invalid type', function() {
             var Type = Exonum.newType({
                 size: 2,
                 fields: {balance: {type: Exonum.Uint16, size: 2, from: 0, to: 2}}
             });
 
             [true, null, undefined, [], {}, new Date()].forEach(function(balance) {
-                try {
-                    expect(Type.serialize({balance: balance})).to.be.undefined;
-                } catch (error) {
-                    expect(error).to.be.an.instanceof(TypeError);
-                }
+                expect(() => Type.serialize({balance: balance})).to.throw(TypeError);
             });
         });
 
@@ -956,60 +741,41 @@ describe('Check built-in types', function() {
             expect(buffer).to.deep.equal([108, 91, 9, 0]);
         });
 
-        it('should return undefined when the range of segment is invalid', function() {
+        it('should throw error when the range of segment is invalid', function() {
             var Type = Exonum.newType({
                 size: 4,
                 fields: {balance: {type: Exonum.Uint32, size: 4, from: 0, to: 3}}
             });
-            var data = {balance: 613228};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Type.serialize({balance: 613228})).to.throw(Error);
         });
 
-        it('should return undefined when the value is negative number', function() {
+        it('should throw error when the value is negative number', function() {
             var Type = Exonum.newType({
                 size: 4,
                 fields: {balance: {type: Exonum.Uint32, size: 4, from: 0, to: 4}}
             });
-            var data = {balance: -1};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(RangeError);
-            }
+            expect(() => Type.serialize({balance: -1})).to.throw(RangeError);
         });
 
-        it('should return undefined when the value is out of range', function() {
+        it('should throw error when the value is out of range', function() {
             var Type = Exonum.newType({
                 size: 4,
                 fields: {balance: {type: Exonum.Uint32, size: 4, from: 0, to: 4}}
             });
-            var data = {balance: 4294967296};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(RangeError);
-            }
+            expect(() => Type.serialize({balance: 4294967296})).to.throw(RangeError);
         });
 
-        it('should return undefined when the value of invalid type', function() {
+        it('should throw error when the value of invalid type', function() {
             var Type = Exonum.newType({
                 size: 4,
                 fields: {balance: {type: Exonum.Uint32, size: 4, from: 0, to: 4}}
             });
 
             [true, null, undefined, [], {}, new Date()].forEach(function(balance) {
-                try {
-                    expect(Type.serialize({balance: balance})).to.be.undefined;
-                } catch (error) {
-                    expect(error).to.be.an.instanceof(TypeError);
-                }
+                expect(() => Type.serialize({balance: balance})).to.throw(TypeError);
             });
         });
 
@@ -1039,60 +805,41 @@ describe('Check built-in types', function() {
             expect(buffer).to.deep.equal([1, 0, 0, 0, 0, 0, 32, 0]);
         });
 
-        it('should return undefined when the range of segment is invalid', function() {
+        it('should throw error when the range of segment is invalid', function() {
             var Type = Exonum.newType({
                 size: 8,
                 fields: {balance: {type: Exonum.Uint64, size: 8, from: 0, to: 4}}
             });
-            var data = {balance: 613228};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Type.serialize({balance: 613228})).to.throw(Error);
         });
 
-        it('should return undefined when the value is negative number', function() {
+        it('should throw error when the value is negative number', function() {
             var Type = Exonum.newType({
                 size: 8,
                 fields: {balance: {type: Exonum.Uint64, size: 8, from: 0, to: 8}}
             });
-            var data = {balance: -613228};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(RangeError);
-            }
+            expect(() => Type.serialize({balance: -613228})).to.throw(RangeError);
         });
 
-        it('should return undefined when the value is out of range', function() {
+        it('should throw error when the value is out of range', function() {
             var Type = Exonum.newType({
                 size: 8,
                 fields: {balance: {type: Exonum.Uint64, size: 8, from: 0, to: 8}}
             });
-            var data = {balance: '18446744073709551616'};
 
-            try {
-                expect(Type.serialize(data)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(RangeError);
-            }
+            expect(() => Type.serialize({balance: '18446744073709551616'})).to.throw(RangeError);
         });
 
-        it('should return undefined when the value of invalid type', function() {
+        it('should throw error when the value of invalid type', function() {
             var Type = Exonum.newType({
                 size: 8,
                 fields: {balance: {type: Exonum.Uint64, size: 8, from: 0, to: 8}}
             });
 
             [true, null, undefined, [], {}, new Date()].forEach(function(balance) {
-                try {
-                    expect(Type.serialize({balance: balance})).to.be.undefined;
-                } catch (error) {
-                    expect(error).to.be.an.instanceof(TypeError);
-                }
+                expect(() => Type.serialize({balance: balance})).to.throw(TypeError);
             });
         });
 

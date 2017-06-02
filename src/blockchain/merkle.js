@@ -44,46 +44,49 @@ export function merkleProof(rootHash, count, proofNode, range, type) {
 
         if (depth !== 0 && (depth + 1) !== height) {
             throw new Error('Value node is on wrong height in tree.');
-            return;
         } else if (start.gt(index) || end.lt(index)) {
             throw new Error('Wrong index of value node.');
-            return;
         } else if (start.plus(elements.length).neq(index)) {
             throw new Error('Value node is on wrong position in tree.');
-            return;
         }
 
         if (typeof data === 'string') {
-            if (validateHexHash(data)) {
-                element = data;
+            try {
+                validateHexHash(data);
+            } catch (error) {
+                throw error;
+            }
+            element = data;
+            try {
                 elementsHash = hash(hexadecimalToUint8Array(element));
-            } else {
-                throw new TypeError('Invalid hexadecimal string is passed as value in tree.');
-                return;
+            } catch (error) {
+                throw error;
             }
         } else if (Array.isArray(data)) {
-            if (validateBytesArray(data)) {
-                element = data.slice(0); // clone array of 8-bit integers
+            try {
+                validateBytesArray(data);
+            } catch (error) {
+                throw error;
+            }
+            element = data.slice(0); // clone array of 8-bit integers
+            try {
                 elementsHash = hash(element);
-            } else {
-                throw new TypeError('Invalid array of 8-bit integers in tree.');
-                return;
+            } catch (error) {
+                throw error;
             }
         } else if (isObject(data)) {
             if (isInstanceofOfNewType(type)) {
                 element = data;
-                elementsHash = hash(element, type);
+                try {
+                    elementsHash = hash(element, type);
+                } catch (error) {
+                    throw error;
+                }
             } else {
                 throw new TypeError('Invalid type of type parameter.');
-                return;
             }
         } else {
             throw new TypeError('Invalid value of data parameter.');
-            return;
-        }
-
-        if (elementsHash === undefined) {
-            return;
         }
 
         elements.push(element);
@@ -104,31 +107,40 @@ export function merkleProof(rootHash, count, proofNode, range, type) {
 
         // case with single node in tree
         if (depth === 0 && node.val !== undefined) {
-            return getHash(node.val, depth, index * 2);
+            try {
+                return getHash(node.val, depth, index * 2);
+            } catch (error) {
+                throw error;
+            }
         }
 
         if (node.left !== undefined) {
             if (typeof node.left === 'string') {
-                if (validateHexHash(node.left) === false) {
-                    return null;
+                try {
+                    validateHexHash(node.left);
+                } catch (error) {
+                    throw error;
                 }
                 hashLeft = node.left;
             } else if (isObject(node.left)) {
                 if (node.left.val !== undefined) {
-                    hashLeft = getHash(node.left.val, depth, index * 2);
+                    try {
+                        hashLeft = getHash(node.left.val, depth, index * 2);
+                    } catch (error) {
+                        throw error;
+                    }
                 } else {
-                    hashLeft = recursive(node.left, depth + 1, index * 2);
-                }
-                if (hashLeft === undefined || hashLeft === null) {
-                    return null;
+                    try {
+                        hashLeft = recursive(node.left, depth + 1, index * 2);
+                    } catch (error) {
+                        throw error;
+                    }
                 }
             } else {
                 throw new TypeError('Invalid type of left node.');
-                return null;
             }
         } else {
             throw new Error('Left node is missed.');
-            return null;
         }
 
         if (depth === 0) {
@@ -137,92 +149,103 @@ export function merkleProof(rootHash, count, proofNode, range, type) {
 
         if (node.right !== undefined) {
             if (typeof node.right === 'string') {
-                if (validateHexHash(node.right) === false) {
-                    return null;
+                try {
+                    validateHexHash(node.right);
+                } catch (error) {
+                    throw error;
                 }
                 hashRight = node.right;
             } else if (isObject(node.right)) {
                 if (node.right.val !== undefined) {
-                    hashRight = getHash(node.right.val, depth, index * 2 + 1);
+                    try {
+                        hashRight = getHash(node.right.val, depth, index * 2 + 1);
+                    } catch (error) {
+                        throw error;
+                    }
                 } else {
-                    hashRight = recursive(node.right, depth + 1, index * 2 + 1);
-                }
-                if (hashRight === undefined || hashRight === null) {
-                    return null;
+                    try {
+                        hashRight = recursive(node.right, depth + 1, index * 2 + 1);
+                    } catch (error) {
+                        throw error;
+                    }
                 }
             } else {
                 throw new TypeError('Invalid type of right node.');
-                return null;
             }
 
             summingBuffer = new Uint8Array(64);
-            summingBuffer.set(hexadecimalToUint8Array(hashLeft));
-            summingBuffer.set(hexadecimalToUint8Array(hashRight), 32);
+            try {
+                summingBuffer.set(hexadecimalToUint8Array(hashLeft));
+                summingBuffer.set(hexadecimalToUint8Array(hashRight), 32);
+            } catch (error) {
+                throw error;
+            }
         } else if (depth === 0 || rootBranch === 'left') {
             throw new Error('Right leaf is missed in left branch of tree.');
-            return null;
         } else {
-            summingBuffer = hexadecimalToUint8Array(hashLeft);
+            try {
+                summingBuffer = hexadecimalToUint8Array(hashLeft);
+            } catch (error) {
+                throw error;
+            }
         }
 
-        return hash(summingBuffer);
+        try {
+            return hash(summingBuffer);
+        } catch (error) {
+            throw error;
+        }
     }
 
     // validate rootHash
-    if (validateHexHash(rootHash) === false) {
-        return;
+    try {
+        validateHexHash(rootHash)
+    } catch (error) {
+        throw error;
     }
 
     // validate count
     if (!(typeof count === 'number' || typeof count === 'string')) {
         throw new TypeError('Invalid value is passed as count parameter. Number or string is expected.');
-        return;
     }
+
     try {
         count = bigInt(count);
     } catch (e) {
         throw new TypeError('Invalid value is passed as count parameter.');
-        return;
     }
+
     if (count.lt(0)) {
         throw new RangeError('Invalid count parameter. Count can\'t be below zero.');
-        return;
     }
 
     // validate range
     if (Array.isArray(range) === false || range.length !== 2) {
         throw new TypeError('Invalid type of range parameter. Array of two elements expected.');
-        return;
     } else if (!(typeof range[0] === 'number' || typeof range[0] === 'string')) {
         throw new TypeError('Invalid value is passed as start of range parameter.');
-        return;
     } else if (!(typeof range[1] === 'number' || typeof range[1] === 'string')) {
         throw new TypeError('Invalid value is passed as end of range parameter.');
-        return;
     }
-    var rangeStart;
+
     try {
-        rangeStart = bigInt(range[0]);
+        var rangeStart = bigInt(range[0]);
     } catch (e) {
         throw new TypeError('Invalid value is passed as start of range parameter. Number or string is expected.');
-        return;
     }
-    var rangeEnd;
+
     try {
-        rangeEnd = bigInt(range[1]);
+        var rangeEnd = bigInt(range[1]);
     } catch (e) {
         throw new TypeError('Invalid value is passed as end of range parameter. Number or string is expected.');
-        return;
     }
+
     if (rangeStart.gt(rangeEnd)) {
         throw new RangeError('Invalid range parameter. Start index can\'t be out of range.');
-        return;
     } else if (rangeStart.lt(0)) {
         throw new RangeError('Invalid range parameter. Start index can\'t be below zero.');
-        return;
     } else if (rangeEnd.lt(0)) {
         throw new RangeError('Invalid range parameter. End index can\'t be below zero.');
-        return;
     } else if (rangeStart.gt(count.minus(1))) {
         return [];
     }
@@ -230,22 +253,22 @@ export function merkleProof(rootHash, count, proofNode, range, type) {
     // validate proofNode
     if (isObject(proofNode) === false) {
         throw new TypeError('Invalid type of proofNode parameter. Object expected.');
-        return;
     }
 
     var height = calcHeight(count);
     var start = rangeStart;
     var end = rangeEnd.lt(count) ? rangeEnd : count.minus(1);
-    var actualHash = recursive(proofNode, 0, 0);
 
-    if (actualHash === undefined) { // tree is invalid
-        return;
-    } else if (rootHash.toLowerCase() !== actualHash) {
+    try {
+        var actualHash = recursive(proofNode, 0, 0);
+    } catch (error) {
+        throw error;
+    }
+
+    if (rootHash.toLowerCase() !== actualHash) {
         throw new Error('rootHash parameter is not equal to actual hash.');
-        return;
     } else if (bigInt(elements.length).neq(end.eq(start) ? 1 : end.minus(start).plus(1))) {
         throw new Error('Actual elements in tree amount is not equal to requested.');
-        return;
     }
 
     return elements;

@@ -129,7 +129,7 @@ describe('Serialize data into array of 8-bit integers', function() {
         expect(buffer).to.deep.equal([245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161, 242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54, 80, 0, 0, 0, 12, 0, 0, 0, 208, 122, 5, 0, 0, 0, 0, 0, 103, 82, 190, 136, 35, 20, 245, 187, 188, 154, 106, 242, 174, 99, 79, 192, 112, 56, 88, 74, 74, 119, 81, 14, 165, 236, 237, 69, 245, 77, 192, 48, 83, 109, 97, 114, 116, 32, 119, 97, 108, 108, 101, 116]);
     });
 
-    it('should return undefined when some data parameters are missed', function() {
+    it('should throw error when some data parameters are missed', function() {
         var Wallet = Exonum.newType({
             size: 80,
             fields: {
@@ -140,9 +140,8 @@ describe('Serialize data into array of 8-bit integers', function() {
             }
         });
         var walletData = {fake: 123};
-        var buffer = Wallet.serialize(walletData);
 
-        expect(buffer).to.be.undefined;
+        expect(() => Wallet.serialize(walletData)).to.throw(TypeError);
     });
 
 });

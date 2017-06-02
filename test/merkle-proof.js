@@ -85,7 +85,7 @@ describe('Check proof of Merkle tree', function() {
         ]);
     });
 
-    it('should return undefined when the tree with rootHash of wrong type', function() {
+    it('should throw error when the tree with rootHash of wrong type', function() {
         var args = [
             true,
             null,
@@ -97,30 +97,22 @@ describe('Check proof of Merkle tree', function() {
         ];
 
         args.forEach(function(rootHash) {
-            try {
-                expect(Exonum.merkleProof(rootHash, 8, {}, [0, 8])).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(TypeError);
-            }
+            expect(() => Exonum.merkleProof(rootHash, 8, {}, [0, 8])).to.throw(TypeError);
         });
     });
 
-    it('should return undefined when the tree with invalid rootHash', function() {
+    it('should throw error when the tree with invalid rootHash', function() {
         var args = [
             '6z56f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
             '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff1'
         ];
 
         args.forEach(function(rootHash) {
-            try {
-                expect(Exonum.merkleProof(rootHash, 8, {}, [0, 8])).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Exonum.merkleProof(rootHash, 8, {}, [0, 8])).to.throw(Error);
         });
     });
 
-    it('should return undefined when the tree with invalid count', function() {
+    it('should throw error when the tree with invalid count', function() {
         var rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13';
         var args = [
             true,
@@ -133,27 +125,19 @@ describe('Check proof of Merkle tree', function() {
         ];
 
         args.forEach(function(count) {
-            try {
-                expect(Exonum.merkleProof(rootHash, count, {}, [0, 8])).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(TypeError);
-            }
+            expect(() => Exonum.merkleProof(rootHash, count, {}, [0, 8])).to.throw(TypeError);
         });
     });
 
-    it('should return undefined when the tree with count below', function() {
+    it('should throw error when the tree with count below', function() {
         var rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13';
 
         [-42, '-42'].forEach(function(count) {
-            try {
-                expect(Exonum.merkleProof(rootHash, count, {}, [0, 8])).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(RangeError);
-            }
+            expect(() => Exonum.merkleProof(rootHash, count, {}, [0, 8])).to.throw(RangeError);
         });
     });
 
-    it('should return undefined when the tree with invalid proofNode', function() {
+    it('should throw error when the tree with invalid proofNode', function() {
         var rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13';
         var args = [
             true,
@@ -166,15 +150,11 @@ describe('Check proof of Merkle tree', function() {
         ];
 
         args.forEach(function(proofNode) {
-            try {
-                expect(Exonum.merkleProof(rootHash, 8, proofNode, [0, 8])).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(TypeError);
-            }
+            expect(() => Exonum.merkleProof(rootHash, 8, proofNode, [0, 8])).to.throw(TypeError);
         });
     });
 
-    it('should return undefined when the tree with invalid range', function() {
+    it('should throw error when the tree with invalid range', function() {
         var rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13';
         var args = [
             true, null, undefined, [], {}, 'Hello world', 42, new Date(),
@@ -184,41 +164,29 @@ describe('Check proof of Merkle tree', function() {
         ];
 
         args.forEach(function(range) {
-            try {
-                expect(Exonum.merkleProof(rootHash, 8, {}, range)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(TypeError);
-            }
+            expect(() => Exonum.merkleProof(rootHash, 8, {}, range)).to.throw(TypeError);
         });
     });
 
-    it('should return undefined when the tree with invalid range', function() {
+    it('should throw error when the tree with invalid range', function() {
         var rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13';
 
         [[-1, 8], ['-1', 8], [0, -1], [0, '-1']].forEach(function(range) {
-            try {
-                expect(Exonum.merkleProof(rootHash, 8, {}, range)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(RangeError);
-            }
+            expect(() => Exonum.merkleProof(rootHash, 8, {}, range)).to.throw(RangeError);
         });
     });
 
-    it('should return undefined when the tree with range start is out of range', function() {
-        try {
-            var elements = Exonum.merkleProof(
-                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                8,
-                {},
-                [9, 8]
-            );
-            expect(elements).to.be.undefined;
-        } catch (error) {
-            expect(error).to.be.an.instanceof(RangeError);
-        }
+    it('should throw error when the tree with range start is out of range', function() {
+        var args = [
+            '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+            8,
+            {},
+            [9, 8]
+        ];
+        expect(() => Exonum.merkleProof.apply(this, args)).to.throw(RangeError);
     });
 
-    it('should return undefined when the tree with elements that out of tree range', function() {
+    it('should return empty array when the tree with elements that out of tree range', function() {
         var elements = Exonum.merkleProof(
             '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
             8,
@@ -228,120 +196,101 @@ describe('Check proof of Merkle tree', function() {
         expect(elements).to.deep.equal([]);
     });
 
-    it('should return undefined when the tree with leaf on wrong height', function() {
+    it('should throw error when the tree with leaf on wrong height', function() {
         var data = require('./common_data/merkle-tree/invalid-merkle-tree-with-leaf-on-wrong-height.json');
+        var args = [
+            data.root_hash,
+            data.list_length,
+            data.proof,
+            [data.range_st, data.range_end - 1]
+        ];
 
-        try {
-            var elements = Exonum.merkleProof(
-                data.root_hash,
-                data.list_length,
-                data.proof,
-                [data.range_st, data.range_end - 1]
-            );
-            expect(elements).to.be.undefined;
-        } catch (error) {
-            expect(error).to.be.an.instanceof(Error);
-        }
+        expect(() => Exonum.merkleProof.apply(this, args)).to.throw(Error);
     });
 
-    it('should return undefined when the tree with wrong index of value node', function() {
+    it('should throw error when the tree with wrong index of value node', function() {
         var data = require('./data/invalid-merkle-tree-with-wrong-index-of-value-node.json');
+        var args = [
+            data.root_hash,
+            data.list_length,
+            data.proof,
+            [data.range_st, data.range_end - 1]
+        ];
 
-        try {
-            var elements = Exonum.merkleProof(
-                data.root_hash,
-                data.list_length,
-                data.proof,
-                [data.range_st, data.range_end - 1]
-            );
-            expect(elements).to.be.undefined;
-        } catch (error) {
-            expect(error).to.be.an.instanceof(Error);
-        }
+        expect(() => Exonum.merkleProof.apply(this, args)).to.throw(Error);
     });
 
-    it('should return undefined when the tree with value on wrong position', function() {
+    it('should throw error when the tree with value on wrong position', function() {
         var data = require('./data/invalid-merkle-tree-with-value-on-wrong-position.json');
+        var args = [
+            data.root_hash,
+            data.list_length,
+            data.proof,
+            [data.range_st, data.range_end - 1]
+        ];
 
-        try {
-            var elements = Exonum.merkleProof(
-                data.root_hash,
-                data.list_length,
-                data.proof,
-                [data.range_st, data.range_end - 1]
-            );
-            expect(elements).to.be.undefined;
-        } catch (error) {
-            expect(error).to.be.an.instanceof(Error);
-        }
+        expect(() => Exonum.merkleProof.apply(this, args)).to.throw(Error);
     });
 
-    it('should return undefined when the tree with invalid type of type parameter', function() {
+    it('should throw error when the tree with invalid type of type parameter', function() {
         [null, 42, [], new Date()].forEach(function(type) {
-            try {
-                expect(Exonum.merkleProof(
-                    '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                    2,
-                    {
-                        left: {val: [255, 128]},
-                        right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                    },
-                    [0, 2],
-                    type)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            var args = [
+                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+                2,
+                {
+                    left: {val: [255, 128]},
+                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
+                },
+                [0, 2],
+                type
+            ];
+
+            expect(() => Exonum.merkleProof.apply(this, args)).to.throw(Error);
         });
     });
 
-    it('should return undefined when the tree with invalid value', function() {
+    it('should throw error when the tree with invalid value', function() {
         var Type = Exonum.newType({
             size: 32,
             fields: {hash: {type: Exonum.Hash, size: 32, from: 0, to: 32}}
         });
 
         [42, 'Hello world', [], new Date()].forEach(function(val) {
-            try {
-                expect(Exonum.merkleProof(
-                    '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                    2,
-                    {
-                        left: {val: val},
-                        right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                    },
-                    [0, 2],
-                    Type
-                )).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
-        });
-    });
-
-    it('should return undefined when the tree with invalid value not corresponding to passed type', function() {
-        var Type = Exonum.newType({
-            size: 32,
-            fields: {hash: {type: Exonum.Hash, size: 32, from: 0, to: 32}}
-        });
-
-        try {
-            var elements = Exonum.merkleProof(
+            var args = [
                 '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
                 2,
                 {
-                    left: {val: {name: 'John'}},
+                    left: {val: val},
                     right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
                 },
                 [0, 2],
                 Type
-            );
-            expect(elements).to.be.undefined;
-        } catch (error) {
-            expect(error).to.be.an.instanceof(TypeError);
-        }
+            ];
+
+            expect(() => Exonum.merkleProof.apply(this, args)).to.throw(Error);
+        });
     });
 
-    it('should return undefined when the tree with invalid array of 8-bit integers as value', function() {
+    it('should throw error when the tree with invalid value not corresponding to passed type', function() {
+        var Type = Exonum.newType({
+            size: 32,
+            fields: {hash: {type: Exonum.Hash, size: 32, from: 0, to: 32}}
+        });
+        var args = [
+            '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+            2,
+            {
+                left: {val: {name: 'John'}},
+                right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
+            },
+            [0, 2],
+            Type
+        ];
+
+        expect(() => Exonum.merkleProof.apply(this, args)).to.throw(TypeError);
+    });
+
+    it('should throw error when the tree with invalid array of 8-bit integers as value', function() {
         var args = [
             true, {}, 42, 'Hello world', new Date(),
             [153, 256], [153, -1], [153, true], [153, null],
@@ -349,42 +298,37 @@ describe('Check proof of Merkle tree', function() {
         ];
 
         args.forEach(function(val) {
-            try {
-                expect(Exonum.merkleProof(
-                    '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                    2,
-                    {
-                        left: {val: val},
-                        right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                    },
-                    [0, 2]
-                )).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
-        });
-    });
-
-    it('should return undefined when the tree with missed left node', function() {
-        try {
-            var elements = Exonum.merkleProof(
+            var args = [
                 '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                4,
+                2,
                 {
-                    left: {
-                        right: {val: [255, 128]}
-                    },
+                    left: {val: val},
                     right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
                 },
                 [0, 2]
-            );
-            expect(elements).to.be.undefined;
-        } catch (error) {
-            expect(error).to.be.an.instanceof(Error);
-        }
+            ];
+
+            expect(() => Exonum.merkleProof.apply(this, args)).to.throw(Error);
+        });
     });
 
-    it('should return undefined when the tree with invalid string in left node', function() {
+    it('should throw error when the tree with missed left node', function() {
+        var args = [
+            '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+            4,
+            {
+                left: {
+                    right: {val: [255, 128]}
+                },
+                right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
+            },
+            [0, 2]
+        ];
+
+        expect(() => Exonum.merkleProof.apply(this, args)).to.throw(Error);
+    });
+
+    it('should throw error when the tree with invalid string in left node', function() {
         var args = [
             'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fz',
             'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365c',
@@ -398,23 +342,21 @@ describe('Check proof of Merkle tree', function() {
         ];
 
         args.forEach(function(hash) {
-            try {
-                expect(Exonum.merkleProof(
-                    '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                    2,
-                    {
-                        left: hash,
-                        right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
-                    },
-                    [0, 2]
-                )).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            var args = [
+                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+                2,
+                {
+                    left: hash,
+                    right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
+                },
+                [0, 2]
+            ];
+
+            expect(() => Exonum.merkleProof.apply(this, args)).to.throw(Error);
         });
     });
 
-    it('should return undefined when the tree with invalid string in right node', function() {
+    it('should throw error when the tree with invalid string in right node', function() {
         var args = [
             'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fz',
             'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365c',
@@ -428,68 +370,54 @@ describe('Check proof of Merkle tree', function() {
         ];
 
         args.forEach(function(hash) {
-            try {
-                expect(Exonum.merkleProof(
-                    '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-                    2,
-                    {
-                        left: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc',
-                        right: hash
-                    },
-                    [0, 2]
-                )).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            var args = [
+                '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
+                2,
+                {
+                    left: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc',
+                    right: hash
+                },
+                [0, 2]
+            ];
+
+            expect(() => Exonum.merkleProof.apply(this, args)).to.throw(Error);
         });
     });
 
-    it('should return undefined when the tree with missed right leaf inside right tree branch', function() {
+    it('should throw error when the tree with missed right leaf inside right tree branch', function() {
         var data = require('./common_data/merkle-tree/invalid-merkle-tree-missed-right-leaf-on-left-branch.json');
+        var args = [
+            data.root_hash,
+            data.list_length,
+            data.proof,
+            [data.range_st, data.range_end - 1]
+        ];
 
-        try {
-            var elements = Exonum.merkleProof(
-                data.root_hash,
-                data.list_length,
-                data.proof,
-                [data.range_st, data.range_end - 1]
-            );
-            expect(elements).to.be.undefined;
-        } catch (error) {
-            expect(error).to.be.an.instanceof(Error);
-        }
+        expect(() => Exonum.merkleProof.apply(this, args)).to.throw(Error);
     });
 
-    it('should return undefined when the tree with wrong rootHash', function() {
+    it('should throw error when the tree with wrong rootHash', function() {
         var data = require('./data/invalid-merkle-tree-with-wrong-root-hash.json');
+        var args = [
+            data.root_hash,
+            data.list_length,
+            data.proof,
+            [data.range_st, data.range_end - 1]
+        ];
 
-        try {
-            var elements = Exonum.merkleProof(
-                data.root_hash,
-                data.list_length,
-                data.proof,
-                [data.range_st, data.range_end - 1]
-            );
-            expect(elements).to.be.undefined;
-        } catch (error) {
-            expect(error).to.be.an.instanceof(Error);
-        }
+        expect(() => Exonum.merkleProof.apply(this, args)).to.throw(Error);
     });
 
-    it('should return undefined when the tree with wrong amount of elements', function() {
+    it('should throw error when the tree with wrong amount of elements', function() {
         var data = require('./data/invalid-merkle-tree-with-wrong-amount-of-elements.json');
+        var args = [
+            data.root_hash,
+            data.list_length,
+            data.proof,
+            [data.range_st, data.range_end - 1]
+        ];
 
-        try {
-            var elements = Exonum.merkleProof(
-                data.root_hash,
-                data.list_length,
-                data.proof,
-                [data.range_st, data.range_end - 1]
-            );
-            expect(elements).to.be.undefined;
-        } catch (error) {
-            expect(error).to.be.an.instanceof(Error);
-        }
+        expect(() => Exonum.merkleProof.apply(this, args)).to.throw(Error);
     });
 
 });

@@ -119,7 +119,7 @@ describe('Check cryptography', function() {
             expect(hash).to.equal('86b47510fbcbc83f9926d8898a57c53662518c97502625a6d131842f2003f974');
         });
 
-        it('should return undefined when data of invalid NewType type', function() {
+        it('should throw error when data of invalid NewType type', function() {
             var Wallet = Exonum.newType({
                 size: 80,
                 fields: {
@@ -131,15 +131,11 @@ describe('Check cryptography', function() {
             });
 
             [undefined, false, 42, new Date(), []].forEach(function(_hash) {
-                try {
-                    expect(Exonum.hash(_hash, Wallet)).to.be.undefined;
-                } catch (error) {
-                    expect(error).to.be.an.instanceof(TypeError);
-                }
+                expect(() => Exonum.hash(_hash, Wallet)).to.throw(TypeError);
             });
         });
 
-        it('should return undefined when data of invalid NewMessage type', function() {
+        it('should throw error when data of invalid NewMessage type', function() {
             var CustomMessage = Exonum.newMessage({
                 size: 18,
                 service_id: 1,
@@ -153,11 +149,7 @@ describe('Check cryptography', function() {
             });
 
             [undefined, false, 42, new Date(), []].forEach(function(_hash) {
-                try {
-                    expect(Exonum.hash(_hash, CustomMessage)).to.be.undefined;
-                } catch (error) {
-                    expect(error).to.be.an.instanceof(TypeError);
-                }
+                expect(() => Exonum.hash(_hash, CustomMessage)).to.throw(TypeError);
             });
         });
 
@@ -268,7 +260,7 @@ describe('Check cryptography', function() {
             expect(signature).to.equal('7ccad21d76359c8c3ed1161eb8231edd44a91d53ea468d23f8528e2985e5547f72f98ccc61d96ecad173bdc29627abbf6d46908807f6dd0a0d767ae3887d040e');
         });
 
-        it('should return undefined when the data parameter of wrong NewType type', function() {
+        it('should throw error when the data parameter of wrong NewType type', function() {
             var secretKey = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
             var User = Exonum.newType({
                 size: 16,
@@ -282,14 +274,10 @@ describe('Check cryptography', function() {
                 hash: 'Hello world'
             };
 
-            try {
-                expect(Exonum.sign(secretKey, userData, User)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(TypeError);
-            }
+            expect(() => Exonum.sign(secretKey, userData, User)).to.throw(TypeError);
         });
 
-        it('should return undefined when the data parameter of wrong NewMessage type', function() {
+        it('should throw error when the data parameter of wrong NewMessage type', function() {
             var secretKey = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
             var CustomMessage = Exonum.newMessage({
                 size: 18,
@@ -307,14 +295,10 @@ describe('Check cryptography', function() {
                 hash: 'Hello world'
             };
 
-            try {
-                expect(Exonum.sign(secretKey, someData, CustomMessage)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(TypeError);
-            }
+            expect(() => Exonum.sign(secretKey, someData, CustomMessage)).to.throw(TypeError);
         });
 
-        it('should return undefined when the type parameter of invalid type', function() {
+        it('should throw error when the type parameter of invalid type', function() {
             var secretKey = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
             var User = {
                 alpha: 5
@@ -324,14 +308,10 @@ describe('Check cryptography', function() {
                 lastName: 'Doe'
             };
 
-            try {
-                expect(Exonum.sign(secretKey, userData, User)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(TypeError);
-            }
+            expect(() => Exonum.sign(secretKey, userData, User)).to.throw(TypeError);
         });
 
-        it('should return undefined when the secretKey parameter of wrong length', function() {
+        it('should throw error when the secretKey parameter of wrong length', function() {
             var secretKey = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C';
             var User = Exonum.newType({
                 size: 16,
@@ -346,14 +326,10 @@ describe('Check cryptography', function() {
             };
             var buffer = User.serialize(userData);
 
-            try {
-                expect(Exonum.sign(secretKey, buffer)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Exonum.sign(secretKey, buffer)).to.throw(Error);
         });
 
-        it('should return undefined when wrong secretKey parameter', function() {
+        it('should throw error when wrong secretKey parameter', function() {
             var secretKey = '6752ZE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
             var User = Exonum.newType({
                 size: 16,
@@ -368,14 +344,10 @@ describe('Check cryptography', function() {
             };
             var buffer = User.serialize(userData);
 
-            try {
-                expect(Exonum.sign(secretKey, buffer)).to.be.undefined;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Exonum.sign(secretKey, buffer)).to.throw(Error);
         });
 
-        it('should return undefined when the secretKey parameter of invalid type', function() {
+        it('should throw error when the secretKey parameter of invalid type', function() {
             var User = Exonum.newType({
                 size: 16,
                 fields: {
@@ -390,11 +362,7 @@ describe('Check cryptography', function() {
             var buffer = User.serialize(userData);
 
             [true, null, undefined, [], {}, 51, new Date()].forEach(function(secretKey) {
-                try {
-                    expect(Exonum.sign(secretKey, buffer)).to.be.undefined;
-                } catch (error) {
-                    expect(error).to.be.an.instanceof(TypeError);
-                }
+                expect(() => Exonum.sign(secretKey, buffer)).to.throw(TypeError);
             });
         });
 
@@ -505,7 +473,7 @@ describe('Check cryptography', function() {
             expect(Exonum.verifySignature(signature, publicKey, buffer)).to.be.true;
         });
 
-        it('should return undefined when the data parameter is of wrong NewType type', function() {
+        it('should throw error when the data parameter is of wrong NewType type', function() {
             var publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
             var signature = '9e0f0122c2963b76ba10842951cd1b67c8197b3f964c34f8b667aa655a7b4a8d844d567698d99de30590fc5002ddb4b9b5927ec05cd73572b972cb6b034cd40b';
             var User = Exonum.newType({
@@ -520,14 +488,10 @@ describe('Check cryptography', function() {
                 hash: 'Hello world'
             };
 
-            try {
-                expect(Exonum.verifySignature(signature, publicKey, userData, User)).to.be.false;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Exonum.verifySignature(signature, publicKey, userData, User)).to.throw(Error);
         });
 
-        it('should return undefined when the data parameter is of wrong NewMessage type', function() {
+        it('should throw error when the data parameter is of wrong NewMessage type', function() {
             var publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
             var signature = '24a5224702d670c95a78ef1f753c9e6e698da5b2a2c52dcc51b5bf9e556e717fb763b1a5e78bd39e5369a139ab68ae50dd19a129038e8da3af30985f09549500';
             var CustomMessage = Exonum.newMessage({
@@ -546,14 +510,10 @@ describe('Check cryptography', function() {
                 hash: 'Hello world'
             };
 
-            try {
-                expect(Exonum.verifySignature(signature, publicKey, someData, CustomMessage)).to.be.false;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Exonum.verifySignature(signature, publicKey, someData, CustomMessage)).to.throw(Error);
         });
 
-        it('should return undefined when the type parameter is of wrong type', function() {
+        it('should throw error when the type parameter is of wrong type', function() {
             var publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
             var signature = '9e0f0122c2963b76ba10842951cd1b67c8197b3f964c34f8b667aa655a7b4a8d844d567698d99de30590fc5002ddb4b9b5927ec05cd73572b972cb6b034cd40b';
             var User = {
@@ -564,14 +524,10 @@ describe('Check cryptography', function() {
                 hash: 'Hello world'
             };
 
-            try {
-                expect(Exonum.verifySignature(signature, publicKey, userData, User)).to.be.false;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Exonum.verifySignature(signature, publicKey, userData, User)).to.throw(Error);
         });
 
-        it('should return undefined when the signature parameter is of wrong length', function() {
+        it('should throw error when the signature parameter is of wrong length', function() {
             var publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
             var signature = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
             var User = Exonum.newType({
@@ -587,14 +543,10 @@ describe('Check cryptography', function() {
             };
             var buffer = User.serialize(userData);
 
-            try {
-                expect(Exonum.verifySignature(signature, publicKey, buffer)).to.be.false;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Exonum.verifySignature(signature, publicKey, buffer)).to.throw(Error);
         });
 
-        it('should return undefined when the signature parameter is invalid', function() {
+        it('should throw error when the signature parameter is invalid', function() {
             var publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
             var signature = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7Z';
             var User = Exonum.newType({
@@ -610,14 +562,10 @@ describe('Check cryptography', function() {
             };
             var buffer = User.serialize(userData);
 
-            try {
-                expect(Exonum.verifySignature(signature, publicKey, buffer)).to.be.false;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Exonum.verifySignature(signature, publicKey, buffer)).to.throw(Error);
         });
 
-        it('should return undefined when the signature parameter is of wrong type', function() {
+        it('should throw error when the signature parameter is of wrong type', function() {
             var publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
             var User = Exonum.newType({
                 size: 16,
@@ -633,15 +581,11 @@ describe('Check cryptography', function() {
             var buffer = User.serialize(userData);
 
             [true, null, undefined, [], {}, 51, new Date()].forEach(function(signature) {
-                try {
-                    expect(Exonum.verifySignature(signature, publicKey, buffer)).to.be.false;
-                } catch (error) {
-                    expect(error).to.be.an.instanceof(Error);
-                }
+                expect(() => Exonum.verifySignature(signature, publicKey, buffer)).to.throw(Error);
             });
         });
 
-        it('should return undefined when the publicKey parameter is of wrong length', function() {
+        it('should throw error when the publicKey parameter is of wrong length', function() {
             var publicKey = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C';
             var signature = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C';
             var User = Exonum.newType({
@@ -657,14 +601,10 @@ describe('Check cryptography', function() {
             };
             var buffer = User.serialize(userData);
 
-            try {
-                expect(Exonum.verifySignature(signature, publicKey, buffer)).to.be.false;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Exonum.verifySignature(signature, publicKey, buffer)).to.throw(Error);
         });
 
-        it('should return undefined when the publicKey parameter is invalid', function() {
+        it('should throw error when the publicKey parameter is invalid', function() {
             var publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C3Z';
             var signature = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C';
             var User = Exonum.newType({
@@ -680,14 +620,10 @@ describe('Check cryptography', function() {
             };
             var buffer = User.serialize(userData);
 
-            try {
-                expect(Exonum.verifySignature(signature, publicKey, buffer)).to.be.false;
-            } catch (error) {
-                expect(error).to.be.an.instanceof(Error);
-            }
+            expect(() => Exonum.verifySignature(signature, publicKey, buffer)).to.throw(Error);
         });
 
-        it('should return undefined when the publicKey parameter is of wrong type', function() {
+        it('should throw error when the publicKey parameter is of wrong type', function() {
             var signature = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C';
             var User = Exonum.newType({
                 size: 16,
@@ -703,11 +639,7 @@ describe('Check cryptography', function() {
             var buffer = User.serialize(userData);
 
             [true, null, undefined, [], {}, 51, new Date()].forEach(function(publicKey) {
-                try {
-                    expect(Exonum.verifySignature(signature, publicKey, buffer)).to.be.false;
-                } catch (error) {
-                    expect(error).to.be.an.instanceof(Error);
-                }
+                expect(() => Exonum.verifySignature(signature, publicKey, buffer)).to.throw(Error);
             });
         });
 

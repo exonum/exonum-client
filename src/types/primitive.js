@@ -86,8 +86,10 @@ function insertStringToByteArray(str, buffer, from) {
  * @returns {Array}
  */
 export function Int8(value, buffer, from, to) {
-    if (validate.validateInteger(value, MIN_INT8, MAX_INT8, from, to, 1) === false) {
-        return;
+    try {
+        validate.validateInteger(value, MIN_INT8, MAX_INT8, from, to, 1);
+    } catch (error) {
+        throw error;
     }
 
     if (value < 0) {
@@ -107,8 +109,10 @@ export function Int8(value, buffer, from, to) {
  * @returns {Array}
  */
 export function Int16(value, buffer, from, to) {
-    if (validate.validateInteger(value, MIN_INT16, MAX_INT16, from, to, 2) === false) {
-        return;
+    try {
+        validate.validateInteger(value, MIN_INT16, MAX_INT16, from, to, 2);
+    } catch (error) {
+        throw error;
     }
 
     if (value < 0) {
@@ -128,8 +132,10 @@ export function Int16(value, buffer, from, to) {
  * @returns {Array}
  */
 export function Int32(value, buffer, from, to) {
-    if (validate.validateInteger(value, MIN_INT32, MAX_INT32, from, to, 4) === false) {
-        return;
+    try {
+        validate.validateInteger(value, MIN_INT32, MAX_INT32, from, to, 4);
+    } catch (error) {
+        throw error;
     }
 
     if (value < 0) {
@@ -149,8 +155,10 @@ export function Int32(value, buffer, from, to) {
  * @returns {Array}
  */
 export function Int64(value, buffer, from, to) {
-    if (validate.validateBigInteger(value, MIN_INT64, MAX_INT64, from, to, 8) === false) {
-        return;
+    try {
+        validate.validateBigInteger(value, MIN_INT64, MAX_INT64, from, to, 8);
+    } catch (error) {
+        throw error;
     }
 
     var val = bigInt(value);
@@ -172,8 +180,10 @@ export function Int64(value, buffer, from, to) {
  * @returns {Array}
  */
 export function Uint8(value, buffer, from, to) {
-    if (validate.validateInteger(value, 0, MAX_UINT8, from, to, 1) === false) {
-        return;
+    try {
+        validate.validateInteger(value, 0, MAX_UINT8, from, to, 1);
+    } catch (error) {
+        throw error;
     }
 
     insertIntegerToByteArray(value, buffer, from, to);
@@ -189,8 +199,10 @@ export function Uint8(value, buffer, from, to) {
  * @returns {Array}
  */
 export function Uint16(value, buffer, from, to) {
-    if (validate.validateInteger(value, 0, MAX_UINT16, from, to, 2) === false) {
-        return;
+    try {
+        validate.validateInteger(value, 0, MAX_UINT16, from, to, 2);
+    } catch (error) {
+        throw error;
     }
 
     insertIntegerToByteArray(value, buffer, from, to);
@@ -206,8 +218,10 @@ export function Uint16(value, buffer, from, to) {
  * @returns {Array}
  */
 export function Uint32(value, buffer, from, to) {
-    if (validate.validateInteger(value, 0, MAX_UINT32, from, to, 4) === false) {
-        return;
+    try {
+        validate.validateInteger(value, 0, MAX_UINT32, from, to, 4);
+    } catch (error) {
+        throw error;
     }
 
     insertIntegerToByteArray(value, buffer, from, to);
@@ -223,8 +237,10 @@ export function Uint32(value, buffer, from, to) {
  * @returns {Array}
  */
 export function Uint64(value, buffer, from, to) {
-    if (validate.validateBigInteger(value, 0, MAX_UINT64, from, to, 8) === false) {
-        return;
+    try {
+        validate.validateBigInteger(value, 0, MAX_UINT64, from, to, 8);
+    } catch (error) {
+        throw error;
     }
 
     var val = bigInt(value);
@@ -244,10 +260,8 @@ export function Uint64(value, buffer, from, to) {
 export function String(string, buffer, from, to) {
     if (typeof string !== 'string') {
         throw new TypeError('Wrong data type is passed as String. String is required');
-        return;
     } else if ((to - from) !== 8) {
         throw new Error('String segment is of wrong length. 8 bytes long is required to store transmitted value.');
-        return;
     }
 
     var bufferLength = buffer.length;
@@ -266,11 +280,14 @@ export function String(string, buffer, from, to) {
  * @returns {Array}
  */
 export function Hash(hash, buffer, from, to) {
-    if (validate.validateHexHash(hash) === false) {
-        return;
-    } else if ((to - from) !== 32) {
+    try {
+        validate.validateHexHash(hash);
+    } catch (error) {
+        throw error;
+    }
+
+    if ((to - from) !== 32) {
         throw new Error('Hash segment is of wrong length. 32 bytes long is required to store transmitted value.');
-        return;
     }
 
     insertHexadecimalToByteArray(hash, buffer, from, to);
@@ -286,11 +303,14 @@ export function Hash(hash, buffer, from, to) {
  * @returns {Array}
  */
 export function Digest(digest, buffer, from, to) {
-    if (validate.validateHexHash(digest, 64) === false) {
-        return;
-    } else if ((to - from) !== 64) {
+    try {
+        validate.validateHexHash(digest, 64);
+    } catch (error) {
+        throw error;
+    }
+
+    if ((to - from) !== 64) {
         throw new Error('Digest segment is of wrong length. 64 bytes long is required to store transmitted value.');
-        return;
     }
 
     insertHexadecimalToByteArray(digest, buffer, from, to);
@@ -306,11 +326,14 @@ export function Digest(digest, buffer, from, to) {
  * @returns {Array}
  */
 export function PublicKey(publicKey, buffer, from, to) {
-    if (validate.validateHexHash(publicKey) === false) {
-        return;
-    } else if ((to - from) !== 32) {
+    try {
+        validate.validateHexHash(publicKey);
+    } catch (error) {
+        throw error;
+    }
+
+    if ((to - from) !== 32) {
         throw new Error('PublicKey segment is of wrong length. 32 bytes long is required to store transmitted value.');
-        return;
     }
 
     insertHexadecimalToByteArray(publicKey, buffer, from, to);
@@ -328,10 +351,8 @@ export function PublicKey(publicKey, buffer, from, to) {
 export function Bool(value, buffer, from, to) {
     if (typeof value !== 'boolean') {
         throw new TypeError('Wrong data type is passed as Boolean. Boolean is required');
-        return;
     } else if ((to - from) !== 1) {
         throw new Error('Bool segment is of wrong length. 1 bytes long is required to store transmitted value.');
-        return;
     }
 
     insertIntegerToByteArray(value ? 1 : 0, buffer, from, to);
@@ -347,8 +368,10 @@ export function Bool(value, buffer, from, to) {
  * @returns {Array}
  */
 export function Timespec(nanoseconds, buffer, from, to) {
-    if (validate.validateBigInteger(nanoseconds, 0, MAX_UINT64, from, to, 8) === false) {
-        return;
+    try {
+        validate.validateBigInteger(nanoseconds, 0, MAX_UINT64, from, to, 8);
+    } catch (error) {
+        throw error;
     }
 
     var val = bigInt(nanoseconds);
