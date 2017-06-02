@@ -54,7 +54,7 @@ describe('Verify block of precommits', function() {
                 validators
             ];
 
-            expect(() => Exonum.verifyBlock.apply(this, args)).to.throw(TypeError);
+            expect(() => Exonum.verifyBlock.apply(null, args)).to.throw(TypeError);
         });
     });
 
@@ -76,7 +76,7 @@ describe('Verify block of precommits', function() {
                 validators
             ];
 
-            expect(() => Exonum.verifyBlock.apply(this, args)).to.throw(TypeError);
+            expect(() => Exonum.verifyBlock.apply(null, args)).to.throw(TypeError);
         });
     });
 
@@ -94,7 +94,7 @@ describe('Verify block of precommits', function() {
             validators
         ];
 
-        expect(() => Exonum.verifyBlock.apply(this, args)).to.throw(TypeError);
+        expect(() => Exonum.verifyBlock.apply(null, args)).to.throw(TypeError);
     });
 
     it('should return false when wrong height of block in precommit', function() {
@@ -114,7 +114,7 @@ describe('Verify block of precommits', function() {
             validators
         ];
 
-        expect(() => Exonum.verifyBlock.apply(this, args)).to.throw(TypeError);
+        expect(() => Exonum.verifyBlock.apply(null, args)).to.throw(TypeError);
     });
 
     it('should return false when wrong hash of block in precommit', function() {

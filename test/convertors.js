@@ -45,7 +45,7 @@ describe('Convert data from one type to another', function() {
 
         it('should throw error when convert invalid binaryString into Uint8Array', function() {
             ['102'].forEach(function(value) {
-                expect(() => Exonum.binaryStringToUint8Array(value)).to.throw(RangeError);
+                expect(() => Exonum.binaryStringToUint8Array(value)).to.throw(TypeError);
             });
         });
     });
@@ -77,7 +77,7 @@ describe('Convert data from one type to another', function() {
 
         it('should throw error when convert invalid binaryString into hexadecimal', function() {
             ['102'].forEach(function(value) {
-                expect(() => Exonum.binaryStringToHexadecimal(value)).to.throw(RangeError);
+                expect(() => Exonum.binaryStringToHexadecimal(value)).to.throw(TypeError);
             });
         });
     });

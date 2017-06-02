@@ -233,7 +233,7 @@ describe('Check built-in types', function() {
                 fields: {since: {type: Exonum.Timespec, size: 8, from: 0, to: 8}}
             });
 
-            expect(() => Type.serialize({since: -1483979894237})).to.throw(RangeError);
+            expect(() => Type.serialize({since: -1483979894237})).to.throw(TypeError);
         });
 
         it('should throw error when the range of segment is invalid', function() {
@@ -251,7 +251,7 @@ describe('Check built-in types', function() {
                 fields: {since: {type: Exonum.Timespec, size: 8, from: 0, to: 8}}
             });
 
-            expect(() => Type.serialize({since: '18446744073709551616'})).to.throw(RangeError);
+            expect(() => Type.serialize({since: '18446744073709551616'})).to.throw(TypeError);
         });
 
         it('should throw error when the value of invalid type', function() {
@@ -384,7 +384,7 @@ describe('Check built-in types', function() {
                 size: 1,
                 fields: {balance: {type: Exonum.Int8, size: 1, from: 0, to: 1}}
             });
-            expect(() => Type.serialize({balance: 130})).to.throw(RangeError);
+            expect(() => Type.serialize({balance: 130})).to.throw(TypeError);
         });
 
         it('should throw error when the value is too big negative number', function() {
@@ -392,7 +392,7 @@ describe('Check built-in types', function() {
                 size: 1,
                 fields: {balance: {type: Exonum.Int8, size: 1, from: 0, to: 1}}
             });
-            expect(() => Type.serialize({balance: -130})).to.throw(RangeError);
+            expect(() => Type.serialize({balance: -130})).to.throw(TypeError);
         });
 
         it('should throw error when the value of invalid type', function() {
@@ -447,7 +447,7 @@ describe('Check built-in types', function() {
                 fields: {balance: {type: Exonum.Int16, size: 2, from: 0, to: 2}}
             });
 
-            expect(() => Type.serialize({balance: 32769})).to.throw(RangeError);
+            expect(() => Type.serialize({balance: 32769})).to.throw(TypeError);
         });
 
         it('should throw error when the value is too big negative number', function() {
@@ -456,7 +456,7 @@ describe('Check built-in types', function() {
                 fields: {balance: {type: Exonum.Int16, size: 2, from: 0, to: 2}}
             });
 
-            expect(() => Type.serialize({balance: -32770})).to.throw(RangeError);
+            expect(() => Type.serialize({balance: -32770})).to.throw(TypeError);
         });
 
         it('should throw error when the value of invalid type', function() {
@@ -511,7 +511,7 @@ describe('Check built-in types', function() {
                 fields: {balance: {type: Exonum.Int32, size: 4, from: 0, to: 4}}
             });
 
-            expect(() => Type.serialize({balance: 2147483649})).to.throw(RangeError);
+            expect(() => Type.serialize({balance: 2147483649})).to.throw(TypeError);
         });
 
         it('should throw error when the value is too big negative number', function() {
@@ -520,7 +520,7 @@ describe('Check built-in types', function() {
                 fields: {balance: {type: Exonum.Int32, size: 4, from: 0, to: 4}}
             });
 
-            expect(() => Type.serialize({balance: -2147483650})).to.throw(RangeError);
+            expect(() => Type.serialize({balance: -2147483650})).to.throw(TypeError);
         });
 
         it('should throw error when the value of invalid type', function() {
@@ -597,7 +597,7 @@ describe('Check built-in types', function() {
                 fields: {balance: {type: Exonum.Int64, size: 8, from: 0, to: 8}}
             });
 
-            expect(() => Type.serialize({balance: '9223372036854775808'})).to.throw(RangeError);
+            expect(() => Type.serialize({balance: '9223372036854775808'})).to.throw(TypeError);
         });
 
         it('should throw error when the value is too big negative number', function() {
@@ -606,7 +606,7 @@ describe('Check built-in types', function() {
                 fields: {balance: {type: Exonum.Int64, size: 8, from: 0, to: 8}}
             });
 
-            expect(() => Type.serialize({balance: '-9223372036854775809'})).to.throw(RangeError);
+            expect(() => Type.serialize({balance: '-9223372036854775809'})).to.throw(TypeError);
         });
 
         it('should throw error when the value of invalid type', function() {
@@ -650,7 +650,7 @@ describe('Check built-in types', function() {
                 fields: {balance: {type: Exonum.Uint8, size: 1, from: 0, to: 1}}
             });
 
-            expect(() => Type.serialize({balance: -1})).to.throw(RangeError);
+            expect(() => Type.serialize({balance: -1})).to.throw(TypeError);
         });
 
         it('should throw error when the value is out of range', function() {
@@ -659,7 +659,7 @@ describe('Check built-in types', function() {
                 fields: {balance: {type: Exonum.Uint8, size: 1, from: 0, to: 1}}
             });
 
-            expect(() => Type.serialize({balance: 256})).to.throw(RangeError);
+            expect(() => Type.serialize({balance: 256})).to.throw(TypeError);
         });
 
         it('should throw error when the value of invalid type', function() {
@@ -703,7 +703,7 @@ describe('Check built-in types', function() {
                 fields: {balance: {type: Exonum.Uint16, size: 2, from: 0, to: 2}}
             });
 
-            expect(() => Type.serialize({balance: -1})).to.throw(RangeError);
+            expect(() => Type.serialize({balance: -1})).to.throw(TypeError);
         });
 
         it('should throw error when the value is out of range', function() {
@@ -712,7 +712,7 @@ describe('Check built-in types', function() {
                 fields: {balance: {type: Exonum.Uint16, size: 2, from: 0, to: 2}}
             });
 
-            expect(() => Type.serialize({balance: 65536})).to.throw(RangeError);
+            expect(() => Type.serialize({balance: 65536})).to.throw(TypeError);
         });
 
         it('should throw error when the value of invalid type', function() {
@@ -756,7 +756,7 @@ describe('Check built-in types', function() {
                 fields: {balance: {type: Exonum.Uint32, size: 4, from: 0, to: 4}}
             });
 
-            expect(() => Type.serialize({balance: -1})).to.throw(RangeError);
+            expect(() => Type.serialize({balance: -1})).to.throw(TypeError);
         });
 
         it('should throw error when the value is out of range', function() {
@@ -765,7 +765,7 @@ describe('Check built-in types', function() {
                 fields: {balance: {type: Exonum.Uint32, size: 4, from: 0, to: 4}}
             });
 
-            expect(() => Type.serialize({balance: 4294967296})).to.throw(RangeError);
+            expect(() => Type.serialize({balance: 4294967296})).to.throw(TypeError);
         });
 
         it('should throw error when the value of invalid type', function() {
@@ -820,7 +820,7 @@ describe('Check built-in types', function() {
                 fields: {balance: {type: Exonum.Uint64, size: 8, from: 0, to: 8}}
             });
 
-            expect(() => Type.serialize({balance: -613228})).to.throw(RangeError);
+            expect(() => Type.serialize({balance: -613228})).to.throw(TypeError);
         });
 
         it('should throw error when the value is out of range', function() {
@@ -829,7 +829,7 @@ describe('Check built-in types', function() {
                 fields: {balance: {type: Exonum.Uint64, size: 8, from: 0, to: 8}}
             });
 
-            expect(() => Type.serialize({balance: '18446744073709551616'})).to.throw(RangeError);
+            expect(() => Type.serialize({balance: '18446744073709551616'})).to.throw(TypeError);
         });
 
         it('should throw error when the value of invalid type', function() {

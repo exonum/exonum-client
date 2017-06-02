@@ -10,15 +10,14 @@ import bigInt from 'big-integer';
  * @returns {boolean}
  */
 export function validateInteger(value, min, max, from, to, length) {
-    if (typeof value !== 'number') {
-        throw new TypeError('Wrong data type is passed as number. Should be of type Number.');
-    } else if (value < min) {
-        throw new RangeError('Number should be greater or equal to ' + min + '.');
-    } else if (value > max) {
-        throw new RangeError('Number should be less or equal to ' + max + '.');
+    if (typeof value !== 'number' || value < min || value > max) {
+        return false;
     } else if ((to - from) !== length) {
-        throw new Error('Number segment is of wrong length. ' + length + ' bytes long is required to store transmitted value.');
+        // segment is of wrong length
+        return false;
     }
+
+    return true;
 }
 
 /**
@@ -31,25 +30,24 @@ export function validateInteger(value, min, max, from, to, length) {
  * @returns {*}
  */
 export function validateBigInteger(value, min, max, from, to, length) {
-    var val;
-
     if (!(typeof value === 'number' || typeof value === 'string')) {
-        throw new TypeError('Wrong data type is passed as number. Should be of type Number or String.');
+        return false;
     } else if ((to - from) !== length) {
-        throw new Error('Number segment is of wrong length. ' + length + ' bytes long is required to store transmitted value.');
+        // segment is of wrong length
+        return false;
     }
 
     try {
-        val = bigInt(value);
+        var val = bigInt(value);
     } catch (error) {
-        throw new TypeError('Wrong data type is passed as number. Should be of type Number or String.');
+        return false;
     }
 
-    if (val.lt(min)) {
-        throw new RangeError('Number should be greater or equal to ' + min + '.');
-    } else if (val.gt(max)) {
-        throw new RangeError('Number should be less or equal to ' + max + '.');
+    if (val.lt(min) || val.gt(max)) {
+        return false;
     }
+
+    return true;
 }
 
 /**
@@ -57,20 +55,24 @@ export function validateBigInteger(value, min, max, from, to, length) {
  * @param {number} [bytes=32] - optional
  * @returns {boolean}
  */
-export function validateHexHash(hash, bytes) {
+export function validateHexadecimal(hash, bytes) {
     bytes = bytes || 32;
 
     if (typeof hash !== 'string') {
-        throw new TypeError('Wrong data type is passed as hexadecimal string. String is required');
+        return false;
     } else if (hash.length !== bytes * 2) {
-        throw new Error('Hexadecimal string is of wrong length. ' + bytes * 2 + ' char symbols long is required. ' + hash.length + ' is passed.');
+        // 'hexadecimal string is of wrong length
+        return false;
     }
 
     for (var i = 0; i < hash.length; i++) {
         if (isNaN(parseInt(hash[i], 16))) {
-            throw new TypeError('Invalid symbol in hexadecimal string.');
+            // invalid symbol in hexadecimal string
+            return false;
         }
     }
+
+    return true;
 }
 
 /**
@@ -80,18 +82,19 @@ export function validateHexHash(hash, bytes) {
  */
 export function validateBytesArray(arr, bytes) {
     if (Array.isArray(arr) === false && !(arr instanceof Uint8Array)) {
-        throw new TypeError('Wrong data type is passed. Array is required');
+        return false;
     } if (bytes && arr.length !== bytes) {
-        throw new Error('Array of 8-bit integers validity is of wrong length. ' + bytes * 2 + ' char symbols long is required. ' + arr.length + ' is passed.');
+        // array is of wrong length
+        return false;
     }
 
     for (var i = 0; i < arr.length; i++) {
-        if (typeof arr[i] !== 'number') {
-            throw new TypeError('Wrong data type is passed as byte. Number is required');
-        } else if (arr[i] < 0 || arr[i] > 255) {
-            throw new RangeError('Byte should be in [0..255] range.');
+        if (typeof arr[i] !== 'number' || arr[i] < 0 || arr[i] > 255) {
+            return false;
         }
     }
+
+    return true;
 }
 
 /**
@@ -101,15 +104,16 @@ export function validateBytesArray(arr, bytes) {
  */
 export function validateBinaryString(str, bits) {
     if (bits !== undefined && str.length !== bits) {
-        throw new Error('Binary string is of wrong length.');
+        return false;
     }
 
     for (var i = 0; i < str.length; i++) {
         var bit = parseInt(str[i]);
-        if (isNaN(bit)) {
-            throw new TypeError('Wrong bit is passed in binary string.');
-        } else if (bit > 1) {
-            throw new RangeError('Wrong bit is passed in binary string. Bit should be 0 or 1.');
+        if (isNaN(bit) || bit > 1) {
+            // wrong bit
+            return false;
         }
     }
+
+    return true;
 }

@@ -48,17 +48,13 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
      */
     function getElement(data) {
         if (typeof data === 'string') {
-            try {
-                validate.validateHexHash(data);
-            } catch (error) {
-                throw error;
+            if (!validate.validateHexadecimal(data)) {
+                throw new TypeError('Element of wrong type is passed. Hexadecimal expected.');
             }
             return data;
         } else if (Array.isArray(data)) {
-            try {
-                validate.validateBytesArray(data);
-            } catch (error) {
-                throw error;
+            if (!validate.validateBytesArray(data)) {
+                throw new TypeError('Element of wrong type is passed. Bytes array expected.');
             }
             return data.slice(0); // clone array of 8-bit integers
         } else if (isObject(data)) {
@@ -125,10 +121,8 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
             }
 
             // validate key
-            try {
-                validate.validateBinaryString(keySuffix);
-            } catch (error) {
-                throw error;
+            if (!validate.validateBinaryString(keySuffix)) {
+                throw new TypeError('Key suffix of wrong type is passed. Binary string expected.');
             }
 
             var branchValueHash;
@@ -141,10 +135,8 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
 
             if (fullKey.length === MERKLE_PATRICIA_KEY_LENGTH * 8) {
                 if (typeof nodeValue === 'string') {
-                    try {
-                        validate.validateHexHash(nodeValue);
-                    } catch (error) {
-                        throw error;
+                    if (!validate.validateHexadecimal(nodeValue)) {
+                        throw new TypeError('Tree node of wrong type is passed. Hexadecimal expected.');
                     }
 
                     branchValueHash = nodeValue;
@@ -181,10 +173,8 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
                 };
             } else if (fullKey.length < MERKLE_PATRICIA_KEY_LENGTH * 8) { // node is branch
                 if (typeof nodeValue === 'string') {
-                    try {
-                        validate.validateHexHash(nodeValue);
-                    } catch (error) {
-                        throw error;
+                    if (!validate.validateHexadecimal(nodeValue)) {
+                        throw new TypeError('Tree node of wrong type is passed. Hexadecimal expected.');
                     }
 
                     branchValueHash = nodeValue;
@@ -276,11 +266,9 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
 
     var element;
 
-    // validate rootHash parameter
-    try {
-        validate.validateHexHash(rootHash);
-    } catch (error) {
-        throw error;
+    // validate rootHash
+    if (!validate.validateHexadecimal(rootHash)) {
+        throw new TypeError('Root hash of wrong type is passed. Hexadecimal expected.');
     }
 
     rootHash = rootHash.toLowerCase();
@@ -292,18 +280,14 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
 
     // validate key parameter
     if (Array.isArray(key)) {
-        try {
-            validate.validateBytesArray(key, MERKLE_PATRICIA_KEY_LENGTH);
-        } catch (error) {
-            throw error;
+        if (!validate.validateBytesArray(key, MERKLE_PATRICIA_KEY_LENGTH)) {
+            throw new TypeError('Key parameter of wrong type is passed. Bytes array expected.');
         }
 
         key = convert.uint8ArrayToHexadecimal(key);
     } else if (typeof key === 'string') {
-        try {
-            validate.validateHexHash(key, MERKLE_PATRICIA_KEY_LENGTH);
-        } catch (error) {
-            throw error;
+        if (!validate.validateHexadecimal(key, MERKLE_PATRICIA_KEY_LENGTH)) {
+            throw new TypeError('Key parameter of wrong type is passed. Hexadecimal expected.');
         }
     } else {
         throw new TypeError('Invalid type of key parameter. Array of 8-bit integers or hexadecimal string is expected.');
@@ -328,10 +312,8 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
                 continue;
             }
 
-            try {
-                validate.validateBinaryString(i, 256);
-            } catch (error) {
-                throw error;
+            if (!validate.validateBinaryString(i, 256)) {
+                throw new TypeError('Tree key of wrong type is passed. Binary string expected.');
             }
 
             var data = proofNode[i];
@@ -345,9 +327,11 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
             }
 
             if (typeof data === 'string') {
-                try {
-                    validate.validateHexHash(data);
+                if (!validate.validateHexadecimal(data)) {
+                    throw new TypeError('Tree element of wrong type is passed. Hexadecimal expected.');
+                }
 
+                try {
                     nodeHash = hash({
                         key: {
                             variant: 1,

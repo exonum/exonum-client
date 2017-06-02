@@ -149,7 +149,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
         ];
 
-        expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(Error);
+        expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(Error);
     });
 
     it('should throw error when key of node is invalid binary string', function() {
@@ -159,7 +159,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
         ];
 
-        expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(Error);
+        expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(Error);
 
         args = [
             '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
@@ -167,7 +167,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
         ];
 
-        expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(Error);
+        expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(Error);
 
         args = [
             '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
@@ -175,7 +175,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
         ];
 
-        expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(Error);
+        expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(Error);
     });
 
     it('should throw error when it is invalid hash is value of tree node', function() {
@@ -192,7 +192,7 @@ describe('Check proof of Merkle Patricia tree', function() {
                 '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
             ];
 
-            expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(Error);
+            expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(Error);
         });
     });
 
@@ -203,7 +203,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
         ];
 
-        expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(Error);
+        expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(Error);
     });
 
     it('should throw error when invalid key with hash is in the root (element is not found)', function() {
@@ -213,7 +213,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             'f0f1f2f3f0f1f2f3f0f1f2f3f0f1f2f3f0f1f2f3f0f1f2f3f0f1f2f3f0f1f2f3'
         ];
 
-        expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(Error);
+        expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(Error);
     });
 
     it('should throw error when value is of invalid type', function() {
@@ -232,7 +232,7 @@ describe('Check proof of Merkle Patricia tree', function() {
                 '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
             ];
 
-            expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(Error);
+            expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(Error);
         });
     });
 
@@ -252,7 +252,7 @@ describe('Check proof of Merkle Patricia tree', function() {
                 '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
             ];
 
-            expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(TypeError);
+            expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(TypeError);
         });
     });
 
@@ -273,7 +273,7 @@ describe('Check proof of Merkle Patricia tree', function() {
                 '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
             ];
 
-            expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(RangeError);
+            expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(TypeError);
         });
     });
 
@@ -289,7 +289,7 @@ describe('Check proof of Merkle Patricia tree', function() {
                 '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
             ];
 
-            expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(Error);
+            expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(Error);
         });
     });
 
@@ -313,7 +313,7 @@ describe('Check proof of Merkle Patricia tree', function() {
                 type
             ];
 
-            expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(TypeError);
+            expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(TypeError);
         });
     });
 
@@ -336,7 +336,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             Type
         ];
 
-        expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(TypeError);
+        expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(TypeError);
     });
 
     it('should throw error when single node tree with rootHash parameter not equal to actual hash (element is found)', function() {
@@ -357,7 +357,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             Type
         ];
 
-        expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(Error);
+        expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(Error);
     });
 
     it('should throw error when single node tree with invalid key with value in the root (element is found)', function() {
@@ -378,7 +378,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             Type
         ];
 
-        expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(Error);
+        expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(Error);
     });
 
     it('should throw error when single node tree with invalid key in the root of proofNode parameter', function() {
@@ -390,7 +390,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
         ];
 
-        expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(Error);
+        expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(Error);
     });
 
     it('should throw error when single node tree with invalid key with value in the root', function() {
@@ -406,7 +406,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             'f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4'
         ];
 
-        expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(Error);
+        expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(Error);
     });
 
     it('should throw error when invalid number of children in the root node', function() {
@@ -420,7 +420,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
         ];
 
-        expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(Error);
+        expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(Error);
     });
 
     it('should throw error when tree with array as key parameter is passed ', function() {
@@ -432,7 +432,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             [244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244]
         ];
 
-        expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(TypeError);
+        expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(TypeError);
     });
 
     it('should throw error when wrong rootHash parameter', function() {
@@ -443,7 +443,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             data.searched_key
         ];
 
-        expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(Error);
+        expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(Error);
     });
 
     it('should throw error when invalid binary key', function() {
@@ -456,7 +456,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
         ];
 
-        expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(RangeError);
+        expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(TypeError);
     });
 
     it('should throw error when tree contains non full key and value of wrong type', function() {
@@ -473,7 +473,7 @@ describe('Check proof of Merkle Patricia tree', function() {
                 key
             ];
 
-            expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(TypeError);
+            expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(TypeError);
         });
     });
 
@@ -491,7 +491,7 @@ describe('Check proof of Merkle Patricia tree', function() {
                 key
             ];
 
-            expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(TypeError);
+            expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(TypeError);
         });
     });
 
@@ -514,7 +514,7 @@ describe('Check proof of Merkle Patricia tree', function() {
                 key
             ];
 
-            expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(Error);
+            expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(Error);
         });
     });
 
@@ -537,7 +537,7 @@ describe('Check proof of Merkle Patricia tree', function() {
                 key
             ];
 
-            expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(Error);
+            expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(Error);
         });
     });
 
@@ -553,7 +553,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
         ];
 
-        expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(Error);
+        expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(Error);
     });
 
     it('should throw error when tree contains full key and duplicated value', function() {
@@ -570,7 +570,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
         ];
 
-        expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(Error);
+        expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(Error);
     });
 
     it('should throw error when tree contains non full key and value on wrong position', function() {
@@ -585,7 +585,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
         ];
 
-        expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(Error);
+        expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(Error);
     });
 
     it('should throw error when tree contains key is of wrong length', function() {
@@ -600,7 +600,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
         ];
 
-        expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(Error);
+        expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(Error);
     });
 
     it('should throw error when tree contains full key and value of wrong type', function() {
@@ -617,7 +617,7 @@ describe('Check proof of Merkle Patricia tree', function() {
                 key
             ];
 
-            expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(TypeError);
+            expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(TypeError);
         });
     });
 
@@ -635,7 +635,7 @@ describe('Check proof of Merkle Patricia tree', function() {
                 key
             ];
 
-            expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(Error);
+            expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(Error);
         });
     });
 
@@ -655,7 +655,7 @@ describe('Check proof of Merkle Patricia tree', function() {
                 key
             ];
 
-            expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(TypeError);
+            expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(TypeError);
         });
     });
 
@@ -675,7 +675,7 @@ describe('Check proof of Merkle Patricia tree', function() {
                 key
             ];
 
-            expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(RangeError);
+            expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(TypeError);
         });
     });
 
@@ -705,7 +705,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             Wallet
         ];
 
-        expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(TypeError);
+        expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(TypeError);
     });
 
     it('should throw error when tree contains non full key and wrong type parameter', function() {
@@ -736,7 +736,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             Wallet
         ];
 
-        expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(TypeError);
+        expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(TypeError);
     });
 
     it('should throw error when tree contains duplicated left leaf', function() {
@@ -754,7 +754,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
         ];
 
-        expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(Error);
+        expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(Error);
     });
 
     it('should throw error when tree contains duplicated right leaf', function() {
@@ -772,7 +772,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
         ];
 
-        expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(Error);
+        expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(Error);
     });
 
     it('should throw error when tree contains left key which is part of search key but branch is not expanded', function() {
@@ -788,7 +788,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             'ecdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdc'
         ];
 
-        expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(Error);
+        expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(Error);
     });
 
     it('should throw error when tree contains right key which is part of search key but branch is not expanded', function() {
@@ -804,7 +804,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             'fcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdc'
         ];
 
-        expect(() => Exonum.merklePatriciaProof.apply(this, args)).to.throw(Error);
+        expect(() => Exonum.merklePatriciaProof.apply(null, args)).to.throw(Error);
     });
 
 });

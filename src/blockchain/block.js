@@ -2,7 +2,7 @@ import {isObject} from '../helpers';
 import * as primitive from '../types/primitive';
 import {newType} from '../types/generic';
 import {newMessage} from '../types/message';
-import {validateHexHash} from '../types/validate';
+import {validateHexadecimal} from '../types/validate';
 import {hash, verifySignature} from '../crypto';
 
 /**
@@ -54,10 +54,8 @@ export function verifyBlock(data, validators) {
     }
 
     for (var i = 0; i < validators.length; i++) {
-        try {
-            validateHexHash(validators[i]);
-        } catch (error) {
-            throw error;
+        if (!validateHexadecimal(validators[i])) {
+            throw new TypeError('Invalid validator value: ' + validators[i]);
         }
     }
 
@@ -78,10 +76,8 @@ export function verifyBlock(data, validators) {
             throw new TypeError('Wrong type of precommits body. Object is expected.');
         }
 
-        try {
-            validateHexHash(precommit.signature, 64);
-        } catch (error) {
-            throw error;
+        if (!validateHexadecimal(precommit.signature, 64)) {
+            throw new TypeError('Wrong type of precommits signature. Hexadecimal of 64 length is expected.');
         }
 
         if (precommit.body.validator >= validatorsTotalNumber) {

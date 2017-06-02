@@ -1,7 +1,7 @@
 import bigInt from 'big-integer';
 import {isObject} from '../helpers';
 import {isInstanceofOfNewType} from '../types/generic';
-import {validateHexHash, validateBytesArray} from '../types/validate';
+import {validateHexadecimal, validateBytesArray} from '../types/validate';
 import {hexadecimalToUint8Array} from '../types/convert';
 import {hash} from '../crypto';
 
@@ -51,10 +51,8 @@ export function merkleProof(rootHash, count, proofNode, range, type) {
         }
 
         if (typeof data === 'string') {
-            try {
-                validateHexHash(data);
-            } catch (error) {
-                throw error;
+            if (!validateHexadecimal(data)) {
+                throw new TypeError('Tree element of wrong type is passed. Hexadecimal expected.');
             }
             element = data;
             try {
@@ -63,10 +61,8 @@ export function merkleProof(rootHash, count, proofNode, range, type) {
                 throw error;
             }
         } else if (Array.isArray(data)) {
-            try {
-                validateBytesArray(data);
-            } catch (error) {
-                throw error;
+            if (!validateBytesArray(data)) {
+                throw new TypeError('Tree element of wrong type is passed. Bytes array expected.');
             }
             element = data.slice(0); // clone array of 8-bit integers
             try {
@@ -116,10 +112,8 @@ export function merkleProof(rootHash, count, proofNode, range, type) {
 
         if (node.left !== undefined) {
             if (typeof node.left === 'string') {
-                try {
-                    validateHexHash(node.left);
-                } catch (error) {
-                    throw error;
+                if (!validateHexadecimal(node.left)) {
+                    throw new TypeError('Tree element of wrong type is passed. Hexadecimal expected.');
                 }
                 hashLeft = node.left;
             } else if (isObject(node.left)) {
@@ -149,10 +143,8 @@ export function merkleProof(rootHash, count, proofNode, range, type) {
 
         if (node.right !== undefined) {
             if (typeof node.right === 'string') {
-                try {
-                    validateHexHash(node.right);
-                } catch (error) {
-                    throw error;
+                if (!validateHexadecimal(node.right)) {
+                    throw new TypeError('Tree element of wrong type is passed. Hexadecimal expected.');
                 }
                 hashRight = node.right;
             } else if (isObject(node.right)) {
@@ -198,10 +190,8 @@ export function merkleProof(rootHash, count, proofNode, range, type) {
     }
 
     // validate rootHash
-    try {
-        validateHexHash(rootHash)
-    } catch (error) {
-        throw error;
+    if (!validateHexadecimal(rootHash)) {
+        throw new TypeError('Root hash of wrong type is passed. Hexadecimal expected.');
     }
 
     // validate count

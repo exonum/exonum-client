@@ -86,10 +86,8 @@ function insertStringToByteArray(str, buffer, from) {
  * @returns {Array}
  */
 export function Int8(value, buffer, from, to) {
-    try {
-        validate.validateInteger(value, MIN_INT8, MAX_INT8, from, to, 1);
-    } catch (error) {
-        throw error;
+    if (!validate.validateInteger(value, MIN_INT8, MAX_INT8, from, to, 1)) {
+        throw new TypeError('Int8 of wrong type is passed: ' + value);
     }
 
     if (value < 0) {
@@ -109,10 +107,8 @@ export function Int8(value, buffer, from, to) {
  * @returns {Array}
  */
 export function Int16(value, buffer, from, to) {
-    try {
-        validate.validateInteger(value, MIN_INT16, MAX_INT16, from, to, 2);
-    } catch (error) {
-        throw error;
+    if (!validate.validateInteger(value, MIN_INT16, MAX_INT16, from, to, 2)) {
+        throw new TypeError('Int16 of wrong type is passed: ' + value);
     }
 
     if (value < 0) {
@@ -132,10 +128,8 @@ export function Int16(value, buffer, from, to) {
  * @returns {Array}
  */
 export function Int32(value, buffer, from, to) {
-    try {
-        validate.validateInteger(value, MIN_INT32, MAX_INT32, from, to, 4);
-    } catch (error) {
-        throw error;
+    if (!validate.validateInteger(value, MIN_INT32, MAX_INT32, from, to, 4)) {
+        throw new TypeError('Int32 of wrong type is passed: ' + value);
     }
 
     if (value < 0) {
@@ -155,10 +149,8 @@ export function Int32(value, buffer, from, to) {
  * @returns {Array}
  */
 export function Int64(value, buffer, from, to) {
-    try {
-        validate.validateBigInteger(value, MIN_INT64, MAX_INT64, from, to, 8);
-    } catch (error) {
-        throw error;
+    if (!validate.validateBigInteger(value, MIN_INT64, MAX_INT64, from, to, 8)) {
+        throw new TypeError('Int64 of wrong type is passed: ' + value);
     }
 
     var val = bigInt(value);
@@ -180,10 +172,8 @@ export function Int64(value, buffer, from, to) {
  * @returns {Array}
  */
 export function Uint8(value, buffer, from, to) {
-    try {
-        validate.validateInteger(value, 0, MAX_UINT8, from, to, 1);
-    } catch (error) {
-        throw error;
+    if (!validate.validateInteger(value, 0, MAX_UINT8, from, to, 1)) {
+        throw new TypeError('Uint8 of wrong type is passed: ' + value);
     }
 
     insertIntegerToByteArray(value, buffer, from, to);
@@ -199,10 +189,8 @@ export function Uint8(value, buffer, from, to) {
  * @returns {Array}
  */
 export function Uint16(value, buffer, from, to) {
-    try {
-        validate.validateInteger(value, 0, MAX_UINT16, from, to, 2);
-    } catch (error) {
-        throw error;
+    if (!validate.validateInteger(value, 0, MAX_UINT16, from, to, 2)) {
+        throw new TypeError('Uint16 of wrong type is passed: ' + value);
     }
 
     insertIntegerToByteArray(value, buffer, from, to);
@@ -218,10 +206,8 @@ export function Uint16(value, buffer, from, to) {
  * @returns {Array}
  */
 export function Uint32(value, buffer, from, to) {
-    try {
-        validate.validateInteger(value, 0, MAX_UINT32, from, to, 4);
-    } catch (error) {
-        throw error;
+    if (!validate.validateInteger(value, 0, MAX_UINT32, from, to, 4)) {
+        throw new TypeError('Uint32 of wrong type is passed: ' + value);
     }
 
     insertIntegerToByteArray(value, buffer, from, to);
@@ -237,10 +223,8 @@ export function Uint32(value, buffer, from, to) {
  * @returns {Array}
  */
 export function Uint64(value, buffer, from, to) {
-    try {
-        validate.validateBigInteger(value, 0, MAX_UINT64, from, to, 8);
-    } catch (error) {
-        throw error;
+    if (!validate.validateBigInteger(value, 0, MAX_UINT64, from, to, 8)) {
+        throw new TypeError('Uint64 of wrong type is passed: ' + value);
     }
 
     var val = bigInt(value);
@@ -280,10 +264,8 @@ export function String(string, buffer, from, to) {
  * @returns {Array}
  */
 export function Hash(hash, buffer, from, to) {
-    try {
-        validate.validateHexHash(hash);
-    } catch (error) {
-        throw error;
+    if (!validate.validateHexadecimal(hash)) {
+        throw new TypeError('Hash of wrong type is passed: ' + hash);
     }
 
     if ((to - from) !== 32) {
@@ -303,10 +285,8 @@ export function Hash(hash, buffer, from, to) {
  * @returns {Array}
  */
 export function Digest(digest, buffer, from, to) {
-    try {
-        validate.validateHexHash(digest, 64);
-    } catch (error) {
-        throw error;
+    if (!validate.validateHexadecimal(digest, 64)) {
+        throw new TypeError('Digest of wrong type is passed: ' + digest);
     }
 
     if ((to - from) !== 64) {
@@ -326,10 +306,8 @@ export function Digest(digest, buffer, from, to) {
  * @returns {Array}
  */
 export function PublicKey(publicKey, buffer, from, to) {
-    try {
-        validate.validateHexHash(publicKey);
-    } catch (error) {
-        throw error;
+    if (!validate.validateHexadecimal(publicKey)) {
+        throw new TypeError('PublicKey of wrong type is passed: ' + publicKey);
     }
 
     if ((to - from) !== 32) {
@@ -368,10 +346,8 @@ export function Bool(value, buffer, from, to) {
  * @returns {Array}
  */
 export function Timespec(nanoseconds, buffer, from, to) {
-    try {
-        validate.validateBigInteger(nanoseconds, 0, MAX_UINT64, from, to, 8);
-    } catch (error) {
-        throw error;
+    if (!validate.validateBigInteger(nanoseconds, 0, MAX_UINT64, from, to, 8)) {
+        throw new TypeError('Timespec of wrong type is passed: ' + nanoseconds);
     }
 
     var val = bigInt(nanoseconds);

@@ -52,10 +52,8 @@ export function sign(secretKey, data, type) {
     var buffer;
     var signature;
 
-    try {
-        validate.validateHexHash(secretKey, 64);
-    } catch (error) {
-        throw error;
+    if (!validate.validateHexadecimal(secretKey, 64)) {
+        throw new TypeError('secretKey of wrong type is passed. Hexadecimal expected.');
     }
 
     secretKeyUint8Array = convert.hexadecimalToUint8Array(secretKey);
@@ -112,18 +110,14 @@ export function verifySignature(signature, publicKey, data, type) {
     var publicKeyUint8Array;
     var buffer;
 
-    try {
-        validate.validateHexHash(signature, 64);
-    } catch (error) {
-        throw error;
+    if (!validate.validateHexadecimal(signature, 64)) {
+        throw new TypeError('Signature of wrong type is passed. Hexadecimal expected.');
     }
 
     signatureUint8Array = convert.hexadecimalToUint8Array(signature);
 
-    try {
-        validate.validateHexHash(publicKey);
-    } catch (error) {
-        throw error;
+    if (!validate.validateHexadecimal(publicKey)) {
+        throw new TypeError('publicKey of wrong type is passed. Hexadecimal expected.');
     }
 
     publicKeyUint8Array = convert.hexadecimalToUint8Array(publicKey);

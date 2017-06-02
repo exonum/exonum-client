@@ -183,7 +183,7 @@ describe('Check proof of Merkle tree', function() {
             {},
             [9, 8]
         ];
-        expect(() => Exonum.merkleProof.apply(this, args)).to.throw(RangeError);
+        expect(() => Exonum.merkleProof.apply(null, args)).to.throw(RangeError);
     });
 
     it('should return empty array when the tree with elements that out of tree range', function() {
@@ -205,7 +205,7 @@ describe('Check proof of Merkle tree', function() {
             [data.range_st, data.range_end - 1]
         ];
 
-        expect(() => Exonum.merkleProof.apply(this, args)).to.throw(Error);
+        expect(() => Exonum.merkleProof.apply(null, args)).to.throw(Error);
     });
 
     it('should throw error when the tree with wrong index of value node', function() {
@@ -217,7 +217,7 @@ describe('Check proof of Merkle tree', function() {
             [data.range_st, data.range_end - 1]
         ];
 
-        expect(() => Exonum.merkleProof.apply(this, args)).to.throw(Error);
+        expect(() => Exonum.merkleProof.apply(null, args)).to.throw(Error);
     });
 
     it('should throw error when the tree with value on wrong position', function() {
@@ -229,7 +229,7 @@ describe('Check proof of Merkle tree', function() {
             [data.range_st, data.range_end - 1]
         ];
 
-        expect(() => Exonum.merkleProof.apply(this, args)).to.throw(Error);
+        expect(() => Exonum.merkleProof.apply(null, args)).to.throw(Error);
     });
 
     it('should throw error when the tree with invalid type of type parameter', function() {
@@ -245,7 +245,7 @@ describe('Check proof of Merkle tree', function() {
                 type
             ];
 
-            expect(() => Exonum.merkleProof.apply(this, args)).to.throw(Error);
+            expect(() => Exonum.merkleProof.apply(null, args)).to.throw(Error);
         });
     });
 
@@ -267,7 +267,7 @@ describe('Check proof of Merkle tree', function() {
                 Type
             ];
 
-            expect(() => Exonum.merkleProof.apply(this, args)).to.throw(Error);
+            expect(() => Exonum.merkleProof.apply(null, args)).to.throw(Error);
         });
     });
 
@@ -287,7 +287,7 @@ describe('Check proof of Merkle tree', function() {
             Type
         ];
 
-        expect(() => Exonum.merkleProof.apply(this, args)).to.throw(TypeError);
+        expect(() => Exonum.merkleProof.apply(null, args)).to.throw(TypeError);
     });
 
     it('should throw error when the tree with invalid array of 8-bit integers as value', function() {
@@ -308,7 +308,7 @@ describe('Check proof of Merkle tree', function() {
                 [0, 2]
             ];
 
-            expect(() => Exonum.merkleProof.apply(this, args)).to.throw(Error);
+            expect(() => Exonum.merkleProof.apply(null, args)).to.throw(Error);
         });
     });
 
@@ -325,7 +325,7 @@ describe('Check proof of Merkle tree', function() {
             [0, 2]
         ];
 
-        expect(() => Exonum.merkleProof.apply(this, args)).to.throw(Error);
+        expect(() => Exonum.merkleProof.apply(null, args)).to.throw(Error);
     });
 
     it('should throw error when the tree with invalid string in left node', function() {
@@ -352,7 +352,7 @@ describe('Check proof of Merkle tree', function() {
                 [0, 2]
             ];
 
-            expect(() => Exonum.merkleProof.apply(this, args)).to.throw(Error);
+            expect(() => Exonum.merkleProof.apply(null, args)).to.throw(Error);
         });
     });
 
@@ -380,7 +380,7 @@ describe('Check proof of Merkle tree', function() {
                 [0, 2]
             ];
 
-            expect(() => Exonum.merkleProof.apply(this, args)).to.throw(Error);
+            expect(() => Exonum.merkleProof.apply(null, args)).to.throw(Error);
         });
     });
 
@@ -393,7 +393,7 @@ describe('Check proof of Merkle tree', function() {
             [data.range_st, data.range_end - 1]
         ];
 
-        expect(() => Exonum.merkleProof.apply(this, args)).to.throw(Error);
+        expect(() => Exonum.merkleProof.apply(null, args)).to.throw(Error);
     });
 
     it('should throw error when the tree with wrong rootHash', function() {
@@ -405,7 +405,7 @@ describe('Check proof of Merkle tree', function() {
             [data.range_st, data.range_end - 1]
         ];
 
-        expect(() => Exonum.merkleProof.apply(this, args)).to.throw(Error);
+        expect(() => Exonum.merkleProof.apply(null, args)).to.throw(Error);
     });
 
     it('should throw error when the tree with wrong amount of elements', function() {
@@ -417,7 +417,7 @@ describe('Check proof of Merkle tree', function() {
             [data.range_st, data.range_end - 1]
         ];
 
-        expect(() => Exonum.merkleProof.apply(this, args)).to.throw(Error);
+        expect(() => Exonum.merkleProof.apply(null, args)).to.throw(Error);
     });
 
 });
