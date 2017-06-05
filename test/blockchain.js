@@ -43,18 +43,15 @@ describe('Verify block of precommits', function() {
 
     it('should return false when signature field of wrong type in precommit', function() {
         [null, undefined, 42, [], {}, new Date()].forEach(function(signature) {
-            var args = [
-                {
-                    block: {},
-                    precommits: [{
-                        body: {},
-                        signature: signature
-                    }]
-                },
-                validators
-            ];
+            var data = {
+                block: {},
+                precommits: [{
+                    body: {},
+                    signature: signature
+                }]
+            };
 
-            expect(Exonum.verifyBlock.apply(null, args)).to.be.false;
+            expect(Exonum.verifyBlock(data, validators)).to.be.false;
         });
     });
 
@@ -65,56 +62,47 @@ describe('Verify block of precommits', function() {
         ];
 
         args.forEach(function(signature) {
-            var args = [
-                {
-                    block: {},
-                    precommits: [{
-                        body: {},
-                        signature: signature
-                    }]
-                },
-                validators
-            ];
+            var data = {
+                block: {},
+                precommits: [{
+                    body: {},
+                    signature: signature
+                }]
+            };
 
-            expect(Exonum.verifyBlock.apply(null, args)).to.be.false;
+            expect(Exonum.verifyBlock(data, validators)).to.be.false;
         });
     });
 
     it('should return false when precommit from non existed validator', function() {
-        var args = [
-            {
-                block: {},
-                precommits: [{
-                    body: {
-                        validator: 999999999
-                    },
-                    signature: '63b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d263b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d2'
-                }]
-            },
-            validators
-        ];
+        var data = {
+            block: {},
+            precommits: [{
+                body: {
+                    validator: 999999999
+                },
+                signature: '63b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d263b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d2'
+            }]
+        };
 
-        expect(Exonum.verifyBlock.apply(null, args)).to.be.false;
+        expect(Exonum.verifyBlock(data, validators)).to.be.false;
     });
 
     it('should return false when wrong height of block in precommit', function() {
-        var args = [
-            {
-                block: {
-                    height: 1
-                },
-                precommits: [{
-                    body: {
-                        height: 5,
-                        validator: 0
-                    },
-                    signature: '63b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d263b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d2'
-                }]
+        var data = {
+            block: {
+                height: 1
             },
-            validators
-        ];
+            precommits: [{
+                body: {
+                    height: 5,
+                    validator: 0
+                },
+                signature: '63b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d263b8341b82f0eb6f32be73bf36a4b605655e3979030df9e025713c972d1da6d2'
+            }]
+        };
 
-        expect(Exonum.verifyBlock.apply(null, args)).to.be.false;
+        expect(Exonum.verifyBlock(data, validators)).to.be.false;
     });
 
     it('should return false when wrong hash of block in precommit', function() {

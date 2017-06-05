@@ -326,7 +326,7 @@ describe('Check cryptography', function() {
             };
             var buffer = User.serialize(userData);
 
-            expect(() => Exonum.sign(secretKey, buffer)).to.throw(Error);
+            expect(() => Exonum.sign(secretKey, buffer)).to.throw(TypeError);
         });
 
         it('should throw error when wrong secretKey parameter', function() {
@@ -344,7 +344,7 @@ describe('Check cryptography', function() {
             };
             var buffer = User.serialize(userData);
 
-            expect(() => Exonum.sign(secretKey, buffer)).to.throw(Error);
+            expect(() => Exonum.sign(secretKey, buffer)).to.throw(TypeError);
         });
 
         it('should throw error when the secretKey parameter of invalid type', function() {
@@ -507,7 +507,7 @@ describe('Check cryptography', function() {
                 hash: 'Hello world'
             };
 
-            expect(() => Exonum.verifySignature(signature, publicKey, userData, User)).to.throw(Error);
+            expect(() => Exonum.verifySignature(signature, publicKey, userData, User)).to.throw(TypeError);
         });
 
         it('should throw error when the data parameter is of wrong NewMessage type', function() {
@@ -529,7 +529,7 @@ describe('Check cryptography', function() {
                 hash: 'Hello world'
             };
 
-            expect(() => Exonum.verifySignature(signature, publicKey, someData, CustomMessage)).to.throw(Error);
+            expect(() => Exonum.verifySignature(signature, publicKey, someData, CustomMessage)).to.throw(TypeError);
         });
 
         it('should throw error when the type parameter is of wrong type', function() {
@@ -543,7 +543,7 @@ describe('Check cryptography', function() {
                 hash: 'Hello world'
             };
 
-            expect(() => Exonum.verifySignature(signature, publicKey, userData, User)).to.throw(Error);
+            expect(() => Exonum.verifySignature(signature, publicKey, userData, User)).to.throw(TypeError);
         });
 
         it('should throw error when the signature parameter is of wrong length', function() {
@@ -562,7 +562,7 @@ describe('Check cryptography', function() {
             };
             var buffer = User.serialize(userData);
 
-            expect(() => Exonum.verifySignature(signature, publicKey, buffer)).to.throw(Error);
+            expect(() => Exonum.verifySignature(signature, publicKey, buffer)).to.throw(TypeError);
         });
 
         it('should throw error when the signature parameter is invalid', function() {
@@ -581,7 +581,7 @@ describe('Check cryptography', function() {
             };
             var buffer = User.serialize(userData);
 
-            expect(() => Exonum.verifySignature(signature, publicKey, buffer)).to.throw(Error);
+            expect(() => Exonum.verifySignature(signature, publicKey, buffer)).to.throw(TypeError);
         });
 
         it('should throw error when the signature parameter is of wrong type', function() {
@@ -600,7 +600,7 @@ describe('Check cryptography', function() {
             var buffer = User.serialize(userData);
 
             [true, null, undefined, [], {}, 51, new Date()].forEach(function(signature) {
-                expect(() => Exonum.verifySignature(signature, publicKey, buffer)).to.throw(Error);
+                expect(() => Exonum.verifySignature(signature, publicKey, buffer)).to.throw(TypeError);
             });
         });
 
@@ -620,7 +620,7 @@ describe('Check cryptography', function() {
             };
             var buffer = User.serialize(userData);
 
-            expect(() => Exonum.verifySignature(signature, publicKey, buffer)).to.throw(Error);
+            expect(() => Exonum.verifySignature(signature, publicKey, buffer)).to.throw(TypeError);
         });
 
         it('should throw error when the publicKey parameter is invalid', function() {
@@ -639,7 +639,7 @@ describe('Check cryptography', function() {
             };
             var buffer = User.serialize(userData);
 
-            expect(() => Exonum.verifySignature(signature, publicKey, buffer)).to.throw(Error);
+            expect(() => Exonum.verifySignature(signature, publicKey, buffer)).to.throw(TypeError);
         });
 
         it('should throw error when the publicKey parameter is of wrong type', function() {
@@ -658,7 +658,7 @@ describe('Check cryptography', function() {
             var buffer = User.serialize(userData);
 
             [true, null, undefined, [], {}, 51, new Date()].forEach(function(publicKey) {
-                expect(() => Exonum.verifySignature(signature, publicKey, buffer)).to.throw(Error);
+                expect(() => Exonum.verifySignature(signature, publicKey, buffer)).to.throw(TypeError);
             });
         });
 

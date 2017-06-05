@@ -108,8 +108,7 @@ export function validateBinaryString(str, bits) {
     }
 
     for (var i = 0; i < str.length; i++) {
-        var bit = parseInt(str[i]);
-        if (isNaN(bit) || bit > 1) {
+        if (str[i] !== '0' && str[i] !== '1') {
             // wrong bit
             return false;
         }

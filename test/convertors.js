@@ -70,13 +70,7 @@ describe('Convert data from one type to another', function() {
         });
 
         it('should throw error when convert binaryString of wrong type into hexadecimal', function() {
-            [null, false, 42, new Date(), {}, []].forEach(function(value) {
-                expect(() => Exonum.binaryStringToHexadecimal(value)).to.throw(TypeError);
-            });
-        });
-
-        it('should throw error when convert invalid binaryString into hexadecimal', function() {
-            ['102'].forEach(function(value) {
+            [null, false, 42, new Date(), {}, [], '102'].forEach(function(value) {
                 expect(() => Exonum.binaryStringToHexadecimal(value)).to.throw(TypeError);
             });
         });

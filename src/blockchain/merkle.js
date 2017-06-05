@@ -155,11 +155,7 @@ export function merkleProof(rootHash, count, proofNode, range, type) {
         throw new TypeError('Invalid value is passed as count parameter. Number or string is expected.');
     }
 
-    try {
-        count = bigInt(count);
-    } catch (e) {
-        throw new TypeError('Invalid value is passed as count parameter.');
-    }
+    count = bigInt(count);
 
     if (count.lt(0)) {
         throw new RangeError('Invalid count parameter. Count can\'t be below zero.');
@@ -174,17 +170,8 @@ export function merkleProof(rootHash, count, proofNode, range, type) {
         throw new TypeError('Invalid value is passed as end of range parameter.');
     }
 
-    try {
-        var rangeStart = bigInt(range[0]);
-    } catch (e) {
-        throw new TypeError('Invalid value is passed as start of range parameter. Number or string is expected.');
-    }
-
-    try {
-        var rangeEnd = bigInt(range[1]);
-    } catch (e) {
-        throw new TypeError('Invalid value is passed as end of range parameter. Number or string is expected.');
-    }
+    var rangeStart = bigInt(range[0]);
+    var rangeEnd = bigInt(range[1]);
 
     if (rangeStart.gt(rangeEnd)) {
         throw new RangeError('Invalid range parameter. Start index can\'t be out of range.');
