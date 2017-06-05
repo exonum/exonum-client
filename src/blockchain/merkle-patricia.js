@@ -69,23 +69,11 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
      */
     function getHash(element) {
         if (typeof element === 'string') {
-            try {
-                return hash(convert.hexadecimalToUint8Array(element));
-            } catch (error) {
-                throw error;
-            }
+            return hash(convert.hexadecimalToUint8Array(element));
         } else if (Array.isArray(element)) {
-            try {
-                return hash(element);
-            } catch (error) {
-                throw error;
-            }
+            return hash(element);
         } else if (isObject(element)) {
-            try {
-                return hash(element, type);
-            } catch (error) {
-                throw error;
-            }
+            return hash(element, type);
         }
     }
 
@@ -148,23 +136,15 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
                         throw new Error('Tree can not contains more than one node with value.');
                     }
 
-                    try {
-                        element = getElement(nodeValue.val);
-                        branchValueHash = getHash(element);
-                    } catch (error) {
-                        throw error;
-                    }
+                    element = getElement(nodeValue.val);
+                    branchValueHash = getHash(element);
 
                     branchType = 'value';
                 }  else {
                     throw new TypeError('Invalid type of node in tree leaf.');
                 }
 
-                try {
-                    branchKeyHash = convert.binaryStringToHexadecimal(fullKey);
-                } catch (error) {
-                    throw error;
-                }
+                branchKeyHash = convert.binaryStringToHexadecimal(fullKey);
 
                 branchKey = {
                     variant: 1,
@@ -184,11 +164,7 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
                         throw new Error('Node with value is at non-leaf position in tree.');
                     }
 
-                    try {
-                        branchValueHash = recursive(nodeValue, fullKey);
-                    } catch (error) {
-                        throw error;
-                    }
+                    branchValueHash = recursive(nodeValue, fullKey);
 
                     branchType = 'branch';
                 }  else {
@@ -202,11 +178,7 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
                     binaryKey += '0';
                 }
 
-                try {
-                    branchKeyHash = convert.binaryStringToHexadecimal(binaryKey);
-                } catch (error) {
-                    throw error;
-                }
+                branchKeyHash = convert.binaryStringToHexadecimal(binaryKey);
 
                 branchKey = {
                     variant: 0,
@@ -252,16 +224,12 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
             }
         }
 
-        try {
-            return hash({
-                left_hash: levelData.left.hash,
-                right_hash: levelData.right.hash,
-                left_key: levelData.left.key,
-                right_key: levelData.right.key
-            }, Branch);
-        } catch (error) {
-            throw error;
-        }
+        return hash({
+            left_hash: levelData.left.hash,
+            right_hash: levelData.right.hash,
+            left_key: levelData.left.key,
+            right_key: levelData.right.key
+        }, Branch);
     }
 
     var element;
@@ -293,11 +261,7 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
         throw new TypeError('Invalid type of key parameter. Array of 8-bit integers or hexadecimal string is expected.');
     }
 
-    try {
-        var keyBinary = convert.hexadecimalToBinaryString(key);
-    } catch (error) {
-        throw error;
-    }
+    var keyBinary = convert.hexadecimalToBinaryString(key);
 
     var proofNodeRootNumberOfNodes = Object.keys(proofNode).length;
     if (proofNodeRootNumberOfNodes === 0) {
@@ -319,30 +283,22 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
             var data = proofNode[i];
             var nodeHash;
 
-            try {
-                var nodeKeyBuffer = convert.binaryStringToUint8Array(i);
-                var nodeKey = convert.uint8ArrayToHexadecimal(nodeKeyBuffer);
-            } catch (error) {
-                throw error;
-            }
+            var nodeKeyBuffer = convert.binaryStringToUint8Array(i);
+            var nodeKey = convert.uint8ArrayToHexadecimal(nodeKeyBuffer);
 
             if (typeof data === 'string') {
                 if (!validate.validateHexadecimal(data)) {
                     throw new TypeError('Tree element of wrong type is passed. Hexadecimal expected.');
                 }
 
-                try {
-                    nodeHash = hash({
-                        key: {
-                            variant: 1,
-                            key: nodeKey,
-                            length: 0
-                        },
-                        hash: data
-                    }, RootBranch);
-                } catch (error) {
-                    throw error;
-                }
+                nodeHash = hash({
+                    key: {
+                        variant: 1,
+                        key: nodeKey,
+                        length: 0
+                    },
+                    hash: data
+                }, RootBranch);
 
                 if (rootHash === nodeHash) {
                     if (key !== nodeKey) {
@@ -354,20 +310,16 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
                     throw new Error('rootHash parameter is not equal to actual hash.');
                 }
             } else if (isObject(data)) {
-                try {
-                    element = getElement(data.val);
+                element = getElement(data.val);
 
-                    nodeHash = hash({
-                        key: {
-                            variant: 1,
-                            key: nodeKey,
-                            length: 0
-                        },
-                        hash: getHash(element)
-                    }, RootBranch);
-                } catch (error) {
-                    throw error;
-                }
+                nodeHash = hash({
+                    key: {
+                        variant: 1,
+                        key: nodeKey,
+                        length: 0
+                    },
+                    hash: getHash(element)
+                }, RootBranch);
 
                 if (rootHash === nodeHash) {
                     if (key === nodeKey) {
@@ -384,11 +336,7 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
 
         }
     } else {
-        try {
-            var actualHash = recursive(proofNode, '');
-        } catch (error) {
-            throw error;
-        }
+        var actualHash = recursive(proofNode, '');
 
         if (rootHash !== actualHash) {
             throw new Error('rootHash parameter is not equal to actual hash.');

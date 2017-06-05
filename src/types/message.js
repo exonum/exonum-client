@@ -36,39 +36,23 @@ class NewMessage {
             }
         });
 
-        try {
-            var buffer = MessageHead.serialize({
-                network_id: 0,
-                version: 0,
-                message_id: this.message_id,
-                service_id: this.service_id,
-                payload: 0 // placeholder, real value will be inserted later
-            });
-        } catch (error) {
-            throw error;
-        }
+        var buffer = MessageHead.serialize({
+            network_id: 0,
+            version: 0,
+            message_id: this.message_id,
+            service_id: this.service_id,
+            payload: 0 // placeholder, real value will be inserted later
+        });
 
         // serialize and append message body
-        try {
-            buffer = serialization.serialize(buffer, MessageHead.size, data, this);
-        } catch (error) {
-            throw error;
-        }
+        buffer = serialization.serialize(buffer, MessageHead.size, data, this);
 
         // calculate payload and insert it into buffer
-        try {
-            primitive.Uint32(buffer.length + SIGNATURE_LENGTH, buffer, MessageHead.fields.payload.from, MessageHead.fields.payload.to);
-        } catch (error) {
-            throw error;
-        }
+        primitive.Uint32(buffer.length + SIGNATURE_LENGTH, buffer, MessageHead.fields.payload.from, MessageHead.fields.payload.to);
 
         if (cutSignature !== true) {
             // append signature
-            try {
-                primitive.Digest(this.signature, buffer, buffer.length, buffer.length + SIGNATURE_LENGTH);
-            } catch (error) {
-                throw error;
-            }
+            primitive.Digest(this.signature, buffer, buffer.length, buffer.length + SIGNATURE_LENGTH);
         }
 
         return buffer;
@@ -80,11 +64,7 @@ class NewMessage {
      * @returns {string}
      */
     hash(data) {
-        try {
-            return crypto.hash(data, this);
-        } catch (error) {
-            throw error;
-        }
+        return crypto.hash(data, this);
     }
 
     /**
@@ -94,11 +74,7 @@ class NewMessage {
      * @returns {string}
      */
     sign(secretKey, data) {
-        try {
-            return crypto.sign(secretKey, data, this);
-        } catch (error) {
-            throw error;
-        }
+        return crypto.sign(secretKey, data, this);
     }
 
     /**
@@ -109,11 +85,7 @@ class NewMessage {
      * @returns {boolean}
      */
     verifySignature(signature, publicKey, data) {
-        try {
-            return crypto.verifySignature(signature, publicKey, data, this);
-        } catch (error) {
-            throw error;
-        }
+        return crypto.verifySignature(signature, publicKey, data, this);
     }
 }
 

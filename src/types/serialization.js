@@ -55,11 +55,7 @@ export function serialize(buffer, shift, data, type) {
                 Uint32(buffer.length - end, buffer, from + 4, from + 8);
             }
         } else {
-            try {
-                buffer = fieldType.type(fieldData, buffer, from, shift + fieldType.to);
-            } catch (error) {
-                throw error;
-            }
+            buffer = fieldType.type(fieldData, buffer, from, shift + fieldType.to);
         }
     }
 

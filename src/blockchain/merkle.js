@@ -55,29 +55,17 @@ export function merkleProof(rootHash, count, proofNode, range, type) {
                 throw new TypeError('Tree element of wrong type is passed. Hexadecimal expected.');
             }
             element = data;
-            try {
-                elementsHash = hash(hexadecimalToUint8Array(element));
-            } catch (error) {
-                throw error;
-            }
+            elementsHash = hash(hexadecimalToUint8Array(element));
         } else if (Array.isArray(data)) {
             if (!validateBytesArray(data)) {
                 throw new TypeError('Tree element of wrong type is passed. Bytes array expected.');
             }
             element = data.slice(0); // clone array of 8-bit integers
-            try {
-                elementsHash = hash(element);
-            } catch (error) {
-                throw error;
-            }
+            elementsHash = hash(element);
         } else if (isObject(data)) {
             if (isInstanceofOfNewType(type)) {
                 element = data;
-                try {
-                    elementsHash = hash(element, type);
-                } catch (error) {
-                    throw error;
-                }
+                elementsHash = hash(element, type);
             } else {
                 throw new TypeError('Invalid type of type parameter.');
             }
@@ -103,11 +91,7 @@ export function merkleProof(rootHash, count, proofNode, range, type) {
 
         // case with single node in tree
         if (depth === 0 && node.val !== undefined) {
-            try {
-                return getHash(node.val, depth, index * 2);
-            } catch (error) {
-                throw error;
-            }
+            return getHash(node.val, depth, index * 2);
         }
 
         if (node.left !== undefined) {
@@ -118,17 +102,9 @@ export function merkleProof(rootHash, count, proofNode, range, type) {
                 hashLeft = node.left;
             } else if (isObject(node.left)) {
                 if (node.left.val !== undefined) {
-                    try {
-                        hashLeft = getHash(node.left.val, depth, index * 2);
-                    } catch (error) {
-                        throw error;
-                    }
+                    hashLeft = getHash(node.left.val, depth, index * 2);
                 } else {
-                    try {
-                        hashLeft = recursive(node.left, depth + 1, index * 2);
-                    } catch (error) {
-                        throw error;
-                    }
+                    hashLeft = recursive(node.left, depth + 1, index * 2);
                 }
             } else {
                 throw new TypeError('Invalid type of left node.');
@@ -149,44 +125,24 @@ export function merkleProof(rootHash, count, proofNode, range, type) {
                 hashRight = node.right;
             } else if (isObject(node.right)) {
                 if (node.right.val !== undefined) {
-                    try {
-                        hashRight = getHash(node.right.val, depth, index * 2 + 1);
-                    } catch (error) {
-                        throw error;
-                    }
+                    hashRight = getHash(node.right.val, depth, index * 2 + 1);
                 } else {
-                    try {
-                        hashRight = recursive(node.right, depth + 1, index * 2 + 1);
-                    } catch (error) {
-                        throw error;
-                    }
+                    hashRight = recursive(node.right, depth + 1, index * 2 + 1);
                 }
             } else {
                 throw new TypeError('Invalid type of right node.');
             }
 
             summingBuffer = new Uint8Array(64);
-            try {
-                summingBuffer.set(hexadecimalToUint8Array(hashLeft));
-                summingBuffer.set(hexadecimalToUint8Array(hashRight), 32);
-            } catch (error) {
-                throw error;
-            }
+            summingBuffer.set(hexadecimalToUint8Array(hashLeft));
+            summingBuffer.set(hexadecimalToUint8Array(hashRight), 32);
         } else if (depth === 0 || rootBranch === 'left') {
             throw new Error('Right leaf is missed in left branch of tree.');
         } else {
-            try {
-                summingBuffer = hexadecimalToUint8Array(hashLeft);
-            } catch (error) {
-                throw error;
-            }
+            summingBuffer = hexadecimalToUint8Array(hashLeft);
         }
 
-        try {
-            return hash(summingBuffer);
-        } catch (error) {
-            throw error;
-        }
+        return hash(summingBuffer);
     }
 
     // validate rootHash
@@ -249,11 +205,7 @@ export function merkleProof(rootHash, count, proofNode, range, type) {
     var start = rangeStart;
     var end = rangeEnd.lt(count) ? rangeEnd : count.minus(1);
 
-    try {
-        var actualHash = recursive(proofNode, 0, 0);
-    } catch (error) {
-        throw error;
-    }
+    var actualHash = recursive(proofNode, 0, 0);
 
     if (rootHash.toLowerCase() !== actualHash) {
         throw new Error('rootHash parameter is not equal to actual hash.');

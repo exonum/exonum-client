@@ -17,11 +17,7 @@ class NewType {
      * @returns {Array}
      */
     serialize(data) {
-        try {
-            return serialization.serialize([], 0, data, this);
-        } catch (error) {
-            throw error;
-        }
+        return serialization.serialize([], 0, data, this);
     }
 
     /**
@@ -30,11 +26,7 @@ class NewType {
      * @returns {string}
      */
     hash(data) {
-        try {
-            return crypto.hash(data, this);
-        } catch (error) {
-            throw error;
-        }
+        return crypto.hash(data, this);
     }
 
     /**
@@ -44,11 +36,7 @@ class NewType {
      * @returns {string}
      */
     sign(secretKey, data) {
-        try {
-            return crypto.sign(secretKey, data, this);
-        } catch (error) {
-            throw error;
-        }
+        return crypto.sign(secretKey, data, this);
     }
 
     /**
@@ -59,11 +47,7 @@ class NewType {
      * @returns {boolean}
      */
     verifySignature(signature, publicKey, data) {
-        try {
-            return crypto.verifySignature(signature, publicKey, data, this);
-        } catch (error) {
-            throw error;
-        }
+        return crypto.verifySignature(signature, publicKey, data, this);
     }
 }
 
