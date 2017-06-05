@@ -1,7 +1,7 @@
 import bigInt from 'big-integer';
 import {isObject} from '../helpers';
 import {isInstanceofOfNewType} from '../types/generic';
-import {validateHexHash, validateBytesArray} from '../types/validate';
+import {validateHexadecimal, validateBytesArray} from '../types/validate';
 import {hexadecimalToUint8Array} from '../types/convert';
 import {hash} from '../crypto';
 
@@ -43,47 +43,34 @@ export function merkleProof(rootHash, count, proofNode, range, type) {
         var elementsHash;
 
         if (depth !== 0 && (depth + 1) !== height) {
-            console.error('Value node is on wrong height in tree.');
-            return;
+            throw new Error('Value node is on wrong height in tree.');
         } else if (start.gt(index) || end.lt(index)) {
-            console.error('Wrong index of value node.');
-            return;
+            throw new Error('Wrong index of value node.');
         } else if (start.plus(elements.length).neq(index)) {
-            console.error('Value node is on wrong position in tree.');
-            return;
+            throw new Error('Value node is on wrong position in tree.');
         }
 
         if (typeof data === 'string') {
-            if (validateHexHash(data)) {
-                element = data;
-                elementsHash = hash(hexadecimalToUint8Array(element));
-            } else {
-                console.error('Invalid hexadecimal string is passed as value in tree.');
-                return;
+            if (!validateHexadecimal(data)) {
+                throw new TypeError('Tree element of wrong type is passed. Hexadecimal expected.');
             }
+            element = data;
+            elementsHash = hash(hexadecimalToUint8Array(element));
         } else if (Array.isArray(data)) {
-            if (validateBytesArray(data)) {
-                element = data.slice(0); // clone array of 8-bit integers
-                elementsHash = hash(element);
-            } else {
-                console.error('Invalid array of 8-bit integers in tree.');
-                return;
+            if (!validateBytesArray(data)) {
+                throw new TypeError('Tree element of wrong type is passed. Bytes array expected.');
             }
+            element = data.slice(0); // clone array of 8-bit integers
+            elementsHash = hash(element);
         } else if (isObject(data)) {
             if (isInstanceofOfNewType(type)) {
                 element = data;
                 elementsHash = hash(element, type);
             } else {
-                console.error('Invalid type of type parameter.');
-                return;
+                throw new TypeError('Invalid type of type parameter.');
             }
         } else {
-            console.error('Invalid value of data parameter.');
-            return;
-        }
-
-        if (elementsHash === undefined) {
-            return;
+            throw new TypeError('Invalid value of data parameter.');
         }
 
         elements.push(element);
@@ -109,8 +96,8 @@ export function merkleProof(rootHash, count, proofNode, range, type) {
 
         if (node.left !== undefined) {
             if (typeof node.left === 'string') {
-                if (validateHexHash(node.left) === false) {
-                    return null;
+                if (!validateHexadecimal(node.left)) {
+                    throw new TypeError('Tree element of wrong type is passed. Hexadecimal expected.');
                 }
                 hashLeft = node.left;
             } else if (isObject(node.left)) {
@@ -119,16 +106,11 @@ export function merkleProof(rootHash, count, proofNode, range, type) {
                 } else {
                     hashLeft = recursive(node.left, depth + 1, index * 2);
                 }
-                if (hashLeft === undefined || hashLeft === null) {
-                    return null;
-                }
             } else {
-                console.error('Invalid type of left node.');
-                return null;
+                throw new TypeError('Invalid type of left node.');
             }
         } else {
-            console.error('Left node is missed.');
-            return null;
+            throw new Error('Left node is missed.');
         }
 
         if (depth === 0) {
@@ -137,8 +119,8 @@ export function merkleProof(rootHash, count, proofNode, range, type) {
 
         if (node.right !== undefined) {
             if (typeof node.right === 'string') {
-                if (validateHexHash(node.right) === false) {
-                    return null;
+                if (!validateHexadecimal(node.right)) {
+                    throw new TypeError('Tree element of wrong type is passed. Hexadecimal expected.');
                 }
                 hashRight = node.right;
             } else if (isObject(node.right)) {
@@ -147,20 +129,15 @@ export function merkleProof(rootHash, count, proofNode, range, type) {
                 } else {
                     hashRight = recursive(node.right, depth + 1, index * 2 + 1);
                 }
-                if (hashRight === undefined || hashRight === null) {
-                    return null;
-                }
             } else {
-                console.error('Invalid type of right node.');
-                return null;
+                throw new TypeError('Invalid type of right node.');
             }
 
             summingBuffer = new Uint8Array(64);
             summingBuffer.set(hexadecimalToUint8Array(hashLeft));
             summingBuffer.set(hexadecimalToUint8Array(hashRight), 32);
         } else if (depth === 0 || rootBranch === 'left') {
-            console.error('Right leaf is missed in left branch of tree.');
-            return null;
+            throw new Error('Right leaf is missed in left branch of tree.');
         } else {
             summingBuffer = hexadecimalToUint8Array(hashLeft);
         }
@@ -169,83 +146,58 @@ export function merkleProof(rootHash, count, proofNode, range, type) {
     }
 
     // validate rootHash
-    if (validateHexHash(rootHash) === false) {
-        return;
+    if (!validateHexadecimal(rootHash)) {
+        throw new TypeError('Root hash of wrong type is passed. Hexadecimal expected.');
     }
 
     // validate count
     if (!(typeof count === 'number' || typeof count === 'string')) {
-        console.error('Invalid value is passed as count parameter. Number or string is expected.');
-        return;
+        throw new TypeError('Invalid value is passed as count parameter. Number or string is expected.');
     }
-    try {
-        count = bigInt(count);
-    } catch (e) {
-        console.error('Invalid value is passed as count parameter.');
-        return;
-    }
+
+    count = bigInt(count);
+
     if (count.lt(0)) {
-        console.error('Invalid count parameter. Count can\'t be below zero.');
-        return;
+        throw new RangeError('Invalid count parameter. Count can\'t be below zero.');
     }
 
     // validate range
     if (Array.isArray(range) === false || range.length !== 2) {
-        console.error('Invalid type of range parameter. Array of two elements expected.');
-        return;
+        throw new TypeError('Invalid type of range parameter. Array of two elements expected.');
     } else if (!(typeof range[0] === 'number' || typeof range[0] === 'string')) {
-        console.error('Invalid value is passed as start of range parameter.');
-        return;
+        throw new TypeError('Invalid value is passed as start of range parameter.');
     } else if (!(typeof range[1] === 'number' || typeof range[1] === 'string')) {
-        console.error('Invalid value is passed as end of range parameter.');
-        return;
+        throw new TypeError('Invalid value is passed as end of range parameter.');
     }
-    var rangeStart;
-    try {
-        rangeStart = bigInt(range[0]);
-    } catch (e) {
-        console.error('Invalid value is passed as start of range parameter. Number or string is expected.');
-        return;
-    }
-    var rangeEnd;
-    try {
-        rangeEnd = bigInt(range[1]);
-    } catch (e) {
-        console.error('Invalid value is passed as end of range parameter. Number or string is expected.');
-        return;
-    }
+
+    var rangeStart = bigInt(range[0]);
+    var rangeEnd = bigInt(range[1]);
+
     if (rangeStart.gt(rangeEnd)) {
-        console.error('Invalid range parameter. Start index can\'t be out of range.');
-        return;
+        throw new RangeError('Invalid range parameter. Start index can\'t be out of range.');
     } else if (rangeStart.lt(0)) {
-        console.error('Invalid range parameter. Start index can\'t be below zero.');
-        return;
+        throw new RangeError('Invalid range parameter. Start index can\'t be below zero.');
     } else if (rangeEnd.lt(0)) {
-        console.error('Invalid range parameter. End index can\'t be below zero.');
-        return;
+        throw new RangeError('Invalid range parameter. End index can\'t be below zero.');
     } else if (rangeStart.gt(count.minus(1))) {
         return [];
     }
 
     // validate proofNode
     if (isObject(proofNode) === false) {
-        console.error('Invalid type of proofNode parameter. Object expected.');
-        return;
+        throw new TypeError('Invalid type of proofNode parameter. Object expected.');
     }
 
     var height = calcHeight(count);
     var start = rangeStart;
     var end = rangeEnd.lt(count) ? rangeEnd : count.minus(1);
+
     var actualHash = recursive(proofNode, 0, 0);
 
-    if (actualHash === undefined) { // tree is invalid
-        return;
-    } else if (rootHash.toLowerCase() !== actualHash) {
-        console.error('rootHash parameter is not equal to actual hash.');
-        return;
+    if (rootHash.toLowerCase() !== actualHash) {
+        throw new Error('rootHash parameter is not equal to actual hash.');
     } else if (bigInt(elements.length).neq(end.eq(start) ? 1 : end.minus(start).plus(1))) {
-        console.error('Actual elements in tree amount is not equal to requested.');
-        return;
+        throw new Error('Actual elements in tree amount is not equal to requested.');
     }
 
     return elements;

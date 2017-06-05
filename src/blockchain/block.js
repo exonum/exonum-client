@@ -2,7 +2,7 @@ import {isObject} from '../helpers';
 import * as primitive from '../types/primitive';
 import {newType} from '../types/generic';
 import {newMessage} from '../types/message';
-import {validateHexHash} from '../types/validate';
+import {validateHexadecimal} from '../types/validate';
 import {hash, verifySignature} from '../crypto';
 
 /**
@@ -44,21 +44,17 @@ export function verifyBlock(data, validators) {
     });
 
     if (isObject(data) === false) {
-        console.error('Wrong type of data parameter. Object is expected.');
         return false;
     } else if (isObject(data.block) === false) {
-        console.error('Wrong type of block field in data parameter. Object is expected.');
         return false;
     } else if (Array.isArray(data.precommits) === false) {
-        console.error('Wrong type of precommits field in data parameter. Array is expected.');
         return false;
     } else if (Array.isArray(validators) === false) {
-        console.error('Wrong type of validators parameter. Array is expected.');
         return false;
     }
 
     for (var i = 0; i < validators.length; i++) {
-        if (validateHexHash(validators[i]) === false) {
+        if (!validateHexadecimal(validators[i])) {
             return false;
         }
     }
@@ -66,21 +62,26 @@ export function verifyBlock(data, validators) {
     var validatorsTotalNumber = validators.length;
     var uniqueValidators = [];
     var round;
-    var blockHash = hash(data.block, Block);
+
+    try {
+        var blockHash = hash(data.block, Block);
+    } catch (error) {
+        return false;
+    }
 
     for (i = 0; i < data.precommits.length; i++) {
         var precommit = data.precommits[i];
 
         if (isObject(precommit.body) === false) {
-            console.error('Wrong type of precommits body. Object is expected.');
             return false;
-        } else if (validateHexHash(precommit.signature, 64) === false) {
-            console.error('Wrong type of precommits signature. Hexadecimal of 64 length is expected.');
+        }
+
+        if (!validateHexadecimal(precommit.signature, 64)) {
             return false;
         }
 
         if (precommit.body.validator >= validatorsTotalNumber) {
-            console.error('Wrong index passed. Validator does not exist.');
+            // validator does not exist
             return false;
         }
 
@@ -89,30 +90,29 @@ export function verifyBlock(data, validators) {
         }
 
         if (precommit.body.height !== data.block.height) {
-            console.error('Wrong height of block in precommit.');
+            // wrong height of block in precommit
             return false;
         } else if (precommit.body.block_hash !== blockHash) {
-            console.error('Wrong hash of block in precommit.');
+            // wrong hash of block in precommit
             return false;
         }
 
         if (round === undefined) {
             round = precommit.body.round;
         } else if (precommit.body.round !== round) {
-            console.error('Wrong round in precommit.');
+            // wrong round in precommit
             return false;
         }
 
         var publicKey = validators[precommit.body.validator];
 
-        if (verifySignature(precommit.signature, publicKey, precommit.body, Precommit) === false) {
-            console.error('Wrong signature of precommit.');
+        if (!verifySignature(precommit.signature, publicKey, precommit.body, Precommit)) {
             return false;
         }
     }
 
     if (uniqueValidators.length <= validatorsTotalNumber * 2 / 3) {
-        console.error('Not enough precommits from unique validators.');
+        // not enough precommits from unique validators
         return false;
     }
 

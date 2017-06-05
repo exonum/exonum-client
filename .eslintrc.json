@@ -10,7 +10,6 @@
     },
     "rules": {
         "quotes": ["error", "single"],
-        "indent": ["error", 4],
-        "no-console": "off"
+        "indent": ["error", 4]
     }
 }

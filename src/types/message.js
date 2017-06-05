@@ -35,6 +35,7 @@ class NewMessage {
                 payload: {type: primitive.Uint32, size: 4, from: 6, to: 10}
             }
         });
+
         var buffer = MessageHead.serialize({
             network_id: 0,
             version: 0,
@@ -45,9 +46,6 @@ class NewMessage {
 
         // serialize and append message body
         buffer = serialization.serialize(buffer, MessageHead.size, data, this);
-        if (buffer === undefined) {
-            return;
-        }
 
         // calculate payload and insert it into buffer
         primitive.Uint32(buffer.length + SIGNATURE_LENGTH, buffer, MessageHead.fields.payload.from, MessageHead.fields.payload.to);
