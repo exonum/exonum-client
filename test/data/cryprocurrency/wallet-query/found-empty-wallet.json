@@ -20,6 +20,10 @@
                     },
                     "validator": 0
                 },
+                "network_id": 0,
+                "protocol_version": 0,
+                "message_id": 4,
+                "service_id": 0,
                 "signature": "0bfe83d9310c944b04755a749e8f01b49a9aeb8fc887595779fadf73a321ca08307679db662768edd2dc6375dce0589af3888fc1f6601a6faa27ca72a3fe7707"
             },
             {
@@ -34,6 +38,10 @@
                     },
                     "validator": 3
                 },
+                "network_id": 0,
+                "protocol_version": 0,
+                "message_id": 4,
+                "service_id": 0,
                 "signature": "64714cc185616b3318e2c5aa98bef05770d94d6107f6d31541063c35d01a17e04827246fd9ed776ab39cc560632b9cf9035e45f942acef777ce2016a8ff70607"
             },
             {
@@ -48,6 +56,10 @@
                     },
                     "validator": 2
                 },
+                "network_id": 0,
+                "protocol_version": 0,
+                "message_id": 4,
+                "service_id": 0,
                 "signature": "cad66f77a81538c7b2abae2f1285b3b163add57cea701ee257b524522583e30af2d45bc01427e67db48ce1487fe0348a9728553aab61b8cb3aa44dffe6d74209"
             }
         ]
@@ -88,6 +100,8 @@
                     "name": "Tina",
                     "pub_key": "72a3466b65ed9b5deb868120fc5424312dadf4bfb6258a6be32b051b47604068"
                 },
+                "network_id": 0,
+                "protocol_version": 0,
                 "message_id": 130,
                 "service_id": 128,
                 "signature": "26aca3191d9258b1766ed1103c720d608d6989ea31a917be6a5099b89c9f916b07d1608722ac003976708391cf2b1eee930af10296ea85d5f42e485984e78307"

@@ -88,6 +88,8 @@ describe('Check cryptocurrency functions', function() {
         });
         var AddFundsTransactionParams = {
             size: 48,
+            network_id: 0,
+            protocol_version: 0,
             service_id: 128,
             message_id: 129,
             fields: {
@@ -98,6 +100,8 @@ describe('Check cryptocurrency functions', function() {
         };
         var CreateWalletTransactionParams = {
             size: 40,
+            network_id: 0,
+            protocol_version: 0,
             service_id: 128,
             message_id: 130,
             fields: {
@@ -107,6 +111,8 @@ describe('Check cryptocurrency functions', function() {
         };
         var TransferTransactionParams = {
             size: 80,
+            network_id: 0,
+            protocol_version: 0,
             service_id: 128,
             message_id: 128,
             fields: {
@@ -141,7 +147,7 @@ describe('Check cryptocurrency functions', function() {
             }
 
             // validate block
-            if (!Exonum.verifyBlock(data.block_info, validators)) {
+            if (!Exonum.verifyBlock(data.block_info, validators, 0)) {
                 return;
             }
 

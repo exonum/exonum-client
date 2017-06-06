@@ -52,6 +52,8 @@ describe('Check cryptography', function() {
         it('should return hash of data of newMessage type', function() {
             var CustomMessage = Exonum.newMessage({
                 size: 18,
+                network_id: 0,
+                protocol_version: 0,
                 service_id: 1,
                 message_id: 2,
                 fields: {
@@ -76,6 +78,8 @@ describe('Check cryptography', function() {
         it('should return hash of data of newMessage type using built-in method', function() {
             var CustomMessage = Exonum.newMessage({
                 size: 18,
+                network_id: 0,
+                protocol_version: 0,
                 service_id: 1,
                 message_id: 2,
                 fields: {
@@ -138,6 +142,8 @@ describe('Check cryptography', function() {
         it('should throw error when data of invalid NewMessage type', function() {
             var CustomMessage = Exonum.newMessage({
                 size: 18,
+                network_id: 0,
+                protocol_version: 0,
                 service_id: 1,
                 message_id: 2,
                 fields: {
@@ -197,6 +203,8 @@ describe('Check cryptography', function() {
             var secretKey = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
             var CustomMessage = Exonum.newMessage({
                 size: 18,
+                network_id: 0,
+                protocol_version: 0,
                 service_id: 1,
                 message_id: 2,
                 fields: {
@@ -221,6 +229,8 @@ describe('Check cryptography', function() {
             var secretKey = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
             var CustomMessage = Exonum.newMessage({
                 size: 18,
+                network_id: 0,
+                protocol_version: 0,
                 service_id: 1,
                 message_id: 2,
                 fields: {
@@ -281,6 +291,8 @@ describe('Check cryptography', function() {
             var secretKey = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36';
             var CustomMessage = Exonum.newMessage({
                 size: 18,
+                network_id: 0,
+                protocol_version: 0,
                 service_id: 1,
                 message_id: 2,
                 fields: {
@@ -411,6 +423,8 @@ describe('Check cryptography', function() {
             var signature = '4006cef1884941850a6b97a64ed7f12d1e1053188618ef71b8c9f87438b943b1969e08011e45db8299bb738fec60c9dcd1936ab9ba44392cacc7f0385f18dd09';
             var CustomMessage = Exonum.newMessage({
                 size: 18,
+                network_id: 0,
+                protocol_version: 0,
                 service_id: 1,
                 message_id: 2,
                 fields: {
@@ -435,6 +449,8 @@ describe('Check cryptography', function() {
             var signature = '4006cef1884941850a6b97a64ed7f12d1e1053188618ef71b8c9f87438b943b1969e08011e45db8299bb738fec60c9dcd1936ab9ba44392cacc7f0385f18dd09';
             var CustomMessage = Exonum.newMessage({
                 size: 18,
+                network_id: 0,
+                protocol_version: 0,
                 service_id: 1,
                 message_id: 2,
                 fields: {
@@ -515,6 +531,8 @@ describe('Check cryptography', function() {
             var signature = '24a5224702d670c95a78ef1f753c9e6e698da5b2a2c52dcc51b5bf9e556e717fb763b1a5e78bd39e5369a139ab68ae50dd19a129038e8da3af30985f09549500';
             var CustomMessage = Exonum.newMessage({
                 size: 18,
+                network_id: 0,
+                protocol_version: 0,
                 service_id: 1,
                 message_id: 2,
                 fields: {

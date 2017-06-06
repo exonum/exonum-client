@@ -19,6 +19,10 @@
                 },
                 "validator": 0
             },
+            "network_id": 0,
+            "protocol_version": 0,
+            "message_id": 4,
+            "service_id": 0,
             "signature": "e07bb88b65e3f24eb222bada92e2cd264e5969d8c87fd40dfff2c8b99a9dc73ea3257567957f6c754ef3c962da9653cf66704778a46f43e2a5418e8186887f0d"
         },
         {
@@ -33,6 +37,10 @@
                 },
                 "validator": 3
             },
+            "network_id": 0,
+            "protocol_version": 0,
+            "message_id": 4,
+            "service_id": 0,
             "signature": "9c02c6f4e4ebf392278c3d96f890a5dc67701b5ce97d6122f65ab2abc73934719d3007f376b67d5f9b4a1aee7b23912734cf45928e13a4c832f37ea0bee37800"
         },
         {
@@ -47,6 +55,10 @@
                 },
                 "validator": 2
             },
+            "network_id": 0,
+            "protocol_version": 0,
+            "message_id": 4,
+            "service_id": 0,
             "signature": "598b5e1c2b437e288287972b24473aa733c0f64b4f266e0f0d3acb78d050c08c5d8f01d1add12d649b0331b1e1090b61771ed8fba79c126d70f88c68a5e5320e"
         }
     ]
