@@ -147,7 +147,7 @@ describe('Check cryptocurrency functions', function() {
             }
 
             // validate block
-            if (!Exonum.verifyBlock(data.block_info, validators)) {
+            if (!Exonum.verifyBlock(data.block_info, validators, 0)) {
                 return;
             }
 
