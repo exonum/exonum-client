@@ -203,6 +203,72 @@ describe('Check built-in types', function() {
 
     });
 
+    describe('Process EncryptedDigest', function() {
+
+        it('should serialize data and return array of 8-bit integers when the value is valid string', function() {
+            var Type = Exonum.newType({
+                size: 128,
+                fields: {key: {type: Exonum.EncryptedDigest, size: 128, from: 0, to: 128}}
+            });
+            var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'};
+            var buffer = Type.serialize(data);
+
+            expect(buffer).to.deep.equal([245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161, 242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54, 245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161, 242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54, 245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161, 242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54, 245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161, 242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54]);
+        });
+
+        it('should throw error when the range of segment is invalid', function() {
+            var Type = Exonum.newType({
+                size: 128,
+                fields: {key: {type: Exonum.EncryptedDigest, size: 128, from: 0, to: 64}}
+            });
+            var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'};
+
+            expect(() => Type.serialize(data)).to.throw(Error);
+        });
+
+        it('should throw error when the value is invalid string', function() {
+            var Type = Exonum.newType({
+                size: 128,
+                fields: {key: {type: Exonum.EncryptedDigest, size: 128, from: 0, to: 128}}
+            });
+            var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3z'};
+
+            expect(() => Type.serialize(data)).to.throw(Error);
+        });
+
+        it('should throw error when the value is too long string', function() {
+            var Type = Exonum.newType({
+                size: 128,
+                fields: {key: {type: Exonum.EncryptedDigest, size: 128, from: 0, to: 128}}
+            });
+            var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365'};
+
+            expect(() => Type.serialize(data)).to.throw(Error);
+        });
+
+        it('should throw error when the value is too short string', function() {
+            var Type = Exonum.newType({
+                size: 128,
+                fields: {key: {type: Exonum.EncryptedDigest, size: 128, from: 0, to: 128}}
+            });
+            var data = {key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3'};
+
+            expect(() => Type.serialize(data)).to.throw(Error);
+        });
+
+        it('should throw error when the value of invalid type', function() {
+            var Type = Exonum.newType({
+                size: 128,
+                fields: {key: {type: Exonum.EncryptedDigest, size: 128, from: 0, to: 128}}
+            });
+
+            [true, null, undefined, 57, [], {}, new Date()].forEach(function(key) {
+                expect(() => Type.serialize({key: key})).to.throw(TypeError);
+            });
+        });
+
+    });
+
     describe('Process Timespec', function() {
 
         it('should serialize data and return array of 8-bit integers when the value is valid timestamp in nanoseconds passed as positive number', function() {

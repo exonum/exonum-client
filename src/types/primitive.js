@@ -299,6 +299,27 @@ export function Digest(digest, buffer, from, to) {
 }
 
 /**
+ * @param {string} box
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {Array}
+ */
+export function EncryptedDigest(box, buffer, from, to) {
+    if (!validate.validateHexadecimal(box, 128)) {
+        throw new TypeError('EncryptedDigest of wrong type is passed: ' + box);
+    }
+
+    if ((to - from) !== 128) {
+        throw new Error('EncryptedDigest segment is of wrong length. 128 bytes long is required to store transmitted value.');
+    }
+
+    insertHexadecimalToByteArray(box, buffer, from, to);
+
+    return buffer;
+}
+
+/**
  * @param {string} publicKey
  * @param {Array} buffer
  * @param {number} from
