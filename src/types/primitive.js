@@ -50,6 +50,23 @@ function insertIntegerToByteArray(number, buffer, from, to) {
 }
 
 /**
+ * @param {Array} arr
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ */
+function insertByteArrayToByteArray(arr, buffer, from, to) {
+    for (var i = 0; i < arr.length; i++) {
+        buffer[from] = arr[i];
+        from++;
+
+        if (from > to) {
+            break;
+        }
+    }
+}
+
+/**
  * @param {string} str
  * @param {Array} buffer
  * @param {number} from
@@ -353,6 +370,31 @@ export function Timespec(nanoseconds, buffer, from, to) {
     var val = bigInt(nanoseconds);
 
     insertIntegerToByteArray(val, buffer, from, to);
+
+    return buffer;
+}
+
+/**
+ * @param {Array|string} value
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {Array}
+ */
+export function FixedBuffer(value, buffer, from, to) {
+    var size = to - from;
+
+    if (size < 0) {
+        throw new Error('FixedBuffer segment is of wrong length.');
+    }
+
+    if (typeof value === 'string' && validate.validateHexadecimal(value, size)) {
+        insertHexadecimalToByteArray(value, buffer, from, to);
+    } else if (validate.validateBytesArray(value) && size === value.length) {
+        insertByteArrayToByteArray(value, buffer, from, to);
+    } else {
+        throw new TypeError('FixedBuffer of wrong type is passed: ' + value);
+    }
 
     return buffer;
 }

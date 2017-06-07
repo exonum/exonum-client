@@ -845,4 +845,151 @@ describe('Check built-in types', function() {
 
     });
 
+    describe('Process FixedBuffer', function() {
+
+        it('should serialize data and return array of 8-bit integers when the value is valid fixed buffer passed as array', function() {
+            var Type = Exonum.newType({
+                size: 16,
+                fields: {
+                    balance: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
+                    phrase: {type: Exonum.FixedBuffer, size: 8, from: 8, to: 16}
+                }
+            });
+            var data = {
+                balance: 613228,
+                phrase: [245, 134, 74, 182, 165, 162, 25, 6]
+            };
+            var buffer = Type.serialize(data);
+
+            expect(buffer).to.deep.equal([108, 91, 9, 0, 0, 0, 0, 0, 245, 134, 74, 182, 165, 162, 25, 6]);
+        });
+
+        it('should serialize data and return array of 8-bit integers when the value is valid fixed buffer passed as hexadecimal string', function() {
+            var Type = Exonum.newType({
+                size: 16,
+                fields: {
+                    balance: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
+                    phrase: {type: Exonum.FixedBuffer, size: 8, from: 8, to: 16}
+                }
+            });
+            var data = {
+                balance: 613228,
+                phrase: 'f5864ab6a5a21906'
+            };
+            var buffer = Type.serialize(data);
+
+            expect(buffer).to.deep.equal([108, 91, 9, 0, 0, 0, 0, 0, 245, 134, 74, 182, 165, 162, 25, 6]);
+        });
+
+        it('should throw error when the range of segment is invalid', function() {
+            var Type = Exonum.newType({
+                size: 8,
+                fields: {
+                    phrase: {type: Exonum.FixedBuffer, size: 8, from: 0, to: 4}
+                }
+            });
+            var data = {
+                phrase: [245, 134, 74, 182, 165, 162, 25, 6]
+            };
+
+            expect(() => Type.serialize(data)).to.throw(Error);
+        });
+
+        it('should throw error when the value is too long bytes array', function() {
+            var Type = Exonum.newType({
+                size: 8,
+                fields: {
+                    phrase: {type: Exonum.FixedBuffer, size: 8, from: 0, to: 8}
+                }
+            });
+            var data = {
+                phrase: [245, 134, 74, 182, 165, 162, 25, 6, 5]
+            };
+
+            expect(() => Type.serialize(data)).to.throw(TypeError);
+        });
+
+        it('should throw error when the value is too short bytes array', function() {
+            var Type = Exonum.newType({
+                size: 8,
+                fields: {
+                    phrase: {type: Exonum.FixedBuffer, size: 8, from: 0, to: 8}
+                }
+            });
+            var data = {
+                phrase: [245, 134, 74, 182, 165, 162, 25]
+            };
+
+            expect(() => Type.serialize(data)).to.throw(TypeError);
+        });
+
+        it('should throw error when the value is invalid bytes array', function() {
+            var Type = Exonum.newType({
+                size: 1,
+                fields: {
+                    phrase: {type: Exonum.FixedBuffer, size: 1, from: 0, to: 1}
+                }
+            });
+
+            [[300], [-5]].forEach(function(phrase) {
+                expect(() => Type.serialize({phrase: phrase})).to.throw(TypeError);
+            });
+        });
+
+        it('should throw error when the value is bytes array of wrong type', function() {
+            var Type = Exonum.newType({
+                size: 1,
+                fields: {
+                    phrase: {type: Exonum.FixedBuffer, size: 1, from: 0, to: 1}
+                }
+            });
+
+            [[true], [null], [undefined], ['Hello world'], [[]], [{}], [new Date()]].forEach(function(phrase) {
+                expect(() => Type.serialize({phrase: phrase})).to.throw(TypeError);
+            });
+        });
+
+        it('should throw error when the value is too short hexadecimal string', function() {
+            var Type = Exonum.newType({
+                size: 8,
+                fields: {
+                    phrase: {type: Exonum.FixedBuffer, size: 8, from: 0, to: 8}
+                }
+            });
+            var data = {
+                phrase: 'f5864ab6a5a219'
+            };
+
+            expect(() => Type.serialize(data)).to.throw(Error);
+        });
+
+        it('should throw error when the value is invalid hexadecimal string', function() {
+            var Type = Exonum.newType({
+                size: 8,
+                fields: {
+                    phrase: {type: Exonum.FixedBuffer, size: 8, from: 0, to: 8}
+                }
+            });
+            var data = {
+                phrase: 'f5864ab6a5a2190z'
+            };
+
+            expect(() => Type.serialize(data)).to.throw(Error);
+        });
+
+        it('should throw error when the value of wrong type', function() {
+            var Type = Exonum.newType({
+                size: 8,
+                fields: {
+                    phrase: {type: Exonum.FixedBuffer, size: 8, from: 0, to: 8}
+                }
+            });
+
+            [true, null, undefined, 57, [], {}, new Date()].forEach(function(phrase) {
+                expect(() => Type.serialize({phrase: phrase})).to.throw(TypeError);
+            });
+        });
+
+    });
+
 });
