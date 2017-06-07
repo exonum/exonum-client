@@ -390,7 +390,7 @@ export function FixedBuffer(value, buffer, from, to) {
 
     if (typeof value === 'string' && validate.validateHexadecimal(value, size)) {
         insertHexadecimalToByteArray(value, buffer, from, to);
-    } else if (Array.isArray(value) && size === value.length) {
+    } else if (validate.validateBytesArray(value) && size === value.length) {
         insertByteArrayToByteArray(value, buffer, from, to);
     } else {
         throw new TypeError('FixedBuffer of wrong type is passed: ' + value);

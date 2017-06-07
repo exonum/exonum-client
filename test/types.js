@@ -931,7 +931,7 @@ describe('Check built-in types', function() {
                 }
             });
 
-            [300, -5].forEach(function(phrase) {
+            [[300], [-5]].forEach(function(phrase) {
                 expect(() => Type.serialize({phrase: phrase})).to.throw(TypeError);
             });
         });
@@ -944,7 +944,7 @@ describe('Check built-in types', function() {
                 }
             });
 
-            [true, null, undefined, 'Hello world', [], {}, new Date()].forEach(function(phrase) {
+            [[true], [null], [undefined], ['Hello world'], [[]], [{}], [new Date()]].forEach(function(phrase) {
                 expect(() => Type.serialize({phrase: phrase})).to.throw(TypeError);
             });
         });
