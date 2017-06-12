@@ -1,858 +1,304 @@
 # Client for Exonum blockchain platform
 
-JavaScript toolkit to work with Exonum blockchain from both of browser and Node.js.
+This is JavaScript toolkit to work with Exonum blockchain from browser and Node.js.
 
-#### Use in browser:
+A detailed description of what it is and how it can be used can be found in [Exonum blockchain documentation](http://exonum.com/doc/architecture/clients.md).
+
+Usage in browser:
 
 ```html
 <script src="dist/exonum-client.min.js"></script>
 <script>
-    Exonum.hash(buffer);
+    Exonum.hash([0, 255, 16, 8]);
 </script>
 ```
 
-#### Use in Node.js:
+Usage in Node.js:
 
 ```javascript
 var Exonum = require('exonum-client');
-Exonum.hash(buffer);
+Exonum.hash([0, 255, 16, 8]);
 ```
 
-#### Built-in data types:
+## Working with data
 
-* [Int8](#int8)
-* [Int16](#int16)
-* [Int32](#int32)
-* [Int64](#int64)
-* [Uint8](#uint8)
-* [Uint16](#uint16)
-* [Uint32](#uint32)
-* [Uint64](#uint64)
-* [String](#string)
-* [Hash](#hash)
-* [PublicKey](#publickey)
-* [Digest](#digest)
-* [Timespec](#timespec)
-* [Bool](#bool)
+### Exonum.newType
 
-#### Custom data types:
+Used to reproduce custom data structure.
+It returns an instance of built-in class `NewType` that can be used to:
 
-* [newType](#newtype)
-* [newMessage](#newmessage)
+- [serialize]() data of passed structure;
 
-#### Cryptography:
+- [get hash]() of data of passed structure;
 
-* [Get hash](#hash-1)
-* [Sign data](#sign)
-* [Verify signature](#verifysignature)
-* [Generate key pair](#keypair)
-* [Random Uint64](#randomuint64)
+- [sign]() data of passed structure;
 
-#### Proofs of existence:
+- [verify signature]() of data of passed structure.
 
-* [Merkle proof](#merkleproofroothash-count-proofnode-range-type)
-* [Merkle Patricia proof](#merklepatriciaproofroothash-proof-key)
+All this operations are useful while work with a blockchain.
 
-#### Work with blockchain:
+To describe a custom data structure next basic primitive data types can be used:
 
-* [Verify block of precommits](#verifyblockdata-validators)
+* Signed integers: [Int8](), [Int16](), [Int32](), [Int64]()
+* Unsigned integers: [Uint8](), [Uint16](), [Uint32](), [Uint64]()
+* [String]()
+* [Hash]()
+* [PublicKey]()
+* [Digest]()
+* [Timespec]()
+* [Bool]()
+* [FixedBuffer]()
 
-#### Other:
-
-* [Build](#build)
-* [Test](#test)
-* [License](#license)
-
----
-
-## Built-in data types
-
-#### Int8
-
-A Signed integer value of the length of `1` byte.
-
-Values range is from `-128` to `127`.
-
-```
-var someType = Exonum.newType({
-    size: 1,
-    fields: {
-        someNumber: {type: Exonum.Int8, size: 1, from: 0, to: 1}
-    }
-});
-```
-
-#### Int16
-
-A Signed integer value of the length of `2` bytes.
-
-Values range is from `-32768` to `32767`.
-
-```
-var someType = Exonum.newType({
-    size: 2,
-    fields: {
-        someNumber: {type: Exonum.Int16, size: 2, from: 0, to: 2}
-    }
-});
-```
-
-#### Int32
-
-A Signed integer value of the length of `4` bytes.
-
-Values range is from `-2147483648` to `2147483647`.
-
-```
-var someType = Exonum.newType({
-    size: 4,
-    fields: {
-        someNumber: {type: Exonum.Int32, size: 4, from: 0, to: 4}
-    }
-});
-```
-
-#### Int64
-
-A Signed integer value of the length of `8` bytes.
-
-Values range is from `-9223372036854775808` to `9223372036854775807`.
-
-Value can be passed as `Number` or as `String`.
-
-Please note that JavaScript limits minimum and maximum integer number. Minimum safe integer in JavaScript is `-(2^53-1)` which is equal to `-9007199254740991`. Maximum safe integer in JavaScript is `2^53-1` which is equal to `9007199254740991`. For unsafe numbers use `String` only.
-
-To determine either number is safe use [Number.isSafeInteger()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isSafeInteger).
-
-```
-var someType = Exonum.newType({
-    size: 8,
-    fields: {
-        someNumber: {type: Exonum.Int64, size: 8, from: 0, to: 8}
-    }
-});
-```
-
-#### Uint8
-
-Unsigned integer value of the length of `1` byte.
-
-Values range is from `0` to `255`.
-
-```
-var someType = Exonum.newType({
-    size: 1,
-    fields: {
-        someNumber: {type: Exonum.Uint8, size: 1, from: 0, to: 1}
-    }
-});
-```
-
-#### Uint16
-
-Unsigned integer value of the length of `2` bytes.
-
-Values range is from `0` to `65535`.
-
-```
-var someType = Exonum.newType({
-    size: 2,
-    fields: {
-        someNumber: {type: Exonum.Uint16, size: 2, from: 0, to: 2}
-    }
-});
-```
-
-#### Uint32
-
-Unsigned integer value of the length of `4` bytes.
-
-Values range is from `0` to `4294967295`.
-
-```
-var someType = Exonum.newType({
-    size: 4,
-    fields: {
-        someNumber: {type: Exonum.Uint32, size: 4, from: 0, to: 4}
-    }
-});
-```
-
-#### Uint64
-
-Unsigned integer value of the length of `8` bytes.
-
-Values range is from `0` to `18446744073709551615`.
-
-Value can be passed as `Number` or as `String`.
-
-Please note that JavaScript limits maximum integer number. Maximum safe integer in JavaScript is `2^53-1` which is equal to `9007199254740991`. For numbers greater than safe use `String` only.
-
-```
-var someType = Exonum.newType({
-    size: 8,
-    fields: {
-        someNumber: {type: Exonum.Uint64, size: 8, from: 0, to: 8}
-    }
-});
-```
-
-#### String
-
-String value of the length of `8` bytes.
-
-```
-var someType = Exonum.newType({
-    size: 8,
-    fields: {
-        someString: {type: Exonum.String, size: 8, from: 0, to: 8}
-    }
-});
-```
-
-#### Hash
-
-Hexadecimal value of the length of `32` bytes.
-
-```
-var someType = Exonum.newType({
-    size: 32,
-    fields: {
-        someHash: {type: Exonum.Hash, size: 32, from: 0, to: 32}
-    }
-});
-```
-
-#### PublicKey
-
-Hexadecimal value of the length of `32` bytes.
-
-```
-var someType = Exonum.newType({
-    size: 32,
-    fields: {
-        somePublicKey: {type: Exonum.PublicKey, size: 32, from: 0, to: 32}
-    }
-});
-```
-
-#### Digest
-
-Hexadecimal value of the length of `64` bytes.
-
-
-```
-var someType = Exonum.newType({
-    size: 64,
-    fields: {
-        someDigest: {type: Exonum.Digest, size: 64, from: 0, to: 64}
-    }
-});
-```
-
-#### Timespec
-
-Unsigned integer value of the length of `8` bytes. Represents Unix time in nanosecond.
-
-Maximum safe integer in JavaScript is `2^53-1` which is equal to `9007199254740991`.
-
-Work around is to use value not as `Number` but as `String`.
-
-```
-var someType = Exonum.newType({
-    size: 8,
-    fields: {
-        someTimespec: {type: Exonum.Timespec, size: 8, from: 0, to: 8}
-    }
-});
-```
-
-#### Bool
-
-A Boolean value of the length of `1` byte.
-
-```
-var someType = Exonum.newType({
-    size: 1,
-    fields: {
-        someBool: {type: Exonum.Bool, size: 1, from: 0, to: 1}
-    }
-});
-```
-
----
-
-## Custom data types
-
-#### newType
-
-Used to describe custom data format to make it possible to serialize data of this format into array of 8-bit integers. Allowed to contain fields of built-in types (such as String, Hash, Uint64 etc.) and fields of `newType` type.
-
-###### Options:
-
-| Name | Type | Description |
-|---|---|---|
-| size | `number` | Full length of listed fields. |
-| fields | `Object` | A list of fields. |
-
-Returns an object of format type.
-
-##### newType.serialize(data)
-
-Can be used to retrieve representation of data of type `newType` as array of 8-bit integers.
-
-###### Parameters:
-
-| Name | Type | Description |
-|---|---|---|
-| data | `Object` ||
-
-Example:
+Here is an example of entity `User` described using `newType` method:
 
 ```javascript
-var someType = Exonum.newType({
-    size: 16,
-    fields: {
-        id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
-        name: {type: Exonum.String, size: 8, from: 8, to: 16}
-    }
-});
-
-var data = {id: 1, name: 'John Doe'};
-
-var buffer = someType.serialize(data);
-```
-
-It is possible to use other custom types as type of field: 
-
-```javascript
-var someType = Exonum.newType({
-    size: 16,
-    fields: {
-        id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
-        name: {type: Exonum.String, size: 8, from: 8, to: 16}
-    }
-});
-
-var someOtherType = Exonum.newType({
-    size: 40,
-    fields: {
-        amount: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
-        from: {type: someType, size: 16, from: 8, to: 24},
-        to: {type: someType, size: 16, from: 24, to: 40}
-    }
-});
-
-var data = {
-    amount: 500,
-    from: {id: 1, name: 'John Doe'},
-    to: {id: 2, name: 'Jane Roe'}
-};
-
-var buffer = someOtherType.serialize(data);
-```
-
-##### newType.hash(data)
-
-###### Parameters:
-
-| Name | Type | Description |
-|---|---|---|
-| data | `Object` ||
-
-Returns SHA256 hash of the data as hexadecimal string.
-
-```javascript
-var someType = Exonum.newType({
-    size: 16,
-    fields: {
-        id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
-        name: {type: Exonum.String, size: 8, from: 8, to: 16}
-    }
-});
-
-var data = {id: 1, name: 'John Doe'};
-
-var hash = someType.hash(data);
-```
-
-##### newType.sign(secretKey, data)
-
-###### Parameters:
-
-| Name | Type | Description |
-|---|---|---|
-| secretKey | `string` | A 64-byte hexadecimal string. |
-| data | `Object` ||
-
-Returns ED25519 signature of the data as hexadecimal string.
-
-```javascript
-var someType = Exonum.newType({
-    size: 16,
-    fields: {
-        id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
-        name: {type: Exonum.String, size: 8, from: 8, to: 16}
-    }
-});
-
-var data = {id: 1, name: 'John Doe'};
-
-var secretKey = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36';
-
-var signature = someType.sign(secretKey, data);
-```
-
-##### newType.verifySignature(signature, publicKey, data)
-
-###### Parameters:
-
-| Name | Type | Description |
-|---|---|---|
-| signature | `string` | A 64-byte hexadecimal string. |
-| publicKey | `string` | A 32-byte hexadecimal string. |
-| data | `Object` ||
-
-Returns `true` if verification succeeded or `false` if it failed.
-
-```javascript
-var someType = Exonum.newType({
-    size: 16,
-    fields: {
-        id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
-        name: {type: Exonum.String, size: 8, from: 8, to: 16}
-    }
-});
-
-var data = {id: 1, name: 'John Doe'};
-
-var signature = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36';
-
-var publicKey = '280a704efafae9410d7b07140bb130e4995eeb381ba90939b4eaefcaf740ca25';
-
-someType.verifySignature(signature, publicKey, data);
-```
-
-#### newMessage
-
-Used to describe custom data format to make it possible to serialize data of this format into array of 8-bit integers. Allowed to contain fields of built-in types (such as String, Hash, Uint64 etc.) and fields of `newType` type.
-
-This method is designed to represent messages. So method `newMessage` also contains header with fields that are specific for messages only.
-
-###### Options:
-
-| Name | Type | Description |
-|---|---|---|
-| size | `number` | Full length of listed fields. |
-| service_id | `number` ||
-| message_id | `number` ||
-| fields | `Object` | A list of fields. |
-
-Returns an object of format type.
-
-##### newMessage.serialize(data, cutSignature)
-
-Can be used to retrieve representation of data of type `newMessage` as array of 8-bit integers.
-
-###### Parameters:
-
-| Name | Type | Description |
-|---|---|---|
-| signature | `string` | A 64-byte hexadecimal string. |
-| publicKey | `string` | A 32-byte hexadecimal string. |
-| data | `Object` ||
-| cutSignature | `boolean` | Optional boolean flag. If set to `true` signature will not be appended to serialized data. |
-
-Example:
-
-```javascript
-var someMessage = Exonum.newMessage({
-    size: 16,
-    service_id: 7,
-    message_id: 15,
-    signature: 'aa77e9f37671ab2e85851e518aca2288f61662816bce15cfc03a8e094e7f9ecd',
+var User = Exonum.newType({
+    size: 9,
     fields: {
         name: {type: Exonum.String, size: 8, from: 0, to: 8},
-        balance: {type: Exonum.Uint64, size: 8, from: 8, to: 16}
+        age: {type: Exonum.Int8, size: 8, from: 9, to: 1}
     }
 });
+```
 
+It contains two fields: `name` of `string` type and `age` of `Int8` type.
+
+Data of type `User` can be serialized into buffer:
+
+```javascript
 var data = {
-    name: 'John Doe',
-    balance: 500
+    name: 'Tom',
+    age: 34
 };
 
-var buffer = someMessage.serialize(data);
+var buffer = Exonum.serialize(data, User);
 ```
 
-##### newMessage.hash(data)
-
-###### Parameters:
-
-| Name | Type | Description |
-|---|---|---|
-| data | `Object` ||
-
-Returns SHA256 hash of the data as hexadecimal string.
+It is possible to get hash of this data:
 
 ```javascript
-var someMessage = Exonum.newMessage({
-    size: 16,
-    service_id: 8,
-    message_id: 12,
-    signature: 'aa77e9f37671ab2e85851e518aca2288f61662816bce15cfc03a8e094e7f9ecd',
-    fields: {
-        id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
-        name: {type: Exonum.String, size: 8, from: 8, to: 16}
-    }
-});
-
-var data = {id: 1, name: 'John Doe'};
-
-var hash = someMessage.hash(data);
+var hash = Exonum.hash(data, User);
 ```
 
-##### newMessage.sign(secretKey, data)
+And so on.
 
-###### Parameters:
+The `Exonum.newType` method requires the single Object-like parameter with next structure:
 
-| Name | Type | Description |
-|---|---|---|
-| secretKey | `string` | A 64-byte hexadecimal string. |
-| data | `Object` ||
+| Field | Type | Is mandatory | Description |
+|---|---|---|---|
+| size | `number` | yes | The total length in bytes |
+| fields | `Array` | yes | Array of fields |
 
-Returns ED25519 signature of the data as hexadecimal string.
+Field structure:
+
+| Field | Type | Is mandatory | Description |
+|---|---|---|---|
+| type | built-in primitive type / entity of a `NewClass` | yes | Field type. Can contains fields of a `NewType` types |
+| size | `number` | yes | The total length in bytes |
+| from | `number` | yes | The beginning of the segment in the buffer |
+| to | `number` | yes | The end of the segment in the buffer |
+
+### Exonum.newMessage
+
+Very similar to `Exonum.newType` method and used to describe blockchain transaction. 
+It returns an instance of built-in class `NewMessage` that can be used to:
+
+- [serialize] data of passed structure;
+
+- [get hash] of data of passed structure;
+
+- [sign data] of passed structure;
+
+- [verify signature] of data of passed structure.
+
+Here is an example of 'SendFunds' transaction:
 
 ```javascript
-var someMessage = Exonum.newMessage({
-    size: 16,
-    service_id: 8,
-    message_id: 12,
-    signature: 'aa77e9f37671ab2e85851e518aca2288f61662816bce15cfc03a8e094e7f9ecd',
+var SendFunds = Exonum.newMessage({
+    size: 24,
+    network_id: 0,
+    protocol_version: 0,
+    service_id: 0,
+    message_id: 0,
+    signature: '07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c366752be882314f5bbbc9a6af2ae634fc',
     fields: {
-        id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
-        name: {type: Exonum.String, size: 8, from: 8, to: 16}
+        from: {type: Exonum.Hash, size: 8, from: 0, to: 8},
+        to: {type: Exonum.Hash, size: 8, from: 8, to: 16},
+        amount: {type: Exonum.Uint64, size: 8, from: 16, to: 24}
     }
 });
-
-var data = {id: 1, name: 'John Doe'};
-
-var secretKey = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36';
-
-var signature = someMessage.sign(secretKey, data);
 ```
 
-##### newMessage.verifySignature(signature, publicKey, data)
+`SendFunds` transaction is of three fields: `from` of `Hash` type, `to`  of `Hash` type and `amount` of `Uint64` type.
+This transaction can be used to send funds from `from` wallet to `to` wallet.
 
-###### Parameters:
-
-| Name | Type | Description |
-|---|---|---|
-| signature | `string` | A 64-byte hexadecimal string. |
-| publicKey | `string` | A 32-byte hexadecimal string. |
-| data | `Object` ||
-
-Returns `true` if verification succeeded or `false` if it failed.
+Data of type `SendFunds` can be serialized into buffer:
 
 ```javascript
-var someMessage = Exonum.newMessage({
-    size: 16,
-    service_id: 8,
-    message_id: 12,
-    signature: 'aa77e9f37671ab2e85851e518aca2288f61662816bce15cfc03a8e094e7f9ecd',
-    fields: {
-        id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
-        name: {type: Exonum.String, size: 8, from: 8, to: 16}
-    }
-});
+var data = {
+    from: '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030',
+    to: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36',
+    amount: 50
+};
 
-var data = {id: 1, name: 'John Doe'};
-
-var signature = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36';
-
-var publicKey = '280a704efafae9410d7b07140bb130e4995eeb381ba90939b4eaefcaf740ca25';
-
-someMessage.verifySignature(signature, publicKey, data);
+var buffer = Exonum.serialize(data, SendFunds);
 ```
 
----
+Data of type `SendFunds` can be signed with public key:
+
+```javascript
+var signature = Exonum.sign(data, SendFunds);
+```
+
+The `Exonum.newMessage` method requires the single Object-like parameter with next structure:
+
+| Field | Type | Is mandatory | Description |
+|---|---|---|---|
+| size | `number` | yes | The total length in bytes |
+| network_id | `number` | yes ||
+| protocol_version | `number` | yes ||
+| service_id | `number` | yes ||
+| message_id | `number` | yes ||
+| signature | `string` | no* | ED25519 signature of 64 bytes presented as hexadecimal string |
+| fields | `Array` | yes | Array of fields |
+
+*\* Note that `signature` field is mandatory for get hash method.*
+
+Field structure:
+
+| Name | Type | Is mandatory | Description |
+|---|---|---|---|
+| type | built-in primitive type / entity of a `NewClass` | yes | Field type. Can contains fields of a `NewType` types |
+| size | `number` | yes | The total length in bytes |
+| from | `number` | yes | The beginning of the segment in the buffer |
+| to | `number` | yes | The end of the segment in the buffer |
 
 ## Cryptography
 
-#### hash
+### Exonum.hash
 
 Returns SHA256 hash of the data as hexadecimal string.
 
 Accept two combinations of an arguments:
 
-##### hash(data, type)
+#### Exonum.hash(data, type)
 
-###### Parameters:
-
-| Name | Type | Description |
+| Parameter | Type | Description |
 |---|---|---|
-| data | `Object` ||
+| data | `object` ||
 | type | `NewType` or `NewMessage` ||
 
-```javascript
-var someType = Exonum.newType({
-    size: 16,
-    fields: {
-        id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
-        name: {type: Exonum.String, size: 8, from: 8, to: 16}
-    }
-});
 
-var data = {id: 1, name: 'John Doe'};
+#### Exonum.hash(buffer)
 
-var hash = Exonum.hash(data, someType);
-```
-
-```javascript
-var someMessage = Exonum.newMessage({
-    size: 16,
-    service_id: 8,
-    message_id: 12,
-    signature: 'aa77e9f37671ab2e85851e518aca2288f61662816bce15cfc03a8e094e7f9ecd',
-    fields: {
-        id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
-        name: {type: Exonum.String, size: 8, from: 8, to: 16}
-    }
-});
-
-var data = {id: 1, name: 'John Doe'};
-
-var hash = Exonum.hash(data, someMessage);
-```
-
-##### hash(buffer)
-
-###### Parameters:
-
-| Name | Type | Description |
+| Parameter | Type | Description |
 |---|---|---|
-| buffer | Array-like object | An array of 8-bit integers |
+| buffer | `Array` | An array of 8-bit integers |
 
-```javascript
-var buffer = [218, 0, 3, 12, 33, 68, 105, 0];
-
-var hash = Exonum.hash(buffer);
-```
-
-#### sign
+### Exonum.sign
 
 Returns ED25519 signature of the data as hexadecimal string.
 
 Accept two combinations of an arguments:
 
-##### sign(secretKey, data, type)
+#### sign(secretKey, data, type)
 
-###### Parameters:
-
-| Name | Type | Description |
+| Parameter | Type | Description |
 |---|---|---|
-| secretKey | `string` | A 64-byte hexadecimal string. |
-| data | `Object` ||
+| secretKey | `string` | A 64-byte hexadecimal string |
+| data | `object` ||
 | type | `NewType` or `NewMessage` ||
 
-```javascript
-var someType = Exonum.newType({
-    size: 16,
-    fields: {
-        id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
-        name: {type: Exonum.String, size: 8, from: 8, to: 16}
-    }
-});
+#### sign(secretKey, buffer)
 
-var data = {id: 1, name: 'John Doe'};
-
-var secretKey = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36';
-
-var signature = Exonum.sign(secretKey, data, someType);
-```
-
-```javascript
-var someMessage = Exonum.newMessage({
-    size: 16,
-    service_id: 8,
-    message_id: 12,
-    signature: 'aa77e9f37671ab2e85851e518aca2288f61662816bce15cfc03a8e094e7f9ecd',
-    fields: {
-        id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
-        name: {type: Exonum.String, size: 8, from: 8, to: 16}
-    }
-});
-
-var data = {id: 1, name: 'John Doe'};
-
-var secretKey = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36';
-
-var signature = Exonum.sign(secretKey, data, someMessage);
-```
-
-##### sign(secretKey, buffer)
-
-###### Parameters:
-
-| Name | Type | Description |
+| Parameter | Type | Description |
 |---|---|---|
-| secretKey | `string` | A 64-byte hexadecimal string. |
-| buffer | Array-like object | An array of 8-bit integers |
+| secretKey | `string` | A 64-byte hexadecimal string |
+| buffer | `Array` | An array of 8-bit integers |
 
-```javascript
-var buffer = [218, 0, 3, 12, 33, 68, 105, 0];
-
-var secretKey = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36';
-
-var signature = Exonum.sign(secretKey, buffer);
-```
-
-#### verifySignature
+### Exonum.verifySignature
 
 Returns `true` if verification succeeded or `false` if it failed.
 
 Accept two combinations of an arguments:
 
-##### verifySignature(signature, publicKey, data, type)
+#### verifySignature(signature, publicKey, data, type)
 
-###### Parameters:
-
-| Name | Type | Description |
+| Parameter | Type | Description |
 |---|---|---|
-| signature | `string` | A 64-byte hexadecimal string. |
-| publicKey | `string` | A 32-byte hexadecimal string. |
+| signature | `string` | A 64-byte hexadecimal string |
+| publicKey | `string` | A 32-byte hexadecimal string |
 | data | `Object` ||
 | type | `NewType` or `NewMessage` ||
 
-```javascript
-var someType = Exonum.newType({
-    size: 16,
-    fields: {
-        id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
-        name: {type: Exonum.String, size: 8, from: 8, to: 16}
-    }
-});
+#### verifySignature(signature, publicKey, buffer)
 
-var data = {id: 1, name: 'John Doe'};
-
-var signature = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36';
-
-var publicKey = '280a704efafae9410d7b07140bb130e4995eeb381ba90939b4eaefcaf740ca25';
-
-Exonum.verifySignature(signature, publicKey, data, someType);
-```
-
-```javascript
-var someMessage = Exonum.newMessage({
-    size: 16,
-    service_id: 8,
-    message_id: 12,
-    signature: 'aa77e9f37671ab2e85851e518aca2288f61662816bce15cfc03a8e094e7f9ecd',
-    fields: {
-        id: {type: Exonum.Uint64, size: 8, from: 0, to: 8},
-        name: {type: Exonum.String, size: 8, from: 8, to: 16}
-    }
-});
-
-var data = {id: 1, name: 'John Doe'};
-
-var signature = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36';
-
-var publicKey = '280a704efafae9410d7b07140bb130e4995eeb381ba90939b4eaefcaf740ca25';
-
-Exonum.verifySignature(signature, publicKey, data, someMessage);
-```
-
-##### verifySignature(signature, publicKey, buffer)
-
-###### Parameters:
-
-| Name | Type | Description |
+| Parameter | Type | Description |
 |---|---|---|
-| signature | `string` | A 64-byte hexadecimal string. |
-| publicKey | `string` | A 32-byte hexadecimal string. |
-| buffer | Array-like object | An array of 8-bit integers |
+| signature | `string` | A 64-byte hexadecimal string |
+| publicKey | `string` | A 32-byte hexadecimal string |
+| buffer | `Array` | An array of 8-bit integers |
 
-```javascript
-var buffer = [218, 0, 3, 12, 33, 68, 105, 0];
-
-var signature = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36';
-
-var publicKey = '280a704efafae9410d7b07140bb130e4995eeb381ba90939b4eaefcaf740ca25';
-
-Exonum.verifySignature(signature, publicKey, buffer);
-```
-
-#### keyPair
+### Exonum.keyPair
 
 Returns random pair of `publicKey` and `secretKey` as hexadecimal strings.
 
-```
+```json
 {
-    "publicKey": ...,
-    "secretKey": ...
+    "publicKey": "...",
+    "secretKey": "..."
 }
 ```
 
-#### randomUint64
+### Exonum.randomUint64
 
-Returns random `Uint64` as a string.
-
-```
-var randomNumber = Exonum.randomUint64();
-```
-
----
+Returns random `Uint64` of cryptographic quality as a string.
 
 ## Proofs of existence
 
-#### merkleProof(rootHash, count, proofNode, range, type)
+### Exonum.merkleProof(rootHash, count, proofNode, range, type) 
 
-Check proof of Merkle tree.
+Checks proof of Merkle tree.
 
-###### Parameters:
+Returns an array of elements if tree is valid. Otherwise, an error occurs.
+
+| Parameter | Type | Description |
+|---|---|---|
+| rootHash | `string` | A 32-byte hexadecimal string |
+| count | `number` | A total count of elements in tree |
+| proofNode | `object` | A tree with proof |
+| range | `Array` | An array of two numbers. Represents list of obtained elements: `[startIndex; endIndex)` |
+| type | `NewType` | Optional parameter. MerkleProof method expects to find arrays of 8-bit integers as values in tree in the case when it is not passed | 
+
+### Exonum.merklePatriciaProof(rootHash, proof, key)
+
+Checks proof of Merkle Patricia tree.
+
+Returns element if tree is valid element is found.
+Returns `null` if tree is valid but element is not found.
+Otherwise, an error occurs.
 
 | Name | Type | Description |
 |---|---|---|
-| rootHash | `string` | A 32-byte hexadecimal string. |
-| count | `number` | A total count of elements in tree. |
-| proofNode | `Object` | A tree with proof in JSON format. |
-| range | `Array` | An array of two numbers. Represents list of obtained elements: `[startIndex; endIndex)`. |
-| type | `NewType` | Optional parameter. MerkleProof method expects to find arrays of 8-bit integers as values in tree in the case when it is not passed. | 
+| rootHash | `string` | A 32-byte hexadecimal string |
+| proofNode | `Object` | A tree with proof|
+| key | `string` | A 32-byte hexadecimal string |
+| type | `NewType` | Optional parameter. MerkleProof method expects to find arrays of 8-bit integers as values in tree in the case when it is not passed |
 
-Returns an array of elements if tree is valid or `undefined` if tree is not valid.
+## Blockchain integrity checks
 
-#### merklePatriciaProof(rootHash, proof, key)
-
-This methods can check proof of Merkle Patricia tree.
-
-###### Parameters:
-
-| Name | Type | Description |
-|---|---|---|
-| rootHash | `string` | A 32-byte hexadecimal string. |
-| proofNode | `Object` | A tree with proof in JSON format. |
-| key | `string` | A 32-byte hexadecimal string. |
-| type | `NewType` | Optional parameter. MerkleProof method expects to find arrays of 8-bit integers as values in tree in the case when it is not passed. |
-
-Returns elements data in JSON format if tree is valid and element is found. Returns `null` if tree is valid but element is not found or `undefined` if tree is not valid.
-
----
-
-## Work with blockchain
-
-#### verifyBlock(data, validators)
+### Exonum.verifyBlock(data, validators)
 
 Validate block and each precommit in block.
 
-###### Parameters:
+Returns `true` if verification is succeeded or `false` if it is failed.
 
 | Name | Type | Description |
 |---|---|---|
-| data | `Object` | Object with `block` and `precommits`. |
-| validators | `Array` | An array of validators public keys. Each public key is hexadecimal string of a 32 bytes. |
+| data | `object` ||
+| validators | `Array` | An array of validators public keys. Each public key is hexadecimal string of a 32 bytes |
 
-###### Structure of `data`:
+`data` field structure:
 
 ```
 {
@@ -877,27 +323,98 @@ Validate block and each precommit in block.
 }
 ```
 
-Returns `true` if verification is succeeded or `false` if it is failed.
+## Primitive data types
 
----
+### Signed integers
 
-## Other
+| Name | Type | Size (bytes) | Description |
+|---|---|---|---|
+| Int8 | `number` | `1` | Signed integer in a range from `-128` to `127` |
+| Int16 | `number` | `2` | Signed integer in a range from `-32768` to `32767` |
+| Int32 | `number` | `4` | Signed integer in a range from `-2147483648` to `2147483647` |
+| Int64 | `number` or `string`* | `8` | Signed integer in a range from `-9223372036854775808` to `9223372036854775807` |
 
-#### Build
+*\*Note that JavaScript limits minimum and maximum integer number.
+Minimum safe integer in JavaScript is `-(2^53-1)` which is equal to `-9007199254740991`.
+Maximum safe integer in JavaScript is `2^53-1` which is equal to `9007199254740991`.
+For unsafe numbers use `string` only.*
 
-Install npm packages required for development:
+*To determine either number is safe use [Number.isSafeInteger()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isSafeInteger).*
+
+### Unsigned integers
+
+| Name | Type | Size (bytes) | Description |
+|---|---|---|---|
+| Uint8 | `number` | `1` | Signed integer in a range from `0` to `255` |
+| Int16 | `number` | `2` | Signed integer in a range from `0` to `65535` |
+| Int32 | `number` | `4` | Signed integer in a range from `0` to `4294967295` |
+| Int64 | `number` or `string`* | `8` | Signed integer in a range from `0` to `18446744073709551615` |
+
+*\*Note that JavaScript limits minimum and maximum integer number.
+Maximum safe integer in JavaScript is `2^53-1` which is equal to `9007199254740991`.
+For numbers greater than safe use `string` only.*
+
+### String
+
+| Type | Size (bytes) | Description |
+|---|---|---|
+| `string` | `8` | String of UTF-8 characters |
+
+### Hash
+
+| Type | Size (bytes) | Description |
+|---|---|---|
+| `string` | `32` | Hexadecimal string |
+
+### PublicKey
+
+| Type | Size (bytes) | Description |
+|---|---|---|
+| `string` | `32` | Hexadecimal string |
+
+### Digest
+
+| Type | Size (bytes) | Description |
+|---|---|---|
+| `string` | `64` | Hexadecimal string |
+
+### Timespec
+
+| Type | Size (bytes) | Description |
+|---|---|---|
+| `number` or `string`* | `8` | Unix time in nanosecond |
+
+*\*Note that JavaScript limits minimum and maximum integer number.
+Maximum safe integer in JavaScript is `2^53-1` which is equal to `9007199254740991`.
+For numbers greater than safe use `string` only.*
+
+### Bool
+
+| Type | Size (bytes) | Description |
+|---|---|---|
+| `boolean` | `1` ||
+
+### FixedBuffer
+
+| Type | Size (bytes) | Description |
+|---|---|---|
+| `Array` | any | Array of 8-bit unsigned integers |
+
+## Build
+
+Install npm dependencies:
 
 ```
 $ npm install
 ```
 
-To build minimised and development versions of library execute:
+Compile browser version into `dist` folder:
 
 ```
 $ grunt
 ```
 
-#### Test
+## Test coverage
 
 To run tests execute:
 
@@ -905,6 +422,6 @@ To run tests execute:
 $ grunt test
 ```
 
-#### License
+## License
 
 Exonum Client is licensed under the Apache License (Version 2.0). See [LICENSE](LICENSE) for details.
