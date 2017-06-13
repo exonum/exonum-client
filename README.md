@@ -46,27 +46,27 @@ Field structure:
 
 Returns an instance of built-in class `NewType` that can be used to:
 
-- [serialize]() data into a byte array;
+- serialize data into a byte array;
 
-- [get hash]() of data;
+- [get hash](#calculate-hash) of data;
 
-- [sign]() data;
+- [sign](#create-digital-signature) data;
 
-- [verify signature]() of data.
+- [verify signature](#verify-digital-signature) of data.
 
 All this operations are useful while work with a blockchain.
 
 To describe a custom data structure next basic primitive data types can be used:
 
-* Signed integers: [Int8](), [Int16](), [Int32](), [Int64]()
-* Unsigned integers: [Uint8](), [Uint16](), [Uint32](), [Uint64]()
-* [String]()
-* [Hash]()
-* [PublicKey]()
-* [Digest]()
-* [Timespec]()
-* [Bool]()
-* [FixedBuffer]()
+* [Signed integers](#signed-integers)
+* [Unsigned integers](#unsigned-integers)
+* [String](#string)
+* [Hash](#hash)
+* [PublicKey](#publickey)
+* [Digest](#digest)
+* [Timespec](#timespec)
+* [Bool](#bool)
+* [FixedBuffer](#fixedbuffer)
 
 Here is an example of entity `User` described using `newType` method:
 
@@ -139,7 +139,7 @@ Requires a single parameter passed as `object` with next structure:
 | signature | `string` | no* | ED25519 signature of 64 bytes presented as hexadecimal string |
 | fields | `Array` | yes | Array of fields |
 
-*\* Note that `signature` field is mandatory for [hash calculating]().*
+*\* Note that `signature` field is mandatory for [hash calculating](#calculate-hash).*
 
 Field structure:
 
@@ -152,13 +152,13 @@ Field structure:
 
 Returns an instance of built-in class `NewMessage` that can be used to:
 
-- [serialize]() data of passed structure;
+- serialize data of passed structure;
 
-- [get hash]() of data of passed structure;
+- [get hash](#calculate-hash) of data of passed structure;
 
-- [sign data]() of passed structure;
+- [sign data](#create-digital-signature) of passed structure;
 
-- [verify signature]() of data of passed structure.
+- [verify signature](#verify-digital-signature) of data of passed structure.
 
 Here is an example of 'SendFunds' transaction:
 
