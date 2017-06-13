@@ -64,7 +64,6 @@ To describe a custom data structure next basic primitive data types can be used:
 * [Hash](#hash)
 * [PublicKey](#publickey)
 * [Digest](#digest)
-* [Timespec](#timespec)
 * [Bool](#bool)
 * [FixedBuffer](#fixedbuffer)
 
@@ -419,16 +418,6 @@ For numbers greater than safe use `string` only.*
 | Type | Size (bytes) | Description |
 |---|---|---|
 | `string` | `64` | Hexadecimal string |
-
-### Timespec
-
-| Type | Size (bytes) | Description |
-|---|---|---|
-| `number` or `string`* | `8` | Unix time in nanosecond |
-
-*\*Note that JavaScript limits minimum and maximum integer number.
-Maximum safe integer in JavaScript is `2^53-1` which is equal to `9007199254740991`.
-For numbers greater than safe use `string` only.*
 
 ### Bool
 
