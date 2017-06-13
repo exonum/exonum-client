@@ -1,8 +1,7 @@
 # Client for Exonum blockchain platform
 
 This is JavaScript toolkit to work with Exonum blockchain from browser and Node.js.
-
-A detailed description of what it is and how it can be used can be found in [Exonum blockchain documentation](http://exonum.com/doc/architecture/clients.md).
+A detailed description of what it is and how it can be used can be found in [Exonum blockchain documentation](http://exonum.com/doc/architecture/clients).
 
 Usage in browser:
 
@@ -22,18 +21,38 @@ Exonum.hash([0, 255, 16, 8]);
 
 ## Working with data
 
-### Exonum.newType
+### Custom data structure
 
-Used to reproduce custom data structure.
-It returns an instance of built-in class `NewType` that can be used to:
+#### Exonum.newType(params)
 
-- [serialize]() data of passed structure;
+This is the basic method for work with data that is stored in the Exonum blockchain.
+It is used to describe data structure.
 
-- [get hash]() of data of passed structure;
+Requires a single parameter passed as `object` with next structure:
 
-- [sign]() data of passed structure;
+| Field | Type | Is mandatory | Description |
+|---|---|---|---|
+| size | `number` | yes | The total length in bytes |
+| fields | `Array` | yes | Array of fields |
 
-- [verify signature]() of data of passed structure.
+Field structure:
+
+| Field | Type | Is mandatory | Description |
+|---|---|---|---|
+| type | built-in primitive type / entity of a `NewClass` | yes | Field type. Can contains fields of a `NewType` types |
+| size | `number` | yes | The total length in bytes |
+| from | `number` | yes | The beginning of the segment in the buffer |
+| to | `number` | yes | The end of the segment in the buffer |
+
+Returns an instance of built-in class `NewType` that can be used to:
+
+- [serialize]() data into a byte array;
+
+- [get hash]() of data;
+
+- [sign]() data;
+
+- [verify signature]() of data.
 
 All this operations are useful while work with a blockchain.
 
@@ -63,7 +82,12 @@ var User = Exonum.newType({
 
 It contains two fields: `name` of `string` type and `age` of `Int8` type.
 
-Data of type `User` can be serialized into buffer:
+Each primitive data type has its own segment length (`size`).
+And it is necessary to specify segment range in the resulting byte array (`from` and `to`).
+
+Total length of the byte array must be also specified.
+
+Data of type `User` can be serialized into byte array:
 
 ```javascript
 var data = {
@@ -74,42 +98,67 @@ var data = {
 var buffer = Exonum.serialize(data, User);
 ```
 
+Detailed description of [serialization works](http://exonum.com/doc/advanced/serialization) in Exonum blockchain.
+
 It is possible to get hash of this data:
 
 ```javascript
 var hash = Exonum.hash(data, User);
 ```
 
-And so on.
+To sign it:
 
-The `Exonum.newType` method requires the single Object-like parameter with next structure:
+```javascript
+var secretKey = '07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c366752be882314f5bbbc9a6af2ae634fc';
+var signature = Exonum.sign(secretKey, data, User);
+```
+
+To verify signature:
+
+```javascript
+var signature = '07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c366752be882314f5bbbc9a6af2ae634fc';
+var publicKey = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030';
+var result = Exonum.verifySignature(signature, publicKey, data, User);
+```
+
+### Transaction
+
+#### Exonum.newMessage(params)
+
+This method is very similar to `Exonum.newType` method and used to describe transaction in blockchain. 
+
+Requires a single parameter passed as `object` with next structure:
 
 | Field | Type | Is mandatory | Description |
 |---|---|---|---|
 | size | `number` | yes | The total length in bytes |
+| network_id | `number` | yes ||
+| protocol_version | `number` | yes ||
+| service_id | `number` | yes ||
+| message_id | `number` | yes ||
+| signature | `string` | no* | ED25519 signature of 64 bytes presented as hexadecimal string |
 | fields | `Array` | yes | Array of fields |
+
+*\* Note that `signature` field is mandatory for [hash calculating]().*
 
 Field structure:
 
-| Field | Type | Is mandatory | Description |
+| Name | Type | Is mandatory | Description |
 |---|---|---|---|
 | type | built-in primitive type / entity of a `NewClass` | yes | Field type. Can contains fields of a `NewType` types |
 | size | `number` | yes | The total length in bytes |
 | from | `number` | yes | The beginning of the segment in the buffer |
 | to | `number` | yes | The end of the segment in the buffer |
 
-### Exonum.newMessage
+Returns an instance of built-in class `NewMessage` that can be used to:
 
-Very similar to `Exonum.newType` method and used to describe blockchain transaction. 
-It returns an instance of built-in class `NewMessage` that can be used to:
+- [serialize]() data of passed structure;
 
-- [serialize] data of passed structure;
+- [get hash]() of data of passed structure;
 
-- [get hash] of data of passed structure;
+- [sign data]() of passed structure;
 
-- [sign data] of passed structure;
-
-- [verify signature] of data of passed structure.
+- [verify signature]() of data of passed structure.
 
 Here is an example of 'SendFunds' transaction:
 
@@ -132,7 +181,7 @@ var SendFunds = Exonum.newMessage({
 `SendFunds` transaction is of three fields: `from` of `Hash` type, `to`  of `Hash` type and `amount` of `Uint64` type.
 This transaction can be used to send funds from `from` wallet to `to` wallet.
 
-Data of type `SendFunds` can be serialized into buffer:
+Data of type `SendFunds` can be serialized into byte array:
 
 ```javascript
 var data = {
@@ -150,32 +199,9 @@ Data of type `SendFunds` can be signed with public key:
 var signature = Exonum.sign(data, SendFunds);
 ```
 
-The `Exonum.newMessage` method requires the single Object-like parameter with next structure:
-
-| Field | Type | Is mandatory | Description |
-|---|---|---|---|
-| size | `number` | yes | The total length in bytes |
-| network_id | `number` | yes ||
-| protocol_version | `number` | yes ||
-| service_id | `number` | yes ||
-| message_id | `number` | yes ||
-| signature | `string` | no* | ED25519 signature of 64 bytes presented as hexadecimal string |
-| fields | `Array` | yes | Array of fields |
-
-*\* Note that `signature` field is mandatory for get hash method.*
-
-Field structure:
-
-| Name | Type | Is mandatory | Description |
-|---|---|---|---|
-| type | built-in primitive type / entity of a `NewClass` | yes | Field type. Can contains fields of a `NewType` types |
-| size | `number` | yes | The total length in bytes |
-| from | `number` | yes | The beginning of the segment in the buffer |
-| to | `number` | yes | The end of the segment in the buffer |
-
 ## Cryptography
 
-### Exonum.hash
+### Calculate hash
 
 Returns SHA256 hash of the data as hexadecimal string.
 
@@ -195,13 +221,13 @@ Accept two combinations of an arguments:
 |---|---|---|
 | buffer | `Array` | An array of 8-bit integers |
 
-### Exonum.sign
+### Create digital signature
 
 Returns ED25519 signature of the data as hexadecimal string.
 
 Accept two combinations of an arguments:
 
-#### sign(secretKey, data, type)
+#### Exonum.sign(secretKey, data, type)
 
 | Parameter | Type | Description |
 |---|---|---|
@@ -209,20 +235,20 @@ Accept two combinations of an arguments:
 | data | `object` ||
 | type | `NewType` or `NewMessage` ||
 
-#### sign(secretKey, buffer)
+#### Exonum.sign(secretKey, buffer)
 
 | Parameter | Type | Description |
 |---|---|---|
 | secretKey | `string` | A 64-byte hexadecimal string |
 | buffer | `Array` | An array of 8-bit integers |
 
-### Exonum.verifySignature
+### Verify digital signature
 
 Returns `true` if verification succeeded or `false` if it failed.
 
 Accept two combinations of an arguments:
 
-#### verifySignature(signature, publicKey, data, type)
+#### Exonum.verifySignature(signature, publicKey, data, type)
 
 | Parameter | Type | Description |
 |---|---|---|
@@ -231,7 +257,7 @@ Accept two combinations of an arguments:
 | data | `Object` ||
 | type | `NewType` or `NewMessage` ||
 
-#### verifySignature(signature, publicKey, buffer)
+#### Exonum.verifySignature(signature, publicKey, buffer)
 
 | Parameter | Type | Description |
 |---|---|---|
@@ -239,7 +265,9 @@ Accept two combinations of an arguments:
 | publicKey | `string` | A 32-byte hexadecimal string |
 | buffer | `Array` | An array of 8-bit integers |
 
-### Exonum.keyPair
+### Random key pair
+
+#### Exonum.keyPair()
 
 Returns random pair of `publicKey` and `secretKey` as hexadecimal strings.
 
@@ -250,13 +278,21 @@ Returns random pair of `publicKey` and `secretKey` as hexadecimal strings.
 }
 ```
 
-### Exonum.randomUint64
+### Random Uint64
+
+#### Exonum.randomUint64()
 
 Returns random `Uint64` of cryptographic quality as a string.
 
 ## Proofs of existence
 
-### Exonum.merkleProof(rootHash, count, proofNode, range, type) 
+### Merkle proof
+
+This method is used to validate Merkle tree and extract data sequence from it.
+
+Detailed description of [how Merkle proof works](http://exonum.com/doc/advanced/merkle-index).
+
+#### Exonum.merkleProof(rootHash, count, proofNode, range, type) 
 
 Checks proof of Merkle tree.
 
@@ -270,7 +306,13 @@ Returns an array of elements if tree is valid. Otherwise, an error occurs.
 | range | `Array` | An array of two numbers. Represents list of obtained elements: `[startIndex; endIndex)` |
 | type | `NewType` | Optional parameter. MerkleProof method expects to find arrays of 8-bit integers as values in tree in the case when it is not passed | 
 
-### Exonum.merklePatriciaProof(rootHash, proof, key)
+### Merkle Patricia proof
+
+This method is used to validate Merkle Patricia tree and extract data from it.
+
+Detailed description of [how Merkle Patricia proof works](http://exonum.com/doc/advanced/merkle-patricia-index).
+
+#### Exonum.merklePatriciaProof(rootHash, proof, key)
 
 Checks proof of Merkle Patricia tree.
 
