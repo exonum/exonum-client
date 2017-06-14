@@ -1,19 +1,15 @@
 {
-  "name": "exonum-client",
+  "name": "@exonum/exonum-client",
+  "version": "0.1.0",
   "description": "Client for Exonum blockchain platform",
-  "version": "1.0.0",
-  "license": "",
-  "author": "BitFury Group Limited",
-  "private": true,
   "main": "./lib/index.js",
-  "files": [
-    "dist",
-    "lib"
-  ],
-  "scripts": {
-    "test": "grunt test",
-    "prepublish": "grunt prepublish"
+  "directories": {
+    "test": "test"
   },
+  "files": [
+    "lib",
+    "dist"
+  ],
   "dependencies": {
     "big-integer": "^1.6.17",
     "sha.js": "^2.4.8",
@@ -33,5 +29,19 @@
     "grunt-mocha-test": "^0.13.2",
     "load-grunt-tasks": "^3.5.2",
     "mocha": "^3.4.2"
-  }
+  },
+  "scripts": {
+    "test": "grunt test",
+    "prepublish": "grunt prepublish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/exonum/exonum-client.git"
+  },
+  "author": "BitFury Group Limited",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/exonum/exonum-client/issues"
+  },
+  "homepage": "https://github.com/exonum/exonum-client#readme"
 }
