@@ -1,6 +1,6 @@
 # Client for Exonum blockchain platform
 
-This is JavaScript toolkit to work with Exonum blockchain from browser and Node.js.
+exonum-client is a JavaScript toolkit to work with Exonum blockchain from browser and Node.js.
 A detailed description of what it is and how it can be used can be found in [Exonum blockchain documentation](http://exonum.com/doc/architecture/clients).
 
 Usage in browser:
@@ -21,9 +21,11 @@ Exonum.hash([0, 255, 16, 8]);
 
 ## Working with data
 
-### Custom data structure
+### Defining custom types
 
-#### Exonum.newType(params)
+```javascript
+var Type = Exonum.newType(params);
+```
 
 This is the basic method for work with data that is stored in the Exonum blockchain.
 It is used to describe data structure.
@@ -35,7 +37,7 @@ Requires a single parameter passed as `object` with next structure:
 | size | `number` | yes | The total length in bytes |
 | fields | `Array` | yes | Array of fields |
 
-Field structure:
+###### Field structure:
 
 | Field | Type | Is mandatory | Description |
 |---|---|---|---|
@@ -54,9 +56,9 @@ Returns an instance of built-in class `NewType` that can be used to:
 
 - [verify signature](#verify-digital-signature) of data.
 
-All this operations are useful while work with a blockchain.
+These operations are useful in working with an Exonum blockchain.
 
-To describe a custom data structure next basic primitive data types can be used:
+These types can be used as the `type` field of the field description:
 
 * [Signed integers](#signed-integers)
 * [Unsigned integers](#unsigned-integers)
@@ -66,6 +68,8 @@ To describe a custom data structure next basic primitive data types can be used:
 * [Digest](#digest)
 * [Bool](#bool)
 * [FixedBuffer](#fixedbuffer)
+
+#### Сustom type example
 
 Here is an example of entity `User` described using `newType` method:
 
@@ -81,10 +85,7 @@ var User = Exonum.newType({
 
 It contains two fields: `name` of `string` type and `age` of `Int8` type.
 
-Each primitive data type has its own segment length (`size`).
 And it is necessary to specify segment range in the resulting byte array (`from` and `to`).
-
-Total length of the byte array must be also specified.
 
 Data of type `User` can be serialized into byte array:
 
@@ -97,7 +98,7 @@ var data = {
 var buffer = Exonum.serialize(data, User);
 ```
 
-Detailed description of [serialization works](http://exonum.com/doc/advanced/serialization) in Exonum blockchain.
+See [Exonum documentation](http://exonum.com/doc/advanced/serialization) for more details how serialization works.
 
 It is possible to get hash of this data:
 
@@ -108,21 +109,25 @@ var hash = Exonum.hash(data, User);
 To sign it:
 
 ```javascript
-var secretKey = '07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c366752be882314f5bbbc9a6af2ae634fc';
+var secretKey = '07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a
+1f2f07703c5bcafb5749aa735ce8b7c366752be882314f5bbbc9a6af2ae634fc';
 var signature = Exonum.sign(secretKey, data, User);
 ```
 
 To verify signature:
 
 ```javascript
-var signature = '07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c366752be882314f5bbbc9a6af2ae634fc';
+var signature = '07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a
+1f2f07703c5bcafb5749aa735ce8b7c366752be882314f5bbbc9a6af2ae634fc';
 var publicKey = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030';
 var result = Exonum.verifySignature(signature, publicKey, data, User);
 ```
 
-### Transaction
+### Defining custom transaction
 
-#### Exonum.newMessage(params)
+```javascript
+var Transaction = Exonum.newMessage(params);
+```
 
 This method is very similar to `Exonum.newType` method and used to describe transaction in blockchain. 
 
@@ -140,14 +145,7 @@ Requires a single parameter passed as `object` with next structure:
 
 *\* Note that `signature` field is mandatory for [hash calculating](#calculate-hash).*
 
-Field structure:
-
-| Name | Type | Is mandatory | Description |
-|---|---|---|---|
-| type | built-in primitive type / entity of a `NewClass` | yes | Field type. Can contains fields of a `NewType` types |
-| size | `number` | yes | The total length in bytes |
-| from | `number` | yes | The beginning of the segment in the buffer |
-| to | `number` | yes | The end of the segment in the buffer |
+Field structure is the same as for [custom type](#fieldstructure) defined through `Exonum.newType` method.
 
 Returns an instance of built-in class `NewMessage` that can be used to:
 
@@ -158,6 +156,8 @@ Returns an instance of built-in class `NewMessage` that can be used to:
 - [sign data](#create-digital-signature) of passed structure;
 
 - [verify signature](#verify-digital-signature) of data of passed structure.
+
+#### Transaction example
 
 Here is an example of 'SendFunds' transaction:
 
@@ -266,7 +266,9 @@ Accept two combinations of an arguments:
 
 ### Random key pair
 
-#### Exonum.keyPair()
+```javascript
+var pair = Exonum.keyPair();
+``` 
 
 Returns random pair of `publicKey` and `secretKey` as hexadecimal strings.
 
@@ -279,21 +281,23 @@ Returns random pair of `publicKey` and `secretKey` as hexadecimal strings.
 
 ### Random Uint64
 
-#### Exonum.randomUint64()
+```javascript
+var rand = Exonum.randomUint64();
+``` 
 
-Returns random `Uint64` of cryptographic quality as a string.
+Returns random `Uint64` of cryptographic quality as a number passed as string.
 
 ## Proofs of existence
 
 ### Merkle proof
 
+```javascript
+var elements = Exonum.merkleProof(rootHash, count, proofNode, range, type);
+```
+
 This method is used to validate Merkle tree and extract data sequence from it.
 
-Detailed description of [how Merkle proof works](http://exonum.com/doc/advanced/merkle-index).
-
-#### Exonum.merkleProof(rootHash, count, proofNode, range, type) 
-
-Checks proof of Merkle tree.
+Detailed description of [how Merkle proof works](http://exonum.com/doc/advanced/merkle-index).  
 
 Returns an array of elements if tree is valid. Otherwise, an error occurs.
 
@@ -307,13 +311,13 @@ Returns an array of elements if tree is valid. Otherwise, an error occurs.
 
 ### Merkle Patricia proof
 
+```javascript
+var element = Exonum.merklePatriciaProof(rootHash, proof, key);
+```
+
 This method is used to validate Merkle Patricia tree and extract data from it.
 
-Detailed description of [how Merkle Patricia proof works](http://exonum.com/doc/advanced/merkle-patricia-index).
-
-#### Exonum.merklePatriciaProof(rootHash, proof, key)
-
-Checks proof of Merkle Patricia tree.
+Detailed description of [how Merkle Patricia proof works](http://exonum.com/doc/advanced/merkle-patricia-index). 
 
 Returns element if tree is valid element is found.
 Returns `null` if tree is valid but element is not found.
@@ -399,7 +403,9 @@ For numbers greater than safe use `string` only.*
 
 | Type | Size (bytes) | Description |
 |---|---|---|
-| `string` | `8` | String of UTF-8 characters |
+| `string` | `8`* | String of UTF-8 characters |
+
+*\*Note that the size of 8 bytes is due to the specifics of string [serialization](http://exonum.com/doc/advanced/serialization). Actual string length is not limited.*
 
 ### Hash
 
@@ -429,7 +435,7 @@ For numbers greater than safe use `string` only.*
 
 | Type | Size (bytes) | Description |
 |---|---|---|
-| `Array` | any | Array of 8-bit unsigned integers |
+| `Array` | should be fixed in the field declaration | Array of 8-bit unsigned integers |
 
 ## Build
 
