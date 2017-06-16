@@ -9,13 +9,15 @@ const PROTOCOL_VERSION = 0;
 const CORE_SERVICE_ID = 0;
 const PRECOMMIT_MESSAGE_ID = 4;
 const Block = newType({
-    size: 108,
+    size: 112,
     fields: {
-        height: {type: primitive.Uint64, size: 8, from: 0, to: 8},
-        propose_round: {type: primitive.Uint32, size: 4, from: 8, to: 12},
-        prev_hash: {type: primitive.Hash, size: 32, from: 12, to: 44},
-        tx_hash: {type: primitive.Hash, size: 32, from: 44, to: 76},
-        state_hash: {type: primitive.Hash, size: 32, from: 76, to: 108}
+        schema_version: {type: primitive.Uint16, size: 2, from: 0, to: 2},
+        proposer_id: {type: primitive.Uint16, size: 2, from: 2, to: 4},
+        height: {type: primitive.Uint64, size: 8, from: 4, to: 12},
+        tx_count: {type: primitive.Uint32, size: 4, from: 12, to: 16},
+        prev_hash: {type: primitive.Hash, size: 32, from: 16, to: 48},
+        tx_hash: {type: primitive.Hash, size: 32, from: 48, to: 80},
+        state_hash: {type: primitive.Hash, size: 32, from: 80, to: 112}
     }
 });
 const SystemTime = newType({
@@ -61,18 +63,18 @@ export function verifyBlock(data, validators, networkId) {
     }
 
     var Precommit = newMessage({
-        size: 96,
+        size: 94,
         network_id: networkId,
         protocol_version: PROTOCOL_VERSION,
         message_id: PRECOMMIT_MESSAGE_ID,
         service_id: CORE_SERVICE_ID,
         fields: {
-            validator: {type: primitive.Uint32, size: 4, from: 0, to: 4},
-            height: {type: primitive.Uint64, size: 8, from: 8, to: 16},
-            round: {type: primitive.Uint32, size: 4, from: 16, to: 20},
-            propose_hash: {type: primitive.Hash, size: 32, from: 20, to: 52},
-            block_hash: {type: primitive.Hash, size: 32, from: 52, to: 84},
-            time: {type: SystemTime, size: 12, from: 84, to: 96}
+            validator: {type: primitive.Uint16, size: 2, from: 0, to: 2},
+            height: {type: primitive.Uint64, size: 8, from: 6, to: 14},
+            round: {type: primitive.Uint32, size: 4, from: 14, to: 18},
+            propose_hash: {type: primitive.Hash, size: 32, from: 18, to: 50},
+            block_hash: {type: primitive.Hash, size: 32, from: 50, to: 82},
+            time: {type: SystemTime, size: 12, from: 82, to: 94}
         }
     });
 

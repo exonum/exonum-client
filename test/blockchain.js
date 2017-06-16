@@ -6,10 +6,10 @@ var Exonum = require('..');
 describe('Verify block of precommits', function() {
 
     var validators = [
-        '79669c80800ca0162ffe76ee793147adbf7128dc6e75c1b94b4b02d7e4d8a441',
-        '3d8578be65c4e78e01a0a8270f10ba1e809b4d562a17f7803f20da5928ef1db9',
-        '700c733bd8dfd0f3f40f5811bfd681f23e0caada46abb1719fa48d658efa6ef6',
-        'd858eaad05d8036dbd679535880eb408c943a34ee006cfa9ab7bd97fade6b200'
+        '0b513ad9b4924015ca0902ed079044d3ac5dbec2306f06948c10da8eb6e39f2d',
+        '91a28a0b74381593a4d9469579208926afc8ad82c8839b7644359b9eba9a4b3a',
+        '5c9c6df261c9cb840475776aaefcd944b405328fab28f9b3a95ef40490d3de84',
+        '66cd608b928b88e50e0efeaa33faf1c43cefe07294b0b87e9fe0aba6a3cf7633'
     ];
     var networkId = 0;
 
