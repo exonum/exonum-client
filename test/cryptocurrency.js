@@ -71,10 +71,10 @@ describe('Check cryptocurrency functions', function() {
     describe('Check wallet query', function() {
 
         var validators = [
-            '79669c80800ca0162ffe76ee793147adbf7128dc6e75c1b94b4b02d7e4d8a441',
-            '3d8578be65c4e78e01a0a8270f10ba1e809b4d562a17f7803f20da5928ef1db9',
-            '700c733bd8dfd0f3f40f5811bfd681f23e0caada46abb1719fa48d658efa6ef6',
-            'd858eaad05d8036dbd679535880eb408c943a34ee006cfa9ab7bd97fade6b200'
+            '0b513ad9b4924015ca0902ed079044d3ac5dbec2306f06948c10da8eb6e39f2d',
+            '91a28a0b74381593a4d9469579208926afc8ad82c8839b7644359b9eba9a4b3a',
+            '5c9c6df261c9cb840475776aaefcd944b405328fab28f9b3a95ef40490d3de84',
+            '66cd608b928b88e50e0efeaa33faf1c43cefe07294b0b87e9fe0aba6a3cf7633'
         ];
         var Wallet = Exonum.newType({
             size: 88,
@@ -218,37 +218,23 @@ describe('Check cryptocurrency functions', function() {
         }
 
         it('should return null if wallet is not found', function() {
-            var data = require('./data/cryprocurrency/wallet-query/not-found.json');
-            var publicKey = '72a3466b65ed9b5deb868120fc5424312dadf4bfb6258a6be32b051b47604064';
+            var data = require('./common_data/cryptocurrency-wallet-query/not-found.json');
+            var publicKey = 'bdbbc4edb3f589728bb954f10867332ffd9dac8e933fc6b3607ef552e4ed84d3';
 
             expect(getWallet(publicKey, data)).to.be.null;
         });
 
-        it('should return wallet info and list of transactions if wallet with single transaction is found', function() {
-            var data = require('./data/cryprocurrency/wallet-query/found-empty-wallet.json');
-            var publicKey = '72a3466b65ed9b5deb868120fc5424312dadf4bfb6258a6be32b051b47604068';
-            var walletData = getWallet(publicKey, data);
-
-            expect(walletData.wallet).to.deep.equal({
-                'balance': '0',
-                'history_hash': '9d998689eeeee43869b1704942bb21656fc1a15de91c69363f55c680e9e7b888',
-                'history_len': '1',
-                'name': 'Tina',
-                'pub_key': '72a3466b65ed9b5deb868120fc5424312dadf4bfb6258a6be32b051b47604068'
-            });
-        });
-
         it('should return wallet info and list of transactions if wallet with multiple transactions is found', function() {
-            var data = require('./data/cryprocurrency/wallet-query/found-wallet-multiple-transactions.json');
-            var publicKey = '72a3466b65ed9b5deb868120fc5424312dadf4bfb6258a6be32b051b47604068';
+            var data = require('./common_data/cryptocurrency-wallet-query/found-wallet-multiple-transactions.json');
+            var publicKey = '66be7e332c7a453332bd9d0a7f7db055f5c5ef1a06ada66d98b39fb6810c473a';
             var walletData = getWallet(publicKey, data);
 
             expect(walletData.wallet).to.deep.equal({
-                'balance': '10',
-                'history_hash': 'b03f01be436eb85684e23214f7819e766eb6981006664b2d01fe8b7093c09103',
-                'history_len': '2',
-                'name': 'Tina',
-                'pub_key': '72a3466b65ed9b5deb868120fc5424312dadf4bfb6258a6be32b051b47604068'
+                'balance': '4000',
+                'history_hash': 'b83df3e53e8623884024c72e3bcc6c5251b1ee7fc1ff2682464e53f58eb61de7',
+                'history_len': '4',
+                'name': 'Jane Doe',
+                'pub_key': '66be7e332c7a453332bd9d0a7f7db055f5c5ef1a06ada66d98b39fb6810c473a'
             });
         });
 
