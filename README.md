@@ -37,11 +37,11 @@ Requires a single parameter passed as `object` with next structure:
 | size | `number` | yes | The total length in bytes |
 | fields | `Array` | yes | Array of fields |
 
-###### Field structure:
+#### Field structure:
 
 | Field | Type | Is mandatory | Description |
 |---|---|---|---|
-| type | built-in primitive type / entity of a `NewClass` | yes | Field type. Can contains fields of a `NewType` types |
+| type | built-in primitive type / entity of a `NewType` | yes | Field type. Can contains fields of a `NewType` types |
 | size | `number` | yes | The total length in bytes |
 | from | `number` | yes | The beginning of the segment in the buffer |
 | to | `number` | yes | The end of the segment in the buffer |
@@ -49,16 +49,13 @@ Requires a single parameter passed as `object` with next structure:
 Returns an instance of built-in class `NewType` that can be used to:
 
 - serialize data into a byte array;
-
 - [get hash](#calculate-hash) of data;
-
 - [sign](#create-digital-signature) data;
-
 - [verify signature](#verify-digital-signature) of data.
 
 These operations are useful in working with an Exonum blockchain.
 
-These types can be used as the `type` field of the field description:
+The following types can be used as the `type` field of the field description:
 
 * [Signed integers](#signed-integers)
 * [Unsigned integers](#unsigned-integers)
@@ -85,7 +82,7 @@ var User = Exonum.newType({
 
 It contains two fields: `name` of `string` type and `age` of `Int8` type.
 
-And it is necessary to specify segment range in the resulting byte array (`from` and `to`).
+It is necessary to specify segment range in the resulting byte array (`from` and `to`).
 
 Data of type `User` can be serialized into byte array:
 
@@ -109,16 +106,16 @@ var hash = Exonum.hash(data, User);
 To sign it:
 
 ```javascript
-var secretKey = '07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a
-1f2f07703c5bcafb5749aa735ce8b7c366752be882314f5bbbc9a6af2ae634fc';
+var secretKey = '07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a' +
+ '1f2f07703c5bcafb5749aa735ce8b7c366752be882314f5bbbc9a6af2ae634fc';
 var signature = Exonum.sign(secretKey, data, User);
 ```
 
 To verify signature:
 
 ```javascript
-var signature = '07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a
-1f2f07703c5bcafb5749aa735ce8b7c366752be882314f5bbbc9a6af2ae634fc';
+var signature = '07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a' +
+ '1f2f07703c5bcafb5749aa735ce8b7c366752be882314f5bbbc9a6af2ae634fc';
 var publicKey = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030';
 var result = Exonum.verifySignature(signature, publicKey, data, User);
 ```
@@ -168,7 +165,8 @@ var SendFunds = Exonum.newMessage({
     protocol_version: 0,
     service_id: 0,
     message_id: 0,
-    signature: '07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c366752be882314f5bbbc9a6af2ae634fc',
+    signature: '07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a' +
+     '1f2f07703c5bcafb5749aa735ce8b7c366752be882314f5bbbc9a6af2ae634fc',
     fields: {
         from: {type: Exonum.Hash, size: 8, from: 0, to: 8},
         to: {type: Exonum.Hash, size: 8, from: 8, to: 16},
@@ -451,7 +449,7 @@ Compile browser version into `dist` folder:
 $ grunt
 ```
 
-## Test coverage
+## Tests
 
 To run tests execute:
 
