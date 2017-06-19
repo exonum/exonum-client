@@ -1,5 +1,13 @@
 # Client for Exonum blockchain platform
 
+[![Build status][travis-image]][travis-url]
+[![License][license-image]][license-url]
+
+[travis-image]: https://img.shields.io/travis/exonum/exonum-client.svg?style=flat-square
+[travis-url]: https://travis-ci.com/exonum/exonum-client
+[license-image]: https://img.shields.io/github/license/exonum/exonum-client.svg?style=flat-square
+[license-url]: https://opensource.org/licenses/Apache-2.0
+
 exonum-client is a JavaScript toolkit to work with Exonum blockchain from browser and Node.js.
 A detailed description of what it is and how it can be used can be found in [Exonum blockchain documentation](http://exonum.com/doc/architecture/clients).
 
@@ -403,7 +411,7 @@ For numbers greater than safe use `string` only.*
 |---|---|---|
 | `string` | `8`* | String of UTF-8 characters |
 
-*\*Note that the size of 8 bytes is due to the specifics of string [serialization](http://exonum.com/doc/advanced/serialization). Actual string length is not limited.*
+*\*Note that the size of 8 bytes is due to the specifics of string [serialization](http://exonum.com/doc/advanced/serialization). Actual string length is limited by the general message size limits.*
 
 ### Hash
 
