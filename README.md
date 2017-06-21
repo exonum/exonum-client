@@ -338,7 +338,7 @@ Otherwise, an error occurs.
 
 ## Blockchain integrity checks
 
-### Exonum.verifyBlock(data, validators)
+### Exonum.verifyBlock(data, validators, networkId)
 
 Validate block and each precommit in block.
 
@@ -348,6 +348,7 @@ Returns `true` if verification is succeeded or `false` if it is failed.
 |---|---|---|
 | data | `object` ||
 | validators | `Array` | An array of validators public keys. Each public key is hexadecimal string of a 32 bytes |
+| networkId | `number` ||
 
 `data` field structure:
 
