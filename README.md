@@ -348,7 +348,7 @@ Returns `true` if verification is succeeded or `false` if it is failed.
 |---|---|---|
 | data | `object` ||
 | validators | `Array` | An array of validators public keys. Each public key is hexadecimal string of a 32 bytes |
-| networkId | `number` ||
+| networkId | `number` | This field will be used to send inter-blockchain messages in the future releases. For now, it is not used and must be equal to 0. |
 
 `data` field structure:
 
