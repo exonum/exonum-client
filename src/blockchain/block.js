@@ -63,18 +63,18 @@ export function verifyBlock(data, validators, networkId) {
     }
 
     var Precommit = newMessage({
-        size: 94,
+        size: 90,
         network_id: networkId,
         protocol_version: PROTOCOL_VERSION,
         message_id: PRECOMMIT_MESSAGE_ID,
         service_id: CORE_SERVICE_ID,
         fields: {
             validator: {type: primitive.Uint16, size: 2, from: 0, to: 2},
-            height: {type: primitive.Uint64, size: 8, from: 6, to: 14},
-            round: {type: primitive.Uint32, size: 4, from: 14, to: 18},
-            propose_hash: {type: primitive.Hash, size: 32, from: 18, to: 50},
-            block_hash: {type: primitive.Hash, size: 32, from: 50, to: 82},
-            time: {type: SystemTime, size: 12, from: 82, to: 94}
+            height: {type: primitive.Uint64, size: 8, from: 2, to: 10},
+            round: {type: primitive.Uint32, size: 4, from: 10, to: 14},
+            propose_hash: {type: primitive.Hash, size: 32, from: 14, to: 46},
+            block_hash: {type: primitive.Hash, size: 32, from: 46, to: 78},
+            time: {type: SystemTime, size: 12, from: 78, to: 90}
         }
     });
 
