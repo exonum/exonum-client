@@ -55,7 +55,7 @@ export function merkleProof(rootHash, count, proofNode, range, type) {
                 throw new TypeError('Tree element of wrong type is passed. Hexadecimal expected.');
             }
             element = data;
-            elementsHash = hash(hexadecimalToUint8Array(element));
+            elementsHash = element;
         } else if (Array.isArray(data)) {
             if (!validateBytesArray(data)) {
                 throw new TypeError('Tree element of wrong type is passed. Bytes array expected.');
