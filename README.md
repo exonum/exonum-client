@@ -8,7 +8,7 @@
 [license-image]: https://img.shields.io/github/license/exonum/exonum-client.svg?style=flat-square
 [license-url]: https://opensource.org/licenses/Apache-2.0
 
-*Tested with Exonum core revision [b9dad252448f7bd52ec9b010fe32ef9913ce78c4](https://github.com/exonum/exonum-core/commit/b9dad252448f7bd52ec9b010fe32ef9913ce78c4).*
+*Tested with Exonum core revision [b67e4414d7b0f851e272b6893f7d7d674891bc96](https://github.com/exonum/exonum-core/commit/b9dad252448f7bd52ec9b010fe32ef9913ce78c4).*
 
 exonum-client is a JavaScript toolkit to work with Exonum blockchain from browser and Node.js.
 A detailed description of what it is and how it can be used can be found in [Exonum blockchain documentation](http://exonum.com/doc/architecture/clients).

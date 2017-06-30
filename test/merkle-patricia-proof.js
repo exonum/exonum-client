@@ -62,7 +62,7 @@ describe('Check proof of Merkle Patricia tree', function() {
             data.proof,
             data.searched_key
         );
-        expect(element).to.equal('d7897e2f9d336f6ef53315f26c720193c5c22854850c6d66c380d05172e92acd');
+        expect(element).to.equal('7a6dedabca50b700a834d37f91649b0b5b42883b4e39845df36da4c24c2bc64f');
     });
 
     it('should throw error when rootHash parameter of wrong type', function() {

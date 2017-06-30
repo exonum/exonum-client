@@ -69,7 +69,7 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
      */
     function getHash(element) {
         if (typeof element === 'string') {
-            return hash(convert.hexadecimalToUint8Array(element));
+            return element;
         } else if (Array.isArray(element)) {
             return hash(element);
         } else if (isObject(element)) {
