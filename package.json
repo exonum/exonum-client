@@ -1,6 +1,6 @@
 {
   "name": "@exonum/exonum-client",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Client for Exonum blockchain platform",
   "main": "./lib/index.js",
   "engines": {
