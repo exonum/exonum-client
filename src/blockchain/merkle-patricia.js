@@ -90,6 +90,31 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
     }
 
     /**
+     * Check either one string is substring of another
+     * @param {string} str
+     * @param {string} suffix
+     * @returns {boolean}
+     */
+    function isSuffixOf(str, suffix) {
+        return str.indexOf(suffix) === 0;
+    }
+
+    /**
+     * Check either one string is left to another
+     * @param {string} leftSuffix
+     * @param {string} rightSuffix
+     * @returns {boolean}
+     */
+    function isLeftBranch(leftSuffix, rightSuffix) {
+        var shortLen = leftSuffix.length > rightSuffix.length ? rightSuffix.length : leftSuffix.length;
+        for (var i = 0; i < shortLen; i++) {
+            if (leftSuffix[i] !== rightSuffix[i]) {
+                return leftSuffix[i] < rightSuffix[i];
+            }
+        }
+    }
+
+    /**
      * Recursive tree traversal function
      * @param {Object} node
      * @param {string} keyPrefix
@@ -189,34 +214,58 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
                 throw new Error('Invalid length of key in tree.');
             }
 
+            var branchValue = {
+                hash: branchValueHash,
+                key: branchKey,
+                type: branchType,
+                suffix: keySuffix,
+                size: fullKey.length
+            };
+
             if (keySuffix[0] === '0') { // '0' at the beginning means left branch/leaf
                 if (levelData.left === undefined) {
-                    levelData.left = {
-                        hash: branchValueHash,
-                        key: branchKey,
-                        type: branchType,
-                        suffix: keySuffix,
-                        size: fullKey.length
-                    };
+                    levelData.left = branchValue;
+                } else if (
+                    keyPrefix.length === 0 && // root level
+                    levelData.right === undefined &&
+                    !isSuffixOf(levelData.left.suffix, branchValue.suffix) && // right key is not suffix of left key
+                    !isSuffixOf(branchValue.suffix, levelData.left.suffix) // left key is not suffix of right key
+                ) {
+                    if (isLeftBranch(levelData.left.suffix, branchValue.suffix)) {
+                        levelData.right = branchValue;
+                    } else {
+                        levelData.right = levelData.left;
+                        levelData.left = branchValue;
+                    }
                 } else {
                     throw new Error('Left node is duplicated in tree.');
                 }
             } else { // '1' at the beginning means right branch/leaf
                 if (levelData.right === undefined) {
-                    levelData.right = {
-                        hash: branchValueHash,
-                        key: branchKey,
-                        type: branchType,
-                        suffix: keySuffix,
-                        size: fullKey.length
-                    };
+                    levelData.right = branchValue;
+                } else if (
+                    keyPrefix.length === 0 && // root level
+                    levelData.left === undefined &&
+                    !isSuffixOf(levelData.right.suffix, branchValue.suffix) && // left key is not suffix of right key
+                    !isSuffixOf(branchValue.suffix, levelData.right.suffix) // right key is not suffix of left key
+                ) {
+                    if (isLeftBranch(branchValue.suffix, levelData.right.suffix)) {
+                        levelData.left = branchValue;
+                    } else {
+                        levelData.left = levelData.right;
+                        levelData.right = branchValue;
+                    }
                 } else {
                     throw new Error('Right node is duplicated in tree.');
                 }
             }
         }
 
-        if ((levelData.left.type === 'hash') && (levelData.right.type === 'hash') && (fullKey.length < MERKLE_PATRICIA_KEY_LENGTH * 8)) {
+        if (
+            (levelData.left.type === 'hash') &&
+            (levelData.right.type === 'hash') &&
+            (fullKey.length < MERKLE_PATRICIA_KEY_LENGTH * 8)
+        ) {
             if (isPartOfSearchKey(keyPrefix, levelData.left.suffix)) {
                 throw new Error('Tree is invalid. Left key is a part of search key but its branch is not expanded.');
             } else if (isPartOfSearchKey(keyPrefix, levelData.right.suffix)) {
