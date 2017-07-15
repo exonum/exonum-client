@@ -45,7 +45,7 @@ Requires a single parameter passed as `object` with next structure:
 | Field | Type | Is mandatory | Description |
 |---|---|---|---|
 | size | `number` | yes | The total length in bytes |
-| fields | `Array` | yes | Array of fields |
+| fields | `Object` | yes | Map of fields |
 
 #### Field structure:
 
