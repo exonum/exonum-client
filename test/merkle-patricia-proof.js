@@ -65,6 +65,26 @@ describe('Check proof of Merkle Patricia tree', function() {
         expect(element).to.equal('7a6dedabca50b700a834d37f91649b0b5b42883b4e39845df36da4c24c2bc64f');
     });
 
+    it('should return the child of an valid tree with children which has common prefix', function() {
+        var data = require('./common_data/merkle-patricia-tree/valid-merkle-patricia-tree-with-common-prefix-children.json');
+        var element = Exonum.merklePatriciaProof(
+            data.root_hash,
+            data.proof,
+            data.searched_key
+        );
+        expect(element).to.deep.equal([186, 86, 216, 153, 23, 168, 188, 225]);
+    });
+
+    it('should return the child of an valid tree with children which has common prefix and hashes as values', function() {
+        var data = require('./common_data/merkle-patricia-tree/valid-merkle-patricia-tree-with-common-prefix-children-and-hashes-as-values.json');
+        var element = Exonum.merklePatriciaProof(
+            data.root_hash,
+            data.proof,
+            data.searched_key
+        );
+        expect(element).to.equal('7acfd59d96d77ed99169fdc0826a6ef8a6b45d87ac00536373882dfa7ba70925');
+    });
+
     it('should throw error when rootHash parameter of wrong type', function() {
         var args = [
             true, null, undefined, [], {}, 42, new Date()
