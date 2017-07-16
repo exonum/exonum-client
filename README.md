@@ -85,7 +85,7 @@ var User = Exonum.newType({
     size: 9,
     fields: {
         name: {type: Exonum.String, size: 8, from: 0, to: 8},
-        age: {type: Exonum.Int8, size: 8, from: 9, to: 1}
+        age: {type: Exonum.Int8, size: 1, from: 8, to: 9}
     }
 });
 ```
