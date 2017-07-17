@@ -1,7 +1,7 @@
 {
-  "name": "@exonum/exonum-client",
+  "name": "exonum-client",
   "version": "0.1.0",
-  "description": "Client for Exonum blockchain platform",
+  "description": "Light Client for Exonum Blockchain",
   "main": "./lib/index.js",
   "engines": {
     "node": ">=4"
@@ -42,10 +42,20 @@
     "type": "git",
     "url": "https://github.com/exonum/exonum-client.git"
   },
-  "author": "BitFury Group Limited",
+  "author": "Exonum Team <exonum@bitfury.com>",
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/exonum/exonum-client/issues"
   },
-  "homepage": "https://github.com/exonum/exonum-client#readme"
+  "homepage": "https://github.com/exonum/exonum-client#readme",
+  "keywords": [
+    "exonum",
+    "blockchain",
+    "transactions",
+    "cryptography",
+    "ed25519",
+    "nacl",
+    "sha256",
+    "merkle tree"
+  ]
 }
