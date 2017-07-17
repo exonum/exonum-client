@@ -446,6 +446,12 @@ For numbers greater than safe use `string` only.*
 |---|---|---|
 | `Array` | should be fixed in the field declaration | Array of 8-bit unsigned integers |
 
+## Install
+
+```
+npm install exonum-client
+```
+
 ## Build
 
 Install npm dependencies:
