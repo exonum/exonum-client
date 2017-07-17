@@ -56,10 +56,6 @@
     "ed25519",
     "nacl",
     "sha256",
-    "merkle",
-    "merkle tree",
-    "merkle patricia tree",
-    "binary tree",
-    "node"
+    "merkle tree"
   ]
 }
