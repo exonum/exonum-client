@@ -4,7 +4,7 @@
 [![License][license-image]][license-url]
 
 [travis-image]: https://img.shields.io/travis/exonum/exonum-client.svg?style=flat-square
-[travis-url]: https://travis-ci.com/exonum/exonum-client
+[travis-url]: https://travis-ci.org/exonum/exonum-client
 [license-image]: https://img.shields.io/github/license/exonum/exonum-client.svg?style=flat-square
 [license-url]: https://opensource.org/licenses/Apache-2.0
 
