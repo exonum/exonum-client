@@ -1,4 +1,4 @@
-# Client for Exonum blockchain platform
+# Light Client for Exonum Blockchain
 
 [![Build status][travis-image]][travis-url]
 [![License][license-image]][license-url]
