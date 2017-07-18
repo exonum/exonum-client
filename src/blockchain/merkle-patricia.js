@@ -90,26 +90,26 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
     }
 
     /**
-     * Check either one string is substring of another
+     * Check either one string is a prefix of another
      * @param {string} str
-     * @param {string} suffix
+     * @param {string} prefix
      * @returns {boolean}
      */
-    function isSuffixOf(str, suffix) {
-        return str.indexOf(suffix) === 0;
+    function isPrefixOf(str, prefix) {
+        return str.indexOf(prefix) === 0;
     }
 
     /**
-     * Check either one string is left to another
-     * @param {string} leftSuffix
-     * @param {string} rightSuffix
+     * Check either one string is less to another
+     * @param {string} left
+     * @param {string} right
      * @returns {boolean}
      */
-    function isLeftBranch(leftSuffix, rightSuffix) {
-        var shortLen = leftSuffix.length > rightSuffix.length ? rightSuffix.length : leftSuffix.length;
+    function isLess(left, right) {
+        var shortLen = Math.min(left.length, right.length);
         for (var i = 0; i < shortLen; i++) {
-            if (leftSuffix[i] !== rightSuffix[i]) {
-                return leftSuffix[i] < rightSuffix[i];
+            if (left[i] !== right[i]) {
+                return left[i] < right[i];
             }
         }
     }
@@ -228,10 +228,10 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
                 } else if (
                     keyPrefix.length === 0 && // root level
                     levelData.right === undefined &&
-                    !isSuffixOf(levelData.left.suffix, branchValue.suffix) && // right key is not suffix of left key
-                    !isSuffixOf(branchValue.suffix, levelData.left.suffix) // left key is not suffix of right key
+                    !isPrefixOf(levelData.left.suffix, branchValue.suffix) && // right key suffix is not a prefix of left key suffix
+                    !isPrefixOf(branchValue.suffix, levelData.left.suffix) // left key suffix is not a prefix of right key suffix
                 ) {
-                    if (isLeftBranch(levelData.left.suffix, branchValue.suffix)) {
+                    if (isLess(levelData.left.suffix, branchValue.suffix)) {
                         levelData.right = branchValue;
                     } else {
                         levelData.right = levelData.left;
@@ -246,10 +246,10 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
                 } else if (
                     keyPrefix.length === 0 && // root level
                     levelData.left === undefined &&
-                    !isSuffixOf(levelData.right.suffix, branchValue.suffix) && // left key is not suffix of right key
-                    !isSuffixOf(branchValue.suffix, levelData.right.suffix) // right key is not suffix of left key
+                    !isPrefixOf(levelData.right.suffix, branchValue.suffix) && // left key suffix is not a prefix of right key suffix
+                    !isPrefixOf(branchValue.suffix, levelData.right.suffix) // right key suffix is not a prefix of left key suffix
                 ) {
-                    if (isLeftBranch(branchValue.suffix, levelData.right.suffix)) {
+                    if (isLess(branchValue.suffix, levelData.right.suffix)) {
                         levelData.left = branchValue;
                     } else {
                         levelData.left = levelData.right;
