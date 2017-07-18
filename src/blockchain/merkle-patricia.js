@@ -90,28 +90,19 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
     }
 
     /**
-     * Check either one string is a prefix of another
-     * @param {string} str
-     * @param {string} prefix
-     * @returns {boolean}
-     */
-    function isPrefixOf(str, prefix) {
-        return str.indexOf(prefix) === 0;
-    }
-
-    /**
-     * Check either one string is less to another
+     * Compare strings
      * @param {string} left
      * @param {string} right
-     * @returns {boolean}
+     * @returns {number}
      */
-    function isLess(left, right) {
+    function compareKeys(left, right) {
         var shortLen = Math.min(left.length, right.length);
         for (var i = 0; i < shortLen; i++) {
             if (left[i] !== right[i]) {
-                return left[i] < right[i];
+                return left[i] > right[i] ? 1 : -1;
             }
         }
+        return 0;
     }
 
     /**
@@ -227,15 +218,18 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
                     levelData.left = branchValue;
                 } else if (
                     keyPrefix.length === 0 && // root level
-                    levelData.right === undefined &&
-                    !isPrefixOf(levelData.left.suffix, branchValue.suffix) && // right key suffix is not a prefix of left key suffix
-                    !isPrefixOf(branchValue.suffix, levelData.left.suffix) // left key suffix is not a prefix of right key suffix
+                    levelData.right === undefined
                 ) {
-                    if (isLess(levelData.left.suffix, branchValue.suffix)) {
-                        levelData.right = branchValue;
-                    } else {
+                    switch (compareKeys(levelData.left.suffix, branchValue.suffix)) {
+                    case 1:
                         levelData.right = levelData.left;
                         levelData.left = branchValue;
+                        break;
+                    case -1:
+                        levelData.right = branchValue;
+                        break;
+                    default:
+                        throw new Error('Invalid keys of tree root nodes.');
                     }
                 } else {
                     throw new Error('Left node is duplicated in tree.');
@@ -245,15 +239,18 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
                     levelData.right = branchValue;
                 } else if (
                     keyPrefix.length === 0 && // root level
-                    levelData.left === undefined &&
-                    !isPrefixOf(levelData.right.suffix, branchValue.suffix) && // left key suffix is not a prefix of right key suffix
-                    !isPrefixOf(branchValue.suffix, levelData.right.suffix) // right key suffix is not a prefix of left key suffix
+                    levelData.left === undefined
                 ) {
-                    if (isLess(branchValue.suffix, levelData.right.suffix)) {
-                        levelData.left = branchValue;
-                    } else {
+                    switch (compareKeys(branchValue.suffix, levelData.right.suffix)) {
+                    case 1:
                         levelData.left = levelData.right;
                         levelData.right = branchValue;
+                        break;
+                    case -1:
+                        levelData.left = branchValue;
+                        break;
+                    default:
+                        throw new Error('Invalid keys of tree root nodes.');
                     }
                 } else {
                     throw new Error('Right node is duplicated in tree.');
