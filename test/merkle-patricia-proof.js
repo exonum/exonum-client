@@ -75,8 +75,13 @@ describe('Check proof of Merkle Patricia tree', function() {
         expect(element).to.deep.equal([186, 86, 216, 153, 23, 168, 188, 225]);
     });
 
-    it('should return the child of an valid tree with children which has common prefix', function() {
+    it('should throw error when keys one key is full prefix of another', function() {
         var data = require('./data/invalid-merkle-patricia-tree-with-common-prefix-children.json');
+        expect(() => Exonum.merklePatriciaProof(data.root_hash, data.proof, data.searched_key)).to.throw(Error);
+    });
+
+    it('should throw error when common-prefix keys are found on non-zero level', function() {
+        var data = require('./data/invalid-merkle-patricia-tree-with-common-prefix-children-on-non-zero-level.json');
         expect(() => Exonum.merklePatriciaProof(data.root_hash, data.proof, data.searched_key)).to.throw(Error);
     });
 

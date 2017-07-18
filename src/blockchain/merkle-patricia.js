@@ -90,19 +90,23 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
     }
 
     /**
-     * Compare strings
-     * @param {string} left
-     * @param {string} right
-     * @returns {number}
+     * Order left and right nodes in a tree
+     * @param {Array} nodes
+     * @param {number} depth
+     * @returns {Array} or {null}
      */
-    function compareKeys(left, right) {
-        var shortLen = Math.min(left.length, right.length);
-        for (var i = 0; i < shortLen; i++) {
-            if (left[i] !== right[i]) {
-                return left[i] > right[i] ? 1 : -1;
+    function orderNodes(nodes, depth) {
+        var left = nodes[0];
+        var right = nodes[1];
+        var len = Math.min(left.suffix.length, right.suffix.length);
+        for (var i = 0; i < len; i++) {
+            if (left.suffix[i] !== right.suffix[i]) {
+                return left.suffix[i] === '0' ? [left, right] : [right, left];
+            } else if (depth > 0) {
+                throw new Error('Nodes with common-prefix keys are located on non-zero level of the tree.');
             }
         }
-        return 0;
+        return null;
     }
 
     /**
@@ -116,7 +120,7 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
             throw new Error('Invalid number of children in the tree node.');
         }
 
-        var levelData = {};
+        var nodes = [];
         var fullKey;
 
         for (var keySuffix in node) {
@@ -205,76 +209,40 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
                 throw new Error('Invalid length of key in tree.');
             }
 
-            var branchValue = {
+            nodes.push({
                 hash: branchValueHash,
                 key: branchKey,
                 type: branchType,
                 suffix: keySuffix,
                 size: fullKey.length
-            };
+            });
+        }
 
-            if (keySuffix[0] === '0') { // '0' at the beginning means left branch/leaf
-                if (levelData.left === undefined) {
-                    levelData.left = branchValue;
-                } else if (
-                    keyPrefix.length === 0 && // root level
-                    levelData.right === undefined
-                ) {
-                    switch (compareKeys(levelData.left.suffix, branchValue.suffix)) {
-                    case 1:
-                        levelData.right = levelData.left;
-                        levelData.left = branchValue;
-                        break;
-                    case -1:
-                        levelData.right = branchValue;
-                        break;
-                    default:
-                        throw new Error('Invalid keys of tree root nodes.');
-                    }
-                } else {
-                    throw new Error('Left node is duplicated in tree.');
-                }
-            } else { // '1' at the beginning means right branch/leaf
-                if (levelData.right === undefined) {
-                    levelData.right = branchValue;
-                } else if (
-                    keyPrefix.length === 0 && // root level
-                    levelData.left === undefined
-                ) {
-                    switch (compareKeys(branchValue.suffix, levelData.right.suffix)) {
-                    case 1:
-                        levelData.left = levelData.right;
-                        levelData.right = branchValue;
-                        break;
-                    case -1:
-                        levelData.left = branchValue;
-                        break;
-                    default:
-                        throw new Error('Invalid keys of tree root nodes.');
-                    }
-                } else {
-                    throw new Error('Right node is duplicated in tree.');
-                }
-            }
+        var orderedNodes = orderNodes(nodes, keyPrefix.length);
+        if (orderedNodes) {
+            var left = orderedNodes[0];
+            var right = orderedNodes[1];
+        } else {
+            throw new Error('Impossible to determine left and right nodes.');
         }
 
         if (
-            (levelData.left.type === 'hash') &&
-            (levelData.right.type === 'hash') &&
+            (left.type === 'hash') &&
+            (right.type === 'hash') &&
             (fullKey.length < MERKLE_PATRICIA_KEY_LENGTH * 8)
         ) {
-            if (isPartOfSearchKey(keyPrefix, levelData.left.suffix)) {
+            if (isPartOfSearchKey(keyPrefix, left.suffix)) {
                 throw new Error('Tree is invalid. Left key is a part of search key but its branch is not expanded.');
-            } else if (isPartOfSearchKey(keyPrefix, levelData.right.suffix)) {
+            } else if (isPartOfSearchKey(keyPrefix, right.suffix)) {
                 throw new Error('Tree is invalid. Right key is a part of search key but its branch is not expanded.');
             }
         }
 
         return hash({
-            left_hash: levelData.left.hash,
-            right_hash: levelData.right.hash,
-            left_key: levelData.left.key,
-            right_key: levelData.right.key
+            left_hash: left.hash,
+            right_hash: right.hash,
+            left_key: left.key,
+            right_key: right.key
         }, Branch);
     }
 
