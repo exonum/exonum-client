@@ -1,10 +1,20 @@
 language: node_js
 node_js:
-  - "4"
-  - "6"
-  - "7"
+- '4'
+- '6'
+- '7'
 cache:
   directories:
-    - node_modules
+  - node_modules
 script:
-  - grunt
+- grunt
+deploy:
+  skip_cleanup: true
+  provider: npm
+  email: i.am.an.eternity@gmail.com
+  api_key:
+    secure: HHoNHOaayqMN03HfrmDqZoc1eSWK1yoo9UMPqpb0/ADMlWY7rliEv5mBwzBVIwtVnE52qgcpyoxQM9fA/6ZhTdfQZnGxGQaGYcSizTP7cBGM+KHE3tfJw/R3Kw33eRrfDqMQI/2FLmsqfj3FyYUfFcTwCnxXw2thOBiGmxHauW3UFr2U0zrNUM7U3ZI18ugsT2mpUzd9UwwFUogMPcKS+TzTJjmvuLPqp9XRFYAwglL4D/CrOcgLefcikhYVS+e+Pz/5ePVGhvNHtijZ+8JTR1lkpV70cr13wxP3Uhzq8otmKaLgeWZLYXvWI1+sfIGtfC4f0Q52kvdR4VQ8KojQsLXUr1ypkn4tz2m+VgzDqX2eeM+Dagey2/wxCRiAVAmpM8VpPB+mbbHAkWKq8ey/6ZGraJAWj1nnpzWSpYaA4tCKBJa2k+erKLgKSYXucSrNdp7/dvS1kStzelMF2Cc1ySRHDXnleDYlVCiLfDuUqyxmiOk5tr3USUq99dw7BFL9LR92K+H+2Ws8vtrMfgOVCy1AgtE67aFRmkccrEkAv5XNzZt/dbb4BuBE6OYntUA5kEhPoFqNXuEMO/D3Ytbw+0s0Mk1O+frxtdC/cULplqLVqXKqABwVb4ZYfMGLJ0N3ytjNvERLG8f3kN586gGzaM7vqf9gBCWv1tJrkwUxwSc=
+  on:
+    branch: master
+    tags: true
+    node: '6'
