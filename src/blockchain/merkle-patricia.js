@@ -92,18 +92,15 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
     /**
      * Order left and right nodes in a tree
      * @param {Array} nodes
-     * @param {number} depth
      * @returns {Array} or {null}
      */
-    function orderNodes(nodes, depth) {
-        var left = nodes[0];
-        var right = nodes[1];
-        var len = Math.min(left.suffix.length, right.suffix.length);
+    function orderNodes(nodes) {
+        var child1 = nodes[0];
+        var child2 = nodes[1];
+        var len = Math.min(child1.suffix.length, child2.suffix.length);
         for (var i = 0; i < len; i++) {
-            if (left.suffix[i] !== right.suffix[i]) {
-                return left.suffix[i] === '0' ? [left, right] : [right, left];
-            } else if (depth > 0) {
-                throw new Error('Nodes with common-prefix keys are located on non-zero level of the tree.');
+            if (child1.suffix[i] !== child2.suffix[i]) {
+                return child1.suffix[i] === '0' ? [child1, child2] : [child2, child1];
             }
         }
         return null;
@@ -218,13 +215,18 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
             });
         }
 
-        var orderedNodes = orderNodes(nodes, keyPrefix.length);
-        if (orderedNodes) {
-            var left = orderedNodes[0];
-            var right = orderedNodes[1];
-        } else {
+        if (nodes[0].suffix[0] === nodes[1].suffix[0] && keyPrefix.length > 0) {
+            throw new Error('Nodes with common-prefix keys are located on non-zero level of the tree.');
+        }
+
+        var orderedNodes = orderNodes(nodes);
+
+        if (!orderedNodes) {
             throw new Error('Impossible to determine left and right nodes.');
         }
+
+        var left = orderedNodes[0];
+        var right = orderedNodes[1];
 
         if (
             (left.type === 'hash') &&
