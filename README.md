@@ -102,7 +102,7 @@ var data = {
     age: 34
 };
 
-var buffer = Exonum.serialize(data, User);
+var buffer = User.serialize(data);
 ```
 
 See [Exonum documentation](http://exonum.com/doc/advanced/serialization) for more details how serialization works.
