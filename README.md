@@ -200,10 +200,12 @@ var data = {
 var buffer = SendFunds.serialize(data);
 ```
 
-Data of type `SendFunds` can be signed with public key:
+Data of type `SendFunds` can be signed with secret key:
 
 ```javascript
-var signature = Exonum.sign(data, SendFunds);
+var secretKey = '07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a' +
+ '1f2f07703c5bcafb5749aa735ce8b7c366752be882314f5bbbc9a6af2ae634fc';
+var signature = SendFunds.sign(secretKey, data);
 ```
 
 ## Cryptography
