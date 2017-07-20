@@ -197,7 +197,7 @@ var data = {
     amount: 50
 };
 
-var buffer = Exonum.serialize(data, SendFunds);
+var buffer = SendFunds.serialize(data);
 ```
 
 Data of type `SendFunds` can be signed with public key:
