@@ -36,7 +36,7 @@
   },
   "scripts": {
     "test": "grunt test",
-    "prepublish": "grunt prepublish"
+    "prepare": "grunt compile"
   },
   "repository": {
     "type": "git",

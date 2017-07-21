@@ -52,7 +52,7 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.registerTask('prepublish', ['eslint', 'clean', 'babel', 'browserify', 'uglify']);
+    grunt.registerTask('compile', ['eslint', 'clean', 'babel', 'browserify', 'uglify']);
     grunt.registerTask('test', ['eslint:tests', 'mochaTest']);
-    grunt.registerTask('default', ['prepublish', 'test']);
+    grunt.registerTask('default', ['compile', 'test']);
 };
