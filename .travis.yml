@@ -1,10 +1,20 @@
 language: node_js
 node_js:
-  - "4"
-  - "6"
-  - "7"
+- '4'
+- '6'
+- '8'
 cache:
   directories:
-    - node_modules
+  - node_modules
 script:
-  - grunt
+- grunt
+deploy:
+  skip_cleanup: true
+  provider: npm
+  email: exonum.bitfury@gmail.com
+  api_key:
+    secure: AYv5TPzyt9RJsP8M1FgLwB9W3Eyknd0yP1myCwydKcbLgbYG+S9siLUYpyy6gMM0ie6KrAynwUA4vIivAAa88kGjAFfP7DnQvq7fAJ7Rms4m0FOT/wZzu0gcWNlWOCD2MV33ArB9nbqyxCh2CIHjNI/RipnGAW1xhZsNb5S3VVyR8P5D5ZzN8Kejf82aYGKT7W/QEhN+mMSuHoZk6hWWCOYVYBIkrAH5iLtfwG6zTnxPCsQLGjcW6ntHXRqlhFzB4t6Nv65N0rW3NVGlhFCVKqJ3bs/gBns4e7mAGv+PRy8OssQ6PIdPZyunVvXZ/a943fwQRMSlUS9Rhq3+oO0o1hq+Bs5lObwRFtDS4D23fm/7RET1JzypAC0uKo81Ewby0Zfxka5M0vNG03DnHGaS26QzJFpnfjbzst/0uPCybsxSsNEw2V/gOhd6LNH+WDQHK3tV8KtyU31NpRTMApz9dwDywZHssPBY4SqeiXEo1ZgUrr2qCJ1iYSHytXSoqAbBhCl9+eC5hKXgR9k5djJzR/8NLGGYdgTdG2yfDLpJHg4lDREmI5L1+49DSHbwIW3Eur8LJXL8C1/3WblYlW42uzzgV/CGnwBo3cZM2kLNtd3jIiEaW1tgWET9OIDXnR9mWdMlm6M0CSHZ87L1MeEtpNbAvaa0XbHPuADyRquuuY8=
+  on:
+    branch: master
+    tags: true
+    node: '8'

@@ -1,6 +1,6 @@
 {
   "name": "exonum-client",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Light Client for Exonum Blockchain",
   "main": "./lib/index.js",
   "engines": {
@@ -36,7 +36,7 @@
   },
   "scripts": {
     "test": "grunt test",
-    "prepublish": "grunt prepublish"
+    "prepare": "grunt compile"
   },
   "repository": {
     "type": "git",
