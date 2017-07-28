@@ -85,6 +85,11 @@ describe('Check proof of Merkle Patricia tree', function() {
         expect(() => Exonum.merklePatriciaProof(data.root_hash, data.proof, data.searched_key)).to.throw(Error, 'Nodes with common-prefix keys are located on non-zero level of the tree.');
     });
 
+    it('should throw error when key suffix is of zero-length', function() {
+        var data = require('./data/invalid-merkle-patricia-tree-with-zero-length-keys-suffix.json');
+        expect(() => Exonum.merklePatriciaProof(data.root_hash, data.proof, data.searched_key)).to.throw(Error, 'Empty key suffix is passed.');
+    });
+
     it('should return the child of an valid tree with children which has common prefix and hashes as values', function() {
         var data = require('./common_data/merkle-patricia-tree/valid-merkle-patricia-tree-with-common-prefix-children-and-hashes-as-values.json');
         var element = Exonum.merklePatriciaProof(

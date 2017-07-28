@@ -121,7 +121,9 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
         var fullKey;
 
         for (var keySuffix in node) {
-            if (!node.hasOwnProperty(keySuffix)) {
+            if (typeof keySuffix !== 'string' || keySuffix.length === 0) {
+                throw new TypeError('Empty key suffix is passed.');
+            } else if (!node.hasOwnProperty(keySuffix)) {
                 continue;
             }
 
