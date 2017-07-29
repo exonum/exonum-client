@@ -6,7 +6,7 @@ var Exonum = require('..');
 describe('Check proof of Merkle Patricia tree', function() {
 
     it('should return null when an empty tree', function() {
-        var data = require('./common_data/merkle-patricia-tree/valid-merkle-patricia-tree-empty-tree.json');
+        var data = require('./common_data/merkle-patricia-tree/valid-MPT-empty-tree.json');
         var element = Exonum.merklePatriciaProof(
             data.root_hash,
             data.proof,
@@ -16,7 +16,7 @@ describe('Check proof of Merkle Patricia tree', function() {
     });
 
     it('should return null when valid tree with leaf exclusive', function() {
-        var data = require('./common_data/merkle-patricia-tree/valid-merkle-patricia-tree-leaf-exclusive.json');
+        var data = require('./common_data/merkle-patricia-tree/valid-MPT-leaf-exclusive.json');
         var element = Exonum.merklePatriciaProof(
             data.root_hash,
             data.proof,
@@ -26,7 +26,7 @@ describe('Check proof of Merkle Patricia tree', function() {
     });
 
     it('should return the child of valid tree with leaf inclusive', function() {
-        var data = require('./common_data/merkle-patricia-tree/valid-merkle-patricia-tree-leaf-inclusive.json');
+        var data = require('./common_data/merkle-patricia-tree/valid-MPT-leaf-inclusive.json');
         var element = Exonum.merklePatriciaProof(
             data.root_hash,
             data.proof,
@@ -36,7 +36,7 @@ describe('Check proof of Merkle Patricia tree', function() {
     });
 
     it('should return null when a tree with nested node exclusive', function() {
-        var data = require('./common_data/merkle-patricia-tree/valid-merkle-patricia-tree-nested-exclusive.json');
+        var data = require('./common_data/merkle-patricia-tree/valid-MPT-nested-exclusive.json');
         var element = Exonum.merklePatriciaProof(
             data.root_hash,
             data.proof,
@@ -46,7 +46,7 @@ describe('Check proof of Merkle Patricia tree', function() {
     });
 
     it('should return the child of an valid tree with nested node inclusive', function() {
-        var data = require('./common_data/merkle-patricia-tree/valid-merkle-patricia-tree-nested-inclusive.json');
+        var data = require('./common_data/merkle-patricia-tree/valid-MPT-nested-inclusive.json');
         var element = Exonum.merklePatriciaProof(
             data.root_hash,
             data.proof,
@@ -56,13 +56,48 @@ describe('Check proof of Merkle Patricia tree', function() {
     });
 
     it('should return the child of an valid tree with hash stored in value', function() {
-        var data = require('./common_data/merkle-patricia-tree/valid-merkle-patricia-tree-with-hashes-as-values.json');
+        var data = require('./common_data/merkle-patricia-tree/valid-MPT-hash-values.json');
         var element = Exonum.merklePatriciaProof(
             data.root_hash,
             data.proof,
             data.searched_key
         );
         expect(element).to.equal('7a6dedabca50b700a834d37f91649b0b5b42883b4e39845df36da4c24c2bc64f');
+    });
+
+    it('should return the child of an valid tree with children which has common prefix', function() {
+        var data = require('./common_data/merkle-patricia-tree/valid-MPT-common-prefix-children.json');
+        var element = Exonum.merklePatriciaProof(
+            data.root_hash,
+            data.proof,
+            data.searched_key
+        );
+        expect(element).to.deep.equal([186, 86, 216, 153, 23, 168, 188, 225]);
+    });
+
+    it('should throw error when keys one key is full prefix of another', function() {
+        var data = require('./data/invalid-MPT-common-prefix-children.json');
+        expect(() => Exonum.merklePatriciaProof(data.root_hash, data.proof, data.searched_key)).to.throw(Error, 'Impossible to determine left and right nodes.');
+    });
+
+    it('should throw error when common-prefix keys are found on non-zero level', function() {
+        var data = require('./data/invalid-MPT-common-prefix-children-at-non-zero-lvl.json');
+        expect(() => Exonum.merklePatriciaProof(data.root_hash, data.proof, data.searched_key)).to.throw(Error, 'Nodes with common-prefix keys are located on non-zero level of the tree.');
+    });
+
+    it('should throw error when key suffix is of zero-length', function() {
+        var data = require('./data/invalid-MPT-zero-len-keys-suffix.json');
+        expect(() => Exonum.merklePatriciaProof(data.root_hash, data.proof, data.searched_key)).to.throw(Error, 'Empty key suffix is passed.');
+    });
+
+    it('should return the child of an valid tree with children which has common prefix and hashes as values', function() {
+        var data = require('./common_data/merkle-patricia-tree/valid-MPT-common-prefix-children-hash-values.json');
+        var element = Exonum.merklePatriciaProof(
+            data.root_hash,
+            data.proof,
+            data.searched_key
+        );
+        expect(element).to.equal('7acfd59d96d77ed99169fdc0826a6ef8a6b45d87ac00536373882dfa7ba70925');
     });
 
     it('should throw error when rootHash parameter of wrong type', function() {
@@ -392,7 +427,7 @@ describe('Check proof of Merkle Patricia tree', function() {
     });
 
     it('should throw error when wrong rootHash parameter', function() {
-        var data = require('./data/invalid-merkle-patricia-tree-wrong-root-hash.json');
+        var data = require('./data/invalid-MPT-wrong-root-hash.json');
         var rootHash = data.root_hash;
         var proofNode = data.proof;
         var key = data.searched_key;

@@ -90,6 +90,23 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
     }
 
     /**
+     * Order left and right nodes in a tree
+     * @param {Array} nodes
+     * @returns {Array} or {null}
+     */
+    function orderNodes(nodes) {
+        var child1 = nodes[0];
+        var child2 = nodes[1];
+        var len = Math.min(child1.suffix.length, child2.suffix.length);
+        for (var i = 0; i < len; i++) {
+            if (child1.suffix[i] !== child2.suffix[i]) {
+                return child1.suffix[i] === '0' ? [child1, child2] : [child2, child1];
+            }
+        }
+        return null;
+    }
+
+    /**
      * Recursive tree traversal function
      * @param {Object} node
      * @param {string} keyPrefix
@@ -100,12 +117,14 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
             throw new Error('Invalid number of children in the tree node.');
         }
 
-        var levelData = {};
+        var nodes = [];
         var fullKey;
 
         for (var keySuffix in node) {
             if (!node.hasOwnProperty(keySuffix)) {
                 continue;
+            } else if (keySuffix.length === 0) {
+                throw new TypeError('Empty key suffix is passed.');
             }
 
             // validate key
@@ -189,46 +208,45 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
                 throw new Error('Invalid length of key in tree.');
             }
 
-            if (keySuffix[0] === '0') { // '0' at the beginning means left branch/leaf
-                if (levelData.left === undefined) {
-                    levelData.left = {
-                        hash: branchValueHash,
-                        key: branchKey,
-                        type: branchType,
-                        suffix: keySuffix,
-                        size: fullKey.length
-                    };
-                } else {
-                    throw new Error('Left node is duplicated in tree.');
-                }
-            } else { // '1' at the beginning means right branch/leaf
-                if (levelData.right === undefined) {
-                    levelData.right = {
-                        hash: branchValueHash,
-                        key: branchKey,
-                        type: branchType,
-                        suffix: keySuffix,
-                        size: fullKey.length
-                    };
-                } else {
-                    throw new Error('Right node is duplicated in tree.');
-                }
-            }
+            nodes.push({
+                hash: branchValueHash,
+                key: branchKey,
+                type: branchType,
+                suffix: keySuffix,
+                size: fullKey.length
+            });
         }
 
-        if ((levelData.left.type === 'hash') && (levelData.right.type === 'hash') && (fullKey.length < MERKLE_PATRICIA_KEY_LENGTH * 8)) {
-            if (isPartOfSearchKey(keyPrefix, levelData.left.suffix)) {
+        if (nodes[0].suffix[0] === nodes[1].suffix[0] && keyPrefix.length > 0) {
+            throw new Error('Nodes with common-prefix keys are located on non-zero level of the tree.');
+        }
+
+        var orderedNodes = orderNodes(nodes);
+
+        if (!orderedNodes) {
+            throw new Error('Impossible to determine left and right nodes.');
+        }
+
+        var left = orderedNodes[0];
+        var right = orderedNodes[1];
+
+        if (
+            left.type === 'hash' &&
+            right.type === 'hash' &&
+            fullKey.length < MERKLE_PATRICIA_KEY_LENGTH * 8
+        ) {
+            if (isPartOfSearchKey(keyPrefix, left.suffix)) {
                 throw new Error('Tree is invalid. Left key is a part of search key but its branch is not expanded.');
-            } else if (isPartOfSearchKey(keyPrefix, levelData.right.suffix)) {
+            } else if (isPartOfSearchKey(keyPrefix, right.suffix)) {
                 throw new Error('Tree is invalid. Right key is a part of search key but its branch is not expanded.');
             }
         }
 
         return hash({
-            left_hash: levelData.left.hash,
-            right_hash: levelData.right.hash,
-            left_key: levelData.left.key,
-            right_key: levelData.right.key
+            left_hash: left.hash,
+            right_hash: right.hash,
+            left_key: left.key,
+            right_key: right.key
         }, Branch);
     }
 
