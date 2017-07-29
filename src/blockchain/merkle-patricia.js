@@ -121,10 +121,10 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
         var fullKey;
 
         for (var keySuffix in node) {
-            if (typeof keySuffix !== 'string' || keySuffix.length === 0) {
-                throw new TypeError('Empty key suffix is passed.');
-            } else if (!node.hasOwnProperty(keySuffix)) {
+            if (!node.hasOwnProperty(keySuffix)) {
                 continue;
+            } else if (keySuffix.length === 0) {
+                throw new TypeError('Empty key suffix is passed.');
             }
 
             // validate key
@@ -231,9 +231,9 @@ export function merklePatriciaProof(rootHash, proofNode, key, type) {
         var right = orderedNodes[1];
 
         if (
-            (left.type === 'hash') &&
-            (right.type === 'hash') &&
-            (fullKey.length < MERKLE_PATRICIA_KEY_LENGTH * 8)
+            left.type === 'hash' &&
+            right.type === 'hash' &&
+            fullKey.length < MERKLE_PATRICIA_KEY_LENGTH * 8
         ) {
             if (isPartOfSearchKey(keyPrefix, left.suffix)) {
                 throw new Error('Tree is invalid. Left key is a part of search key but its branch is not expanded.');
