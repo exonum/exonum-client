@@ -71,7 +71,7 @@ describe('Check cryptography', function () {
       }
       var hash = Exonum.hash(messageData, CustomMessage)
 
-      expect(hash).to.equal('df2d0cf21d4fc1e2b0adf6dbff7daeb0d7292e9f51f529358c18b95b67539484')
+      expect(hash).to.equal('a19f4123eb23e01811322cb8d721c0f6866459a145b0ea79f2afcc529f61252c')
     })
 
     it('should return hash of data of newMessage type using built-in method', function () {
@@ -97,7 +97,7 @@ describe('Check cryptography', function () {
       }
       var hash = CustomMessage.hash(messageData)
 
-      expect(hash).to.equal('df2d0cf21d4fc1e2b0adf6dbff7daeb0d7292e9f51f529358c18b95b67539484')
+      expect(hash).to.equal('a19f4123eb23e01811322cb8d721c0f6866459a145b0ea79f2afcc529f61252c')
     })
 
     it('should return hash of the array of 8-bit integers', function () {
@@ -219,7 +219,7 @@ describe('Check cryptography', function () {
       }
       var signature = Exonum.sign(secretKey, messageData, CustomMessage)
 
-      expect(signature).to.equal('4006cef1884941850a6b97a64ed7f12d1e1053188618ef71b8c9f87438b943b1969e08011e45db8299bb738fec60c9dcd1936ab9ba44392cacc7f0385f18dd09')
+      expect(signature).to.equal('8a55a1e91fec53cf0c46db75572311f167300ca1d453edbc18dff372d1d44372100eef3acf8d64d39a0b5cdf79a3b3ba2617c16d1a245f50a48add336ec3b508')
     })
 
     it('should return signature of the data of NewMessage type using built-in method', function () {
@@ -245,7 +245,7 @@ describe('Check cryptography', function () {
       }
       var signature = CustomMessage.sign(secretKey, messageData)
 
-      expect(signature).to.equal('4006cef1884941850a6b97a64ed7f12d1e1053188618ef71b8c9f87438b943b1969e08011e45db8299bb738fec60c9dcd1936ab9ba44392cacc7f0385f18dd09')
+      expect(signature).to.equal('8a55a1e91fec53cf0c46db75572311f167300ca1d453edbc18dff372d1d44372100eef3acf8d64d39a0b5cdf79a3b3ba2617c16d1a245f50a48add336ec3b508')
     })
 
     it('should return signature of the array of 8-bit integers', function () {
@@ -415,7 +415,7 @@ describe('Check cryptography', function () {
 
     it('should verify signature of the data of NewMessage type and return true', function () {
       var publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
-      var signature = '4006cef1884941850a6b97a64ed7f12d1e1053188618ef71b8c9f87438b943b1969e08011e45db8299bb738fec60c9dcd1936ab9ba44392cacc7f0385f18dd09'
+      var signature = '8a55a1e91fec53cf0c46db75572311f167300ca1d453edbc18dff372d1d44372100eef3acf8d64d39a0b5cdf79a3b3ba2617c16d1a245f50a48add336ec3b508'
       var CustomMessage = Exonum.newMessage({
         size: 18,
         network_id: 0,
@@ -441,7 +441,7 @@ describe('Check cryptography', function () {
 
     it('should verify signature of the data of NewMessage type using built-in method and return true', function () {
       var publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
-      var signature = '4006cef1884941850a6b97a64ed7f12d1e1053188618ef71b8c9f87438b943b1969e08011e45db8299bb738fec60c9dcd1936ab9ba44392cacc7f0385f18dd09'
+      var signature = '8a55a1e91fec53cf0c46db75572311f167300ca1d453edbc18dff372d1d44372100eef3acf8d64d39a0b5cdf79a3b3ba2617c16d1a245f50a48add336ec3b508'
       var CustomMessage = Exonum.newMessage({
         size: 18,
         network_id: 0,
