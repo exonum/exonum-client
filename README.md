@@ -170,17 +170,17 @@ Here is an example of 'SendFunds' transaction:
 
 ```javascript
 var SendFunds = Exonum.newMessage({
-    size: 24,
+    size: 72,
     network_id: 0,
     protocol_version: 0,
     service_id: 0,
     message_id: 0,
-    signature: '07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a' +
-     '1f2f07703c5bcafb5749aa735ce8b7c366752be882314f5bbbc9a6af2ae634fc',
+    signature: '24b9dc77ce684868b5659f4d9478f7f86d6cf5e85581872c09c1d789e514be7e' +
+     'e9293e6acf3aad7e1f56d568977ce3a7b1fab2ab380bb12d5ac3bbe30513de0f',
     fields: {
-        from: {type: Exonum.Hash, size: 8, from: 0, to: 8},
-        to: {type: Exonum.Hash, size: 8, from: 8, to: 16},
-        amount: {type: Exonum.Uint64, size: 8, from: 16, to: 24}
+        from: {type: Exonum.Hash, size: 32, from: 0, to: 32},
+        to: {type: Exonum.Hash, size: 32, from: 32, to: 64},
+        amount: {type: Exonum.Uint64, size: 8, from: 64, to: 72}
     }
 });
 ```
@@ -401,10 +401,10 @@ For unsafe numbers use `string` only.*
 
 | Name | Type | Size (bytes) | Description |
 |---|---|---|---|
-| Uint8 | `number` | `1` | Signed integer in a range from `0` to `255` |
-| Int16 | `number` | `2` | Signed integer in a range from `0` to `65535` |
-| Int32 | `number` | `4` | Signed integer in a range from `0` to `4294967295` |
-| Int64 | `number` or `string`* | `8` | Signed integer in a range from `0` to `18446744073709551615` |
+| Uint8 | `number` | `1` | Unsigned integer in a range from `0` to `255` |
+| Uint16 | `number` | `2` | Unsigned integer in a range from `0` to `65535` |
+| Uint32 | `number` | `4` | Unsigned integer in a range from `0` to `4294967295` |
+| Uint64 | `number` or `string`* | `8` | Unsigned integer in a range from `0` to `18446744073709551615` |
 
 *\*Note that JavaScript limits minimum and maximum integer number.
 Maximum safe integer in JavaScript is `2^53-1` which is equal to `9007199254740991`.
