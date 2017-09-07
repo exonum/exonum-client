@@ -116,17 +116,17 @@ var hash = Exonum.hash(data, User);
 To sign it:
 
 ```javascript
-var secretKey = '07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a' +
- '1f2f07703c5bcafb5749aa735ce8b7c366752be882314f5bbbc9a6af2ae634fc';
+var secretKey = '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2b' +
+ 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a';
 var signature = Exonum.sign(secretKey, data, User);
 ```
 
 To verify signature:
 
 ```javascript
-var signature = '07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a' +
- '1f2f07703c5bcafb5749aa735ce8b7c366752be882314f5bbbc9a6af2ae634fc';
-var publicKey = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030';
+var signature = 'c1db9a5f01ebdff27e02652a9aae5c9a4ac88787587dabceb9f471ae0b8e051b' +
+ '9632dfd26922f6abf24ff2d3275028fe286703d25ee7fe6b1711e89af4a7d307';
+var publicKey = 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a';
 var result = Exonum.verifySignature(signature, publicKey, data, User);
 ```
 
@@ -175,8 +175,6 @@ var SendFunds = Exonum.newMessage({
     protocol_version: 0,
     service_id: 0,
     message_id: 0,
-    signature: '24b9dc77ce684868b5659f4d9478f7f86d6cf5e85581872c09c1d789e514be7e' +
-     'e9293e6acf3aad7e1f56d568977ce3a7b1fab2ab380bb12d5ac3bbe30513de0f',
     fields: {
         from: {type: Exonum.Hash, size: 32, from: 0, to: 32},
         to: {type: Exonum.Hash, size: 32, from: 32, to: 64},
@@ -203,9 +201,18 @@ var buffer = SendFunds.serialize(data);
 Data of type `SendFunds` can be signed with secret key:
 
 ```javascript
-var secretKey = '07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a' +
- '1f2f07703c5bcafb5749aa735ce8b7c366752be882314f5bbbc9a6af2ae634fc';
+var secretKey = '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2b' +
+ 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a';
 var signature = SendFunds.sign(secretKey, data);
+```
+
+To verify signature:
+
+```javascript
+var signature = '8ff692b47d17f7738ec2d19f5296d3810909a62fe1480eb752b531f8e17056f6' +
+ '578985090db822612f88c3bcad4f0539401836e5ad58913c489784ff3e415a0b';
+var publicKey = 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a';
+var result = SendFunds.verifySignature(signature, publicKey, data);
 ```
 
 ## Cryptography
