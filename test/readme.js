@@ -4,9 +4,7 @@ var expect = require('chai').expect;
 var Exonum = require('..');
 
 describe('Examples from README.md', function() {
-
     describe('Custom type section', function() {
-
         var User = Exonum.newType({
             size: 9,
             fields: {
@@ -31,11 +29,9 @@ describe('Examples from README.md', function() {
         it('should verify custom type signature', function() {
             expect(Exonum.verifySignature(signature, keyPair.publicKey, data, User)).to.be.true;
         });
-
     });
 
     describe('Transaction section', function() {
-
         var SendFunds = Exonum.newMessage({
             size: 72,
             network_id: 0,
@@ -66,7 +62,5 @@ describe('Examples from README.md', function() {
         it('should verify transaction signature', function() {
             expect(SendFunds.verifySignature(signature, keyPair.publicKey, data)).to.be.true;
         });
-
     });
-
 });
