@@ -5,6 +5,7 @@
 
 [travis-image]: https://img.shields.io/travis/exonum/exonum-client/master.svg
 [travis-url]: https://travis-ci.org/exonum/exonum-client
+[![Coverage Status](https://coveralls.io/repos/github/qvantor/exonum-client/badge.svg?branch=master)](https://coveralls.io/github/qvantor/exonum-client?branch=master)
 [license-image]: https://img.shields.io/github/license/exonum/exonum-client.svg?style=flat-square
 [license-url]: https://opensource.org/licenses/Apache-2.0
 

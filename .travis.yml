@@ -18,3 +18,5 @@ deploy:
     branch: master
     tags: true
     node: '8'
+after_success:
+- npm run coveralls
