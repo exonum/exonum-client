@@ -1,26 +1,26 @@
-import * as validate from '../types/validate';
+import * as validate from '../types/validate'
 
 /**
  * Convert hexadecimal string into uint8Array
  * @param {string} str
  * @returns {Uint8Array}
  */
-export function hexadecimalToUint8Array(str) {
-    if (typeof str !== 'string') {
-        throw new TypeError('Wrong data type passed to convertor. Hexadecimal string is expected');
-    }
+export function hexadecimalToUint8Array (str) {
+  if (typeof str !== 'string') {
+    throw new TypeError('Wrong data type passed to convertor. Hexadecimal string is expected')
+  }
 
-    if (!validate.validateHexadecimal(str, str.length / 2)) {
-        throw new TypeError('String of wrong type is passed. Hexadecimal expected.');
-    }
+  if (!validate.validateHexadecimal(str, str.length / 2)) {
+    throw new TypeError('String of wrong type is passed. Hexadecimal expected.')
+  }
 
-    var uint8arr = new Uint8Array(str.length / 2);
+  var uint8arr = new Uint8Array(str.length / 2)
 
-    for (var i = 0, j = 0; i < str.length; i += 2, j++) {
-        uint8arr[j] = parseInt(str.substr(i, 2), 16);
-    }
+  for (var i = 0, j = 0; i < str.length; i += 2, j++) {
+    uint8arr[j] = parseInt(str.substr(i, 2), 16)
+  }
 
-    return uint8arr;
+  return uint8arr
 }
 
 /**
@@ -28,26 +28,26 @@ export function hexadecimalToUint8Array(str) {
  * @param {string} str
  * @returns {string}
  */
-export function hexadecimalToBinaryString(str) {
-    var binaryStr = '';
+export function hexadecimalToBinaryString (str) {
+  var binaryStr = ''
 
-    if (typeof str !== 'string') {
-        throw new TypeError('Wrong data type passed to convertor. Hexadecimal string is expected');
+  if (typeof str !== 'string') {
+    throw new TypeError('Wrong data type passed to convertor. Hexadecimal string is expected')
+  }
+
+  if (!validate.validateHexadecimal(str, Math.ceil(str.length / 2))) {
+    throw new TypeError('String of wrong type is passed. Hexadecimal expected.')
+  }
+
+  for (var i = 0; i < str.length; i++) {
+    var bin = parseInt(str[i], 16).toString(2)
+    while (bin.length < 4) {
+      bin = '0' + bin
     }
+    binaryStr += bin
+  }
 
-    if (!validate.validateHexadecimal(str, Math.ceil(str.length / 2))) {
-        throw new TypeError('String of wrong type is passed. Hexadecimal expected.');
-    }
-
-    for (var i = 0; i < str.length; i++) {
-        var bin = parseInt(str[i], 16).toString(2);
-        while (bin.length < 4) {
-            bin = '0' + bin;
-        }
-        binaryStr += bin;
-    }
-
-    return binaryStr;
+  return binaryStr
 }
 
 /**
@@ -55,20 +55,20 @@ export function hexadecimalToBinaryString(str) {
  * @param {Uint8Array} uint8arr
  * @returns {string}
  */
-export function uint8ArrayToHexadecimal(uint8arr) {
-    var str = '';
+export function uint8ArrayToHexadecimal (uint8arr) {
+  var str = ''
 
-    if (!(uint8arr instanceof Uint8Array)) {
-        throw new TypeError('Wrong data type of array of 8-bit integers. Uint8Array is expected');
-    }
+  if (!(uint8arr instanceof Uint8Array)) {
+    throw new TypeError('Wrong data type of array of 8-bit integers. Uint8Array is expected')
+  }
 
-    for (var i = 0; i < uint8arr.length; i++) {
-        var hex = uint8arr[i].toString(16);
-        hex = (hex.length === 1) ? '0' + hex : hex;
-        str += hex;
-    }
+  for (var i = 0; i < uint8arr.length; i++) {
+    var hex = uint8arr[i].toString(16)
+    hex = (hex.length === 1) ? '0' + hex : hex
+    str += hex
+  }
 
-    return str.toLowerCase();
+  return str.toLowerCase()
 }
 
 /**
@@ -76,22 +76,22 @@ export function uint8ArrayToHexadecimal(uint8arr) {
  * @param {string} binaryStr
  * @returns {Uint8Array}
  */
-export function binaryStringToUint8Array(binaryStr) {
-    var array = [];
+export function binaryStringToUint8Array (binaryStr) {
+  var array = []
 
-    if (typeof binaryStr !== 'string') {
-        throw new TypeError('Wrong data type passed to convertor. Binary string is expected');
-    }
+  if (typeof binaryStr !== 'string') {
+    throw new TypeError('Wrong data type passed to convertor. Binary string is expected')
+  }
 
-    if (!validate.validateBinaryString(binaryStr)) {
-        throw new TypeError('String of wrong type is passed. Binary string expected.');
-    }
+  if (!validate.validateBinaryString(binaryStr)) {
+    throw new TypeError('String of wrong type is passed. Binary string expected.')
+  }
 
-    for (var i = 0; i < binaryStr.length; i += 8) {
-        array.push(parseInt(binaryStr.substr(i, 8), 2));
-    }
+  for (var i = 0; i < binaryStr.length; i += 8) {
+    array.push(parseInt(binaryStr.substr(i, 8), 2))
+  }
 
-    return new Uint8Array(array);
+  return new Uint8Array(array)
 }
 
 /**
@@ -99,24 +99,24 @@ export function binaryStringToUint8Array(binaryStr) {
  * @param {string} binaryStr
  * @returns {string}
  */
-export function binaryStringToHexadecimal(binaryStr) {
-    var str = '';
+export function binaryStringToHexadecimal (binaryStr) {
+  var str = ''
 
-    if (typeof binaryStr !== 'string') {
-        throw new TypeError('Wrong data type passed to convertor. Binary string is expected');
-    }
+  if (typeof binaryStr !== 'string') {
+    throw new TypeError('Wrong data type passed to convertor. Binary string is expected')
+  }
 
-    if (!validate.validateBinaryString(binaryStr)) {
-        throw new TypeError('String of wrong type is passed. Binary string expected.');
-    }
+  if (!validate.validateBinaryString(binaryStr)) {
+    throw new TypeError('String of wrong type is passed. Binary string expected.')
+  }
 
-    for (var i = 0; i < binaryStr.length; i += 8) {
-        var hex = (parseInt(binaryStr.substr(i, 8), 2)).toString(16);
-        hex = (hex.length === 1) ? '0' + hex : hex;
-        str += hex;
-    }
+  for (var i = 0; i < binaryStr.length; i += 8) {
+    var hex = (parseInt(binaryStr.substr(i, 8), 2)).toString(16)
+    hex = (hex.length === 1) ? '0' + hex : hex
+    str += hex
+  }
 
-    return str.toLowerCase();
+  return str.toLowerCase()
 }
 
 /**
@@ -125,42 +125,42 @@ export function binaryStringToHexadecimal(binaryStr) {
  * @param {number} [len] - optional
  * @returns {Uint8Array}
  */
-export function stringToUint8Array(str, len) {
-    var array;
-    var from = 0;
+export function stringToUint8Array (str, len) {
+  var array
+  var from = 0
 
-    if (typeof str !== 'string') {
-        throw new TypeError('Wrong data type passed to convertor. String is expected');
-    }
+  if (typeof str !== 'string') {
+    throw new TypeError('Wrong data type passed to convertor. String is expected')
+  }
 
-    if (len > 0) {
-        array = new Array(len);
-        array.fill(0);
+  if (len > 0) {
+    array = new Array(len)
+    array.fill(0)
+  } else {
+    array = []
+  }
+
+  for (var i = 0; i < str.length; i++) {
+    var c = str.charCodeAt(i)
+
+    if (c < 128) {
+      array[from++] = c
+    } else if (c < 2048) {
+      array[from++] = (c >> 6) | 192
+      array[from++] = (c & 63) | 128
+    } else if (((c & 0xFC00) === 0xD800) && (i + 1) < str.length && ((str.charCodeAt(i + 1) & 0xFC00) === 0xDC00)) {
+      // surrogate pair
+      c = 0x10000 + ((c & 0x03FF) << 10) + (str.charCodeAt(++i) & 0x03FF)
+      array[from++] = (c >> 18) | 240
+      array[from++] = ((c >> 12) & 63) | 128
+      array[from++] = ((c >> 6) & 63) | 128
+      array[from++] = (c & 63) | 128
     } else {
-        array = [];
+      array[from++] = (c >> 12) | 224
+      array[from++] = ((c >> 6) & 63) | 128
+      array[from++] = (c & 63) | 128
     }
+  }
 
-    for (var i = 0; i < str.length; i++) {
-        var c = str.charCodeAt(i);
-
-        if (c < 128) {
-            array[from++] = c;
-        } else if (c < 2048) {
-            array[from++] = (c >> 6) | 192;
-            array[from++] = (c & 63) | 128;
-        } else if (((c & 0xFC00) == 0xD800) && (i + 1) < str.length && ((str.charCodeAt(i + 1) & 0xFC00) == 0xDC00)) {
-            // surrogate pair
-            c = 0x10000 + ((c & 0x03FF) << 10) + (str.charCodeAt(++i) & 0x03FF);
-            array[from++] = (c >> 18) | 240;
-            array[from++] = ((c >> 12) & 63) | 128;
-            array[from++] = ((c >> 6) & 63) | 128;
-            array[from++] = (c & 63) | 128;
-        } else {
-            array[from++] = (c >> 12) | 224;
-            array[from++] = ((c >> 6) & 63) | 128;
-            array[from++] = (c & 63) | 128;
-        }
-    }
-
-    return new Uint8Array(array);
+  return new Uint8Array(array)
 }

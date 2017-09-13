@@ -3,6 +3,6 @@
  * @param obj
  * @returns {boolean}
  */
-export function isObject(obj) {
-    return (typeof obj === 'object' && Array.isArray(obj) === false && obj !== null && !(obj instanceof Date));
+export function isObject (obj) {
+  return (typeof obj === 'object' && Array.isArray(obj) === false && obj !== null && !(obj instanceof Date))
 }

@@ -2,12 +2,15 @@
 
 [![Build status][travis-image]][travis-url]
 [![Coverage Status][coveralls-image]][coveralls-url]
+[![js-standard-style][codestyle-image]][codestyle-url]
 [![License][license-image]][license-url]
 
 [travis-image]: https://img.shields.io/travis/exonum/exonum-client/master.svg
 [travis-url]: https://travis-ci.org/exonum/exonum-client
 [coveralls-image]: https://coveralls.io/repos/github/exonum/exonum-client/badge.svg?branch=master
 [coveralls-url]: https://coveralls.io/github/exonum/exonum-client?branch=master
+[codestyle-image]: https://img.shields.io/badge/code%20style-standard-brightgreen.svg
+[codestyle-url]: http://standardjs.com
 [license-image]: https://img.shields.io/github/license/exonum/exonum-client.svg?style=flat-square
 [license-url]: https://opensource.org/licenses/Apache-2.0
 
