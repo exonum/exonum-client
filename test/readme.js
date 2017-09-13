@@ -1,7 +1,7 @@
 /* eslint-env node, mocha */
 
 var expect = require('chai').expect;
-var Exonum = require('..');
+var Exonum = require('../src');
 
 describe('Examples from README.md', function() {
     describe('Custom type section', function() {

@@ -1,7 +1,7 @@
 /* eslint-env node, mocha */
 
 var expect = require('chai').expect;
-var Exonum = require('..');
+var Exonum = require('../src');
 
 describe('Check proof of Merkle Patricia tree', function() {
 

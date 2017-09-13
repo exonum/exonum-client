@@ -5,6 +5,7 @@
 
 # IDE files
 .idea
+.nyc_output
 .vscode
 *.iml
 
