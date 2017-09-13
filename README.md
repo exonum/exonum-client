@@ -1,10 +1,13 @@
 # Light Client for Exonum Blockchain
 
 [![Build status][travis-image]][travis-url]
+[![Coverage Status][coveralls-image]][coveralls-url]
 [![License][license-image]][license-url]
 
 [travis-image]: https://img.shields.io/travis/exonum/exonum-client/master.svg
 [travis-url]: https://travis-ci.org/exonum/exonum-client
+[coveralls-image]: https://coveralls.io/repos/github/exonum/exonum-client/badge.svg?branch=master
+[coveralls-url]: https://coveralls.io/github/exonum/exonum-client?branch=master
 [license-image]: https://img.shields.io/github/license/exonum/exonum-client.svg?style=flat-square
 [license-url]: https://opensource.org/licenses/Apache-2.0
 
