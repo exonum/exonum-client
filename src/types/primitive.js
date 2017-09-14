@@ -256,9 +256,10 @@ export function Uint64 (value, buffer, from, to) {
  * @param {Array} buffer
  * @param {number} from
  * @param {number} to
+ * @param {number} relativeFromIndex
  * @returns {Array}
  */
-export function String (string, buffer, from, to) {
+export function String (string, buffer, from, to, relativeFromIndex) {
   if (typeof string !== 'string') {
     throw new TypeError('Wrong data type is passed as String. String is required')
   } else if ((to - from) !== 8) {
@@ -266,7 +267,7 @@ export function String (string, buffer, from, to) {
   }
 
   var bufferLength = buffer.length
-  Uint32(bufferLength, buffer, from, from + 4) // index where string content starts in buffer
+  Uint32(relativeFromIndex, buffer, from, from + 4) // index where string content starts in buffer
   insertStringToByteArray(string, buffer, bufferLength) // string content
   Uint32(buffer.length - bufferLength, buffer, from + 4, from + 8) // string length
 

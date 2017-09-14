@@ -459,7 +459,9 @@ For numbers greater than safe use `string` only.*
 
 | Type | Size (bytes) | Description |
 |---|---|---|
-| `Array` | should be fixed in the field declaration | Array of 8-bit unsigned integers |
+| `Array` | `8`* | Array of 8-bit unsigned integers |
+
+*\*Note that the size of 8 bytes is due to the specifics of arrays [serialization](http://exonum.com/doc/advanced/serialization). Actual array length is limited by the general message size limits.*
 
 ## Install
 

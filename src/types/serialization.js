@@ -1,5 +1,5 @@
 import { isInstanceofOfNewType } from './generic'
-import { Uint32 } from './primitive'
+import { Uint32, String, FixedBuffer } from './primitive'
 
 /**
  * Serialize data into array of 8-bit integers and insert into buffer
@@ -20,7 +20,7 @@ export function serialize (buffer, shift, data, type) {
         if (!isFixed(fields[fieldName].type.fields)) {
           return false
         }
-      } else if (fields[fieldName].type === String) {
+      } else if (fields[fieldName].type === String || fields[fieldName].type === FixedBuffer) {
         return false
       }
     }
@@ -50,12 +50,12 @@ export function serialize (buffer, shift, data, type) {
         buffer = serialize(buffer, from, fieldData, fieldType.type)
       } else {
         const end = buffer.length
-        Uint32(end, buffer, from, from + 4)
+        Uint32(end - shift, buffer, from, from + 4)
         buffer = serialize(buffer, end, fieldData, fieldType.type)
         Uint32(buffer.length - end, buffer, from + 4, from + 8)
       }
     } else {
-      buffer = fieldType.type(fieldData, buffer, from, shift + fieldType.to)
+      buffer = fieldType.type(fieldData, buffer, from, shift + fieldType.to, buffer.length - shift)
     }
   }
 

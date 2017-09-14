@@ -36,11 +36,11 @@ describe('Serialize data into array of 8-bit integers', function () {
       }
     })
     var Transaction = Exonum.newType({
-      size: 40,
+      size: 24,
       fields: {
-        from: {type: User, size: 16, from: 0, to: 16},
-        to: {type: User, size: 16, from: 16, to: 32},
-        sum: {type: Exonum.Uint64, size: 8, from: 32, to: 40}
+        from: {type: User, size: 8, from: 0, to: 8},
+        to: {type: User, size: 8, from: 8, to: 16},
+        sum: {type: Exonum.Uint64, size: 8, from: 16, to: 24}
       }
     })
     var transactionData = {
@@ -57,7 +57,33 @@ describe('Serialize data into array of 8-bit integers', function () {
 
     var buffer = Transaction.serialize(transactionData)
 
-    expect(buffer).to.deep.equal([40, 0, 0, 0, 4, 0, 0, 0, 44, 0, 0, 0, 3, 0, 0, 0, 47, 0, 0, 0, 6, 0, 0, 0, 53, 0, 0, 0, 5, 0, 0, 0, 200, 0, 0, 0, 0, 0, 0, 0, 74, 111, 104, 110, 68, 111, 101, 83, 116, 101, 118, 101, 110, 66, 108, 97, 99, 107])
+    expect(buffer).to.deep.equal([24, 0, 0, 0, 23, 0, 0, 0, 47, 0, 0, 0, 27, 0, 0, 0, 200, 0, 0, 0, 0, 0, 0, 0, 16, 0, 0, 0, 4, 0, 0, 0, 20, 0, 0, 0, 3, 0, 0, 0, 74, 111, 104, 110, 68, 111, 101, 16, 0, 0, 0, 6, 0, 0, 0, 22, 0, 0, 0, 5, 0, 0, 0, 83, 116, 101, 118, 101, 110, 66, 108, 97, 99, 107])
+  })
+
+  it('should serialize data of complicated non-fixed newType type and return array of 8-bit integers', function () {
+    var User = Exonum.newType({
+      size: 12,
+      fields: {
+        name: {type: Exonum.FixedBuffer, size: 12, from: 0, to: 12}
+      }
+    })
+    var Transaction = Exonum.newType({
+      size: 16,
+      fields: {
+        to: {type: User, size: 8, from: 0, to: 8},
+        sum: {type: Exonum.Uint64, size: 8, from: 8, to: 16}
+      }
+    })
+    var transactionData = {
+      to: {
+        name: [101, 83, 116, 101, 118, 101, 110, 66, 108, 97, 99, 107]
+      },
+      sum: 200
+    }
+
+    var buffer = Transaction.serialize(transactionData)
+
+    expect(buffer).to.deep.equal([16, 0, 0, 0, 12, 0, 0, 0, 200, 0, 0, 0, 0, 0, 0, 0, 101, 83, 116, 101, 118, 101, 110, 66, 108, 97, 99, 107])
   })
 
   it('should serialize data of complicated fixed newType type and return array of 8-bit integers', function () {
