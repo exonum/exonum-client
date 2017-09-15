@@ -1,9 +1,9 @@
 import bigInt from 'big-integer'
-import {isObject} from '../helpers'
-import {isInstanceofOfNewType} from '../types/generic'
-import {validateHexadecimal, validateBytesArray} from '../types/validate'
-import {hexadecimalToUint8Array} from '../types/convert'
-import {hash} from '../crypto'
+import { isObject } from '../helpers'
+import { isInstanceofOfNewType } from '../types/generic'
+import { validateHexadecimal, validateBytesArray } from '../types/validate'
+import { hexadecimalToUint8Array } from '../types/convert'
+import { hash } from '../crypto'
 
 /**
  * Calculate height of merkle tree
@@ -11,7 +11,7 @@ import {hash} from '../crypto'
  * @return {number}
  */
 function calcHeight (count) {
-  var i = 0
+  let i = 0
   while (bigInt(2).pow(i).lt(count)) {
     i++
   }
@@ -28,19 +28,19 @@ function calcHeight (count) {
  * @return {Array}
  */
 export function merkleProof (rootHash, count, proofNode, range, type) {
-  var elements = []
-  var rootBranch = 'left'
+  const elements = []
+  let rootBranch = 'left'
 
-    /**
-     * Get value from node, insert into elements array and return its hash
-     * @param data
-     * @param {number} depth
-     * @param {number} index
-     * @returns {string}
-     */
+  /**
+   * Get value from node, insert into elements array and return its hash
+   * @param data
+   * @param {number} depth
+   * @param {number} index
+   * @returns {string}
+   */
   function getHash (data, depth, index) {
-    var element
-    var elementsHash
+    let element
+    let elementsHash
 
     if (depth !== 0 && (depth + 1) !== height) {
       throw new Error('Value node is on wrong height in tree.')
@@ -77,19 +77,19 @@ export function merkleProof (rootHash, count, proofNode, range, type) {
     return elementsHash
   }
 
-    /**
-     * Recursive tree traversal function
-     * @param {Object} node
-     * @param {number} depth
-     * @param {number} index
-     * @returns {string}
-     */
+  /**
+   * Recursive tree traversal function
+   * @param {Object} node
+   * @param {number} depth
+   * @param {number} index
+   * @returns {string}
+   */
   function recursive (node, depth, index) {
-    var hashLeft
-    var hashRight
-    var summingBuffer
+    let hashLeft
+    let hashRight
+    let summingBuffer
 
-        // case with single node in tree
+    // case with single node in tree
     if (depth === 0 && node.val !== undefined) {
       return getHash(node.val, depth, index * 2)
     }
@@ -145,12 +145,12 @@ export function merkleProof (rootHash, count, proofNode, range, type) {
     return hash(summingBuffer)
   }
 
-    // validate rootHash
+  // validate rootHash
   if (!validateHexadecimal(rootHash)) {
     throw new TypeError('Root hash of wrong type is passed. Hexadecimal expected.')
   }
 
-    // validate count
+  // validate count
   if (!(typeof count === 'number' || typeof count === 'string')) {
     throw new TypeError('Invalid value is passed as count parameter. Number or string is expected.')
   }
@@ -161,8 +161,8 @@ export function merkleProof (rootHash, count, proofNode, range, type) {
     throw new RangeError('Invalid count parameter. Count can\'t be below zero.')
   }
 
-    // validate range
-  if (Array.isArray(range) === false || range.length !== 2) {
+  // validate range
+  if (!Array.isArray(range) || range.length !== 2) {
     throw new TypeError('Invalid type of range parameter. Array of two elements expected.')
   } else if (!(typeof range[0] === 'number' || typeof range[0] === 'string')) {
     throw new TypeError('Invalid value is passed as start of range parameter.')
@@ -170,8 +170,8 @@ export function merkleProof (rootHash, count, proofNode, range, type) {
     throw new TypeError('Invalid value is passed as end of range parameter.')
   }
 
-  var rangeStart = bigInt(range[0])
-  var rangeEnd = bigInt(range[1])
+  const rangeStart = bigInt(range[0])
+  const rangeEnd = bigInt(range[1])
 
   if (rangeStart.gt(rangeEnd)) {
     throw new RangeError('Invalid range parameter. Start index can\'t be out of range.')
@@ -183,16 +183,16 @@ export function merkleProof (rootHash, count, proofNode, range, type) {
     return []
   }
 
-    // validate proofNode
-  if (isObject(proofNode) === false) {
+  // validate proofNode
+  if (!isObject(proofNode)) {
     throw new TypeError('Invalid type of proofNode parameter. Object expected.')
   }
 
-  var height = calcHeight(count)
-  var start = rangeStart
-  var end = rangeEnd.lt(count) ? rangeEnd : count.minus(1)
+  const height = calcHeight(count)
+  const start = rangeStart
+  const end = rangeEnd.lt(count) ? rangeEnd : count.minus(1)
 
-  var actualHash = recursive(proofNode, 0, 0)
+  const actualHash = recursive(proofNode, 0, 0)
 
   if (rootHash.toLowerCase() !== actualHash) {
     throw new Error('rootHash parameter is not equal to actual hash.')

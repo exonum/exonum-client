@@ -1,8 +1,8 @@
 import bigInt from 'big-integer'
 import sha from 'sha.js'
 import nacl from 'tweetnacl'
-import {isInstanceofOfNewType} from '../types/generic'
-import {isInstanceofOfNewMessage} from '../types/message'
+import { isInstanceofOfNewType } from '../types/generic'
+import { isInstanceofOfNewMessage } from '../types/message'
 import * as validate from '../types/validate'
 import * as convert from '../types/convert'
 
@@ -13,7 +13,7 @@ import * as convert from '../types/convert'
  * @return {string}
  */
 export function hash (data, type) {
-  var buffer
+  let buffer
 
   if (isInstanceofOfNewType(type) || isInstanceofOfNewMessage(type)) {
     buffer = type.serialize(data)
@@ -40,9 +40,9 @@ export function hash (data, type) {
  * @return {string}
  */
 export function sign (secretKey, data, type) {
-  var secretKeyUint8Array
-  var buffer
-  var signature
+  let secretKeyUint8Array
+  let buffer
+  let signature
 
   if (!validate.validateHexadecimal(secretKey, 64)) {
     throw new TypeError('secretKey of wrong type is passed. Hexadecimal expected.')
@@ -80,9 +80,9 @@ export function sign (secretKey, data, type) {
  * @return {boolean}
  */
 export function verifySignature (signature, publicKey, data, type) {
-  var signatureUint8Array
-  var publicKeyUint8Array
-  var buffer
+  let signatureUint8Array
+  let publicKeyUint8Array
+  let buffer
 
   if (!validate.validateHexadecimal(signature, 64)) {
     throw new TypeError('Signature of wrong type is passed. Hexadecimal expected.')
@@ -120,13 +120,13 @@ export function verifySignature (signature, publicKey, data, type) {
  *  secretKey {string}
  */
 export function keyPair () {
-  var pair = nacl.sign.keyPair()
-  var publicKey = convert.uint8ArrayToHexadecimal(pair.publicKey)
-  var secretKey = convert.uint8ArrayToHexadecimal(pair.secretKey)
+  const pair = nacl.sign.keyPair()
+  const publicKey = convert.uint8ArrayToHexadecimal(pair.publicKey)
+  const secretKey = convert.uint8ArrayToHexadecimal(pair.secretKey)
 
   return {
-    publicKey: publicKey,
-    secretKey: secretKey
+    publicKey,
+    secretKey
   }
 }
 
@@ -135,6 +135,6 @@ export function keyPair () {
  * @returns {string}
  */
 export function randomUint64 () {
-  var buffer = nacl.randomBytes(8)
+  const buffer = nacl.randomBytes(8)
   return bigInt.fromArray(Array.from(buffer), 256).toString()
 }

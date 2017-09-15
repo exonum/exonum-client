@@ -21,7 +21,7 @@ const MAX_UINT64 = '18446744073709551615'
  * @param {number} to
  */
 function insertHexadecimalToByteArray (str, buffer, from, to) {
-  for (var i = 0; i < str.length; i += 2) {
+  for (let i = 0; i < str.length; i += 2) {
     buffer[from] = parseInt(str.substr(i, 2), 16)
     from++
 
@@ -29,6 +29,7 @@ function insertHexadecimalToByteArray (str, buffer, from, to) {
       break
     }
   }
+  return buffer
 }
 
 /**
@@ -40,13 +41,15 @@ function insertHexadecimalToByteArray (str, buffer, from, to) {
  * @returns {boolean}
  */
 function insertIntegerToByteArray (number, buffer, from, to) {
-  var value = bigInt(number) // convert a number-like object into a big integer
+  let value = bigInt(number) // convert a number-like object into a big integer
 
-  for (var pos = from; pos < to; pos++) {
-    var divmod = value.divmod(256)
+  for (let pos = from; pos < to; pos++) {
+    const divmod = value.divmod(256)
     buffer[pos] = divmod.remainder.value
     value = divmod.quotient
   }
+
+  return buffer
 }
 
 /**
@@ -56,7 +59,7 @@ function insertIntegerToByteArray (number, buffer, from, to) {
  * @param {number} to
  */
 function insertByteArrayToByteArray (arr, buffer, from, to) {
-  for (var i = 0; i < arr.length; i++) {
+  for (let i = 0; i < arr.length; i++) {
     buffer[from] = arr[i]
     from++
 
@@ -64,6 +67,8 @@ function insertByteArrayToByteArray (arr, buffer, from, to) {
       break
     }
   }
+
+  return buffer
 }
 
 /**
@@ -72,8 +77,8 @@ function insertByteArrayToByteArray (arr, buffer, from, to) {
  * @param {number} from
  */
 function insertStringToByteArray (str, buffer, from) {
-  for (var i = 0; i < str.length; i++) {
-    var c = str.charCodeAt(i)
+  for (let i = 0; i < str.length; i++) {
+    let c = str.charCodeAt(i)
 
     if (c < 128) {
       buffer[from++] = c
@@ -111,9 +116,7 @@ export function Int8 (value, buffer, from, to) {
     value = MAX_UINT8 + value + 1
   }
 
-  insertIntegerToByteArray(value, buffer, from, to)
-
-  return buffer
+  return insertIntegerToByteArray(value, buffer, from, to)
 }
 
 /**
@@ -132,9 +135,7 @@ export function Int16 (value, buffer, from, to) {
     value = MAX_UINT16 + value + 1
   }
 
-  insertIntegerToByteArray(value, buffer, from, to)
-
-  return buffer
+  return insertIntegerToByteArray(value, buffer, from, to)
 }
 
 /**
@@ -153,9 +154,7 @@ export function Int32 (value, buffer, from, to) {
     value = MAX_UINT32 + value + 1
   }
 
-  insertIntegerToByteArray(value, buffer, from, to)
-
-  return buffer
+  return insertIntegerToByteArray(value, buffer, from, to)
 }
 
 /**
@@ -170,15 +169,13 @@ export function Int64 (value, buffer, from, to) {
     throw new TypeError('Int64 of wrong type is passed: ' + value)
   }
 
-  var val = bigInt(value)
+  let val = bigInt(value)
 
   if (val.isNegative()) {
     val = bigInt(MAX_UINT64).plus(1).plus(val)
   }
 
-  insertIntegerToByteArray(val, buffer, from, to)
-
-  return buffer
+  return insertIntegerToByteArray(val, buffer, from, to)
 }
 
 /**
@@ -193,9 +190,7 @@ export function Uint8 (value, buffer, from, to) {
     throw new TypeError('Uint8 of wrong type is passed: ' + value)
   }
 
-  insertIntegerToByteArray(value, buffer, from, to)
-
-  return buffer
+  return insertIntegerToByteArray(value, buffer, from, to)
 }
 
 /**
@@ -210,9 +205,7 @@ export function Uint16 (value, buffer, from, to) {
     throw new TypeError('Uint16 of wrong type is passed: ' + value)
   }
 
-  insertIntegerToByteArray(value, buffer, from, to)
-
-  return buffer
+  return insertIntegerToByteArray(value, buffer, from, to)
 }
 
 /**
@@ -227,9 +220,7 @@ export function Uint32 (value, buffer, from, to) {
     throw new TypeError('Uint32 of wrong type is passed: ' + value)
   }
 
-  insertIntegerToByteArray(value, buffer, from, to)
-
-  return buffer
+  return insertIntegerToByteArray(value, buffer, from, to)
 }
 
 /**
@@ -244,11 +235,9 @@ export function Uint64 (value, buffer, from, to) {
     throw new TypeError('Uint64 of wrong type is passed: ' + value)
   }
 
-  var val = bigInt(value)
+  const val = bigInt(value)
 
-  insertIntegerToByteArray(val, buffer, from, to)
-
-  return buffer
+  return insertIntegerToByteArray(val, buffer, from, to)
 }
 
 /**
@@ -266,7 +255,7 @@ export function String (string, buffer, from, to, relativeFromIndex) {
     throw new Error('String segment is of wrong length. 8 bytes long is required to store transmitted value.')
   }
 
-  var bufferLength = buffer.length
+  const bufferLength = buffer.length
   Uint32(relativeFromIndex, buffer, from, from + 4) // index where string content starts in buffer
   insertStringToByteArray(string, buffer, bufferLength) // string content
   Uint32(buffer.length - bufferLength, buffer, from + 4, from + 8) // string length
@@ -290,9 +279,7 @@ export function Hash (hash, buffer, from, to) {
     throw new Error('Hash segment is of wrong length. 32 bytes long is required to store transmitted value.')
   }
 
-  insertHexadecimalToByteArray(hash, buffer, from, to)
-
-  return buffer
+  return insertHexadecimalToByteArray(hash, buffer, from, to)
 }
 
 /**
@@ -311,9 +298,7 @@ export function Digest (digest, buffer, from, to) {
     throw new Error('Digest segment is of wrong length. 64 bytes long is required to store transmitted value.')
   }
 
-  insertHexadecimalToByteArray(digest, buffer, from, to)
-
-  return buffer
+  return insertHexadecimalToByteArray(digest, buffer, from, to)
 }
 
 /**
@@ -332,9 +317,7 @@ export function PublicKey (publicKey, buffer, from, to) {
     throw new Error('PublicKey segment is of wrong length. 32 bytes long is required to store transmitted value.')
   }
 
-  insertHexadecimalToByteArray(publicKey, buffer, from, to)
-
-  return buffer
+  return insertHexadecimalToByteArray(publicKey, buffer, from, to)
 }
 
 /**
@@ -351,9 +334,7 @@ export function Bool (value, buffer, from, to) {
     throw new Error('Bool segment is of wrong length. 1 bytes long is required to store transmitted value.')
   }
 
-  insertIntegerToByteArray(value ? 1 : 0, buffer, from, to)
-
-  return buffer
+  return insertIntegerToByteArray(value ? 1 : 0, buffer, from, to)
 }
 
 /**
@@ -368,11 +349,9 @@ export function Timespec (nanoseconds, buffer, from, to) {
     throw new TypeError('Timespec of wrong type is passed: ' + nanoseconds)
   }
 
-  var val = bigInt(nanoseconds)
+  const val = bigInt(nanoseconds)
 
-  insertIntegerToByteArray(val, buffer, from, to)
-
-  return buffer
+  return insertIntegerToByteArray(val, buffer, from, to)
 }
 
 /**
@@ -383,16 +362,16 @@ export function Timespec (nanoseconds, buffer, from, to) {
  * @returns {Array}
  */
 export function FixedBuffer (value, buffer, from, to) {
-  var size = to - from
+  const size = to - from
 
   if (size < 0) {
     throw new Error('FixedBuffer segment is of wrong length.')
   }
 
   if (typeof value === 'string' && validate.validateHexadecimal(value, size)) {
-    insertHexadecimalToByteArray(value, buffer, from, to)
+    buffer = insertHexadecimalToByteArray(value, buffer, from, to)
   } else if (validate.validateBytesArray(value) && size === value.length) {
-    insertByteArrayToByteArray(value, buffer, from, to)
+    buffer = insertByteArrayToByteArray(value, buffer, from, to)
   } else {
     throw new TypeError('FixedBuffer of wrong type is passed: ' + value)
   }

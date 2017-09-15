@@ -1,13 +1,13 @@
 /* eslint-env node, mocha */
 /* eslint-disable no-unused-expressions */
 
-var expect = require('chai').expect
-var Exonum = require('../src')
+const expect = require('chai').expect
+const Exonum = require('../src')
 
 describe('Convert data from one type to another', function () {
   describe('Check Exonum.hexadecimalToUint8Array', function () {
     it('should convert valid hexadecimal into Uint8Array', function () {
-      var data = require('./data/convertors/hexadecimalToUint8Array.json')
+      const data = require('./data/convertors/hexadecimalToUint8Array.json')
       expect(Exonum.hexadecimalToUint8Array(data.from)).to.deep.equal(new Uint8Array(data.to))
     })
 
@@ -20,7 +20,7 @@ describe('Convert data from one type to another', function () {
 
   describe('Check Exonum.stringToUint8Array', function () {
     it('should convert valid string into Uint8Array', function () {
-      var data = require('./data/convertors/stringToUint8Array.json')
+      const data = require('./data/convertors/stringToUint8Array.json')
       expect(Exonum.stringToUint8Array(data.from)).to.deep.equal(new Uint8Array(data.to))
     })
 
@@ -33,7 +33,7 @@ describe('Convert data from one type to another', function () {
 
   describe('Check Exonum.binaryStringToUint8Array', function () {
     it('should convert valid binaryString into Uint8Array', function () {
-      var data = require('./data/convertors/binaryStringToUint8Array.json')
+      const data = require('./data/convertors/binaryStringToUint8Array.json')
       expect(Exonum.binaryStringToUint8Array(data.from)).to.deep.equal(new Uint8Array(data.to))
     })
 
@@ -52,7 +52,7 @@ describe('Convert data from one type to another', function () {
 
   describe('Check Exonum.uint8ArrayToHexadecimal', function () {
     it('should convert valid Uint8Array into hexadecimal', function () {
-      var data = require('./data/convertors/uint8ArrayToHexadecimal.json')
+      const data = require('./data/convertors/uint8ArrayToHexadecimal.json')
       expect(Exonum.uint8ArrayToHexadecimal(new Uint8Array(data.from))).to.equal(data.to)
     })
 
@@ -65,7 +65,7 @@ describe('Convert data from one type to another', function () {
 
   describe('Check Exonum.binaryStringToHexadecimal', function () {
     it('should convert valid binaryString into hexadecimal', function () {
-      var data = require('./data/convertors/binaryStringToHexadecimal.json')
+      const data = require('./data/convertors/binaryStringToHexadecimal.json')
       expect(Exonum.binaryStringToHexadecimal(data.from)).to.deep.equal(data.to)
     })
 
@@ -78,7 +78,7 @@ describe('Convert data from one type to another', function () {
 
   describe('Check Exonum.hexadecimalToBinaryString', function () {
     it('should convert valid hexadecimal into BinaryString', function () {
-      var data = require('./data/convertors/hexadecimalToBinaryString.json')
+      const data = require('./data/convertors/hexadecimalToBinaryString.json')
       expect(Exonum.hexadecimalToBinaryString(data.from)).to.equal(data.to)
     })
 
