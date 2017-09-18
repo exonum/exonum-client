@@ -131,10 +131,14 @@ describe('Check cryptography', function () {
           balance: { type: Exonum.Uint64, size: 8, from: 40, to: 48 },
           history_hash: { type: Exonum.Hash, size: 32, from: 48, to: 80 }
         }
-      });
+      })
 
-      [undefined, false, 42, new Date(), []].forEach(function (_hash) {
-        expect(() => Exonum.hash(_hash, Wallet)).to.throw(TypeError)
+      expect(() => Exonum.hash(undefined, Wallet))
+        .to.throw(TypeError, 'Cannot read property \'pub_key\' of undefined');
+
+      [false, 42, new Date(), []].forEach(function (_hash) {
+        expect(() => Exonum.hash(_hash, Wallet))
+          .to.throw(TypeError, 'Field pub_key is not defined.')
       })
     })
 
@@ -151,10 +155,14 @@ describe('Check cryptography', function () {
           balance: { type: Exonum.Uint64, size: 8, from: 9, to: 17 },
           status: { type: Exonum.Bool, size: 1, from: 17, to: 18 }
         }
-      });
+      })
 
-      [undefined, false, 42, new Date(), []].forEach(function (_hash) {
-        expect(() => Exonum.hash(_hash, CustomMessage)).to.throw(TypeError)
+      expect(() => Exonum.hash(undefined, CustomMessage))
+        .to.throw(TypeError, 'Cannot read property \'name\' of undefined');
+
+      [false, 42, new Date(), []].forEach(function (_hash) {
+        expect(() => Exonum.hash(_hash, CustomMessage))
+          .to.throw(TypeError, 'Field name is not defined.')
       })
     })
   })
@@ -281,7 +289,8 @@ describe('Check cryptography', function () {
         hash: 'Hello world'
       }
 
-      expect(() => Exonum.sign(secretKey, userData, User)).to.throw(TypeError)
+      expect(() => Exonum.sign(secretKey, userData, User))
+        .to.throw(TypeError, 'Field firstName is not defined.')
     })
 
     it('should throw error when the data parameter of wrong NewMessage type', function () {
@@ -304,7 +313,8 @@ describe('Check cryptography', function () {
         hash: 'Hello world'
       }
 
-      expect(() => Exonum.sign(secretKey, someData, CustomMessage)).to.throw(TypeError)
+      expect(() => Exonum.sign(secretKey, someData, CustomMessage))
+        .to.throw(TypeError, 'Field name is not defined.')
     })
 
     it('should throw error when the type parameter of invalid type', function () {
@@ -317,7 +327,8 @@ describe('Check cryptography', function () {
         lastName: 'Doe'
       }
 
-      expect(() => Exonum.sign(secretKey, userData, User)).to.throw(TypeError)
+      expect(() => Exonum.sign(secretKey, userData, User))
+        .to.throw(TypeError, 'Wrong type of data.')
     })
 
     it('should throw error when the secretKey parameter of wrong length', function () {
@@ -335,7 +346,8 @@ describe('Check cryptography', function () {
       }
       const buffer = User.serialize(userData)
 
-      expect(() => Exonum.sign(secretKey, buffer)).to.throw(TypeError)
+      expect(() => Exonum.sign(secretKey, buffer))
+        .to.throw(TypeError, 'secretKey of wrong type is passed. Hexadecimal expected.')
     })
 
     it('should throw error when wrong secretKey parameter', function () {
@@ -353,7 +365,8 @@ describe('Check cryptography', function () {
       }
       const buffer = User.serialize(userData)
 
-      expect(() => Exonum.sign(secretKey, buffer)).to.throw(TypeError)
+      expect(() => Exonum.sign(secretKey, buffer))
+        .to.throw(TypeError, 'secretKey of wrong type is passed. Hexadecimal expected.')
     })
 
     it('should throw error when the secretKey parameter of invalid type', function () {
@@ -371,7 +384,8 @@ describe('Check cryptography', function () {
       const buffer = User.serialize(userData);
 
       [true, null, undefined, [], {}, 51, new Date()].forEach(function (secretKey) {
-        expect(() => Exonum.sign(secretKey, buffer)).to.throw(TypeError)
+        expect(() => Exonum.sign(secretKey, buffer))
+          .to.throw(TypeError, 'secretKey of wrong type is passed. Hexadecimal expected.')
       })
     })
   })
@@ -518,7 +532,8 @@ describe('Check cryptography', function () {
         hash: 'Hello world'
       }
 
-      expect(() => Exonum.verifySignature(signature, publicKey, userData, User)).to.throw(TypeError)
+      expect(() => Exonum.verifySignature(signature, publicKey, userData, User))
+        .to.throw(TypeError, 'Field firstName is not defined.')
     })
 
     it('should throw error when the data parameter is of wrong NewMessage type', function () {
@@ -542,7 +557,8 @@ describe('Check cryptography', function () {
         hash: 'Hello world'
       }
 
-      expect(() => Exonum.verifySignature(signature, publicKey, someData, CustomMessage)).to.throw(TypeError)
+      expect(() => Exonum.verifySignature(signature, publicKey, someData, CustomMessage))
+        .to.throw(TypeError, 'Field name is not defined.')
     })
 
     it('should throw error when the type parameter is of wrong type', function () {
@@ -556,7 +572,8 @@ describe('Check cryptography', function () {
         hash: 'Hello world'
       }
 
-      expect(() => Exonum.verifySignature(signature, publicKey, userData, User)).to.throw(TypeError)
+      expect(() => Exonum.verifySignature(signature, publicKey, userData, User))
+        .to.throw(TypeError, 'Wrong type of data.')
     })
 
     it('should throw error when the signature parameter is of wrong length', function () {
@@ -575,7 +592,8 @@ describe('Check cryptography', function () {
       }
       const buffer = User.serialize(userData)
 
-      expect(() => Exonum.verifySignature(signature, publicKey, buffer)).to.throw(TypeError)
+      expect(() => Exonum.verifySignature(signature, publicKey, buffer))
+        .to.throw(TypeError, 'Signature of wrong type is passed. Hexadecimal expected.')
     })
 
     it('should throw error when the signature parameter is invalid', function () {
@@ -594,7 +612,8 @@ describe('Check cryptography', function () {
       }
       const buffer = User.serialize(userData)
 
-      expect(() => Exonum.verifySignature(signature, publicKey, buffer)).to.throw(TypeError)
+      expect(() => Exonum.verifySignature(signature, publicKey, buffer))
+        .to.throw(TypeError, 'Signature of wrong type is passed. Hexadecimal expected.')
     })
 
     it('should throw error when the signature parameter is of wrong type', function () {
@@ -612,8 +631,9 @@ describe('Check cryptography', function () {
       }
       const buffer = User.serialize(userData);
 
-      [true, null, undefined, [], {}, 51, new Date()].forEach(function (signature) {
-        expect(() => Exonum.verifySignature(signature, publicKey, buffer)).to.throw(TypeError)
+      [true, null, undefined, [], {}, 51, new Date()].forEach(signature => {
+        expect(() => Exonum.verifySignature(signature, publicKey, buffer))
+          .to.throw(TypeError, 'Signature of wrong type is passed. Hexadecimal expected.')
       })
     })
 
@@ -633,7 +653,8 @@ describe('Check cryptography', function () {
       }
       const buffer = User.serialize(userData)
 
-      expect(() => Exonum.verifySignature(signature, publicKey, buffer)).to.throw(TypeError)
+      expect(() => Exonum.verifySignature(signature, publicKey, buffer))
+        .to.throw(TypeError, 'Signature of wrong type is passed. Hexadecimal expected.')
     })
 
     it('should throw error when the publicKey parameter is invalid', function () {
@@ -652,7 +673,8 @@ describe('Check cryptography', function () {
       }
       const buffer = User.serialize(userData)
 
-      expect(() => Exonum.verifySignature(signature, publicKey, buffer)).to.throw(TypeError)
+      expect(() => Exonum.verifySignature(signature, publicKey, buffer))
+        .to.throw(TypeError, 'Signature of wrong type is passed. Hexadecimal expected.')
     })
 
     it('should throw error when the publicKey parameter is of wrong type', function () {
@@ -671,7 +693,8 @@ describe('Check cryptography', function () {
       const buffer = User.serialize(userData);
 
       [true, null, undefined, [], {}, 51, new Date()].forEach(function (publicKey) {
-        expect(() => Exonum.verifySignature(signature, publicKey, buffer)).to.throw(TypeError)
+        expect(() => Exonum.verifySignature(signature, publicKey, buffer))
+          .to.throw(TypeError, 'Signature of wrong type is passed. Hexadecimal expected.')
       })
     })
   })
