@@ -24,7 +24,8 @@ describe('Check built-in types', function () {
       })
       const data = { hash: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36' }
 
-      expect(() => Type.serialize(data)).to.throw(Error)
+      expect(() => Type.serialize(data))
+        .to.throw(Error, 'Hash segment is of wrong length. 32 bytes long is required to store transmitted value.')
     })
 
     it('should throw error when the value is invalid string', function () {
@@ -34,7 +35,8 @@ describe('Check built-in types', function () {
       })
       const data = { hash: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3z' }
 
-      expect(() => Type.serialize(data)).to.throw(Error)
+      expect(() => Type.serialize(data))
+        .to.throw(TypeError, 'Hash of wrong type is passed: f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3z')
     })
 
     it('should throw error when the value is too long string', function () {
@@ -44,7 +46,8 @@ describe('Check built-in types', function () {
       })
       const data = { hash: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365' }
 
-      expect(() => Type.serialize(data)).to.throw(Error)
+      expect(() => Type.serialize(data))
+        .to.throw(TypeError, 'Hash of wrong type is passed: f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365')
     })
 
     it('should throw error when the value is too short string', function () {
@@ -54,17 +57,22 @@ describe('Check built-in types', function () {
       })
       const data = { hash: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3' }
 
-      expect(() => Type.serialize(data)).to.throw(Error)
+      expect(() => Type.serialize(data))
+        .to.throw(TypeError, 'Hash of wrong type is passed: f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3')
     })
 
     it('should throw error when the value of invalid type', function () {
       const Type = Exonum.newType({
         size: 32,
         fields: { hash: { type: Exonum.Hash, size: 32, from: 0, to: 32 } }
-      });
+      })
 
-      [true, null, undefined, 57, [], {}, new Date()].forEach(function (hash) {
-        expect(() => Type.serialize({ hash: hash })).to.throw(TypeError)
+      expect(() => Type.serialize({ hash: undefined }))
+        .to.throw(TypeError, 'Field hash is not defined.');
+
+      [true, null, 57, [], {}, new Date()].forEach(function (hash) {
+        expect(() => Type.serialize({ hash: hash }))
+          .to.throw(TypeError, /Hash of wrong type is passed:/)
       })
     })
   })
@@ -88,7 +96,8 @@ describe('Check built-in types', function () {
       })
       const data = { key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36' }
 
-      expect(() => Type.serialize(data)).to.throw(Error)
+      expect(() => Type.serialize(data))
+        .to.throw(Error, 'PublicKey segment is of wrong length. 32 bytes long is required to store transmitted value.')
     })
 
     it('should throw error when the value is invalid string', function () {
@@ -98,7 +107,8 @@ describe('Check built-in types', function () {
       })
       const data = { key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3z' }
 
-      expect(() => Type.serialize(data)).to.throw(Error)
+      expect(() => Type.serialize(data))
+        .to.throw(TypeError, 'PublicKey of wrong type is passed: f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3z')
     })
 
     it('should throw error when the value is too long string', function () {
@@ -108,7 +118,8 @@ describe('Check built-in types', function () {
       })
       const data = { key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365' }
 
-      expect(() => Type.serialize(data)).to.throw(Error)
+      expect(() => Type.serialize(data))
+        .to.throw(TypeError, 'PublicKey of wrong type is passed: f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365')
     })
 
     it('should throw error when the value is too short string', function () {
@@ -118,17 +129,22 @@ describe('Check built-in types', function () {
       })
       const data = { key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3' }
 
-      expect(() => Type.serialize(data)).to.throw(Error)
+      expect(() => Type.serialize(data))
+        .to.throw(TypeError, 'PublicKey of wrong type is passed: f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3')
     })
 
     it('should throw error when the value of invalid type', function () {
       const Type = Exonum.newType({
         size: 32,
         fields: { key: { type: Exonum.PublicKey, size: 32, from: 0, to: 32 } }
-      });
+      })
 
-      [true, null, undefined, 57, [], {}, new Date()].forEach(function (key) {
-        expect(() => Type.serialize({ key: key })).to.throw(TypeError)
+      expect(() => Type.serialize({ key: undefined }))
+        .to.throw(TypeError, 'Field key is not defined.');
+
+      [true, null, 57, [], {}, new Date()].forEach(function (key) {
+        expect(() => Type.serialize({ key: key }))
+          .to.throw(TypeError, /PublicKey of wrong type is passed:/)
       })
     })
   })
@@ -152,7 +168,8 @@ describe('Check built-in types', function () {
       })
       const data = { key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36' }
 
-      expect(() => Type.serialize(data)).to.throw(Error)
+      expect(() => Type.serialize(data))
+        .to.throw(Error, 'Digest segment is of wrong length. 64 bytes long is required to store transmitted value.')
     })
 
     it('should throw error when the value is invalid string', function () {
@@ -162,7 +179,8 @@ describe('Check built-in types', function () {
       })
       const data = { key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3zf5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3z' }
 
-      expect(() => Type.serialize(data)).to.throw(Error)
+      expect(() => Type.serialize(data))
+        .to.throw(TypeError, 'Digest of wrong type is passed: f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3zf5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3z')
     })
 
     it('should throw error when the value is too long string', function () {
@@ -172,7 +190,8 @@ describe('Check built-in types', function () {
       })
       const data = { key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365' }
 
-      expect(() => Type.serialize(data)).to.throw(Error)
+      expect(() => Type.serialize(data))
+        .to.throw(TypeError, 'Digest of wrong type is passed: f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365')
     })
 
     it('should throw error when the value is too short string', function () {
@@ -182,17 +201,22 @@ describe('Check built-in types', function () {
       })
       const data = { key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3' }
 
-      expect(() => Type.serialize(data)).to.throw(Error)
+      expect(() => Type.serialize(data))
+        .to.throw(TypeError, 'Digest of wrong type is passed: f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3')
     })
 
     it('should throw error when the value of invalid type', function () {
       const Type = Exonum.newType({
         size: 64,
         fields: { key: { type: Exonum.Digest, size: 64, from: 0, to: 64 } }
-      });
+      })
 
-      [true, null, undefined, 57, [], {}, new Date()].forEach(function (key) {
-        expect(() => Type.serialize({ key: key })).to.throw(TypeError)
+      expect(() => Type.serialize({ key: undefined }))
+        .to.throw(TypeError, 'Field key is not defined.');
+
+      [true, null, 57, [], {}, new Date()].forEach(function (key) {
+        expect(() => Type.serialize({ key: key }))
+          .to.throw(TypeError, /Digest of wrong type is passed: /)
       })
     })
   })
@@ -226,7 +250,8 @@ describe('Check built-in types', function () {
         fields: { since: { type: Exonum.Timespec, size: 8, from: 0, to: 8 } }
       })
 
-      expect(() => Type.serialize({ since: -1483979894237 })).to.throw(TypeError)
+      expect(() => Type.serialize({ since: -1483979894237 }))
+        .to.throw(TypeError, 'Timespec of wrong type is passed: -1483979894237')
     })
 
     it('should throw error when the range of segment is invalid', function () {
@@ -235,7 +260,8 @@ describe('Check built-in types', function () {
         fields: { since: { type: Exonum.Timespec, size: 8, from: 0, to: 4 } }
       })
 
-      expect(() => Type.serialize({ since: 1483979894237 })).to.throw(Error)
+      expect(() => Type.serialize({ since: 1483979894237 }))
+        .to.throw(TypeError, 'Timespec of wrong type is passed: 1483979894237')
     })
 
     it('should throw error when the value is out of range', function () {
@@ -244,17 +270,22 @@ describe('Check built-in types', function () {
         fields: { since: { type: Exonum.Timespec, size: 8, from: 0, to: 8 } }
       })
 
-      expect(() => Type.serialize({ since: '18446744073709551616' })).to.throw(TypeError)
+      expect(() => Type.serialize({ since: '18446744073709551616' }))
+        .to.throw(TypeError, 'Timespec of wrong type is passed: 18446744073709551616')
     })
 
     it('should throw error when the value of invalid type', function () {
       const Type = Exonum.newType({
         size: 8,
         fields: { since: { type: Exonum.Timespec, size: 8, from: 0, to: 8 } }
-      });
+      })
 
-      [true, null, undefined, [], {}, new Date()].forEach(function (since) {
-        expect(() => Type.serialize({ since: since })).to.throw(TypeError)
+      expect(() => Type.serialize({ since: undefined }))
+        .to.throw(TypeError, 'Field since is not defined.');
+
+      [true, null, [], {}, new Date()].forEach(function (since) {
+        expect(() => Type.serialize({ since: since }))
+          .to.throw(TypeError, /Timespec of wrong type is passed: /)
       })
     })
   })
@@ -287,17 +318,22 @@ describe('Check built-in types', function () {
         size: 1,
         fields: { active: { type: Exonum.Bool, size: 1, from: 0, to: 0 } }
       })
-      expect(() => Type.serialize({ active: true })).to.throw(Error)
+
+      expect(() => Type.serialize({ active: true }))
+        .to.throw(Error, 'Bool segment is of wrong length. 1 bytes long is required to store transmitted value.')
     })
 
     it('should throw error when the value of invalid type', function () {
       const Type = Exonum.newType({
         size: 1,
         fields: { active: { type: Exonum.Bool, size: 1, from: 0, to: 1 } }
-      });
+      })
+      expect(() => Type.serialize({ active: undefined }))
+        .to.throw(TypeError, 'Field active is not defined.');
 
-      ['Hello world', null, undefined, 57, [], {}, new Date()].forEach(function (active) {
-        expect(() => Type.serialize({ active: active })).to.throw(TypeError)
+      ['Hello world', null, 57, [], {}, new Date()].forEach(function (active) {
+        expect(() => Type.serialize({ active: active }))
+          .to.throw(TypeError, 'Wrong data type is passed as Boolean. Boolean is required')
       })
     })
   })
@@ -320,17 +356,22 @@ describe('Check built-in types', function () {
         fields: { text: { type: Exonum.String, size: 8, from: 0, to: 4 } }
       })
 
-      expect(() => Type.serialize({ text: 'Hello world' })).to.throw(Error)
+      expect(() => Type.serialize({ text: 'Hello world' }))
+        .to.throw(Error, 'String segment is of wrong length. 8 bytes long is required to store transmitted value.')
     })
 
     it('should throw error when the value of invalid type', function () {
       const Type = Exonum.newType({
         size: 8,
         fields: { text: { type: Exonum.String, size: 8, from: 0, to: 8 } }
-      });
+      })
 
-      [true, null, undefined, 57, [], {}, new Date()].forEach(function (text) {
-        expect(() => Type.serialize({ text: text })).to.throw(TypeError)
+      expect(() => Type.serialize({ text: undefined }))
+        .to.throw(TypeError, 'Field text is not defined.');
+
+      [true, null, 57, [], {}, new Date()].forEach(function (text) {
+        expect(() => Type.serialize({ text: text }))
+          .to.throw(TypeError, 'Wrong data type is passed as String. String is required')
       })
     })
   })
@@ -363,7 +404,8 @@ describe('Check built-in types', function () {
         size: 1,
         fields: { balance: { type: Exonum.Int8, size: 1, from: 0, to: 0 } }
       })
-      expect(() => Type.serialize({ balance: 120 })).to.throw(Error)
+      expect(() => Type.serialize({ balance: 120 }))
+        .to.throw(TypeError, 'Int8 of wrong type is passed: 120')
     })
 
     it('should throw error when the value is too big positive number', function () {
@@ -371,7 +413,9 @@ describe('Check built-in types', function () {
         size: 1,
         fields: { balance: { type: Exonum.Int8, size: 1, from: 0, to: 1 } }
       })
-      expect(() => Type.serialize({ balance: 130 })).to.throw(TypeError)
+
+      expect(() => Type.serialize({ balance: 130 }))
+        .to.throw(TypeError, 'Int8 of wrong type is passed: 130')
     })
 
     it('should throw error when the value is too big negative number', function () {
@@ -379,17 +423,23 @@ describe('Check built-in types', function () {
         size: 1,
         fields: { balance: { type: Exonum.Int8, size: 1, from: 0, to: 1 } }
       })
-      expect(() => Type.serialize({ balance: -130 })).to.throw(TypeError)
+
+      expect(() => Type.serialize({ balance: -130 }))
+        .to.throw(TypeError, 'Int8 of wrong type is passed: -130')
     })
 
     it('should throw error when the value of invalid type', function () {
       const Type = Exonum.newType({
         size: 1,
         fields: { balance: { type: Exonum.Int8, size: 1, from: 0, to: 1 } }
-      });
+      })
 
-      [true, null, undefined, [], {}, new Date()].forEach(function (balance) {
-        expect(() => Type.serialize({ balance: balance })).to.throw(TypeError)
+      expect(() => Type.serialize({ balance: undefined }))
+        .to.throw(TypeError, 'Field balance is not defined.');
+
+      [true, null, [], {}, new Date()].forEach(function (balance) {
+        expect(() => Type.serialize({ balance: balance }))
+          .to.throw(TypeError, /Int8 of wrong type is passed:/)
       })
     })
   })
@@ -423,7 +473,8 @@ describe('Check built-in types', function () {
         fields: { balance: { type: Exonum.Int16, size: 2, from: 0, to: 1 } }
       })
 
-      expect(() => Type.serialize({ balance: 30767 })).to.throw(Error)
+      expect(() => Type.serialize({ balance: 30767 }))
+        .to.throw(TypeError, 'Int16 of wrong type is passed: 30767')
     })
 
     it('should throw error when the value is too big positive number', function () {
@@ -432,7 +483,8 @@ describe('Check built-in types', function () {
         fields: { balance: { type: Exonum.Int16, size: 2, from: 0, to: 2 } }
       })
 
-      expect(() => Type.serialize({ balance: 32769 })).to.throw(TypeError)
+      expect(() => Type.serialize({ balance: 32769 }))
+        .to.throw(TypeError, 'Int16 of wrong type is passed: 32769')
     })
 
     it('should throw error when the value is too big negative number', function () {
@@ -441,17 +493,22 @@ describe('Check built-in types', function () {
         fields: { balance: { type: Exonum.Int16, size: 2, from: 0, to: 2 } }
       })
 
-      expect(() => Type.serialize({ balance: -32770 })).to.throw(TypeError)
+      expect(() => Type.serialize({ balance: -32770 }))
+        .to.throw(TypeError, 'Int16 of wrong type is passed: -32770')
     })
 
     it('should throw error when the value of invalid type', function () {
       const Type = Exonum.newType({
         size: 2,
         fields: { balance: { type: Exonum.Int16, size: 2, from: 0, to: 2 } }
-      });
+      })
 
-      [true, null, undefined, [], {}, new Date()].forEach(function (balance) {
-        expect(() => Type.serialize({ balance: balance })).to.throw(TypeError)
+      expect(() => Type.serialize({ balance: undefined }))
+        .to.throw(TypeError, 'Field balance is not defined.');
+
+      [true, null, [], {}, new Date()].forEach(function (balance) {
+        expect(() => Type.serialize({ balance: balance }))
+          .to.throw(TypeError, /Int16 of wrong type is passed:/)
       })
     })
   })
@@ -485,7 +542,8 @@ describe('Check built-in types', function () {
         fields: { balance: { type: Exonum.Int32, size: 4, from: 0, to: 3 } }
       })
 
-      expect(() => Type.serialize({ balance: 613228 })).to.throw(Error)
+      expect(() => Type.serialize({ balance: 613228 }))
+        .to.throw(TypeError, 'Int32 of wrong type is passed: 613228')
     })
 
     it('should throw error when the value is too big positive number', function () {
@@ -494,7 +552,8 @@ describe('Check built-in types', function () {
         fields: { balance: { type: Exonum.Int32, size: 4, from: 0, to: 4 } }
       })
 
-      expect(() => Type.serialize({ balance: 2147483649 })).to.throw(TypeError)
+      expect(() => Type.serialize({ balance: 2147483649 }))
+        .to.throw(TypeError, 'Int32 of wrong type is passed: 2147483649')
     })
 
     it('should throw error when the value is too big negative number', function () {
@@ -503,17 +562,22 @@ describe('Check built-in types', function () {
         fields: { balance: { type: Exonum.Int32, size: 4, from: 0, to: 4 } }
       })
 
-      expect(() => Type.serialize({ balance: -2147483650 })).to.throw(TypeError)
+      expect(() => Type.serialize({ balance: -2147483650 }))
+        .to.throw(TypeError, 'Int32 of wrong type is passed: -2147483650')
     })
 
     it('should throw error when the value of invalid type', function () {
       const Type = Exonum.newType({
         size: 4,
         fields: { balance: { type: Exonum.Int32, size: 4, from: 0, to: 4 } }
-      });
+      })
 
-      [true, null, undefined, [], {}, new Date()].forEach(function (balance) {
-        expect(() => Type.serialize({ balance: balance })).to.throw(TypeError)
+      expect(() => Type.serialize({ balance: undefined }))
+        .to.throw(TypeError, 'Field balance is not defined.');
+
+      [true, null, [], {}, new Date()].forEach(function (balance) {
+        expect(() => Type.serialize({ balance: balance }))
+          .to.throw(TypeError, /Int32 of wrong type is passed:/)
       })
     })
   })
@@ -569,7 +633,8 @@ describe('Check built-in types', function () {
         fields: { balance: { type: Exonum.Int64, size: 8, from: 0, to: 4 } }
       })
 
-      expect(() => Type.serialize({ balance: 613228 })).to.throw(Error)
+      expect(() => Type.serialize({ balance: 613228 }))
+        .to.throw(TypeError, 'Int64 of wrong type is passed: 613228')
     })
 
     it('should throw error when the value is too big positive number', function () {
@@ -578,7 +643,8 @@ describe('Check built-in types', function () {
         fields: { balance: { type: Exonum.Int64, size: 8, from: 0, to: 8 } }
       })
 
-      expect(() => Type.serialize({ balance: '9223372036854775808' })).to.throw(TypeError)
+      expect(() => Type.serialize({ balance: '9223372036854775808' }))
+        .to.throw(TypeError, 'Int64 of wrong type is passed: 9223372036854775808')
     })
 
     it('should throw error when the value is too big negative number', function () {
@@ -587,17 +653,22 @@ describe('Check built-in types', function () {
         fields: { balance: { type: Exonum.Int64, size: 8, from: 0, to: 8 } }
       })
 
-      expect(() => Type.serialize({ balance: '-9223372036854775809' })).to.throw(TypeError)
+      expect(() => Type.serialize({ balance: '-9223372036854775809' }))
+        .to.throw(TypeError, 'Int64 of wrong type is passed: -9223372036854775809')
     })
 
     it('should throw error when the value of invalid type', function () {
       const Type = Exonum.newType({
         size: 8,
         fields: { balance: { type: Exonum.Int64, size: 8, from: 0, to: 8 } }
-      });
+      })
 
-      [true, null, undefined, [], {}, new Date()].forEach(function (balance) {
-        expect(() => Type.serialize({ balance: balance })).to.throw(TypeError)
+      expect(() => Type.serialize({ balance: undefined }))
+        .to.throw(TypeError, 'Field balance is not defined.');
+
+      [true, null, [], {}, new Date()].forEach(function (balance) {
+        expect(() => Type.serialize({ balance: balance }))
+          .to.throw(TypeError, /Int64 of wrong type is passed:/)
       })
     })
   })
@@ -620,7 +691,8 @@ describe('Check built-in types', function () {
         fields: { balance: { type: Exonum.Uint8, size: 1, from: 0, to: 0 } }
       })
 
-      expect(() => Type.serialize({ balance: 230 })).to.throw(Error)
+      expect(() => Type.serialize({ balance: 230 }))
+        .to.throw(TypeError, 'Uint8 of wrong type is passed: 230')
     })
 
     it('should throw error when the value is negative number', function () {
@@ -629,7 +701,8 @@ describe('Check built-in types', function () {
         fields: { balance: { type: Exonum.Uint8, size: 1, from: 0, to: 1 } }
       })
 
-      expect(() => Type.serialize({ balance: -1 })).to.throw(TypeError)
+      expect(() => Type.serialize({ balance: -1 }))
+        .to.throw(TypeError, 'Uint8 of wrong type is passed: -1')
     })
 
     it('should throw error when the value is out of range', function () {
@@ -638,17 +711,22 @@ describe('Check built-in types', function () {
         fields: { balance: { type: Exonum.Uint8, size: 1, from: 0, to: 1 } }
       })
 
-      expect(() => Type.serialize({ balance: 256 })).to.throw(TypeError)
+      expect(() => Type.serialize({ balance: 256 }))
+        .to.throw(TypeError, 'Uint8 of wrong type is passed: 256')
     })
 
     it('should throw error when the value of invalid type', function () {
       const Type = Exonum.newType({
         size: 1,
         fields: { balance: { type: Exonum.Uint8, size: 1, from: 0, to: 1 } }
-      });
+      })
 
-      [true, null, undefined, [], {}, new Date()].forEach(function (balance) {
-        expect(() => Type.serialize({ balance: balance })).to.throw(TypeError)
+      expect(() => Type.serialize({ balance: undefined }))
+        .to.throw(TypeError, 'Field balance is not defined.');
+
+      [true, null, [], {}, new Date()].forEach(function (balance) {
+        expect(() => Type.serialize({ balance: balance }))
+          .to.throw(TypeError, /Uint8 of wrong type is passed:/)
       })
     })
   })
@@ -671,7 +749,8 @@ describe('Check built-in types', function () {
         fields: { balance: { type: Exonum.Uint16, size: 2, from: 0, to: 1 } }
       })
 
-      expect(() => Type.serialize({ balance: 60535 })).to.throw(Error)
+      expect(() => Type.serialize({ balance: 60535 }))
+        .to.throw(TypeError, 'Uint16 of wrong type is passed: 60535')
     })
 
     it('should throw error when the value is negative number', function () {
@@ -680,7 +759,8 @@ describe('Check built-in types', function () {
         fields: { balance: { type: Exonum.Uint16, size: 2, from: 0, to: 2 } }
       })
 
-      expect(() => Type.serialize({ balance: -1 })).to.throw(TypeError)
+      expect(() => Type.serialize({ balance: -1 }))
+        .to.throw(TypeError, 'Uint16 of wrong type is passed: -1')
     })
 
     it('should throw error when the value is out of range', function () {
@@ -689,17 +769,22 @@ describe('Check built-in types', function () {
         fields: { balance: { type: Exonum.Uint16, size: 2, from: 0, to: 2 } }
       })
 
-      expect(() => Type.serialize({ balance: 65536 })).to.throw(TypeError)
+      expect(() => Type.serialize({ balance: 65536 }))
+        .to.throw(TypeError, 'Uint16 of wrong type is passed: 65536')
     })
 
     it('should throw error when the value of invalid type', function () {
       const Type = Exonum.newType({
         size: 2,
         fields: { balance: { type: Exonum.Uint16, size: 2, from: 0, to: 2 } }
-      });
+      })
 
-      [true, null, undefined, [], {}, new Date()].forEach(function (balance) {
-        expect(() => Type.serialize({ balance: balance })).to.throw(TypeError)
+      expect(() => Type.serialize({ balance: undefined }))
+        .to.throw(TypeError, 'Field balance is not defined.');
+
+      [true, null, [], {}, new Date()].forEach(function (balance) {
+        expect(() => Type.serialize({ balance: balance }))
+          .to.throw(TypeError, /Uint16 of wrong type is passed:/)
       })
     })
   })
@@ -722,7 +807,8 @@ describe('Check built-in types', function () {
         fields: { balance: { type: Exonum.Uint32, size: 4, from: 0, to: 3 } }
       })
 
-      expect(() => Type.serialize({ balance: 613228 })).to.throw(Error)
+      expect(() => Type.serialize({ balance: 613228 }))
+        .to.throw(TypeError, 'Uint32 of wrong type is passed: 613228')
     })
 
     it('should throw error when the value is negative number', function () {
@@ -731,7 +817,8 @@ describe('Check built-in types', function () {
         fields: { balance: { type: Exonum.Uint32, size: 4, from: 0, to: 4 } }
       })
 
-      expect(() => Type.serialize({ balance: -1 })).to.throw(TypeError)
+      expect(() => Type.serialize({ balance: -1 }))
+        .to.throw(TypeError, 'Uint32 of wrong type is passed: -1')
     })
 
     it('should throw error when the value is out of range', function () {
@@ -740,17 +827,22 @@ describe('Check built-in types', function () {
         fields: { balance: { type: Exonum.Uint32, size: 4, from: 0, to: 4 } }
       })
 
-      expect(() => Type.serialize({ balance: 4294967296 })).to.throw(TypeError)
+      expect(() => Type.serialize({ balance: 4294967296 }))
+        .to.throw(TypeError, 'Uint32 of wrong type is passed: 4294967296')
     })
 
     it('should throw error when the value of invalid type', function () {
       const Type = Exonum.newType({
         size: 4,
         fields: { balance: { type: Exonum.Uint32, size: 4, from: 0, to: 4 } }
-      });
+      })
 
-      [true, null, undefined, [], {}, new Date()].forEach(function (balance) {
-        expect(() => Type.serialize({ balance: balance })).to.throw(TypeError)
+      expect(() => Type.serialize({ balance: undefined }))
+        .to.throw(TypeError, 'Field balance is not defined.');
+
+      [true, null, [], {}, new Date()].forEach(function (balance) {
+        expect(() => Type.serialize({ balance: balance }))
+          .to.throw(TypeError, /Uint32 of wrong type is passed:/)
       })
     })
   })
@@ -784,7 +876,8 @@ describe('Check built-in types', function () {
         fields: { balance: { type: Exonum.Uint64, size: 8, from: 0, to: 4 } }
       })
 
-      expect(() => Type.serialize({ balance: 613228 })).to.throw(Error)
+      expect(() => Type.serialize({ balance: 613228 }))
+        .to.throw(TypeError, 'Uint64 of wrong type is passed: 613228')
     })
 
     it('should throw error when the value is negative number', function () {
@@ -793,7 +886,8 @@ describe('Check built-in types', function () {
         fields: { balance: { type: Exonum.Uint64, size: 8, from: 0, to: 8 } }
       })
 
-      expect(() => Type.serialize({ balance: -613228 })).to.throw(TypeError)
+      expect(() => Type.serialize({ balance: -613228 }))
+        .to.throw(TypeError, 'Uint64 of wrong type is passed: -613228')
     })
 
     it('should throw error when the value is out of range', function () {
@@ -802,17 +896,22 @@ describe('Check built-in types', function () {
         fields: { balance: { type: Exonum.Uint64, size: 8, from: 0, to: 8 } }
       })
 
-      expect(() => Type.serialize({ balance: '18446744073709551616' })).to.throw(TypeError)
+      expect(() => Type.serialize({ balance: '18446744073709551616' }))
+        .to.throw(TypeError, 'Uint64 of wrong type is passed: 18446744073709551616')
     })
 
     it('should throw error when the value of invalid type', function () {
       const Type = Exonum.newType({
         size: 8,
         fields: { balance: { type: Exonum.Uint64, size: 8, from: 0, to: 8 } }
-      });
+      })
 
-      [true, null, undefined, [], {}, new Date()].forEach(function (balance) {
-        expect(() => Type.serialize({ balance: balance })).to.throw(TypeError)
+      expect(() => Type.serialize({ balance: undefined }))
+        .to.throw(TypeError, 'Field balance is not defined.');
+
+      [true, null, [], {}, new Date()].forEach(function (balance) {
+        expect(() => Type.serialize({ balance: balance }))
+          .to.throw(TypeError, /Uint64 of wrong type is passed:/)
       })
     })
   })
@@ -863,7 +962,8 @@ describe('Check built-in types', function () {
         phrase: [245, 134, 74, 182, 165, 162, 25, 6]
       }
 
-      expect(() => Type.serialize(data)).to.throw(Error)
+      expect(() => Type.serialize(data))
+        .to.throw(TypeError, 'FixedBuffer of wrong type is passed: 245,134,74,182,165,162,25,6')
     })
 
     it('should throw error when the value is too long bytes array', function () {
@@ -877,7 +977,8 @@ describe('Check built-in types', function () {
         phrase: [245, 134, 74, 182, 165, 162, 25, 6, 5]
       }
 
-      expect(() => Type.serialize(data)).to.throw(TypeError)
+      expect(() => Type.serialize(data))
+        .to.throw(TypeError, 'FixedBuffer of wrong type is passed: 245,134,74,182,165,162,25,6,5')
     })
 
     it('should throw error when the value is too short bytes array', function () {
@@ -891,7 +992,8 @@ describe('Check built-in types', function () {
         phrase: [245, 134, 74, 182, 165, 162, 25]
       }
 
-      expect(() => Type.serialize(data)).to.throw(TypeError)
+      expect(() => Type.serialize(data))
+        .to.throw(TypeError, 'FixedBuffer of wrong type is passed: 245,134,74,182,165,162,25')
     })
 
     it('should throw error when the value is invalid bytes array', function () {
@@ -903,7 +1005,8 @@ describe('Check built-in types', function () {
       });
 
       [[300], [-5]].forEach(function (phrase) {
-        expect(() => Type.serialize({ phrase: phrase })).to.throw(TypeError)
+        expect(() => Type.serialize({ phrase: phrase }))
+          .to.throw(TypeError, /FixedBuffer of wrong type is passed:/)
       })
     })
 
@@ -916,7 +1019,8 @@ describe('Check built-in types', function () {
       });
 
       [[true], [null], [undefined], ['Hello world'], [[]], [{}], [new Date()]].forEach(function (phrase) {
-        expect(() => Type.serialize({ phrase: phrase })).to.throw(TypeError)
+        expect(() => Type.serialize({ phrase: phrase }))
+          .to.throw(TypeError, 'FixedBuffer of wrong type is passed: ')
       })
     })
 
@@ -931,7 +1035,8 @@ describe('Check built-in types', function () {
         phrase: 'f5864ab6a5a219'
       }
 
-      expect(() => Type.serialize(data)).to.throw(Error)
+      expect(() => Type.serialize(data))
+        .to.throw(TypeError, 'FixedBuffer of wrong type is passed: f5864ab6a5a219')
     })
 
     it('should throw error when the value is invalid hexadecimal string', function () {
@@ -945,7 +1050,8 @@ describe('Check built-in types', function () {
         phrase: 'f5864ab6a5a2190z'
       }
 
-      expect(() => Type.serialize(data)).to.throw(Error)
+      expect(() => Type.serialize(data))
+        .to.throw(Error, 'FixedBuffer of wrong type is passed: f5864ab6a5a2190z')
     })
 
     it('should throw error when the value of wrong type', function () {
@@ -954,10 +1060,14 @@ describe('Check built-in types', function () {
         fields: {
           phrase: { type: Exonum.FixedBuffer, size: 8, from: 0, to: 8 }
         }
-      });
+      })
 
-      [true, null, undefined, 57, [], {}, new Date()].forEach(function (phrase) {
-        expect(() => Type.serialize({ phrase: phrase })).to.throw(TypeError)
+      expect(() => Type.serialize({ phrase: undefined }))
+        .to.throw(TypeError, 'Field phrase is not defined.');
+
+      [true, null, 57, [], {}, new Date()].forEach(function (phrase) {
+        expect(() => Type.serialize({ phrase: phrase }))
+          .to.throw(TypeError, /FixedBuffer of wrong type is passed:/)
       })
     })
   })
