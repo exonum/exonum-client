@@ -111,7 +111,7 @@ var data = {
 var buffer = User.serialize(data);
 ```
 
-See [Exonum documentation](http://exonum.com/doc/advanced/serialization) for more details how serialization works.
+See [Exonum documentation](https://exonum.com/doc/architecture/serialization) for more details how serialization works.
 
 It is possible to get hash of this data:
 
@@ -429,7 +429,7 @@ For numbers greater than safe use `string` only.*
 |---|---|---|
 | `string` | `8`* | String of UTF-8 characters |
 
-*\*Note that the size of 8 bytes is due to the specifics of string [serialization](http://exonum.com/doc/advanced/serialization). Actual string length is limited by the general message size limits.*
+*\*Note that the size of 8 bytes is due to the specifics of string [serialization](https://exonum.com/doc/architecture/serialization). Actual string length is limited by the general message size limits.*
 
 ### Hash
 
@@ -461,7 +461,7 @@ For numbers greater than safe use `string` only.*
 |---|---|---|
 | `Array` | `8`* | Array of 8-bit unsigned integers |
 
-*\*Note that the size of 8 bytes is due to the specifics of arrays [serialization](http://exonum.com/doc/advanced/serialization). Actual array length is limited by the general message size limits.*
+*\*Note that the size of 8 bytes is due to the specifics of arrays [serialization](https://exonum.com/doc/architecture/serialization). Actual array length is limited by the general message size limits.*
 
 ## Install
 
