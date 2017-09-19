@@ -1,9 +1,9 @@
-import {isObject} from '../helpers'
+import { isObject } from '../helpers'
 import * as primitive from '../types/primitive'
-import {newType} from '../types/generic'
+import { newType } from '../types/generic'
 import * as validate from '../types/validate'
 import * as convert from '../types/convert'
-import {hash} from '../crypto'
+import { hash } from '../crypto'
 
 const MERKLE_PATRICIA_KEY_LENGTH = 32
 
@@ -16,36 +16,36 @@ const MERKLE_PATRICIA_KEY_LENGTH = 32
  * @return {Object}
  */
 export function merklePatriciaProof (rootHash, proofNode, key, type) {
-  var DBKey = newType({
+  const DBKey = newType({
     size: 34,
     fields: {
-      variant: {type: primitive.Uint8, size: 1, from: 0, to: 1},
-      key: {type: primitive.Hash, size: 32, from: 1, to: 33},
-      length: {type: primitive.Uint8, size: 1, from: 33, to: 34}
+      variant: { type: primitive.Uint8, size: 1, from: 0, to: 1 },
+      key: { type: primitive.Hash, size: 32, from: 1, to: 33 },
+      length: { type: primitive.Uint8, size: 1, from: 33, to: 34 }
     }
   })
-  var Branch = newType({
+  const Branch = newType({
     size: 132,
     fields: {
-      left_hash: {type: primitive.Hash, size: 32, from: 0, to: 32},
-      right_hash: {type: primitive.Hash, size: 32, from: 32, to: 64},
-      left_key: {type: DBKey, size: 34, from: 64, to: 98},
-      right_key: {type: DBKey, size: 34, from: 98, to: 132}
+      left_hash: { type: primitive.Hash, size: 32, from: 0, to: 32 },
+      right_hash: { type: primitive.Hash, size: 32, from: 32, to: 64 },
+      left_key: { type: DBKey, size: 34, from: 64, to: 98 },
+      right_key: { type: DBKey, size: 34, from: 98, to: 132 }
     }
   })
-  var RootBranch = newType({
+  const RootBranch = newType({
     size: 66,
     fields: {
-      key: {type: DBKey, size: 34, from: 0, to: 34},
-      hash: {type: primitive.Hash, size: 32, from: 34, to: 66}
+      key: { type: DBKey, size: 34, from: 0, to: 34 },
+      hash: { type: primitive.Hash, size: 32, from: 34, to: 66 }
     }
   })
 
-    /**
-     * Get element from node
-     * @param data
-     * @returns {string} or {Array} or {Object}
-     */
+  /**
+   * Get element from node
+   * @param data
+   * @returns {string} or {Array} or {Object}
+   */
   function getElement (data) {
     if (typeof data === 'string') {
       if (!validate.validateHexadecimal(data)) {
@@ -62,11 +62,11 @@ export function merklePatriciaProof (rootHash, proofNode, key, type) {
     }
   }
 
-    /**
-     * Get hash of element
-     * @param element
-     * @returns {string}
-     */
+  /**
+   * Get hash of element
+   * @param element
+   * @returns {string}
+   */
   function getHash (element) {
     if (typeof element === 'string') {
       return element
@@ -77,28 +77,28 @@ export function merklePatriciaProof (rootHash, proofNode, key, type) {
     }
   }
 
-    /**
-     * Check either suffix is a part of search key
-     * @param {string} prefix
-     * @param {string} suffix
-     * @returns {boolean}
-     */
+  /**
+   * Check either suffix is a part of search key
+   * @param {string} prefix
+   * @param {string} suffix
+   * @returns {boolean}
+   */
   function isPartOfSearchKey (prefix, suffix) {
-        // remove prefix from searched binary key
-    var diff = keyBinary.substr(prefix.length)
+    // remove prefix from searched binary key
+    const diff = keyBinary.substr(prefix.length)
     return diff.indexOf(suffix) === 0
   }
 
-    /**
-     * Order left and right nodes in a tree
-     * @param {Array} nodes
-     * @returns {Array} or {null}
-     */
+  /**
+   * Order left and right nodes in a tree
+   * @param {Array} nodes
+   * @returns {Array} or {null}
+   */
   function orderNodes (nodes) {
-    var child1 = nodes[0]
-    var child2 = nodes[1]
-    var len = Math.min(child1.suffix.length, child2.suffix.length)
-    for (var i = 0; i < len; i++) {
+    const child1 = nodes[0]
+    const child2 = nodes[1]
+    const len = Math.min(child1.suffix.length, child2.suffix.length)
+    for (let i = 0; i < len; i++) {
       if (child1.suffix[i] !== child2.suffix[i]) {
         return child1.suffix[i] === '0' ? [child1, child2] : [child2, child1]
       }
@@ -106,37 +106,37 @@ export function merklePatriciaProof (rootHash, proofNode, key, type) {
     return null
   }
 
-    /**
-     * Recursive tree traversal function
-     * @param {Object} node
-     * @param {string} keyPrefix
-     * @returns {string}
-     */
+  /**
+   * Recursive tree traversal function
+   * @param {Object} node
+   * @param {string} keyPrefix
+   * @returns {string}
+   */
   function recursive (node, keyPrefix) {
     if (Object.keys(node).length !== 2) {
       throw new Error('Invalid number of children in the tree node.')
     }
 
-    var nodes = []
-    var fullKey
+    const nodes = []
+    let fullKey
 
-    for (var keySuffix in node) {
+    for (const keySuffix in node) {
       if (!node.hasOwnProperty(keySuffix)) {
         continue
       } else if (keySuffix.length === 0) {
         throw new TypeError('Empty key suffix is passed.')
       }
 
-            // validate key
+      // validate key
       if (!validate.validateBinaryString(keySuffix)) {
         throw new TypeError('Key suffix of wrong type is passed. Binary string expected.')
       }
 
-      var branchValueHash
-      var nodeValue = node[keySuffix]
-      var branchType
-      var branchKey
-      var branchKeyHash
+      let branchValueHash
+      const nodeValue = node[keySuffix]
+      let branchType
+      let branchKey
+      let branchKeyHash
 
       fullKey = keyPrefix + keySuffix
 
@@ -190,10 +190,10 @@ export function merklePatriciaProof (rootHash, proofNode, key, type) {
           throw new TypeError('Invalid type of node in tree.')
         }
 
-        var binaryKeyLength = fullKey.length
-        var binaryKey = fullKey
+        const binaryKeyLength = fullKey.length
+        let binaryKey = fullKey
 
-        for (var j = 0; j < (MERKLE_PATRICIA_KEY_LENGTH * 8 - fullKey.length); j++) {
+        for (let j = 0; j < (MERKLE_PATRICIA_KEY_LENGTH * 8 - fullKey.length); j++) {
           binaryKey += '0'
         }
 
@@ -221,20 +221,20 @@ export function merklePatriciaProof (rootHash, proofNode, key, type) {
       throw new Error('Nodes with common-prefix keys are located on non-zero level of the tree.')
     }
 
-    var orderedNodes = orderNodes(nodes)
+    let orderedNodes = orderNodes(nodes)
 
     if (!orderedNodes) {
       throw new Error('Impossible to determine left and right nodes.')
     }
 
-    var left = orderedNodes[0]
-    var right = orderedNodes[1]
+    const left = orderedNodes[0]
+    const right = orderedNodes[1]
 
     if (
-            left.type === 'hash' &&
-            right.type === 'hash' &&
-            fullKey.length < MERKLE_PATRICIA_KEY_LENGTH * 8
-        ) {
+      left.type === 'hash' &&
+      right.type === 'hash' &&
+      fullKey.length < MERKLE_PATRICIA_KEY_LENGTH * 8
+    ) {
       if (isPartOfSearchKey(keyPrefix, left.suffix)) {
         throw new Error('Tree is invalid. Left key is a part of search key but its branch is not expanded.')
       } else if (isPartOfSearchKey(keyPrefix, right.suffix)) {
@@ -250,21 +250,21 @@ export function merklePatriciaProof (rootHash, proofNode, key, type) {
     }, Branch)
   }
 
-  var element
+  let element
 
-    // validate rootHash
+  // validate rootHash
   if (!validate.validateHexadecimal(rootHash)) {
     throw new TypeError('Root hash of wrong type is passed. Hexadecimal expected.')
   }
 
   rootHash = rootHash.toLowerCase()
 
-    // validate proofNode parameter
-  if (isObject(proofNode) === false) {
+  // validate proofNode parameter
+  if (!isObject(proofNode)) {
     throw new TypeError('Invalid type of proofNode parameter. Object expected.')
   }
 
-    // validate key parameter
+  // validate key parameter
   if (Array.isArray(key)) {
     if (!validate.validateBytesArray(key, MERKLE_PATRICIA_KEY_LENGTH)) {
       throw new TypeError('Key parameter of wrong type is passed. Bytes array expected.')
@@ -279,9 +279,9 @@ export function merklePatriciaProof (rootHash, proofNode, key, type) {
     throw new TypeError('Invalid type of key parameter. Array of 8-bit integers or hexadecimal string is expected.')
   }
 
-  var keyBinary = convert.hexadecimalToBinaryString(key)
+  const keyBinary = convert.hexadecimalToBinaryString(key)
 
-  var proofNodeRootNumberOfNodes = Object.keys(proofNode).length
+  const proofNodeRootNumberOfNodes = Object.keys(proofNode).length
   if (proofNodeRootNumberOfNodes === 0) {
     if (rootHash === (new Uint8Array(MERKLE_PATRICIA_KEY_LENGTH * 2)).join('')) {
       return null
@@ -289,7 +289,7 @@ export function merklePatriciaProof (rootHash, proofNode, key, type) {
       throw new Error('Invalid rootHash parameter of empty tree.')
     }
   } else if (proofNodeRootNumberOfNodes === 1) {
-    for (var i in proofNode) {
+    for (const i in proofNode) {
       if (!proofNode.hasOwnProperty(i)) {
         continue
       }
@@ -298,11 +298,11 @@ export function merklePatriciaProof (rootHash, proofNode, key, type) {
         throw new TypeError('Tree key of wrong type is passed. Binary string expected.')
       }
 
-      var data = proofNode[i]
-      var nodeHash
+      const data = proofNode[i]
+      let nodeHash
 
-      var nodeKeyBuffer = convert.binaryStringToUint8Array(i)
-      var nodeKey = convert.uint8ArrayToHexadecimal(nodeKeyBuffer)
+      const nodeKeyBuffer = convert.binaryStringToUint8Array(i)
+      const nodeKey = convert.uint8ArrayToHexadecimal(nodeKeyBuffer)
 
       if (typeof data === 'string') {
         if (!validate.validateHexadecimal(data)) {
@@ -353,7 +353,7 @@ export function merklePatriciaProof (rootHash, proofNode, key, type) {
       }
     }
   } else {
-    var actualHash = recursive(proofNode, '')
+    const actualHash = recursive(proofNode, '')
 
     if (rootHash !== actualHash) {
       throw new Error('rootHash parameter is not equal to actual hash.')

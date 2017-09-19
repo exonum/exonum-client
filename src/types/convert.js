@@ -14,9 +14,9 @@ export function hexadecimalToUint8Array (str) {
     throw new TypeError('String of wrong type is passed. Hexadecimal expected.')
   }
 
-  var uint8arr = new Uint8Array(str.length / 2)
+  const uint8arr = new Uint8Array(str.length / 2)
 
-  for (var i = 0, j = 0; i < str.length; i += 2, j++) {
+  for (let i = 0, j = 0; i < str.length; i += 2, j++) {
     uint8arr[j] = parseInt(str.substr(i, 2), 16)
   }
 
@@ -29,7 +29,7 @@ export function hexadecimalToUint8Array (str) {
  * @returns {string}
  */
 export function hexadecimalToBinaryString (str) {
-  var binaryStr = ''
+  let binaryStr = ''
 
   if (typeof str !== 'string') {
     throw new TypeError('Wrong data type passed to convertor. Hexadecimal string is expected')
@@ -39,8 +39,8 @@ export function hexadecimalToBinaryString (str) {
     throw new TypeError('String of wrong type is passed. Hexadecimal expected.')
   }
 
-  for (var i = 0; i < str.length; i++) {
-    var bin = parseInt(str[i], 16).toString(2)
+  for (let i = 0; i < str.length; i++) {
+    let bin = parseInt(str[i], 16).toString(2)
     while (bin.length < 4) {
       bin = '0' + bin
     }
@@ -56,14 +56,14 @@ export function hexadecimalToBinaryString (str) {
  * @returns {string}
  */
 export function uint8ArrayToHexadecimal (uint8arr) {
-  var str = ''
+  let str = ''
 
   if (!(uint8arr instanceof Uint8Array)) {
     throw new TypeError('Wrong data type of array of 8-bit integers. Uint8Array is expected')
   }
 
-  for (var i = 0; i < uint8arr.length; i++) {
-    var hex = uint8arr[i].toString(16)
+  for (let i = 0; i < uint8arr.length; i++) {
+    let hex = uint8arr[i].toString(16)
     hex = (hex.length === 1) ? '0' + hex : hex
     str += hex
   }
@@ -77,7 +77,7 @@ export function uint8ArrayToHexadecimal (uint8arr) {
  * @returns {Uint8Array}
  */
 export function binaryStringToUint8Array (binaryStr) {
-  var array = []
+  const array = []
 
   if (typeof binaryStr !== 'string') {
     throw new TypeError('Wrong data type passed to convertor. Binary string is expected')
@@ -87,7 +87,7 @@ export function binaryStringToUint8Array (binaryStr) {
     throw new TypeError('String of wrong type is passed. Binary string expected.')
   }
 
-  for (var i = 0; i < binaryStr.length; i += 8) {
+  for (let i = 0; i < binaryStr.length; i += 8) {
     array.push(parseInt(binaryStr.substr(i, 8), 2))
   }
 
@@ -100,7 +100,7 @@ export function binaryStringToUint8Array (binaryStr) {
  * @returns {string}
  */
 export function binaryStringToHexadecimal (binaryStr) {
-  var str = ''
+  let str = ''
 
   if (typeof binaryStr !== 'string') {
     throw new TypeError('Wrong data type passed to convertor. Binary string is expected')
@@ -110,8 +110,8 @@ export function binaryStringToHexadecimal (binaryStr) {
     throw new TypeError('String of wrong type is passed. Binary string expected.')
   }
 
-  for (var i = 0; i < binaryStr.length; i += 8) {
-    var hex = (parseInt(binaryStr.substr(i, 8), 2)).toString(16)
+  for (let i = 0; i < binaryStr.length; i += 8) {
+    let hex = (parseInt(binaryStr.substr(i, 8), 2)).toString(16)
     hex = (hex.length === 1) ? '0' + hex : hex
     str += hex
   }
@@ -126,8 +126,8 @@ export function binaryStringToHexadecimal (binaryStr) {
  * @returns {Uint8Array}
  */
 export function stringToUint8Array (str, len) {
-  var array
-  var from = 0
+  let array
+  let from = 0
 
   if (typeof str !== 'string') {
     throw new TypeError('Wrong data type passed to convertor. String is expected')
@@ -140,8 +140,8 @@ export function stringToUint8Array (str, len) {
     array = []
   }
 
-  for (var i = 0; i < str.length; i++) {
-    var c = str.charCodeAt(i)
+  for (let i = 0; i < str.length; i++) {
+    let c = str.charCodeAt(i)
 
     if (c < 128) {
       array[from++] = c

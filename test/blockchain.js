@@ -1,20 +1,20 @@
 /* eslint-env node, mocha */
 /* eslint-disable no-unused-expressions */
 
-var expect = require('chai').expect
-var Exonum = require('../src')
+const expect = require('chai').expect
+const Exonum = require('../src')
 
 describe('Verify block of precommits', function () {
-  var validators = [
+  const validators = [
     '0b513ad9b4924015ca0902ed079044d3ac5dbec2306f06948c10da8eb6e39f2d',
     '91a28a0b74381593a4d9469579208926afc8ad82c8839b7644359b9eba9a4b3a',
     '5c9c6df261c9cb840475776aaefcd944b405328fab28f9b3a95ef40490d3de84',
     '66cd608b928b88e50e0efeaa33faf1c43cefe07294b0b87e9fe0aba6a3cf7633'
   ]
-  var networkId = 0
+  const networkId = 0
 
   it('should return true when valid block with precommits', function () {
-    var data = require('./common_data/block-with-precommits/valid-block-with-precommits.json')
+    const data = require('./common_data/block-with-precommits/valid-block-with-precommits.json')
     expect(Exonum.verifyBlock(data, validators, networkId)).to.be.true
   })
 
@@ -26,31 +26,31 @@ describe('Verify block of precommits', function () {
 
   it('should return false when block info of wrong type', function () {
     [null, undefined, 42, 'Hello world', [], new Date()].forEach(function (data) {
-      expect(Exonum.verifyBlock({block: data}, validators, networkId)).to.be.false
+      expect(Exonum.verifyBlock({ block: data }, validators, networkId)).to.be.false
     })
   })
 
   it('should return false when precommits info of wrong type', function () {
     [null, undefined, 42, 'Hello world', [], new Date()].forEach(function (precommits) {
-      expect(Exonum.verifyBlock({block: {}, precommits: precommits}, validators, networkId)).to.be.false
+      expect(Exonum.verifyBlock({ block: {}, precommits: precommits }, validators, networkId)).to.be.false
     })
   })
 
   it('should return false when network_id is of wrong type', function () {
     [null, undefined, -5, 260, 'Hello world', [], new Date()].forEach(function (_id) {
-      expect(Exonum.verifyBlock({block: {}}, validators, _id)).to.be.false
+      expect(Exonum.verifyBlock({ block: {} }, validators, _id)).to.be.false
     })
   })
 
   it('should return false when body field of wrong type in precommit', function () {
     [null, 42, 'Hello world', [], new Date()].forEach(function (body) {
-      expect(Exonum.verifyBlock({block: {}, precommits: [{body: body}]}, validators, networkId)).to.be.false
+      expect(Exonum.verifyBlock({ block: {}, precommits: [{ body: body }] }, validators, networkId)).to.be.false
     })
   })
 
   it('should return false when signature field of wrong type in precommit', function () {
     [null, undefined, 42, [], {}, new Date()].forEach(function (signature) {
-      var data = {
+      const data = {
         block: {},
         precommits: [{
           body: {},
@@ -63,13 +63,13 @@ describe('Verify block of precommits', function () {
   })
 
   it('should return false when invalid signature field in precommit', function () {
-    var args = [
+    const args = [
       '22635e36303ff3ef4c86b855e57356f41483e6637136d1d2ec46ba2ec8f69fb9',
       '22635e36303ff3ef4c86b855e57356f41483e6637136d1d2ec46ba2ec8f69fb922635e36303ff3ef4c86b855e57356f41483e6637136d1d2ec46ba2ec8f69fbz'
     ]
 
     args.forEach(function (signature) {
-      var data = {
+      const data = {
         block: {},
         precommits: [{
           body: {},
@@ -82,7 +82,7 @@ describe('Verify block of precommits', function () {
   })
 
   it('should return false when precommit from non existed validator', function () {
-    var data = {
+    const data = {
       block: {},
       precommits: [{
         body: {
@@ -96,7 +96,7 @@ describe('Verify block of precommits', function () {
   })
 
   it('should return false when wrong height of block in precommit', function () {
-    var data = {
+    const data = {
       block: {
         height: 1
       },
@@ -113,7 +113,7 @@ describe('Verify block of precommits', function () {
   })
 
   it('should return false when wrong hash of block in precommit', function () {
-    var data = {
+    const data = {
       'block': {
         'height': '5',
         'propose_round': 3,
@@ -171,7 +171,7 @@ describe('Verify block of precommits', function () {
   })
 
   it('should return false when wrong round in precommit', function () {
-    var data = {
+    const data = {
       'block': {
         'height': '5',
         'propose_round': 3,
@@ -229,7 +229,7 @@ describe('Verify block of precommits', function () {
   })
 
   it('should return false when wrong signature of precommit', function () {
-    var data = {
+    const data = {
       'block': {
         'height': '5',
         'propose_round': 3,
@@ -259,7 +259,7 @@ describe('Verify block of precommits', function () {
   })
 
   it('should return false when insufficient precommits from unique validators', function () {
-    var data = {
+    const data = {
       'block': {
         'height': '5',
         'propose_round': 3,
@@ -289,7 +289,7 @@ describe('Verify block of precommits', function () {
   })
 
   it('should return false when validators of wrong type', function () {
-    var block = {
+    const block = {
       'block': {
         'height': '5',
         'propose_round': 3,
@@ -349,7 +349,7 @@ describe('Verify block of precommits', function () {
   })
 
   it('should return false when validators of wrong type', function () {
-    var block = {
+    const block = {
       'block': {
         'height': '5',
         'propose_round': 3,
