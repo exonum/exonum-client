@@ -95,11 +95,11 @@ describe('Serialize data into array of 8-bit integers', function () {
       }
     })
     const Transaction = Exonum.newType({
-      size: 40,
+      size: 24,
       fields: {
-        from: { type: Wallet, size: 16, from: 0, to: 16 },
-        to: { type: Wallet, size: 16, from: 16, to: 32 },
-        sum: { type: Exonum.Uint64, size: 8, from: 32, to: 40 }
+        from: { type: Wallet, size: 8, from: 0, to: 8 },
+        to: { type: Wallet, size: 8, from: 8, to: 16 },
+        sum: { type: Exonum.Uint64, size: 8, from: 16, to: 24 }
       }
     })
     const transactionData = {
@@ -116,7 +116,7 @@ describe('Serialize data into array of 8-bit integers', function () {
 
     const buffer = Transaction.serialize(transactionData)
 
-    expect(buffer).to.deep.equal([57, 0, 0, 0, 0, 0, 0, 0, 244, 1, 0, 0, 0, 0, 0, 0, 153, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 200, 0, 0, 0, 0, 0, 0, 0])
+    expect(buffer).to.deep.equal([57, 0, 0, 0, 0, 0, 0, 0, 153, 3, 0, 0, 0, 0, 0, 0, 200, 0, 0, 0, 0, 0, 0, 0])
   })
 
   it('should serialize data (with inherited properties that should be ignored) of newType type and return array of 8-bit integers', function () {
