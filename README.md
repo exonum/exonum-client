@@ -81,6 +81,7 @@ The following types can be used as the `type` field of the field description:
 * [Digest](#digest)
 * [Bool](#bool)
 * [FixedBuffer](#fixedbuffer)
+* [Array](#array)
 
 #### Сustom type example
 
@@ -462,6 +463,60 @@ For numbers greater than safe use `string` only.*
 | `Array` | `8`* | Array of 8-bit unsigned integers |
 
 *\*Note that the size of 8 bytes is due to the specifics of arrays [serialization](https://exonum.com/doc/architecture/serialization). Actual array length is limited by the general message size limits.*
+
+### Array
+
+Example of Array type declaration:
+
+```
+var SomeArr = Exonum.newArray({
+    size: 2,
+    type: Exonum.Uint16
+});
+var Type = Exonum.newType({
+    size: 8,
+    fields: {
+        list: {type: SomeArr, size: 8, from: 0, to: 8}
+    }
+});
+var data = {
+    list: [33, 578, 1]
+};
+var buffer = Type.serialize(data);
+```
+
+Array type declaration requires a single parameter passed as `object` with next structure:
+
+| Field | Type | Is mandatory | Description |
+|---|---|---|---|
+| size | `number` | yes | The total length of data in bytes |
+| type | built-in primitive type / `NewType` / `Array` | yes | Array data type. Can contains data of a built-in primitive type or `NewType` type or `Array` type. |
+
+Example of Array of Arrays type declaration:
+
+```
+var NestedArr = Exonum.newArray({
+    size: 1,
+    type: Exonum.Uint8
+});
+var SomeArr = Exonum.newArray({
+    size: 8,
+    type: NestedArr
+});
+var Type = Exonum.newType({
+    size: 8,
+    fields: {
+        list: {type: SomeArr, size: 8, from: 0, to: 8}
+    }
+});
+var data = {
+    list: [
+        [5, 16, 0],
+        [127, 14]
+    ]
+};
+let buffer = Type.serialize(data)
+```
 
 ## Install
 

@@ -1071,4 +1071,502 @@ describe('Check built-in types', function () {
       })
     })
   })
+
+  describe('Process Array', function () {
+    it('should serialize valid array of Hash type and return array of 8-bit integers', function () {
+      const Arr = Exonum.newArray({
+        size: 32,
+        type: Exonum.Hash
+      })
+      const Type = Exonum.newType({
+        size: 8,
+        fields: {
+          list: { type: Arr, size: 8, from: 0, to: 8 }
+        }
+      })
+      const data = {
+        list: [
+          'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36',
+          '1f2f07703c5bcafb5749aa735ce8b3336f5864ab6a5a2190666b47c612bcf15a'
+        ]
+      }
+      let buffer = Type.serialize(data)
+      expect(buffer).to.deep.equal([8, 0, 0, 0, 2, 0, 0, 0, 245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161, 242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54, 31, 47, 7, 112, 60, 91, 202, 251, 87, 73, 170, 115, 92, 232, 179, 51, 111, 88, 100, 171, 106, 90, 33, 144, 102, 107, 71, 198, 18, 188, 241, 90])
+    })
+
+    it('should serialize valid array of PublicKey type and return array of 8-bit integers', function () {
+      const Arr = Exonum.newArray({
+        size: 32,
+        type: Exonum.PublicKey
+      })
+      const Type = Exonum.newType({
+        size: 8,
+        fields: {
+          list: { type: Arr, size: 8, from: 0, to: 8 }
+        }
+      })
+      const data = {
+        list: [
+          'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36',
+          '1f2f07703c5bcafb5749aa735ce8b3336f5864ab6a5a2190666b47c612bcf15a'
+        ]
+      }
+      let buffer = Type.serialize(data)
+      expect(buffer).to.deep.equal([8, 0, 0, 0, 2, 0, 0, 0, 245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161, 242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54, 31, 47, 7, 112, 60, 91, 202, 251, 87, 73, 170, 115, 92, 232, 179, 51, 111, 88, 100, 171, 106, 90, 33, 144, 102, 107, 71, 198, 18, 188, 241, 90])
+    })
+
+    it('should serialize valid array of Digest type and return array of 8-bit integers', function () {
+      const Arr = Exonum.newArray({
+        size: 64,
+        type: Exonum.Digest
+      })
+      const Type = Exonum.newType({
+        size: 8,
+        fields: {
+          list: { type: Arr, size: 8, from: 0, to: 8 }
+        }
+      })
+      const data = {
+        list: [
+          'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'
+        ]
+      }
+      let buffer = Type.serialize(data)
+      expect(buffer).to.deep.equal([8, 0, 0, 0, 1, 0, 0, 0, 245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161, 242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54, 245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161, 242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54])
+    })
+
+    it('should serialize valid array of Timespec type and return array of 8-bit integers', function () {
+      const Arr = Exonum.newArray({
+        size: 8,
+        type: Exonum.Timespec
+      })
+      const Type = Exonum.newType({
+        size: 8,
+        fields: {
+          list: { type: Arr, size: 8, from: 0, to: 8 }
+        }
+      })
+      const data = {
+        list: [
+          '1483979894237',
+          '1483979103946',
+          '1483979142801'
+        ]
+      }
+      let buffer = Type.serialize(data)
+      expect(buffer).to.deep.equal([8, 0, 0, 0, 3, 0, 0, 0, 221, 45, 24, 132, 89, 1, 0, 0, 202, 30, 12, 132, 89, 1, 0, 0, 145, 182, 12, 132, 89, 1, 0, 0])
+    })
+
+    it('should serialize valid array of Bool type and return array of 8-bit integers', function () {
+      const Arr = Exonum.newArray({
+        size: 1,
+        type: Exonum.Bool
+      })
+      const Type = Exonum.newType({
+        size: 8,
+        fields: {
+          list: { type: Arr, size: 8, from: 0, to: 8 }
+        }
+      })
+      const data = {
+        list: [true, true, false]
+      }
+      let buffer = Type.serialize(data)
+      expect(buffer).to.deep.equal([8, 0, 0, 0, 3, 0, 0, 0, 1, 1, 0])
+    })
+
+    it('should serialize valid array of Int8 type and return array of 8-bit integers', function () {
+      const Arr = Exonum.newArray({
+        size: 1,
+        type: Exonum.Int8
+      })
+      const Type = Exonum.newType({
+        size: 8,
+        fields: {
+          list: { type: Arr, size: 8, from: 0, to: 8 }
+        }
+      })
+      const data = {
+        list: [
+          0,
+          -127,
+          13
+        ]
+      }
+      let buffer = Type.serialize(data)
+      expect(buffer).to.deep.equal([8, 0, 0, 0, 3, 0, 0, 0, 0, 129, 13])
+    })
+
+    it('should serialize valid array of Int16 type and return array of 8-bit integers', function () {
+      const Arr = Exonum.newArray({
+        size: 2,
+        type: Exonum.Int16
+      })
+      const Type = Exonum.newType({
+        size: 8,
+        fields: {
+          list: { type: Arr, size: 8, from: 0, to: 8 }
+        }
+      })
+      const data = {
+        list: [
+          33,
+          -578,
+          1
+        ]
+      }
+      let buffer = Type.serialize(data)
+      expect(buffer).to.deep.equal([8, 0, 0, 0, 3, 0, 0, 0, 33, 0, 190, 253, 1, 0])
+    })
+
+    it('should serialize valid array of Int32 type and return array of 8-bit integers', function () {
+      const Arr = Exonum.newArray({
+        size: 4,
+        type: Exonum.Int32
+      })
+      const Type = Exonum.newType({
+        size: 8,
+        fields: {
+          list: { type: Arr, size: 8, from: 0, to: 8 }
+        }
+      })
+      const data = {
+        list: [
+          801,
+          -311,
+          0,
+          -556,
+          9
+        ]
+      }
+      let buffer = Type.serialize(data)
+      expect(buffer).to.deep.equal([8, 0, 0, 0, 5, 0, 0, 0, 33, 3, 0, 0, 201, 254, 255, 255, 0, 0, 0, 0, 212, 253, 255, 255, 9, 0, 0, 0])
+    })
+
+    it('should serialize valid array of Int64 type and return array of 8-bit integers', function () {
+      const Arr = Exonum.newArray({
+        size: 8,
+        type: Exonum.Int64
+      })
+      const Type = Exonum.newType({
+        size: 8,
+        fields: {
+          list: { type: Arr, size: 8, from: 0, to: 8 }
+        }
+      })
+      const data = {
+        list: [
+          167,
+          -102851,
+          22210,
+          -724
+        ]
+      }
+      let buffer = Type.serialize(data)
+      expect(buffer).to.deep.equal([8, 0, 0, 0, 4, 0, 0, 0, 167, 0, 0, 0, 0, 0, 0, 0, 61, 110, 254, 255, 255, 255, 255, 255, 194, 86, 0, 0, 0, 0, 0, 0, 44, 253, 255, 255, 255, 255, 255, 255])
+    })
+
+    it('should serialize valid array of Uint8 type and return array of 8-bit integers', function () {
+      const Arr = Exonum.newArray({
+        size: 1,
+        type: Exonum.Uint8
+      })
+      const Type = Exonum.newType({
+        size: 8,
+        fields: {
+          list: { type: Arr, size: 8, from: 0, to: 8 }
+        }
+      })
+      const data = {
+        list: [
+          0,
+          127,
+          13
+        ]
+      }
+      let buffer = Type.serialize(data)
+      expect(buffer).to.deep.equal([8, 0, 0, 0, 3, 0, 0, 0, 0, 127, 13])
+    })
+
+    it('should serialize valid array of Uint16 type and return array of 8-bit integers', function () {
+      const Arr = Exonum.newArray({
+        size: 2,
+        type: Exonum.Uint16
+      })
+      const Type = Exonum.newType({
+        size: 8,
+        fields: {
+          list: { type: Arr, size: 8, from: 0, to: 8 }
+        }
+      })
+      const data = {
+        list: [
+          33,
+          578,
+          1
+        ]
+      }
+      let buffer = Type.serialize(data)
+      expect(buffer).to.deep.equal([8, 0, 0, 0, 3, 0, 0, 0, 33, 0, 66, 2, 1, 0])
+    })
+
+    it('should serialize valid array of Uint32 type and return array of 8-bit integers', function () {
+      const Arr = Exonum.newArray({
+        size: 4,
+        type: Exonum.Uint32
+      })
+      const Type = Exonum.newType({
+        size: 8,
+        fields: {
+          list: { type: Arr, size: 8, from: 0, to: 8 }
+        }
+      })
+      const data = {
+        list: [
+          801,
+          311,
+          0,
+          556,
+          9
+        ]
+      }
+      let buffer = Type.serialize(data)
+      expect(buffer).to.deep.equal([8, 0, 0, 0, 5, 0, 0, 0, 33, 3, 0, 0, 55, 1, 0, 0, 0, 0, 0, 0, 44, 2, 0, 0, 9, 0, 0, 0])
+    })
+
+    it('should serialize valid array of Uint64 type and return array of 8-bit integers', function () {
+      const Arr = Exonum.newArray({
+        size: 8,
+        type: Exonum.Uint64
+      })
+      const Type = Exonum.newType({
+        size: 8,
+        fields: {
+          list: { type: Arr, size: 8, from: 0, to: 8 }
+        }
+      })
+      const data = {
+        list: [
+          167,
+          102851,
+          22210,
+          724
+        ]
+      }
+      let buffer = Type.serialize(data)
+      expect(buffer).to.deep.equal([8, 0, 0, 0, 4, 0, 0, 0, 167, 0, 0, 0, 0, 0, 0, 0, 195, 145, 1, 0, 0, 0, 0, 0, 194, 86, 0, 0, 0, 0, 0, 0, 212, 2, 0, 0, 0, 0, 0, 0])
+    })
+
+    it('should serialize valid array of Array type and return array of 8-bit integers', function () {
+      const NestedArr = Exonum.newArray({
+        size: 1,
+        type: Exonum.Uint8
+      })
+      const Arr = Exonum.newArray({
+        size: 8,
+        type: NestedArr
+      })
+      const Type = Exonum.newType({
+        size: 8,
+        fields: {
+          list: { type: Arr, size: 8, from: 0, to: 8 }
+        }
+      })
+      const data = {
+        list: [
+          [5, 16, 0],
+          [127, 14]
+        ]
+      }
+      let buffer = Type.serialize(data)
+      expect(buffer).to.deep.equal([8, 0, 0, 0, 2, 0, 0, 0, 24, 0, 0, 0, 3, 0, 0, 0, 27, 0, 0, 0, 2, 0, 0, 0, 5, 16, 0, 127, 14])
+    })
+
+    it('should serialize valid array of fixed-length newType type and return array of 8-bit integers', function () {
+      const NestedType = Exonum.newType({
+        size: 4,
+        fields: {
+          day: { type: Exonum.Uint8, size: 1, from: 0, to: 1 },
+          month: { type: Exonum.Uint8, size: 1, from: 1, to: 2 },
+          year: { type: Exonum.Uint16, size: 2, from: 2, to: 4 }
+        }
+      })
+      const Arr = Exonum.newArray({
+        size: 4,
+        type: NestedType
+      })
+      const Type = Exonum.newType({
+        size: 8,
+        fields: {
+          list: { type: Arr, size: 8, from: 0, to: 8 }
+        }
+      })
+      const data = {
+        list: [
+          { day: 1, month: 5, year: 1841 },
+          { day: 30, month: 9, year: 2012 }
+        ]
+      }
+      let buffer = Type.serialize(data)
+      expect(buffer).to.deep.equal([8, 0, 0, 0, 2, 0, 0, 0, 24, 0, 0, 0, 4, 0, 0, 0, 28, 0, 0, 0, 4, 0, 0, 0, 1, 5, 49, 7, 30, 9, 220, 7])
+    })
+
+    it('should serialize valid array of non-fixed-length newType type and return array of 8-bit integers', function () {
+      const NestedType = Exonum.newType({
+        size: 9,
+        fields: {
+          name: { type: Exonum.String, size: 8, from: 0, to: 8 },
+          age: { type: Exonum.Uint8, size: 1, from: 8, to: 9 }
+        }
+      })
+      const Arr = Exonum.newArray({
+        type: NestedType,
+        size: 9
+      })
+      const Type = Exonum.newType({
+        size: 8,
+        fields: {
+          list: { type: Arr, size: 8, from: 0, to: 8 }
+        }
+      })
+      const data = {
+        list: [
+          { age: 27, name: 'John Doe' },
+          { age: 22, name: 'Helen Edinger' }
+        ]
+      }
+      let buffer = Type.serialize(data)
+      expect(buffer).to.deep.equal([8, 0, 0, 0, 2, 0, 0, 0, 24, 0, 0, 0, 17, 0, 0, 0, 41, 0, 0, 0, 22, 0, 0, 0, 9, 0, 0, 0, 8, 0, 0, 0, 27, 74, 111, 104, 110, 32, 68, 111, 101, 9, 0, 0, 0, 13, 0, 0, 0, 22, 72, 101, 108, 101, 110, 32, 69, 100, 105, 110, 103, 101, 114])
+    })
+
+    it('should serialize valid array of nested newType types and return array of 8-bit integers', function () {
+      const Profile = Exonum.newType({
+        size: 11,
+        fields: {
+          id: { type: Exonum.Uint8, size: 1, from: 0, to: 1 },
+          name: { type: Exonum.String, size: 8, from: 1, to: 9 },
+          since: { type: Exonum.Uint16, size: 2, from: 9, to: 11 }
+        }
+      })
+      const Arr = Exonum.newArray({
+        type: Profile,
+        size: 11
+      })
+      const Diploma = Exonum.newType({
+        size: 10,
+        fields: {
+          title: { type: Exonum.String, size: 8, from: 0, to: 8 },
+          year: { type: Exonum.Uint16, size: 2, from: 8, to: 10 }
+        }
+      })
+      const User = Exonum.newType({
+        size: 25,
+        fields: {
+          name: { type: Exonum.String, size: 8, from: 0, to: 8 },
+          age: { type: Exonum.Uint8, size: 1, from: 8, to: 9 },
+          profiles: { type: Arr, size: 8, from: 9, to: 17 },
+          diploma: { type: Diploma, size: 8, from: 17, to: 25 }
+        }
+      })
+      const data = {
+        name: 'John Doe',
+        age: 25,
+        profiles: [
+          {
+            id: 1,
+            name: 'Facebook',
+            since: 2015
+          },
+          {
+            id: 2,
+            name: 'Twitter',
+            since: 2015
+          }
+        ],
+        diploma: {
+          title: 'Bachelor',
+          year: 1988
+        }
+      }
+      let buffer = User.serialize(data)
+      expect(buffer).to.deep.equal([25, 0, 0, 0, 8, 0, 0, 0, 25, 33, 0, 0, 0, 2, 0, 0, 0, 86, 0, 0, 0, 18, 0, 0, 0, 74, 111, 104, 110, 32, 68, 111, 101, 49, 0, 0, 0, 19, 0, 0, 0, 68, 0, 0, 0, 18, 0, 0, 0, 1, 11, 0, 0, 0, 8, 0, 0, 0, 223, 7, 70, 97, 99, 101, 98, 111, 111, 107, 2, 11, 0, 0, 0, 7, 0, 0, 0, 223, 7, 84, 119, 105, 116, 116, 101, 114, 10, 0, 0, 0, 8, 0, 0, 0, 196, 7, 66, 97, 99, 104, 101, 108, 111, 114])
+    })
+
+    it('should throw error when value of wrong type is passed', function () {
+      const Arr = Exonum.newArray({
+        size: 1,
+        type: Exonum.Bool
+      })
+      const Type = Exonum.newType({
+        size: 8,
+        fields: {
+          list: { type: Arr, size: 8, from: 0, to: 8 }
+        }
+      })
+      const data = {
+        list: [
+          33
+        ]
+      }
+      expect(() => Type.serialize(data)).to.throw(TypeError)
+    })
+
+    it('should throw error when type of wrong type is passed', function () {
+      const Arr = Exonum.newArray({
+        type: Exonum.Int8
+      })
+      const Type = Exonum.newType({
+        size: 8,
+        fields: {
+          list: { type: Arr, size: 8, from: 0, to: 8 }
+        }
+      })
+      const data = {
+        list: [
+          10
+        ]
+      }
+      expect(() => Type.serialize(data)).to.throw(TypeError)
+    })
+
+    it('should throw error when array of String type is passed', function () {
+      const Arr = Exonum.newArray({
+        size: 8,
+        type: Exonum.String
+      })
+      const Type = Exonum.newType({
+        size: 8,
+        fields: {
+          list: { type: Arr, size: 8, from: 0, to: 8 }
+        }
+      })
+      const data = {
+        list: [
+          'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36',
+          '1f2f07703c5bcafb5749aa735ce8b3336f5864ab6a5a2190666b47c612bcf15a'
+        ]
+      }
+      expect(() => Type.serialize(data)).to.throw(TypeError)
+    })
+
+    it('should throw error when array of FixedBuffer type is passed', function () {
+      const Arr = Exonum.newArray({
+        size: 4,
+        type: Exonum.FixedBuffer
+      })
+      const Type = Exonum.newType({
+        size: 8,
+        fields: {
+          list: { type: Arr, size: 8, from: 0, to: 8 }
+        }
+      })
+      const data = {
+        list: [
+          [256, 0, 13, 9],
+          [33, 18, 14, 31]
+        ]
+      }
+      expect(() => Type.serialize(data)).to.throw(TypeError)
+    })
+  })
 })
