@@ -55,6 +55,11 @@ describe('Examples from README.md', function () {
       secretKey: '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2bfa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
     }
     const signature = '8ff692b47d17f7738ec2d19f5296d3810909a62fe1480eb752b531f8e17056f6578985090db822612f88c3bcad4f0539401836e5ad58913c489784ff3e415a0b'
+    const buffer = [0, 0, 0, 0, 0, 0, 146, 0, 0, 0, 103, 82, 190, 136, 35, 20, 245, 187, 188, 154, 106, 242, 174, 99, 79, 192, 112, 56, 88, 74, 74, 119, 81, 14, 165, 236, 237, 69, 245, 77, 192, 48, 245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161, 242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54, 50, 0, 0, 0, 0, 0, 0, 0]
+
+    it('should serialize transaction', function () {
+      expect(SendFunds.serialize(data, true)).to.deep.equal(buffer)
+    })
 
     it('should sign transaction', function () {
       expect(SendFunds.sign(keyPair.secretKey, data)).to.equal(signature)

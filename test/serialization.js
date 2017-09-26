@@ -27,6 +27,90 @@ describe('Serialize data into array of 8-bit integers', function () {
     expect(buffer).to.deep.equal([245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161, 242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54, 80, 0, 0, 0, 12, 0, 0, 0, 208, 122, 5, 0, 0, 0, 0, 0, 103, 82, 190, 136, 35, 20, 245, 187, 188, 154, 106, 242, 174, 99, 79, 192, 112, 56, 88, 74, 74, 119, 81, 14, 165, 236, 237, 69, 245, 77, 192, 48, 83, 109, 97, 114, 116, 32, 119, 97, 108, 108, 101, 116])
   })
 
+  it('should serialize data of newMessage type and return array of 8-bit integers', function () {
+    const User = Exonum.newType({
+      size: 64,
+      fields: {
+        public_key: { type: Exonum.PublicKey, size: 32, from: 0, to: 32 },
+        login: { type: Exonum.String, size: 8, from: 32, to: 40 },
+        name: { type: Exonum.String, size: 8, from: 40, to: 48 },
+        url: { type: Exonum.String, size: 8, from: 48, to: 56 },
+        avatar_url: { type: Exonum.String, size: 8, from: 56, to: 64 }
+      }
+    })
+    const TxAddUser = Exonum.newMessage({
+      size: 40,
+      network_id: 0,
+      protocol_version: 0,
+      service_id: 198,
+      message_id: 0,
+      signature: 'a8f09060198192799b3bdc1634878369bb2a72fdb6c0c5dd92636605723be24e57feebe705116287604f1f93df8953d2abab9ce2ddad7e6a1d83a7651376640c',
+      fields: {
+        public_key: { type: Exonum.PublicKey, size: 32, from: 0, to: 32 },
+        content: { type: User, size: 8, from: 32, to: 40 }
+      }
+    })
+    const data = {
+      public_key: 'bfa0558f3768a9d06019aa13f8ebe227a160a3c31fc2f9201d2c72dc7f77da98',
+      content: {
+        public_key: 'bfa0558f3768a9d06019aa13f8ebe227a160a3c31fc2f9201d2c72dc7f77da98',
+        login: 'login',
+        name: 'name',
+        url: 'url',
+        avatar_url: 'avatar_url'
+      }
+    }
+
+    const buffer = TxAddUser.serialize(data)
+
+    expect(buffer).to.deep.equal([0, 0, 0, 0, 198, 0, 200, 0, 0, 0, 191, 160, 85, 143, 55, 104, 169, 208, 96, 25, 170, 19, 248, 235, 226, 39, 161, 96, 163, 195, 31, 194, 249, 32, 29, 44, 114, 220, 127, 119, 218, 152, 50, 0, 0, 0, 86, 0, 0, 0, 191, 160, 85, 143, 55, 104, 169, 208, 96, 25, 170, 19, 248, 235, 226, 39, 161, 96, 163, 195, 31, 194, 249, 32, 29, 44, 114, 220, 127, 119, 218, 152, 64, 0, 0, 0, 5, 0, 0, 0, 69, 0, 0, 0, 4, 0, 0, 0, 73, 0, 0, 0, 3, 0, 0, 0, 76, 0, 0, 0, 10, 0, 0, 0, 108, 111, 103, 105, 110, 110, 97, 109, 101, 117, 114, 108, 97, 118, 97, 116, 97, 114, 95, 117, 114, 108, 168, 240, 144, 96, 25, 129, 146, 121, 155, 59, 220, 22, 52, 135, 131, 105, 187, 42, 114, 253, 182, 192, 197, 221, 146, 99, 102, 5, 114, 59, 226, 78, 87, 254, 235, 231, 5, 17, 98, 135, 96, 79, 31, 147, 223, 137, 83, 210, 171, 171, 156, 226, 221, 173, 126, 106, 29, 131, 167, 101, 19, 118, 100, 12])
+  })
+
+  it('should serialize data of newMessage type with nester array and return array of 8-bit integers', function () {
+    const User = Exonum.newType({
+      size: 64,
+      fields: {
+        public_key: { type: Exonum.PublicKey, size: 32, from: 0, to: 32 },
+        login: { type: Exonum.String, size: 8, from: 32, to: 40 },
+        name: { type: Exonum.String, size: 8, from: 40, to: 48 },
+        url: { type: Exonum.String, size: 8, from: 48, to: 56 },
+        avatar_url: { type: Exonum.String, size: 8, from: 56, to: 64 }
+      }
+    })
+    const Arr = Exonum.newArray({
+      size: 64,
+      type: User
+    })
+    const TxAddUser = Exonum.newMessage({
+      size: 40,
+      network_id: 0,
+      protocol_version: 0,
+      service_id: 198,
+      message_id: 0,
+      signature: 'a8f09060198192799b3bdc1634878369bb2a72fdb6c0c5dd92636605723be24e57feebe705116287604f1f93df8953d2abab9ce2ddad7e6a1d83a7651376640c',
+      fields: {
+        public_key: { type: Exonum.PublicKey, size: 32, from: 0, to: 32 },
+        content: { type: Arr, size: 8, from: 32, to: 40 }
+      }
+    })
+    const data = {
+      public_key: 'bfa0558f3768a9d06019aa13f8ebe227a160a3c31fc2f9201d2c72dc7f77da98',
+      content: [
+        {
+          public_key: 'bfa0558f3768a9d06019aa13f8ebe227a160a3c31fc2f9201d2c72dc7f77da98',
+          login: 'login',
+          name: 'name',
+          url: 'url',
+          avatar_url: 'avatar_url'
+        }
+      ]
+    }
+
+    const buffer = TxAddUser.serialize(data)
+
+    expect(buffer).to.deep.equal([0, 0, 0, 0, 198, 0, 208, 0, 0, 0, 191, 160, 85, 143, 55, 104, 169, 208, 96, 25, 170, 19, 248, 235, 226, 39, 161, 96, 163, 195, 31, 194, 249, 32, 29, 44, 114, 220, 127, 119, 218, 152, 50, 0, 0, 0, 1, 0, 0, 0, 58, 0, 0, 0, 86, 0, 0, 0, 191, 160, 85, 143, 55, 104, 169, 208, 96, 25, 170, 19, 248, 235, 226, 39, 161, 96, 163, 195, 31, 194, 249, 32, 29, 44, 114, 220, 127, 119, 218, 152, 64, 0, 0, 0, 5, 0, 0, 0, 69, 0, 0, 0, 4, 0, 0, 0, 73, 0, 0, 0, 3, 0, 0, 0, 76, 0, 0, 0, 10, 0, 0, 0, 108, 111, 103, 105, 110, 110, 97, 109, 101, 117, 114, 108, 97, 118, 97, 116, 97, 114, 95, 117, 114, 108, 168, 240, 144, 96, 25, 129, 146, 121, 155, 59, 220, 22, 52, 135, 131, 105, 187, 42, 114, 253, 182, 192, 197, 221, 146, 99, 102, 5, 114, 59, 226, 78, 87, 254, 235, 231, 5, 17, 98, 135, 96, 79, 31, 147, 223, 137, 83, 210, 171, 171, 156, 226, 221, 173, 126, 106, 29, 131, 167, 101, 19, 118, 100, 12])
+  })
+
   it('should serialize data of complicated non-fixed newType type and return array of 8-bit integers', function () {
     const User = Exonum.newType({
       size: 16,

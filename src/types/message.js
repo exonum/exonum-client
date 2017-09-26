@@ -47,7 +47,7 @@ class NewMessage {
     })
 
     // serialize and append message body
-    buffer = serialization.serialize(buffer, MessageHead.size, data, this)
+    buffer = serialization.serialize(buffer, MessageHead.size, data, this, true)
 
     // calculate payload and insert it into buffer
     primitive.Uint32(buffer.length + SIGNATURE_LENGTH, buffer, MessageHead.fields.payload.from, MessageHead.fields.payload.to)

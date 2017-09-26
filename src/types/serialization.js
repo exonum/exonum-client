@@ -8,9 +8,10 @@ import { Uint32, String, FixedBuffer } from './primitive'
  * @param {number} shift - the index to start write into buffer
  * @param {Object} data
  * @param type - can be {NewType} or one of built-in types
+ * @param {boolean} [isTransactionBody]
  * @returns {Array}
  */
-export function serialize (buffer, shift, data, type) {
+export function serialize (buffer, shift, data, type, isTransactionBody) {
   /**
    * Check if field is of fixed-length type. Fixed-length means field serialized (inserted) directly into buffer without pointer
    * @param {Object} field
@@ -131,11 +132,12 @@ export function serialize (buffer, shift, data, type) {
 
     const fieldType = type.fields[fieldName]
     const from = shift + fieldType.from
+    const fieldShift = (isTransactionBody === true) ? 0 : shift
 
     if (isInstanceofOfNewType(fieldType.type)) {
-      buffer = serializeInstanceofOfNewType(buffer, shift, from, fieldData, fieldType.type)
+      buffer = serializeInstanceofOfNewType(buffer, fieldShift, from, fieldData, fieldType.type)
     } else if (isInstanceofOfNewArray(fieldType.type)) {
-      buffer = serializeInstanceofOfNewArray(buffer, shift, from, fieldData, fieldType.type)
+      buffer = serializeInstanceofOfNewArray(buffer, fieldShift, from, fieldData, fieldType.type)
     } else {
       buffer = fieldType.type(fieldData, buffer, from, shift + fieldType.to, buffer.length - shift)
     }
