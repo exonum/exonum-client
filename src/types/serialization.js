@@ -139,7 +139,7 @@ export function serialize (buffer, shift, data, type, isTransactionBody) {
     } else if (isInstanceofOfNewArray(fieldType.type)) {
       buffer = serializeInstanceofOfNewArray(buffer, fieldShift, from, fieldData, fieldType.type)
     } else {
-      buffer = fieldType.type(fieldData, buffer, from, shift + fieldType.to, buffer.length - shift)
+      buffer = fieldType.type(fieldData, buffer, from, shift + fieldType.to, buffer.length - fieldShift)
     }
   }
 
