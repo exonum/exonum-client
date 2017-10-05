@@ -1,3 +1,3 @@
-import Blockcypher from './blockcypher'
+import Blocktrail from './blocktrail'
 
-export const providers = { Blockcypher }
+export const providers = { Blocktrail }

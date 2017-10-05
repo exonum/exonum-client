@@ -164,3 +164,17 @@ export function stringToUint8Array (str, len) {
 
   return new Uint8Array(array)
 }
+
+/**
+ * Convert byteArray into Integer
+ * @param {Uint8Array} byteArray
+ * @returns {Integer}
+ */
+export function byteArrayToInt (byteArray) {
+  let value = 0
+  for (let i = byteArray.length - 1; i >= 0; i--) {
+    value = (value * 256) + byteArray[i]
+  }
+
+  return value
+}
