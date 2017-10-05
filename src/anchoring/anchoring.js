@@ -38,15 +38,9 @@ export class Anchoring {
       .then(({ data }) => data)
     const txs = await this.provider.getAddressTransactions(address, count)
     const anchorTx = txs
-      .filter(item => this._checkOpReturn(item.outputs[1][this.provider.anchorKey]))
-      .map(item => this._parseOpReturn(item.outputs[1][this.provider.anchorKey]))
+      .map(tx => this.provider.getOpReturnFromTx(tx))
+      .filter(tx => this._checkOpReturn(tx))
+      .map(tx => this._parseOpReturn(tx))
     console.log(anchorTx)
-
-    // const opReturn = await this.provider.getAnchor(txid)
-    // if (!this.testOpReturn(opReturn)) {
-    //   throw new Error(`Invalid anchor in the transaction: ${txid}`)
-    // }
-    // console.log(byteArrayToInt(hexadecimalToUint8Array(opReturn.substr(8 * 2, 16))), opReturn)
-    // return opReturn
   }
 }

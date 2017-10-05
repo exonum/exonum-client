@@ -14,14 +14,16 @@ export default class Blocktrail extends Provider {
     this.params = { api_key: token }
     this.api = `https://api.blocktrail.com/${version}/${network}`
     this.txLoadLimit = 200
-    this.anchorKey = 'script_hex'
+  }
+
+  getOpReturnFromTx (tx) {
+    return tx.outputs[1].script_hex
   }
 
   async _getAddressTransactions ({ address, limit = 20, page = 1 }) {
     return axios.get(`${this.api}/address/${address}/transactions`, {
       params: Object.assign({}, this.params, {
-        limit,
-        page,
+        pageNum: page,
         sort_dir: 'desc'
       })
     }).then(({ data }) => data.data)
