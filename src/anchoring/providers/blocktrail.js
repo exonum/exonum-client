@@ -23,8 +23,9 @@ export default class Blocktrail extends Provider {
   async _getAddressTransactions ({ address, limit = 20, page = 1 }) {
     return axios.get(`${this.api}/address/${address}/transactions`, {
       params: Object.assign({}, this.params, {
-        pageNum: page,
-        sort_dir: 'desc'
+        limit,
+        page,
+        sort_dir: 'asc'
       })
     }).then(({ data }) => data.data)
   }

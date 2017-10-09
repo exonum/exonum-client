@@ -5,8 +5,8 @@ export default class Insight extends Provider {
   constructor (params) {
     super()
 
-    const { api, token } = Object.assign({
-      api: 'https://insight.bitpay.com/api/',
+    const { api } = Object.assign({
+      api: 'https://insight.bitpay.com/api',
     }, params)
 
     this.params = {}
@@ -22,9 +22,7 @@ export default class Insight extends Provider {
     return axios.get(`${this.api}/txs`, {
       params: Object.assign({}, this.params, {
         address,
-        limit,
-        page,
-        sort_dir: 'desc'
+        pageNum: page,
       })
     }).then(({ data }) => data.txs)
   }
