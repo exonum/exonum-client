@@ -5,10 +5,11 @@
   },
   "extends": "standard",
   "parserOptions": {
-    "ecmaVersion": 6,
+    "ecmaVersion": 2017,
     "sourceType": "module"
   },
   "rules": {
-    "object-curly-spacing" : [2, "always"]
+    "object-curly-spacing": [2, "always"
+    ]
   }
 }

@@ -15,6 +15,7 @@ export class Anchoring {
     }, params)
     this.provider = provider
     this.anchoringPath = `${url}/${prefix}/services/btc_anchoring/${version}`
+    this.explorerPath = `${url}/${prefix}/explorer/${version}`
 
     this.exonumPrefix = '45584f4e554d'
     this.anchorStep = anchorStep
@@ -30,8 +31,14 @@ export class Anchoring {
       version: byteArrayToInt(hexadecimalToUint8Array(anchor.slice(0, 2))),
       payloadType: byteArrayToInt(hexadecimalToUint8Array(anchor.slice(2, 4))),
       blockHeight: byteArrayToInt(hexadecimalToUint8Array(anchor.slice(4, 20))),
-      blockHash: anchor.slice(20, 84),
+      blockHash: anchor.slice(20, 84)
     }
+  }
+
+  getBlock (blockHeight) {
+    return axios
+      .get(`${this.explorerPath}/blocks/${blockHeight}`)
+      .then(({ data }) => data)
   }
 
   async checkAnchorChain () {
@@ -48,12 +55,30 @@ export class Anchoring {
       if (!this._checkOpReturn(opReturn)) continue
       const anchor = this._parseOpReturn(opReturn)
       if (nextHeight !== anchor.blockHeight) {
-        //@todo report Error: wrong anchor block height
+        errors = [...errors, { tx, message: `Wrong block height in anchor, should be ${nextHeight}` }]
       }
+
+      if (anchor.blockHeight !== 0) {
+        await this.getBlock(anchor.blockHeight)
+          .then(data => {
+            if (data.precommits[0].body.block_hash !== anchor.blockHash) {
+              errors = [...errors, {
+                tx,
+                block: data,
+                message: `Wrong block hash detected at block ${anchor.blockHeight}`
+              }]
+            }
+            return data
+          })
+      }
+
       nextHeight += this.anchorStep
       anchors = [...anchors, anchor]
     }
-    console.log(anchors.length)
-    return { anchors, errors }
+    return {
+      anchors,
+      errors,
+      valid: errors.length === 0
+    }
   }
 }
