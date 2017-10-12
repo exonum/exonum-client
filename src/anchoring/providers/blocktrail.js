@@ -20,7 +20,7 @@ export default class Blocktrail extends Provider {
     return tx.outputs[1].script_hex
   }
 
-  async _getAddressTransactions ({ address, limit = 20, page = 1 }) {
+  async _getAddressTransactions ({ address, limit, page }) {
     return axios.get(`${this.api}/address/${address}/transactions`, {
       params: Object.assign({}, this.params, {
         limit,

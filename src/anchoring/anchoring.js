@@ -21,11 +21,11 @@ export class Anchoring {
     this.anchorStep = anchorStep
   }
 
-  _checkOpReturn (opReturn) {
+  checkOpReturn (opReturn) {
     return new RegExp(`${this.exonumPrefix}[0-9a-z]{84,148}$`).test(opReturn)
   }
 
-  _parseOpReturn (opReturn) {
+  parseOpReturn (opReturn) {
     const anchor = opReturn.split(this.exonumPrefix)[1]
     return {
       version: byteArrayToInt(hexadecimalToUint8Array(anchor.slice(0, 2))),
@@ -35,16 +35,18 @@ export class Anchoring {
     }
   }
 
+  getActualAddress () {
+    return axios.get(`${this.anchoringPath}/address/actual`)
+      .then(({ data }) => data)
+  }
+
   getBlock (blockHeight) {
-    return axios
-      .get(`${this.explorerPath}/blocks/${blockHeight}`)
+    return axios.get(`${this.explorerPath}/blocks/${blockHeight}`)
       .then(({ data }) => data)
   }
 
   async checkAnchorChain () {
-    const address = await axios
-      .get(`${this.anchoringPath}/address/actual`)
-      .then(({ data }) => data)
+    const address = await this.getActualAddress()
     let errors = []
     const txs = await this.provider.getAddressTransactions(address)
 
@@ -52,24 +54,21 @@ export class Anchoring {
     let nextHeight = 0
     for (let tx of txs) {
       const opReturn = this.provider.getOpReturnFromTx(tx)
-      if (!this._checkOpReturn(opReturn)) continue
-      const anchor = this._parseOpReturn(opReturn)
+      if (!this.checkOpReturn(opReturn)) continue
+      const anchor = this.parseOpReturn(opReturn)
       if (nextHeight !== anchor.blockHeight) {
         errors = [...errors, { tx, message: `Wrong block height in anchor, should be ${nextHeight}` }]
       }
 
       if (anchor.blockHeight !== 0) {
-        await this.getBlock(anchor.blockHeight)
-          .then(data => {
-            if (data.precommits[0].body.block_hash !== anchor.blockHash) {
-              errors = [...errors, {
-                tx,
-                block: data,
-                message: `Wrong block hash detected at block ${anchor.blockHeight}`
-              }]
-            }
-            return data
-          })
+        const block = await this.getBlock(anchor.blockHeight)
+        if (block.precommits[0].body.block_hash !== anchor.blockHash) {
+          errors = [...errors, {
+            tx,
+            block,
+            message: `Wrong block hash detected at block ${anchor.blockHeight}`
+          }]
+        }
       }
 
       nextHeight += this.anchorStep

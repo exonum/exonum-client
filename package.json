@@ -53,7 +53,7 @@
   },
   "scripts": {
     "test": "grunt test",
-    "coveralls": "cross-env NODE_ENV=test nyc mocha && cat ./coverage/lcov.info | coveralls",
+    "coveralls": "cross-env NODE_ENV=test NODE_PATH=./ nyc mocha --recursive && cat ./coverage/lcov.info | coveralls",
     "prepare": "grunt compile",
     "lint": "eslint ./src ./test",
     "lint:fix": "npm run lint -- --fix"

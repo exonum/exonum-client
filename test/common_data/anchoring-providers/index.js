@@ -1,8 +1,19 @@
-const blocktrailTransactions1 = require('./blocktrail/transactions-1.json')
-const blocktrailTransactions2 = require('./blocktrail/transactions-2.json')
-export const blocktrailBlocks = require('./blocktrail/blocks.json')
-export const blocktrailResponse = require('./blocktrail/right-response.json')
+const btTransactions1 = require('./blocktrail/transactions-1.json')
+const btTransactions2 = require('./blocktrail/transactions-2.json')
+export const btBlocks = require('./blocktrail/blocks.json')
+export const btRes = require('./blocktrail/right-res.json')
 
-export const blocktrailTransactionsConcated = [...blocktrailTransactions1.data, ...blocktrailTransactions2.data]
+export const btTransactionsConcated = [...btTransactions1.data, ...btTransactions2.data]
+export const btTransactions = [btTransactions1, btTransactions2]
+export const getNTx = (limit, offset = 0) => ({
+  data: btTransactionsConcated.filter((item, i) => i >= offset && i < limit + offset)
+})
 
-export const blocktrailTransactions = [blocktrailTransactions1, blocktrailTransactions2]
+export const btWrongSequence = {
+  data: [
+    ...btTransactionsConcated.filter((item, i) => i > 2 && i < 5),
+    btTransactionsConcated[6]]
+}
+
+export const wrongSequenceRes = require('./blocktrail/wrong-sequence-res.json')
+export const wrongHashRes = require('./blocktrail/wrong-hash-res.json')
