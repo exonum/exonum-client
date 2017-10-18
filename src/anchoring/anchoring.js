@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 import { hexadecimalToUint8Array, byteArrayToInt } from '../types/convert'
+import { to } from '../helpers'
 
 import { providers } from './providers/'
 
@@ -21,10 +22,20 @@ export class Anchoring {
     this.anchorStep = anchorStep
   }
 
+  /**
+   * Return true if opReturn is valid
+   * @param {String} opReturn
+   * @returns {Bool}
+   */
   checkOpReturn (opReturn) {
     return new RegExp(`${this.exonumPrefix}[0-9a-z]{84,148}$`).test(opReturn)
   }
 
+  /**
+   * Return parsed object from OP_RETURN of anchored transaction
+   * @param {String} opReturn
+   * @returns {Object}
+   */
   parseOpReturn (opReturn) {
     const anchor = opReturn.split(this.exonumPrefix)[1]
     return {
@@ -35,24 +46,41 @@ export class Anchoring {
     }
   }
 
+  /**
+   * Load and return of actual anchoring address
+   * @returns {Promise}
+   */
   getActualAddress () {
     return axios.get(`${this.anchoringPath}/address/actual`)
       .then(({ data }) => data)
   }
 
+  /**
+   * Load and return of block by block height
+   * @param {String} blockHeight
+   * @returns {Promise}
+   */
   getBlock (blockHeight) {
     return axios.get(`${this.explorerPath}/blocks/${blockHeight}`)
       .then(({ data }) => data)
   }
 
+  /**
+   * Check all anchor transactions and all anchored blocks
+   * @returns {Object}
+   */
   async checkAnchorChain () {
-    const address = await this.getActualAddress()
+    const [address, addressErr] = await to(this.getActualAddress())
+    if (addressErr) return addressErr
     let errors = []
-    const txs = await this.provider.getAddressTransactions(address)
+    const [txs, txsErr] = await to(this.provider.getAddressTransactions(address))
+    if (txsErr) return txsErr
 
     let anchors = []
     let nextHeight = 0
-    for (let tx of txs) {
+    let attemptsCount = 1
+    for (let i = 0; i < txs.length; ++i) {
+      const tx = txs[i]
       const opReturn = this.provider.getOpReturnFromTx(tx)
       if (!this.checkOpReturn(opReturn)) continue
       const anchor = this.parseOpReturn(opReturn)
@@ -61,8 +89,18 @@ export class Anchoring {
       }
 
       if (anchor.blockHeight !== 0) {
-        const block = await this.getBlock(anchor.blockHeight)
-        if (block.precommits[0].body.block_hash !== anchor.blockHash) {
+        const [block, blockErr] = await to(this.getBlock(anchor.blockHeight))
+        if (blockErr) {
+          if (attemptsCount >= 5) return blockErr
+          attemptsCount++
+          --i
+        } else if (block === null) {
+          errors = [...errors, {
+            tx,
+            opReturn,
+            message: 'Block not found in Exonum blockchain'
+          }]
+        } else if (block.precommits[0].body.block_hash !== anchor.blockHash) {
           errors = [...errors, {
             tx,
             block,
@@ -79,5 +117,9 @@ export class Anchoring {
       errors,
       valid: errors.length === 0
     }
+  }
+
+  async checkFromBlockToAnchor () {
+
   }
 }

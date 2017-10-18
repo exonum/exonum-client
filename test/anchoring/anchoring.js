@@ -15,7 +15,7 @@ chai.should()
 const { expect } = chai
 
 const exonumUrl = 'http://localhost'
-const anchoringAddress = '12c6DSiU4Rq3P4ZxziKxzrL5LmMBrzjrJX'
+const address = 'address'
 const token = 'token'
 const network = 'BTC'
 
@@ -63,12 +63,12 @@ describe('Anchoring', function () {
   it('getActualAddress should load address from Exonum anchoring', done => {
     nock(exonumUrl)
       .get('/api/services/btc_anchoring/v1/address/actual')
-      .reply(200, anchoringAddress)
+      .reply(200, address)
 
     anchoring.getActualAddress()
       .should
       .eventually
-      .equal(anchoringAddress)
+      .equal(address)
       .notify(done)
   })
 
@@ -89,11 +89,11 @@ describe('Anchoring', function () {
   it('checkAnchorChain should return wrong block hash error', done => {
     nock(exonumUrl)
       .get('/api/services/btc_anchoring/v1/address/actual')
-      .reply(200, anchoringAddress)
+      .reply(200, address)
 
     const txs = getNTx(3, 3)
     nock('https://api.blocktrail.com')
-      .get(`/v1/${network}/address/${anchoringAddress}/transactions`)
+      .get(`/v1/${network}/address/${address}/transactions`)
       .query({ api_key: token, limit: 200, page: 1, sort_dir: 'asc' })
       .reply(200, txs)
 
@@ -127,10 +127,10 @@ describe('Anchoring', function () {
   it('checkAnchorChain should return blockHeight error', done => {
     nock(exonumUrl)
       .get('/api/services/btc_anchoring/v1/address/actual')
-      .reply(200, anchoringAddress)
+      .reply(200, address)
 
     nock('https://api.blocktrail.com')
-      .get(`/v1/${network}/address/${anchoringAddress}/transactions`)
+      .get(`/v1/${network}/address/${address}/transactions`)
       .query({ api_key: token, limit: 200, page: 1, sort_dir: 'asc' })
       .reply(200, btWrongSequence)
 
@@ -154,11 +154,11 @@ describe('Anchoring', function () {
   it('checkAnchorChain should return valid chain', done => {
     nock(exonumUrl)
       .get('/api/services/btc_anchoring/v1/address/actual')
-      .reply(200, anchoringAddress)
+      .reply(200, address)
 
     for (let i = 0; i < btTransactions.length; ++i) {
       nock('https://api.blocktrail.com')
-        .get(`/v1/${network}/address/${anchoringAddress}/transactions`)
+        .get(`/v1/${network}/address/${address}/transactions`)
         .query({ api_key: token, limit: 200, page: i + 1, sort_dir: 'asc' })
         .reply(200, btTransactions[i])
     }

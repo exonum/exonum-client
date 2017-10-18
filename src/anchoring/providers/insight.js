@@ -18,7 +18,7 @@ export default class Insight extends Provider {
     return tx.vout[1].scriptPubKey.hex
   }
 
-  async _getAddressTransactions ({ address, limit = 20, page = 1 }) {
+  async _getAddressTransactions ({ address, page }) {
     return axios.get(`${this.api}/txs`, {
       params: Object.assign({}, this.params, {
         address,
