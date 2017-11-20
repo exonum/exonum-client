@@ -171,7 +171,7 @@ describe('Serialize data into array of 8-bit integers', function () {
     const User = Exonum.newType({
       size: 12,
       fields: {
-        name: { type: Exonum.FixedBuffer, size: 12, from: 0, to: 12 }
+        name: { type: Exonum.String, size: 8, from: 0, to: 8 }
       }
     })
     const Transaction = Exonum.newType({
@@ -183,14 +183,14 @@ describe('Serialize data into array of 8-bit integers', function () {
     })
     const transactionData = {
       to: {
-        name: [101, 83, 116, 101, 118, 101, 110, 66, 108, 97, 99, 107]
+        name: 'John Doe'
       },
       sum: 200
     }
 
     const buffer = Transaction.serialize(transactionData)
 
-    expect(buffer).to.deep.equal([16, 0, 0, 0, 12, 0, 0, 0, 200, 0, 0, 0, 0, 0, 0, 0, 101, 83, 116, 101, 118, 101, 110, 66, 108, 97, 99, 107])
+    expect(buffer).to.deep.equal([16, 0, 0, 0, 20, 0, 0, 0, 200, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 74, 111, 104, 110, 32, 68, 111, 101])
   })
 
   it('should serialize data of complicated fixed newType type and return array of 8-bit integers', function () {
