@@ -1,6 +1,6 @@
 import { isInstanceofOfNewType } from './generic'
 import { isInstanceofOfNewArray } from './array'
-import { Uint32, String, FixedBuffer } from './primitive'
+import { Uint32, String } from './primitive'
 
 /**
  * Serialize data into array of 8-bit integers and insert into buffer
@@ -20,7 +20,7 @@ export function serialize (buffer, shift, data, type, isTransactionBody) {
   function fieldIsFixed (field) {
     if (isInstanceofOfNewType(field.type)) {
       return fieldsAreFixed(field.type.fields)
-    } else if (field.type === String || field.type === FixedBuffer) {
+    } else if (field.type === String) {
       return false
     }
     return true
@@ -108,8 +108,8 @@ export function serialize (buffer, shift, data, type, isTransactionBody) {
 
         buffer = serializeInstanceofOfNewArray(buffer, shift, index, data[i], type.type)
       }
-    } else if (type.type === String || type.type === FixedBuffer) {
-      throw new TypeError('Array of String and FixedBuffer types is not supported.')
+    } else if (type.type === String) {
+      throw new TypeError('Array of String types is not supported.')
     } else {
       for (let item of data) {
         buffer = type.type(item, buffer, buffer.length, buffer.length + type.size)

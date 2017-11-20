@@ -80,7 +80,6 @@ The following types can be used as the `type` field of the field description:
 * [PublicKey](#publickey)
 * [Digest](#digest)
 * [Bool](#bool)
-* [FixedBuffer](#fixedbuffer)
 * [Array](#array)
 
 #### Сustom type example
@@ -455,14 +454,6 @@ For numbers greater than safe use `string` only.*
 | Type | Size (bytes) | Description |
 |---|---|---|
 | `boolean` | `1` ||
-
-### FixedBuffer
-
-| Type | Size (bytes) | Description |
-|---|---|---|
-| `Array` | `8`* | Array of 8-bit unsigned integers |
-
-*\*Note that the size of 8 bytes is due to the specifics of arrays [serialization](https://exonum.com/doc/architecture/serialization). Actual array length is limited by the general message size limits.*
 
 ### Array
 
