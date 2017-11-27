@@ -6,37 +6,25 @@ export default class DataSchema {
     this.arrays = {}
     this.messages = {}
 
-    const ExonumTypes = ['PublicKey', 'String', 'Uint64', 'Hash']
+    const ExonumTypes = ['PublicKey', 'String', 'Hash', 'Digest', 'Timespec',
+      'Bool', 'Int8', 'Int16', 'Int32', 'Int64', 'Uint8', 'Uint16', 'Uint32', 'Uint64']
     ExonumTypes.forEach(item => (this.types[item] = Exonum[item]))
 
-    Object.keys(schema.types)
-      .forEach(key => {
-        const type = schema.types[key]
-        Object.keys(type.fields)
+    Object.keys(schema).forEach(key => {
+      const item = schema[key]
+      if (!item.as || item.as === 'type' || item.as === 'message') {
+        Object.keys(item.fields)
           .forEach(fieldKey => {
-            const field = type.fields[fieldKey]
+            const field = item.fields[fieldKey]
             field.type = this.getTypeOrArray(field.type)
           })
-        this.types[key] = Exonum.newType(type)
-      })
-
-    Object.keys(schema.arrays)
-      .forEach(key => {
-        const array = schema.arrays[key]
-        array.type = this.getTypeOrArray(array.type)
-        this.arrays[key] = Exonum.newArray(array)
-      })
-
-    Object.keys(schema.messages)
-      .forEach(key => {
-        const message = schema.messages[key]
-        Object.keys(message.fields)
-          .forEach(fieldKey => {
-            const field = message.fields[fieldKey]
-            field.type = this.getTypeOrArray(field.type)
-          })
-        this.messages[key] = Exonum.newMessage(message)
-      })
+        if (!item.as || item.as === 'type') this.types[key] = Exonum.newType(item)
+        if (item.as === 'message') this.messages[key] = Exonum.newMessage(item)
+      } else if (item.as === 'array') {
+        item.type = this.getTypeOrArray(item.type)
+        this.arrays[key] = Exonum.newArray(item)
+      }
+    })
   }
 
   getTypeOrArray (name) {

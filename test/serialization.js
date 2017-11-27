@@ -2,12 +2,10 @@
 /* eslint-disable no-unused-expressions */
 
 const expect = require('chai').expect
-const Exonum = require('../src')
 const DataSchema = require('./data_schema/dataSchema').default
-const serializationScheme = require('./common_data/serialization/serialization-types.json')
-const scheme = new DataSchema(serializationScheme)
-
 const serializationMock = require('./common_data/serialization/serialization.json')
+const serialization = require('./common_data/serialization/serialization-config.json')
+const scheme = new DataSchema(serialization)
 
 describe('Serialize data into array of 8-bit integers', function () {
   it('should serialize data of newType type and return array of 8-bit integers', function () {
