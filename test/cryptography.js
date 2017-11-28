@@ -5,6 +5,7 @@ const expect = require('chai').expect
 const Exonum = require('../src')
 const DataSchema = require('./data_schema/dataSchema').default
 const cryptographyMock = require('./common_data/serialization/cryptography.json')
+const invalidCryptographyMock = require('./common_data/serialization/cryptography-invalid.json')
 const cryptography = require('./common_data/serialization/cryptography-config.json')
 const scheme = new DataSchema(cryptography)
 
@@ -37,45 +38,21 @@ describe('Check cryptography', function () {
     })
 
     it('should throw error when data of invalid NewType type', function () {
-      const Wallet = Exonum.newType({
-        size: 80,
-        fields: {
-          pub_key: { type: Exonum.PublicKey, size: 32, from: 0, to: 32 },
-          name: { type: Exonum.String, size: 8, from: 32, to: 40 },
-          balance: { type: Exonum.Uint64, size: 8, from: 40, to: 48 },
-          history_hash: { type: Exonum.Hash, size: 32, from: 48, to: 80 }
-        }
-      })
-
-      expect(() => Exonum.hash(undefined, Wallet))
+      expect(() => Exonum.hash(undefined, scheme.getType('type1')))
         .to.throw(TypeError, 'Cannot read property \'pub_key\' of undefined');
 
       [false, 42, new Date(), []].forEach(function (_hash) {
-        expect(() => Exonum.hash(_hash, Wallet))
+        expect(() => Exonum.hash(_hash, scheme.getType('type1')))
           .to.throw(TypeError, 'Field pub_key is not defined.')
       })
     })
 
     it('should throw error when data of invalid NewMessage type', function () {
-      const CustomMessage = Exonum.newMessage({
-        size: 18,
-        network_id: 0,
-        protocol_version: 0,
-        service_id: 1,
-        message_id: 2,
-        fields: {
-          name: { type: Exonum.String, size: 8, from: 0, to: 8 },
-          age: { type: Exonum.Uint8, size: 1, from: 8, to: 9 },
-          balance: { type: Exonum.Uint64, size: 8, from: 9, to: 17 },
-          status: { type: Exonum.Bool, size: 1, from: 17, to: 18 }
-        }
-      })
-
-      expect(() => Exonum.hash(undefined, CustomMessage))
+      expect(() => Exonum.hash(undefined, scheme.getMessage('type3')))
         .to.throw(TypeError, 'Cannot read property \'name\' of undefined');
 
       [false, 42, new Date(), []].forEach(function (_hash) {
-        expect(() => Exonum.hash(_hash, CustomMessage))
+        expect(() => Exonum.hash(_hash, scheme.getMessage('type3')))
           .to.throw(TypeError, 'Field name is not defined.')
       })
     })
@@ -109,44 +86,12 @@ describe('Check cryptography', function () {
     })
 
     it('should throw error when the data parameter of wrong NewType type', function () {
-      const secretKey = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
-      const User = Exonum.newType({
-        size: 16,
-        fields: {
-          firstName: { type: Exonum.String, size: 8, from: 0, to: 8 },
-          lastName: { type: Exonum.String, size: 8, from: 8, to: 16 }
-        }
-      })
-      const userData = {
-        sum: 500,
-        hash: 'Hello world'
-      }
-
-      expect(() => Exonum.sign(secretKey, userData, User))
+      expect(() => Exonum.sign(invalidCryptographyMock.type6.secretKey, invalidCryptographyMock.type6.data, scheme.getType('type6')))
         .to.throw(TypeError, 'Field firstName is not defined.')
     })
 
     it('should throw error when the data parameter of wrong NewMessage type', function () {
-      const secretKey = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
-      const CustomMessage = Exonum.newMessage({
-        size: 18,
-        network_id: 0,
-        protocol_version: 0,
-        service_id: 1,
-        message_id: 2,
-        fields: {
-          name: { type: Exonum.String, size: 8, from: 0, to: 8 },
-          age: { type: Exonum.Uint8, size: 1, from: 8, to: 9 },
-          balance: { type: Exonum.Uint64, size: 8, from: 9, to: 17 },
-          status: { type: Exonum.Bool, size: 1, from: 17, to: 18 }
-        }
-      })
-      const someData = {
-        sum: 500,
-        hash: 'Hello world'
-      }
-
-      expect(() => Exonum.sign(secretKey, someData, CustomMessage))
+      expect(() => Exonum.sign(invalidCryptographyMock.type7.secretKey, invalidCryptographyMock.type7.data, scheme.getMessage('type7')))
         .to.throw(TypeError, 'Field name is not defined.')
     })
 
@@ -165,56 +110,23 @@ describe('Check cryptography', function () {
     })
 
     it('should throw error when the secretKey parameter of wrong length', function () {
-      const secretKey = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C'
-      const User = Exonum.newType({
-        size: 16,
-        fields: {
-          firstName: { type: Exonum.String, size: 8, from: 0, to: 8 },
-          lastName: { type: Exonum.String, size: 8, from: 8, to: 16 }
-        }
-      })
-      const userData = {
-        firstName: 'John',
-        lastName: 'Doe'
-      }
-      const buffer = User.serialize(userData)
-
-      expect(() => Exonum.sign(secretKey, buffer))
+      const buffer = scheme.getType('type6').serialize(invalidCryptographyMock['type6-1'].data)
+      expect(() => Exonum.sign(invalidCryptographyMock['type6-1'].secretKey, buffer))
         .to.throw(TypeError, 'secretKey of wrong type is passed. Hexadecimal expected.')
     })
 
     it('should throw error when wrong secretKey parameter', function () {
-      const secretKey = '6752ZE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
-      const User = Exonum.newType({
-        size: 16,
-        fields: {
-          firstName: { type: Exonum.String, size: 8, from: 0, to: 8 },
-          lastName: { type: Exonum.String, size: 8, from: 8, to: 16 }
-        }
-      })
-      const userData = {
-        firstName: 'John',
-        lastName: 'Doe'
-      }
-      const buffer = User.serialize(userData)
-
-      expect(() => Exonum.sign(secretKey, buffer))
+      const buffer = scheme.getType('type6').serialize(invalidCryptographyMock['type6-2'].data)
+      expect(() => Exonum.sign(invalidCryptographyMock['type6-2'].secretKey, buffer))
         .to.throw(TypeError, 'secretKey of wrong type is passed. Hexadecimal expected.')
     })
 
     it('should throw error when the secretKey parameter of invalid type', function () {
-      const User = Exonum.newType({
-        size: 16,
-        fields: {
-          firstName: { type: Exonum.String, size: 8, from: 0, to: 8 },
-          lastName: { type: Exonum.String, size: 8, from: 8, to: 16 }
-        }
-      })
       const userData = {
         firstName: 'John',
         lastName: 'Doe'
       }
-      const buffer = User.serialize(userData);
+      const buffer = scheme.getType('type6').serialize(userData);
 
       [true, null, undefined, [], {}, 51, new Date()].forEach(function (secretKey) {
         expect(() => Exonum.sign(secretKey, buffer))
@@ -353,19 +265,12 @@ describe('Check cryptography', function () {
     it('should throw error when the data parameter is of wrong NewType type', function () {
       const publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
       const signature = '9e0f0122c2963b76ba10842951cd1b67c8197b3f964c34f8b667aa655a7b4a8d844d567698d99de30590fc5002ddb4b9b5927ec05cd73572b972cb6b034cd40b'
-      const User = Exonum.newType({
-        size: 16,
-        fields: {
-          firstName: { type: Exonum.String, size: 8, from: 0, to: 8 },
-          lastName: { type: Exonum.String, size: 8, from: 8, to: 16 }
-        }
-      })
       const userData = {
         sum: 500,
         hash: 'Hello world'
       }
 
-      expect(() => Exonum.verifySignature(signature, publicKey, userData, User))
+      expect(() => Exonum.verifySignature(signature, publicKey, userData, scheme.getType('type6')))
         .to.throw(TypeError, 'Field firstName is not defined.')
     })
 

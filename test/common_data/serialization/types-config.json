@@ -1,5 +1,5 @@
 {
-  "type": {
+  "type1": {
     "size": 32,
     "fields": {
       "hash": {
