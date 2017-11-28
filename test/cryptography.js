@@ -3,123 +3,37 @@
 
 const expect = require('chai').expect
 const Exonum = require('../src')
+const DataSchema = require('./data_schema/dataSchema').default
+const cryptographyMock = require('./common_data/serialization/cryptography.json')
+const cryptography = require('./common_data/serialization/cryptography-config.json')
+const scheme = new DataSchema(cryptography)
 
 describe('Check cryptography', function () {
   describe('Get SHA256 hash', function () {
     it('should return hash of data of newType type', function () {
-      const Wallet = Exonum.newType({
-        size: 80,
-        fields: {
-          pub_key: { type: Exonum.PublicKey, size: 32, from: 0, to: 32 },
-          name: { type: Exonum.String, size: 8, from: 32, to: 40 },
-          balance: { type: Exonum.Uint64, size: 8, from: 40, to: 48 },
-          history_hash: { type: Exonum.Hash, size: 32, from: 48, to: 80 }
-        }
-      })
-      const walletData = {
-        pub_key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36',
-        name: 'Smart wallet',
-        balance: 359120,
-        history_hash: '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030'
-      }
-      const hash = Exonum.hash(walletData, Wallet)
-
-      expect(hash).to.equal('86b47510fbcbc83f9926d8898a57c53662518c97502625a6d131842f2003f974')
+      const hash = Exonum.hash(cryptographyMock.type1.data, scheme.getType('type1'))
+      expect(hash).to.equal(cryptographyMock.type1.hash)
     })
 
     it('should return hash of data of newType type using built-in method', function () {
-      const Wallet = Exonum.newType({
-        size: 80,
-        fields: {
-          pub_key: { type: Exonum.PublicKey, size: 32, from: 0, to: 32 },
-          name: { type: Exonum.String, size: 8, from: 32, to: 40 },
-          balance: { type: Exonum.Uint64, size: 8, from: 40, to: 48 },
-          history_hash: { type: Exonum.Hash, size: 32, from: 48, to: 80 }
-        }
-      })
-      const walletData = {
-        pub_key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36',
-        name: 'Smart wallet',
-        balance: 359120,
-        history_hash: '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030'
-      }
-      const hash = Wallet.hash(walletData)
-
-      expect(hash).to.equal('86b47510fbcbc83f9926d8898a57c53662518c97502625a6d131842f2003f974')
+      const hash = scheme.getType('type2').hash(cryptographyMock.type2.data)
+      expect(hash).to.equal(cryptographyMock.type2.hash)
     })
 
     it('should return hash of data of newMessage type', function () {
-      const CustomMessage = Exonum.newMessage({
-        size: 18,
-        network_id: 0,
-        protocol_version: 0,
-        service_id: 1,
-        message_id: 2,
-        fields: {
-          name: { type: Exonum.String, size: 8, from: 0, to: 8 },
-          age: { type: Exonum.Uint8, size: 1, from: 8, to: 9 },
-          balance: { type: Exonum.Uint64, size: 8, from: 9, to: 17 },
-          status: { type: Exonum.Bool, size: 1, from: 17, to: 18 }
-        },
-        signature: 'dad76b4c3b067d53265534bde4d9ff59987d00f87e0e1a633613576195a4cbc1e0a43a58c67c34c98019f791812699d010655c4eccec448e46e5524471a8c401'
-      })
-      const messageData = {
-        name: 'John Doe',
-        age: 34,
-        balance: 17,
-        status: true
-      }
-      const hash = Exonum.hash(messageData, CustomMessage)
-
-      expect(hash).to.equal('df2d0cf21d4fc1e2b0adf6dbff7daeb0d7292e9f51f529358c18b95b67539484')
+      const hash = Exonum.hash(cryptographyMock.type3.data, scheme.getMessage('type3'))
+      expect(hash).to.equal(cryptographyMock.type3.hash)
     })
 
     it('should return hash of data of newMessage type using built-in method', function () {
-      const CustomMessage = Exonum.newMessage({
-        size: 18,
-        network_id: 0,
-        protocol_version: 0,
-        service_id: 1,
-        message_id: 2,
-        fields: {
-          name: { type: Exonum.String, size: 8, from: 0, to: 8 },
-          age: { type: Exonum.Uint8, size: 1, from: 8, to: 9 },
-          balance: { type: Exonum.Uint64, size: 8, from: 9, to: 17 },
-          status: { type: Exonum.Bool, size: 1, from: 17, to: 18 }
-        },
-        signature: 'dad76b4c3b067d53265534bde4d9ff59987d00f87e0e1a633613576195a4cbc1e0a43a58c67c34c98019f791812699d010655c4eccec448e46e5524471a8c401'
-      })
-      const messageData = {
-        name: 'John Doe',
-        age: 34,
-        balance: 17,
-        status: true
-      }
-      const hash = CustomMessage.hash(messageData)
-
-      expect(hash).to.equal('df2d0cf21d4fc1e2b0adf6dbff7daeb0d7292e9f51f529358c18b95b67539484')
+      const hash = scheme.getMessage('type4').hash(cryptographyMock.type4.data)
+      expect(hash).to.equal(cryptographyMock.type4.hash)
     })
 
     it('should return hash of the array of 8-bit integers', function () {
-      const Wallet = Exonum.newType({
-        size: 80,
-        fields: {
-          pub_key: { type: Exonum.PublicKey, size: 32, from: 0, to: 32 },
-          name: { type: Exonum.String, size: 8, from: 32, to: 40 },
-          balance: { type: Exonum.Uint64, size: 8, from: 40, to: 48 },
-          history_hash: { type: Exonum.Hash, size: 32, from: 48, to: 80 }
-        }
-      })
-      const walletData = {
-        pub_key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36',
-        name: 'Smart wallet',
-        balance: 359120,
-        history_hash: '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030'
-      }
-      const buffer = Wallet.serialize(walletData)
+      const buffer = scheme.getType('type5').serialize(cryptographyMock.type5.data)
       const hash = Exonum.hash(buffer)
-
-      expect(hash).to.equal('86b47510fbcbc83f9926d8898a57c53662518c97502625a6d131842f2003f974')
+      expect(hash).to.equal(cryptographyMock.type5.hash)
     })
 
     it('should throw error when data of invalid NewType type', function () {
@@ -169,110 +83,29 @@ describe('Check cryptography', function () {
 
   describe('Get ED25519 signature', function () {
     it('should return signature of the data of NewType type', function () {
-      const secretKey = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
-      const User = Exonum.newType({
-        size: 16,
-        fields: {
-          firstName: { type: Exonum.String, size: 8, from: 0, to: 8 },
-          lastName: { type: Exonum.String, size: 8, from: 8, to: 16 }
-        }
-      })
-      const userData = {
-        firstName: 'John',
-        lastName: 'Doe'
-      }
-      const signature = User.sign(secretKey, userData)
-
-      expect(signature).to.equal('7ccad21d76359c8c3ed1161eb8231edd44a91d53ea468d23f8528e2985e5547f72f98ccc61d96ecad173bdc29627abbf6d46908807f6dd0a0d767ae3887d040e')
+      const signature = scheme.getType('type6').sign(cryptographyMock.type6.secretKey, cryptographyMock.type6.data)
+      expect(signature).to.equal(cryptographyMock.type6.signed)
     })
 
     it('should return signature of the data of NewType type using built-in method', function () {
-      const secretKey = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
-      const User = Exonum.newType({
-        size: 16,
-        fields: {
-          firstName: { type: Exonum.String, size: 8, from: 0, to: 8 },
-          lastName: { type: Exonum.String, size: 8, from: 8, to: 16 }
-        }
-      })
-      const userData = {
-        firstName: 'John',
-        lastName: 'Doe'
-      }
-      const signature = User.sign(secretKey, userData)
-
-      expect(signature).to.equal('7ccad21d76359c8c3ed1161eb8231edd44a91d53ea468d23f8528e2985e5547f72f98ccc61d96ecad173bdc29627abbf6d46908807f6dd0a0d767ae3887d040e')
+      const signature = scheme.getType('type6').sign(cryptographyMock.type6.secretKey, cryptographyMock.type6.data)
+      expect(signature).to.equal(cryptographyMock.type6.signed)
     })
 
     it('should return signature of the data of NewMessage type', function () {
-      const secretKey = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
-      const CustomMessage = Exonum.newMessage({
-        size: 18,
-        network_id: 0,
-        protocol_version: 0,
-        service_id: 1,
-        message_id: 2,
-        fields: {
-          name: { type: Exonum.String, size: 8, from: 0, to: 8 },
-          age: { type: Exonum.Uint8, size: 1, from: 8, to: 9 },
-          balance: { type: Exonum.Uint64, size: 8, from: 9, to: 17 },
-          status: { type: Exonum.Bool, size: 1, from: 17, to: 18 }
-        }
-      })
-      const messageData = {
-        name: 'John Doe',
-        age: 34,
-        balance: 173008,
-        status: true
-      }
-      const signature = Exonum.sign(secretKey, messageData, CustomMessage)
-
-      expect(signature).to.equal('4006cef1884941850a6b97a64ed7f12d1e1053188618ef71b8c9f87438b943b1969e08011e45db8299bb738fec60c9dcd1936ab9ba44392cacc7f0385f18dd09')
+      const signature = Exonum.sign(cryptographyMock.type7.secretKey, cryptographyMock.type7.data, scheme.getMessage('type7'))
+      expect(signature).to.equal(cryptographyMock.type7.signed)
     })
 
     it('should return signature of the data of NewMessage type using built-in method', function () {
-      const secretKey = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
-      const CustomMessage = Exonum.newMessage({
-        size: 18,
-        network_id: 0,
-        protocol_version: 0,
-        service_id: 1,
-        message_id: 2,
-        fields: {
-          name: { type: Exonum.String, size: 8, from: 0, to: 8 },
-          age: { type: Exonum.Uint8, size: 1, from: 8, to: 9 },
-          balance: { type: Exonum.Uint64, size: 8, from: 9, to: 17 },
-          status: { type: Exonum.Bool, size: 1, from: 17, to: 18 }
-        }
-      })
-      const messageData = {
-        name: 'John Doe',
-        age: 34,
-        balance: 173008,
-        status: true
-      }
-      const signature = CustomMessage.sign(secretKey, messageData)
-
-      expect(signature).to.equal('4006cef1884941850a6b97a64ed7f12d1e1053188618ef71b8c9f87438b943b1969e08011e45db8299bb738fec60c9dcd1936ab9ba44392cacc7f0385f18dd09')
+      const signature = scheme.getMessage('type8').sign(cryptographyMock.type8.secretKey, cryptographyMock.type8.data)
+      expect(signature).to.equal(cryptographyMock.type8.signed)
     })
 
     it('should return signature of the array of 8-bit integers', function () {
-      const secretKey = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
-      const User = Exonum.newType({
-        size: 16,
-        fields: {
-          firstName: { type: Exonum.String, size: 8, from: 0, to: 8 },
-          lastName: { type: Exonum.String, size: 8, from: 8, to: 16 }
-        }
-      })
-      const userData = {
-        firstName: 'John',
-        lastName: 'Doe'
-      }
-      const buffer = User.serialize(userData)
-      const signature = Exonum.sign(secretKey, buffer)
-
-      expect(signature).to.equal('7ccad21d76359c8c3ed1161eb8231edd44a91d53ea468d23f8528e2985e5547f72f98ccc61d96ecad173bdc29627abbf6d46908807f6dd0a0d767ae3887d040e')
+      const buffer = scheme.getType('type9').serialize(cryptographyMock.type9.data)
+      const signature = Exonum.sign(cryptographyMock.type9.secretKey, buffer)
+      expect(signature).to.equal(cryptographyMock.type9.signed)
     })
 
     it('should throw error when the data parameter of wrong NewType type', function () {

@@ -411,13 +411,7 @@ describe('Check built-in types', function () {
 
   describe('Process Int16', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid positive number', function () {
-      const Type = Exonum.newType({
-        size: 2,
-        fields: { balance: { type: Exonum.Int16, size: 2, from: 0, to: 2 } }
-      })
-      const data = { balance: 30767 }
       const buffer = scheme.getType('type8').serialize(typesMock.type8.data)
-
       expect(buffer).to.deep.equal(typesMock.type8.serialized)
     })
 
@@ -785,13 +779,7 @@ describe('Check built-in types', function () {
 
   describe('Process Uint64', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid positive number', function () {
-      const Type = Exonum.newType({
-        size: 8,
-        fields: { balance: { type: Exonum.Uint64, size: 8, from: 0, to: 8 } }
-      })
-      const data = { balance: 613228 }
       const buffer = scheme.getType('type14').serialize(typesMock.type14.data)
-
       expect(buffer).to.deep.equal(typesMock.type14.serialized)
     })
 

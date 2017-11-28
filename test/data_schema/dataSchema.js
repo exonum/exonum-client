@@ -1,4 +1,4 @@
-const Exonum = require('src')
+const Exonum = require('../../src')
 
 export default class DataSchema {
   constructor (schema) {
