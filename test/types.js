@@ -3,18 +3,17 @@
 
 const expect = require('chai').expect
 const Exonum = require('../src')
+const DataSchema = require('./data_schema/dataSchema').default
+const typesMock = require('./common_data/serialization/types.json')
+const invalidTypesMock = require('./common_data/serialization/types-invalid.json')
+const types = require('./common_data/serialization/types-config.json')
+const scheme = new DataSchema(types)
 
 describe('Check built-in types', function () {
   describe('Process Hash', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid hexadecimal string', function () {
-      const Type = Exonum.newType({
-        size: 32,
-        fields: { hash: { type: Exonum.Hash, size: 32, from: 0, to: 32 } }
-      })
-      const data = { hash: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36' }
-      const buffer = Type.serialize(data)
-
-      expect(buffer).to.deep.equal([245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161, 242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54])
+      const buffer = scheme.getType('type1').serialize(typesMock.type1.data)
+      expect(buffer).to.deep.equal(typesMock.type1.serialized)
     })
 
     it('should throw error when the range of segment is invalid', function () {
@@ -29,49 +28,26 @@ describe('Check built-in types', function () {
     })
 
     it('should throw error when the value is invalid string', function () {
-      const Type = Exonum.newType({
-        size: 32,
-        fields: { hash: { type: Exonum.Hash, size: 32, from: 0, to: 32 } }
-      })
-      const data = { hash: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3z' }
-
-      expect(() => Type.serialize(data))
+      expect(() => scheme.getType('type1').serialize(invalidTypesMock.type1.data))
         .to.throw(TypeError, 'Hash of wrong type is passed: f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3z')
     })
 
     it('should throw error when the value is too long string', function () {
-      const Type = Exonum.newType({
-        size: 32,
-        fields: { hash: { type: Exonum.Hash, size: 32, from: 0, to: 32 } }
-      })
-      const data = { hash: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365' }
-
-      expect(() => Type.serialize(data))
+      expect(() => scheme.getType('type1').serialize(invalidTypesMock['type1-1'].data))
         .to.throw(TypeError, 'Hash of wrong type is passed: f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365')
     })
 
     it('should throw error when the value is too short string', function () {
-      const Type = Exonum.newType({
-        size: 32,
-        fields: { hash: { type: Exonum.Hash, size: 32, from: 0, to: 32 } }
-      })
-      const data = { hash: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3' }
-
-      expect(() => Type.serialize(data))
+      expect(() => scheme.getType('type1').serialize(invalidTypesMock['type1-2'].data))
         .to.throw(TypeError, 'Hash of wrong type is passed: f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3')
     })
 
     it('should throw error when the value of invalid type', function () {
-      const Type = Exonum.newType({
-        size: 32,
-        fields: { hash: { type: Exonum.Hash, size: 32, from: 0, to: 32 } }
-      })
-
-      expect(() => Type.serialize({ hash: undefined }))
+      expect(() => scheme.getType('type1').serialize({ hash: undefined }))
         .to.throw(TypeError, 'Field hash is not defined.');
 
       [true, null, 57, [], {}, new Date()].forEach(function (hash) {
-        expect(() => Type.serialize({ hash: hash }))
+        expect(() => scheme.getType('type1').serialize({ hash: hash }))
           .to.throw(TypeError, /Hash of wrong type is passed:/)
       })
     })
@@ -79,14 +55,9 @@ describe('Check built-in types', function () {
 
   describe('Process PublicKey', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid string', function () {
-      const Type = Exonum.newType({
-        size: 32,
-        fields: { key: { type: Exonum.PublicKey, size: 32, from: 0, to: 32 } }
-      })
-      const data = { key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36' }
-      const buffer = Type.serialize(data)
+      const buffer = scheme.getType('type2').serialize(typesMock.type2.data)
 
-      expect(buffer).to.deep.equal([245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161, 242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54])
+      expect(buffer).to.deep.equal(typesMock.type2.serialized)
     })
 
     it('should throw error when the range of segment is invalid', function () {
@@ -101,49 +72,26 @@ describe('Check built-in types', function () {
     })
 
     it('should throw error when the value is invalid string', function () {
-      const Type = Exonum.newType({
-        size: 32,
-        fields: { key: { type: Exonum.PublicKey, size: 32, from: 0, to: 32 } }
-      })
-      const data = { key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3z' }
-
-      expect(() => Type.serialize(data))
+      expect(() => scheme.getType('type2').serialize(invalidTypesMock.type2.data))
         .to.throw(TypeError, 'PublicKey of wrong type is passed: f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3z')
     })
 
     it('should throw error when the value is too long string', function () {
-      const Type = Exonum.newType({
-        size: 32,
-        fields: { key: { type: Exonum.PublicKey, size: 32, from: 0, to: 32 } }
-      })
-      const data = { key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365' }
-
-      expect(() => Type.serialize(data))
+      expect(() => scheme.getType('type2').serialize(invalidTypesMock['type2-1'].data))
         .to.throw(TypeError, 'PublicKey of wrong type is passed: f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365')
     })
 
     it('should throw error when the value is too short string', function () {
-      const Type = Exonum.newType({
-        size: 32,
-        fields: { key: { type: Exonum.PublicKey, size: 32, from: 0, to: 32 } }
-      })
-      const data = { key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3' }
-
-      expect(() => Type.serialize(data))
+      expect(() => scheme.getType('type2').serialize(invalidTypesMock['type2-2'].data))
         .to.throw(TypeError, 'PublicKey of wrong type is passed: f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3')
     })
 
     it('should throw error when the value of invalid type', function () {
-      const Type = Exonum.newType({
-        size: 32,
-        fields: { key: { type: Exonum.PublicKey, size: 32, from: 0, to: 32 } }
-      })
-
-      expect(() => Type.serialize({ key: undefined }))
+      expect(() => scheme.getType('type2').serialize({ key: undefined }))
         .to.throw(TypeError, 'Field key is not defined.');
 
       [true, null, 57, [], {}, new Date()].forEach(function (key) {
-        expect(() => Type.serialize({ key: key }))
+        expect(() => scheme.getType('type2').serialize({ key: key }))
           .to.throw(TypeError, /PublicKey of wrong type is passed:/)
       })
     })
@@ -151,14 +99,8 @@ describe('Check built-in types', function () {
 
   describe('Process Digest', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid string', function () {
-      const Type = Exonum.newType({
-        size: 64,
-        fields: { key: { type: Exonum.Digest, size: 64, from: 0, to: 64 } }
-      })
-      const data = { key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36' }
-      const buffer = Type.serialize(data)
-
-      expect(buffer).to.deep.equal([245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161, 242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54, 245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161, 242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54])
+      const buffer = scheme.getType('type3').serialize(typesMock.type3.data)
+      expect(buffer).to.deep.equal(typesMock.type3.serialized)
     })
 
     it('should throw error when the range of segment is invalid', function () {
@@ -173,49 +115,26 @@ describe('Check built-in types', function () {
     })
 
     it('should throw error when the value is invalid string', function () {
-      const Type = Exonum.newType({
-        size: 64,
-        fields: { key: { type: Exonum.Digest, size: 64, from: 0, to: 64 } }
-      })
-      const data = { key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3zf5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3z' }
-
-      expect(() => Type.serialize(data))
+      expect(() => scheme.getType('type3').serialize(invalidTypesMock.type3.data))
         .to.throw(TypeError, 'Digest of wrong type is passed: f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3zf5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3z')
     })
 
     it('should throw error when the value is too long string', function () {
-      const Type = Exonum.newType({
-        size: 64,
-        fields: { key: { type: Exonum.Digest, size: 64, from: 0, to: 64 } }
-      })
-      const data = { key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365' }
-
-      expect(() => Type.serialize(data))
+      expect(() => scheme.getType('type3').serialize(invalidTypesMock['type3-1'].data))
         .to.throw(TypeError, 'Digest of wrong type is passed: f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365')
     })
 
     it('should throw error when the value is too short string', function () {
-      const Type = Exonum.newType({
-        size: 64,
-        fields: { key: { type: Exonum.Digest, size: 64, from: 0, to: 64 } }
-      })
-      const data = { key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3' }
-
-      expect(() => Type.serialize(data))
+      expect(() => scheme.getType('type3').serialize(invalidTypesMock['type3-2'].data))
         .to.throw(TypeError, 'Digest of wrong type is passed: f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3')
     })
 
     it('should throw error when the value of invalid type', function () {
-      const Type = Exonum.newType({
-        size: 64,
-        fields: { key: { type: Exonum.Digest, size: 64, from: 0, to: 64 } }
-      })
-
-      expect(() => Type.serialize({ key: undefined }))
+      expect(() => scheme.getType('type3').serialize({ key: undefined }))
         .to.throw(TypeError, 'Field key is not defined.');
 
       [true, null, 57, [], {}, new Date()].forEach(function (key) {
-        expect(() => Type.serialize({ key: key }))
+        expect(() => scheme.getType('type3').serialize({ key: key }))
           .to.throw(TypeError, /Digest of wrong type is passed: /)
       })
     })
@@ -223,14 +142,8 @@ describe('Check built-in types', function () {
 
   describe('Process Timespec', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid timestamp in nanoseconds passed as positive number', function () {
-      const Type = Exonum.newType({
-        size: 8,
-        fields: { since: { type: Exonum.Timespec, size: 8, from: 0, to: 8 } }
-      })
-      const data = { since: 1483979894237 }
-      const buffer = Type.serialize(data)
-
-      expect(buffer).to.deep.equal([221, 45, 24, 132, 89, 1, 0, 0])
+      const buffer = scheme.getType('type4').serialize(typesMock.type4.data)
+      expect(buffer).to.deep.equal(typesMock.type4.serialized)
     })
 
     it('should serialize data and return array of 8-bit integers when the value is valid timestamp in nanoseconds passed as string', function () {
@@ -245,12 +158,7 @@ describe('Check built-in types', function () {
     })
 
     it('should throw error when the value is negative number', function () {
-      const Type = Exonum.newType({
-        size: 8,
-        fields: { since: { type: Exonum.Timespec, size: 8, from: 0, to: 8 } }
-      })
-
-      expect(() => Type.serialize({ since: -1483979894237 }))
+      expect(() => scheme.getType('type4').serialize(invalidTypesMock.type4.data))
         .to.throw(TypeError, 'Timespec of wrong type is passed: -1483979894237')
     })
 
@@ -265,26 +173,16 @@ describe('Check built-in types', function () {
     })
 
     it('should throw error when the value is out of range', function () {
-      const Type = Exonum.newType({
-        size: 8,
-        fields: { since: { type: Exonum.Timespec, size: 8, from: 0, to: 8 } }
-      })
-
-      expect(() => Type.serialize({ since: '18446744073709551616' }))
+      expect(() => scheme.getType('type4').serialize(invalidTypesMock['type4-1'].data))
         .to.throw(TypeError, 'Timespec of wrong type is passed: 18446744073709551616')
     })
 
     it('should throw error when the value of invalid type', function () {
-      const Type = Exonum.newType({
-        size: 8,
-        fields: { since: { type: Exonum.Timespec, size: 8, from: 0, to: 8 } }
-      })
-
-      expect(() => Type.serialize({ since: undefined }))
+      expect(() => scheme.getType('type4').serialize({ since: undefined }))
         .to.throw(TypeError, 'Field since is not defined.');
 
       [true, null, [], {}, new Date()].forEach(function (since) {
-        expect(() => Type.serialize({ since: since }))
+        expect(() => scheme.getType('type4').serialize({ since: since }))
           .to.throw(TypeError, /Timespec of wrong type is passed: /)
       })
     })
@@ -292,14 +190,9 @@ describe('Check built-in types', function () {
 
   describe('Process Bool', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid positive boolean', function () {
-      const Type = Exonum.newType({
-        size: 1,
-        fields: { active: { type: Exonum.Bool, size: 1, from: 0, to: 1 } }
-      })
-      const data = { active: true }
-      const buffer = Type.serialize(data)
+      const buffer = scheme.getType('type5').serialize(typesMock.type5.data)
 
-      expect(buffer).to.deep.equal([1])
+      expect(buffer).to.deep.equal(typesMock.type5.serialized)
     })
 
     it('should serialize data and return array of 8-bit integers when the value is valid negative boolean', function () {
@@ -324,15 +217,11 @@ describe('Check built-in types', function () {
     })
 
     it('should throw error when the value of invalid type', function () {
-      const Type = Exonum.newType({
-        size: 1,
-        fields: { active: { type: Exonum.Bool, size: 1, from: 0, to: 1 } }
-      })
-      expect(() => Type.serialize({ active: undefined }))
+      expect(() => scheme.getType('type5').serialize({ active: undefined }))
         .to.throw(TypeError, 'Field active is not defined.');
 
       ['Hello world', null, 57, [], {}, new Date()].forEach(function (active) {
-        expect(() => Type.serialize({ active: active }))
+        expect(() => scheme.getType('type5').serialize({ active: active }))
           .to.throw(TypeError, 'Wrong data type is passed as Boolean. Boolean is required')
       })
     })
@@ -340,14 +229,8 @@ describe('Check built-in types', function () {
 
   describe('Process String', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid string', function () {
-      const Type = Exonum.newType({
-        size: 8,
-        fields: { text: { type: Exonum.String, size: 8, from: 0, to: 8 } }
-      })
-      const data = { text: 'Hello world' }
-      const buffer = Type.serialize(data)
-
-      expect(buffer).to.deep.equal([8, 0, 0, 0, 11, 0, 0, 0, 72, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100])
+      const buffer = scheme.getType('type6').serialize(typesMock.type6.data)
+      expect(buffer).to.deep.equal(typesMock.type6.serialized)
     })
 
     it('should throw error when the range of segment is invalid', function () {
@@ -361,16 +244,11 @@ describe('Check built-in types', function () {
     })
 
     it('should throw error when the value of invalid type', function () {
-      const Type = Exonum.newType({
-        size: 8,
-        fields: { text: { type: Exonum.String, size: 8, from: 0, to: 8 } }
-      })
-
-      expect(() => Type.serialize({ text: undefined }))
+      expect(() => scheme.getType('type6').serialize({ text: undefined }))
         .to.throw(TypeError, 'Field text is not defined.');
 
       [true, null, 57, [], {}, new Date()].forEach(function (text) {
-        expect(() => Type.serialize({ text: text }))
+        expect(() => scheme.getType('type6').serialize({ text: text }))
           .to.throw(TypeError, 'Wrong data type is passed as String. String is required')
       })
     })
@@ -378,14 +256,9 @@ describe('Check built-in types', function () {
 
   describe('Process Int8', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid positive number', function () {
-      const Type = Exonum.newType({
-        size: 1,
-        fields: { balance: { type: Exonum.Int8, size: 1, from: 0, to: 1 } }
-      })
-      const data = { balance: 120 }
-      const buffer = Type.serialize(data)
+      const buffer = scheme.getType('type7').serialize(typesMock.type7.data)
 
-      expect(buffer).to.deep.equal([120])
+      expect(buffer).to.deep.equal(typesMock.type7.serialized)
     })
 
     it('should serialize data and return array of 8-bit integers when the value is valid negative number', function () {
@@ -409,36 +282,21 @@ describe('Check built-in types', function () {
     })
 
     it('should throw error when the value is too big positive number', function () {
-      const Type = Exonum.newType({
-        size: 1,
-        fields: { balance: { type: Exonum.Int8, size: 1, from: 0, to: 1 } }
-      })
-
-      expect(() => Type.serialize({ balance: 130 }))
+      expect(() => scheme.getType('type7').serialize(invalidTypesMock.type7.data))
         .to.throw(TypeError, 'Int8 of wrong type is passed: 130')
     })
 
     it('should throw error when the value is too big negative number', function () {
-      const Type = Exonum.newType({
-        size: 1,
-        fields: { balance: { type: Exonum.Int8, size: 1, from: 0, to: 1 } }
-      })
-
-      expect(() => Type.serialize({ balance: -130 }))
+      expect(() => scheme.getType('type7').serialize(invalidTypesMock['type7-1'].data))
         .to.throw(TypeError, 'Int8 of wrong type is passed: -130')
     })
 
     it('should throw error when the value of invalid type', function () {
-      const Type = Exonum.newType({
-        size: 1,
-        fields: { balance: { type: Exonum.Int8, size: 1, from: 0, to: 1 } }
-      })
-
-      expect(() => Type.serialize({ balance: undefined }))
+      expect(() => scheme.getType('type7').serialize({ balance: undefined }))
         .to.throw(TypeError, 'Field balance is not defined.');
 
       [true, null, [], {}, new Date()].forEach(function (balance) {
-        expect(() => Type.serialize({ balance: balance }))
+        expect(() => scheme.getType('type7').serialize({ balance: balance }))
           .to.throw(TypeError, /Int8 of wrong type is passed:/)
       })
     })
@@ -446,23 +304,13 @@ describe('Check built-in types', function () {
 
   describe('Process Int16', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid positive number', function () {
-      const Type = Exonum.newType({
-        size: 2,
-        fields: { balance: { type: Exonum.Int16, size: 2, from: 0, to: 2 } }
-      })
-      const data = { balance: 30767 }
-      const buffer = Type.serialize(data)
-
-      expect(buffer).to.deep.equal([47, 120])
+      const buffer = scheme.getType('type8').serialize(typesMock.type8.data)
+      expect(buffer).to.deep.equal(typesMock.type8.serialized)
     })
 
     it('should serialize data and return array of 8-bit integers when the value is valid negative number', function () {
-      const Type = Exonum.newType({
-        size: 2,
-        fields: { balance: { type: Exonum.Int16, size: 2, from: 0, to: 2 } }
-      })
       const data = { balance: -30767 }
-      const buffer = Type.serialize(data)
+      const buffer = scheme.getType('type8').serialize(data)
 
       expect(buffer).to.deep.equal([209, 135])
     })
@@ -478,36 +326,21 @@ describe('Check built-in types', function () {
     })
 
     it('should throw error when the value is too big positive number', function () {
-      const Type = Exonum.newType({
-        size: 2,
-        fields: { balance: { type: Exonum.Int16, size: 2, from: 0, to: 2 } }
-      })
-
-      expect(() => Type.serialize({ balance: 32769 }))
+      expect(() => scheme.getType('type8').serialize(invalidTypesMock.type8.data))
         .to.throw(TypeError, 'Int16 of wrong type is passed: 32769')
     })
 
     it('should throw error when the value is too big negative number', function () {
-      const Type = Exonum.newType({
-        size: 2,
-        fields: { balance: { type: Exonum.Int16, size: 2, from: 0, to: 2 } }
-      })
-
-      expect(() => Type.serialize({ balance: -32770 }))
+      expect(() => scheme.getType('type8').serialize(invalidTypesMock['type8-1'].data))
         .to.throw(TypeError, 'Int16 of wrong type is passed: -32770')
     })
 
     it('should throw error when the value of invalid type', function () {
-      const Type = Exonum.newType({
-        size: 2,
-        fields: { balance: { type: Exonum.Int16, size: 2, from: 0, to: 2 } }
-      })
-
-      expect(() => Type.serialize({ balance: undefined }))
+      expect(() => scheme.getType('type8').serialize({ balance: undefined }))
         .to.throw(TypeError, 'Field balance is not defined.');
 
       [true, null, [], {}, new Date()].forEach(function (balance) {
-        expect(() => Type.serialize({ balance: balance }))
+        expect(() => scheme.getType('type8').serialize({ balance: balance }))
           .to.throw(TypeError, /Int16 of wrong type is passed:/)
       })
     })
@@ -515,23 +348,14 @@ describe('Check built-in types', function () {
 
   describe('Process Int32', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid positive number', function () {
-      const Type = Exonum.newType({
-        size: 4,
-        fields: { balance: { type: Exonum.Int32, size: 4, from: 0, to: 4 } }
-      })
-      const data = { balance: 1147483647 }
-      const buffer = Type.serialize(data)
+      const buffer = scheme.getType('type9').serialize(typesMock.type9.data)
 
-      expect(buffer).to.deep.equal([255, 53, 101, 68])
+      expect(buffer).to.deep.equal(typesMock.type9.serialized)
     })
 
     it('should serialize data and return array of 8-bit integers when the value is valid negative number', function () {
-      const Type = Exonum.newType({
-        size: 4,
-        fields: { balance: { type: Exonum.Int32, size: 4, from: 0, to: 4 } }
-      })
       const data = { balance: -1147483648 }
-      const buffer = Type.serialize(data)
+      const buffer = scheme.getType('type9').serialize(data)
 
       expect(buffer).to.deep.equal([0, 202, 154, 187])
     })
@@ -547,36 +371,21 @@ describe('Check built-in types', function () {
     })
 
     it('should throw error when the value is too big positive number', function () {
-      const Type = Exonum.newType({
-        size: 4,
-        fields: { balance: { type: Exonum.Int32, size: 4, from: 0, to: 4 } }
-      })
-
-      expect(() => Type.serialize({ balance: 2147483649 }))
+      expect(() => scheme.getType('type9').serialize(invalidTypesMock.type9.data))
         .to.throw(TypeError, 'Int32 of wrong type is passed: 2147483649')
     })
 
     it('should throw error when the value is too big negative number', function () {
-      const Type = Exonum.newType({
-        size: 4,
-        fields: { balance: { type: Exonum.Int32, size: 4, from: 0, to: 4 } }
-      })
-
-      expect(() => Type.serialize({ balance: -2147483650 }))
+      expect(() => scheme.getType('type9').serialize(invalidTypesMock['type9-1'].data))
         .to.throw(TypeError, 'Int32 of wrong type is passed: -2147483650')
     })
 
     it('should throw error when the value of invalid type', function () {
-      const Type = Exonum.newType({
-        size: 4,
-        fields: { balance: { type: Exonum.Int32, size: 4, from: 0, to: 4 } }
-      })
-
-      expect(() => Type.serialize({ balance: undefined }))
+      expect(() => scheme.getType('type9').serialize({ balance: undefined }))
         .to.throw(TypeError, 'Field balance is not defined.');
 
       [true, null, [], {}, new Date()].forEach(function (balance) {
-        expect(() => Type.serialize({ balance: balance }))
+        expect(() => scheme.getType('type9').serialize({ balance: balance }))
           .to.throw(TypeError, /Int32 of wrong type is passed:/)
       })
     })
@@ -584,34 +393,20 @@ describe('Check built-in types', function () {
 
   describe('Process Int64', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid positive number', function () {
-      const Type = Exonum.newType({
-        size: 8,
-        fields: { balance: { type: Exonum.Int64, size: 8, from: 0, to: 8 } }
-      })
-      const data = { balance: 900719925474000 }
-      const buffer = Type.serialize(data)
-
-      expect(buffer).to.deep.equal([208, 50, 51, 51, 51, 51, 3, 0])
+      const buffer = scheme.getType('type10').serialize(typesMock.type10.data)
+      expect(buffer).to.deep.equal(typesMock.type10.serialized)
     })
 
     it('should serialize data and return array of 8-bit integers when the value is valid positive number as string', function () {
-      const Type = Exonum.newType({
-        size: 8,
-        fields: { balance: { type: Exonum.Int64, size: 8, from: 0, to: 8 } }
-      })
       const data = { balance: '9223372036854775807' }
-      const buffer = Type.serialize(data)
+      const buffer = scheme.getType('type10').serialize(data)
 
       expect(buffer).to.deep.equal([255, 255, 255, 255, 255, 255, 255, 127])
     })
 
     it('should serialize data and return array of 8-bit integers when the value is valid negative number', function () {
-      const Type = Exonum.newType({
-        size: 8,
-        fields: { balance: { type: Exonum.Int64, size: 8, from: 0, to: 8 } }
-      })
       const data = { balance: -90071992547 }
-      const buffer = Type.serialize(data)
+      const buffer = scheme.getType('type10').serialize(data)
 
       expect(buffer).to.deep.equal([29, 119, 74, 7, 235, 255, 255, 255])
     })
@@ -638,36 +433,21 @@ describe('Check built-in types', function () {
     })
 
     it('should throw error when the value is too big positive number', function () {
-      const Type = Exonum.newType({
-        size: 8,
-        fields: { balance: { type: Exonum.Int64, size: 8, from: 0, to: 8 } }
-      })
-
-      expect(() => Type.serialize({ balance: '9223372036854775808' }))
+      expect(() => scheme.getType('type10').serialize(invalidTypesMock.type10.data))
         .to.throw(TypeError, 'Int64 of wrong type is passed: 9223372036854775808')
     })
 
     it('should throw error when the value is too big negative number', function () {
-      const Type = Exonum.newType({
-        size: 8,
-        fields: { balance: { type: Exonum.Int64, size: 8, from: 0, to: 8 } }
-      })
-
-      expect(() => Type.serialize({ balance: '-9223372036854775809' }))
+      expect(() => scheme.getType('type10').serialize(invalidTypesMock['type10-1'].data))
         .to.throw(TypeError, 'Int64 of wrong type is passed: -9223372036854775809')
     })
 
     it('should throw error when the value of invalid type', function () {
-      const Type = Exonum.newType({
-        size: 8,
-        fields: { balance: { type: Exonum.Int64, size: 8, from: 0, to: 8 } }
-      })
-
-      expect(() => Type.serialize({ balance: undefined }))
+      expect(() => scheme.getType('type10').serialize({ balance: undefined }))
         .to.throw(TypeError, 'Field balance is not defined.');
 
       [true, null, [], {}, new Date()].forEach(function (balance) {
-        expect(() => Type.serialize({ balance: balance }))
+        expect(() => scheme.getType('type10').serialize({ balance: balance }))
           .to.throw(TypeError, /Int64 of wrong type is passed:/)
       })
     })
@@ -675,14 +455,8 @@ describe('Check built-in types', function () {
 
   describe('Process Uint8', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid positive number', function () {
-      const Type = Exonum.newType({
-        size: 1,
-        fields: { balance: { type: Exonum.Uint8, size: 1, from: 0, to: 1 } }
-      })
-      const data = { balance: 230 }
-      const buffer = Type.serialize(data)
-
-      expect(buffer).to.deep.equal([230])
+      const buffer = scheme.getType('type11').serialize(typesMock.type11.data)
+      expect(buffer).to.deep.equal(typesMock.type11.serialized)
     })
 
     it('should throw error when the range of segment is invalid', function () {
@@ -696,36 +470,21 @@ describe('Check built-in types', function () {
     })
 
     it('should throw error when the value is negative number', function () {
-      const Type = Exonum.newType({
-        size: 1,
-        fields: { balance: { type: Exonum.Uint8, size: 1, from: 0, to: 1 } }
-      })
-
-      expect(() => Type.serialize({ balance: -1 }))
+      expect(() => scheme.getType('type11').serialize(invalidTypesMock.type11.data))
         .to.throw(TypeError, 'Uint8 of wrong type is passed: -1')
     })
 
     it('should throw error when the value is out of range', function () {
-      const Type = Exonum.newType({
-        size: 1,
-        fields: { balance: { type: Exonum.Uint8, size: 1, from: 0, to: 1 } }
-      })
-
-      expect(() => Type.serialize({ balance: 256 }))
+      expect(() => scheme.getType('type11').serialize(invalidTypesMock['type11-1'].data))
         .to.throw(TypeError, 'Uint8 of wrong type is passed: 256')
     })
 
     it('should throw error when the value of invalid type', function () {
-      const Type = Exonum.newType({
-        size: 1,
-        fields: { balance: { type: Exonum.Uint8, size: 1, from: 0, to: 1 } }
-      })
-
-      expect(() => Type.serialize({ balance: undefined }))
+      expect(() => scheme.getType('type11').serialize({ balance: undefined }))
         .to.throw(TypeError, 'Field balance is not defined.');
 
       [true, null, [], {}, new Date()].forEach(function (balance) {
-        expect(() => Type.serialize({ balance: balance }))
+        expect(() => scheme.getType('type11').serialize({ balance: balance }))
           .to.throw(TypeError, /Uint8 of wrong type is passed:/)
       })
     })
@@ -733,14 +492,8 @@ describe('Check built-in types', function () {
 
   describe('Process Uint16', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid positive number', function () {
-      const Type = Exonum.newType({
-        size: 2,
-        fields: { balance: { type: Exonum.Uint16, size: 2, from: 0, to: 2 } }
-      })
-      const data = { balance: 60535 }
-      const buffer = Type.serialize(data)
-
-      expect(buffer).to.deep.equal([119, 236])
+      const buffer = scheme.getType('type12').serialize(typesMock.type12.data)
+      expect(buffer).to.deep.equal(typesMock.type12.serialized)
     })
 
     it('should throw error when the range of segment is invalid', function () {
@@ -754,36 +507,21 @@ describe('Check built-in types', function () {
     })
 
     it('should throw error when the value is negative number', function () {
-      const Type = Exonum.newType({
-        size: 2,
-        fields: { balance: { type: Exonum.Uint16, size: 2, from: 0, to: 2 } }
-      })
-
-      expect(() => Type.serialize({ balance: -1 }))
+      expect(() => scheme.getType('type12').serialize(invalidTypesMock.type12.data))
         .to.throw(TypeError, 'Uint16 of wrong type is passed: -1')
     })
 
     it('should throw error when the value is out of range', function () {
-      const Type = Exonum.newType({
-        size: 2,
-        fields: { balance: { type: Exonum.Uint16, size: 2, from: 0, to: 2 } }
-      })
-
-      expect(() => Type.serialize({ balance: 65536 }))
+      expect(() => scheme.getType('type12').serialize(invalidTypesMock['type12-1'].data))
         .to.throw(TypeError, 'Uint16 of wrong type is passed: 65536')
     })
 
     it('should throw error when the value of invalid type', function () {
-      const Type = Exonum.newType({
-        size: 2,
-        fields: { balance: { type: Exonum.Uint16, size: 2, from: 0, to: 2 } }
-      })
-
-      expect(() => Type.serialize({ balance: undefined }))
+      expect(() => scheme.getType('type12').serialize({ balance: undefined }))
         .to.throw(TypeError, 'Field balance is not defined.');
 
       [true, null, [], {}, new Date()].forEach(function (balance) {
-        expect(() => Type.serialize({ balance: balance }))
+        expect(() => scheme.getType('type12').serialize({ balance: balance }))
           .to.throw(TypeError, /Uint16 of wrong type is passed:/)
       })
     })
@@ -791,14 +529,8 @@ describe('Check built-in types', function () {
 
   describe('Process Uint32', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid positive number', function () {
-      const Type = Exonum.newType({
-        size: 4,
-        fields: { balance: { type: Exonum.Uint32, size: 4, from: 0, to: 4 } }
-      })
-      const data = { balance: 613228 }
-      const buffer = Type.serialize(data)
-
-      expect(buffer).to.deep.equal([108, 91, 9, 0])
+      const buffer = scheme.getType('type13').serialize(typesMock.type13.data)
+      expect(buffer).to.deep.equal(typesMock.type13.serialized)
     })
 
     it('should throw error when the range of segment is invalid', function () {
@@ -812,36 +544,21 @@ describe('Check built-in types', function () {
     })
 
     it('should throw error when the value is negative number', function () {
-      const Type = Exonum.newType({
-        size: 4,
-        fields: { balance: { type: Exonum.Uint32, size: 4, from: 0, to: 4 } }
-      })
-
-      expect(() => Type.serialize({ balance: -1 }))
+      expect(() => scheme.getType('type13').serialize(invalidTypesMock.type13.data))
         .to.throw(TypeError, 'Uint32 of wrong type is passed: -1')
     })
 
     it('should throw error when the value is out of range', function () {
-      const Type = Exonum.newType({
-        size: 4,
-        fields: { balance: { type: Exonum.Uint32, size: 4, from: 0, to: 4 } }
-      })
-
-      expect(() => Type.serialize({ balance: 4294967296 }))
+      expect(() => scheme.getType('type13').serialize(invalidTypesMock['type13-1'].data))
         .to.throw(TypeError, 'Uint32 of wrong type is passed: 4294967296')
     })
 
     it('should throw error when the value of invalid type', function () {
-      const Type = Exonum.newType({
-        size: 4,
-        fields: { balance: { type: Exonum.Uint32, size: 4, from: 0, to: 4 } }
-      })
-
-      expect(() => Type.serialize({ balance: undefined }))
+      expect(() => scheme.getType('type13').serialize({ balance: undefined }))
         .to.throw(TypeError, 'Field balance is not defined.');
 
       [true, null, [], {}, new Date()].forEach(function (balance) {
-        expect(() => Type.serialize({ balance: balance }))
+        expect(() => scheme.getType('type13').serialize({ balance: balance }))
           .to.throw(TypeError, /Uint32 of wrong type is passed:/)
       })
     })
@@ -849,14 +566,8 @@ describe('Check built-in types', function () {
 
   describe('Process Uint64', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid positive number', function () {
-      const Type = Exonum.newType({
-        size: 8,
-        fields: { balance: { type: Exonum.Uint64, size: 8, from: 0, to: 8 } }
-      })
-      const data = { balance: 613228 }
-      const buffer = Type.serialize(data)
-
-      expect(buffer).to.deep.equal([108, 91, 9, 0, 0, 0, 0, 0])
+      const buffer = scheme.getType('type14').serialize(typesMock.type14.data)
+      expect(buffer).to.deep.equal(typesMock.type14.serialized)
     })
 
     it('should serialize data and return array of 8-bit integers when the value is valid positive number passed as string', function () {
@@ -881,36 +592,21 @@ describe('Check built-in types', function () {
     })
 
     it('should throw error when the value is negative number', function () {
-      const Type = Exonum.newType({
-        size: 8,
-        fields: { balance: { type: Exonum.Uint64, size: 8, from: 0, to: 8 } }
-      })
-
-      expect(() => Type.serialize({ balance: -613228 }))
+      expect(() => scheme.getType('type14').serialize(invalidTypesMock.type14.data))
         .to.throw(TypeError, 'Uint64 of wrong type is passed: -613228')
     })
 
     it('should throw error when the value is out of range', function () {
-      const Type = Exonum.newType({
-        size: 8,
-        fields: { balance: { type: Exonum.Uint64, size: 8, from: 0, to: 8 } }
-      })
-
-      expect(() => Type.serialize({ balance: '18446744073709551616' }))
+      expect(() => scheme.getType('type14').serialize(invalidTypesMock['type14-1'].data))
         .to.throw(TypeError, 'Uint64 of wrong type is passed: 18446744073709551616')
     })
 
     it('should throw error when the value of invalid type', function () {
-      const Type = Exonum.newType({
-        size: 8,
-        fields: { balance: { type: Exonum.Uint64, size: 8, from: 0, to: 8 } }
-      })
-
-      expect(() => Type.serialize({ balance: undefined }))
+      expect(() => scheme.getType('type14').serialize({ balance: undefined }))
         .to.throw(TypeError, 'Field balance is not defined.');
 
       [true, null, [], {}, new Date()].forEach(function (balance) {
-        expect(() => Type.serialize({ balance: balance }))
+        expect(() => scheme.getType('type14').serialize({ balance: balance }))
           .to.throw(TypeError, /Uint64 of wrong type is passed:/)
       })
     })
@@ -918,24 +614,8 @@ describe('Check built-in types', function () {
 
   describe('Process Array', function () {
     it('should serialize valid array of Hash type and return array of 8-bit integers', function () {
-      const Arr = Exonum.newArray({
-        size: 32,
-        type: Exonum.Hash
-      })
-      const Type = Exonum.newType({
-        size: 8,
-        fields: {
-          list: { type: Arr, size: 8, from: 0, to: 8 }
-        }
-      })
-      const data = {
-        list: [
-          'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36',
-          '1f2f07703c5bcafb5749aa735ce8b3336f5864ab6a5a2190666b47c612bcf15a'
-        ]
-      }
-      let buffer = Type.serialize(data)
-      expect(buffer).to.deep.equal([8, 0, 0, 0, 2, 0, 0, 0, 245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161, 242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54, 31, 47, 7, 112, 60, 91, 202, 251, 87, 73, 170, 115, 92, 232, 179, 51, 111, 88, 100, 171, 106, 90, 33, 144, 102, 107, 71, 198, 18, 188, 241, 90])
+      let buffer = scheme.getType('type15-2').serialize(typesMock.type15.data)
+      expect(buffer).to.deep.equal(typesMock.type15.serialized)
     })
 
     it('should serialize valid array of PublicKey type and return array of 8-bit integers', function () {

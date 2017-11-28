@@ -1,0 +1,83 @@
+{
+  "type1": {
+    "data": {
+      "pub_key": "f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36",
+      "name": "Smart wallet",
+      "balance": 359120,
+      "history_hash": "6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030"
+    },
+    "hash": "86b47510fbcbc83f9926d8898a57c53662518c97502625a6d131842f2003f974"
+  },
+  "type2": {
+    "data": {
+      "pub_key": "f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36",
+      "name": "Smart wallet",
+      "balance": 359120,
+      "history_hash": "6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030"
+    },
+    "hash": "86b47510fbcbc83f9926d8898a57c53662518c97502625a6d131842f2003f974"
+  },
+  "type3": {
+    "data": {
+      "name": "John Doe",
+      "age": 34,
+      "balance": 17,
+      "status": true
+    },
+    "hash": "df2d0cf21d4fc1e2b0adf6dbff7daeb0d7292e9f51f529358c18b95b67539484"
+  },
+  "type4": {
+    "data": {
+      "name": "John Doe",
+      "age": 34,
+      "balance": 17,
+      "status": true
+    },
+    "hash": "df2d0cf21d4fc1e2b0adf6dbff7daeb0d7292e9f51f529358c18b95b67539484"
+  },
+  "type5": {
+    "data": {
+      "pub_key": "f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36",
+      "name": "Smart wallet",
+      "balance": 359120,
+      "history_hash": "6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030"
+    },
+    "hash": "86b47510fbcbc83f9926d8898a57c53662518c97502625a6d131842f2003f974"
+  },
+  "type6": {
+    "data": {
+      "firstName": "John",
+      "lastName": "Doe"
+    },
+    "signed": "7ccad21d76359c8c3ed1161eb8231edd44a91d53ea468d23f8528e2985e5547f72f98ccc61d96ecad173bdc29627abbf6d46908807f6dd0a0d767ae3887d040e",
+    "secretKey": "6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36"
+  },
+  "type7": {
+    "data": {
+      "name": "John Doe",
+      "age": 34,
+      "balance": 173008,
+      "status": true
+    },
+    "signed": "4006cef1884941850a6b97a64ed7f12d1e1053188618ef71b8c9f87438b943b1969e08011e45db8299bb738fec60c9dcd1936ab9ba44392cacc7f0385f18dd09",
+    "secretKey": "6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36"
+  },
+  "type8": {
+    "data": {
+      "name": "John Doe",
+      "age": 34,
+      "balance": 173008,
+      "status": true
+    },
+    "signed": "4006cef1884941850a6b97a64ed7f12d1e1053188618ef71b8c9f87438b943b1969e08011e45db8299bb738fec60c9dcd1936ab9ba44392cacc7f0385f18dd09",
+    "secretKey": "6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36"
+  },
+  "type9": {
+    "data": {
+      "firstName": "John",
+      "lastName": "Doe"
+    },
+    "signed": "7ccad21d76359c8c3ed1161eb8231edd44a91d53ea468d23f8528e2985e5547f72f98ccc61d96ecad173bdc29627abbf6d46908807f6dd0a0d767ae3887d040e",
+    "secretKey": "6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36"
+  }
+}
