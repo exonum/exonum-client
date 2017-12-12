@@ -64,7 +64,7 @@ Requires a single parameter passed as `object` with next structure:
 
 Returns an instance of built-in class `NewType` that can be used to:
 
-- serialize data into a byte array;
+- [serialize data](#typeserializedata) into a byte array;
 - [get hash](#calculate-hash) of data;
 - [sign](#create-digital-signature) data;
 - [verify signature](#verify-digital-signature) of data.
@@ -81,6 +81,12 @@ The following types can be used as the `type` field of the field description:
 * [Digest](#digest)
 * [Bool](#bool)
 * [Array](#array)
+
+#### Type.serialize(data)
+
+| Parameter | Type | Description |
+|---|---|---|
+| data | `object` ||
 
 #### Сustom type example
 
@@ -162,13 +168,21 @@ Field structure is the same as for [custom type](#fieldstructure) defined throug
 
 Returns an instance of built-in class `NewMessage` that can be used to:
 
-- serialize data of passed structure;
+- [serialize data](#transactionsserializedata-cutsignature) of passed structure;
 
 - [get hash](#calculate-hash) of data of passed structure;
 
 - [sign data](#create-digital-signature) of passed structure;
 
 - [verify signature](#verify-digital-signature) of data of passed structure.
+
+
+#### Transaction.serialize(data, cutSignature)
+
+| Parameter | Type | Description |
+|---|---|---|
+| data | `object` ||
+| cutSignature | `boolean` | Flag whether to include a signature in serialized buffer |
 
 #### Transaction example
 
@@ -201,10 +215,18 @@ var data = {
     amount: 50
 };
 
-var buffer = SendFunds.serialize(data);
+var buffer = SendFunds.serialize(data, true);
 ```
 
-Data of type `SendFunds` can be signed with secret key:
+`buffer` can be signed with secret key:
+
+```javascript
+var secretKey = '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2b' +
+ 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a';
+var signature = Exonum.sign(secretKey, buffer);
+```
+
+Data of type `SendFunds` can be also signed with secret key:
 
 ```javascript
 var secretKey = '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2b' +
