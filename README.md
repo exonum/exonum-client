@@ -23,7 +23,7 @@ Contains numerous helper functions.
 * [Getting started](#getting-started)
 * [Data types](#data-types)
   * [Define data type](#define-data-type)
-  * [Built-in primitives](#built-in-primitives)
+  * [Built-in types](#built-in-types)
   * [Nested data types](#nested-data-types)
   * [Arrays](#arrays)
 * [Serialization](#serialization)
@@ -53,7 +53,6 @@ Contains numerous helper functions.
     * [Binary String to Uint8Array](#binary-string-to-uint8array)
     * [Binary String to Hexadecimal](#binary-string-to-hexadecimal)
     * [String to Uint8Array](#string-to-uint8array)
-* [Community](#community)
 * [Contributing](#contributing)
   * [Coding standards](#coding-standards)
   * [Test coverage](#test-coverage)
@@ -77,7 +76,7 @@ Include in browser:
 <script src="node_modules/exonum-client/dist/exonum-client.min.js"></script>
 ```
 
-Include in Node.js:
+Usage in Node.js:
 
 ```javascript
 var Exonum = require('exonum-client');
@@ -120,12 +119,12 @@ Field structure:
 
 | Field | Description | Type |
 |---|---|---|
-| **type** | Definition of the field type. | [Built-in primitive](#built-in-primitives), [array](#arrays) or [custom data type](#nested-data-types) defined by the developer. | 
+| **type** | Definition of the field type. | [Built-in type](#built-in-types), [array](#arrays) or [custom data type](#nested-data-types) defined by the developer. | 
 | **size** | Total length of the field in bytes. | `Number` |
 | **from** | The beginning of the field segment in the byte array. | `Number` |
 | **to** | The end of the field segment in the byte array. | `Number` |
 
-### Built-in primitives
+### Built-in types
 
 There are several primitive types are built it into the library.
 These types must be used when constructing custom data types.
@@ -200,7 +199,7 @@ in the Rust language.
 | Property | Description | Type |
 |---|---|---|
 | **size** | Length of the nested field type. | `Number` |
-| **type** | Definition of the field type. | [Built-in primitive](#built-in-primitives), array or [custom data type](#nested-data-types) defined by the developer. |
+| **type** | Definition of the field type. | [Built-in type](#built-in-types), array or [custom data type](#nested-data-types) defined by the developer. |
 
 An array, regardless of its real size, always takes **8 bytes** in the parent type due to the specifics of its
 [serialization][docs:architecture:serialization:segment-pointers] using segment pointers.
@@ -985,7 +984,7 @@ and then verify the block with precommits.
 An example of proof of the existence of some data of `Wallet` type:
 
 ```javascript
-// Proof from blockchaun
+// Proof from blockchain
 var data = {
     block_info: {
         block: {
@@ -1256,12 +1255,6 @@ var str = 'Hello world';
 
 Exonum.stringToUint8Array(str); // [72, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100]
 ```
-
-## Community
-
-* Join the official Gitter chat [exonum/exonum][gitter] to get in touch with the project maintainers and developers who are exploring Exonum.
-* Follow [@ExonumPlatform][twitter] on Twitter.
-* Subscribe to the official [newsletter][newsletter].
 
 ## Contributing
 
