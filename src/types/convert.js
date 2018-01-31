@@ -44,7 +44,7 @@ export function hexadecimalToBinaryString (str) {
     while (bin.length < 4) {
       bin = '0' + bin
     }
-    binaryStr += bin
+    binaryStr += strReverse(bin)
   }
 
   return binaryStr
@@ -95,6 +95,15 @@ export function binaryStringToUint8Array (binaryStr) {
 }
 
 /**
+ * Convert string into reverse string
+ * @param str
+ * @returns {string}
+ */
+function strReverse (str) {
+  return str.split('').reverse().join('')
+}
+
+/**
  * Convert binary string into hexadecimal string
  * @param {string} binaryStr
  * @returns {string}
@@ -111,9 +120,9 @@ export function binaryStringToHexadecimal (binaryStr) {
   }
 
   for (let i = 0; i < binaryStr.length; i += 8) {
-    let hex = (parseInt(binaryStr.substr(i, 8), 2)).toString(16)
+    let hex = parseInt(strReverse(binaryStr.substr(i, 8)), 2).toString(16)
     hex = (hex.length === 1) ? '0' + hex : hex
-    str += hex
+    str += strReverse(hex)
   }
 
   return str.toLowerCase()

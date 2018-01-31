@@ -8,70 +8,70 @@ describe('Check proof of Merkle Patricia tree', function () {
   it('should return null when an empty tree', function () {
     const data = require('./common_data/merkle-patricia-tree/valid-MPT-empty-tree.json')
     const element = Exonum.merklePatriciaProof(
-            data.root_hash,
-            data.proof,
-            data.searched_key
-        )
+      data.root_hash,
+      data.proof,
+      data.searched_key
+    )
     expect(element).to.be.null
   })
 
   it('should return null when valid tree with leaf exclusive', function () {
     const data = require('./common_data/merkle-patricia-tree/valid-MPT-leaf-exclusive.json')
     const element = Exonum.merklePatriciaProof(
-            data.root_hash,
-            data.proof,
-            data.searched_key
-        )
+      data.root_hash,
+      data.proof,
+      data.searched_key
+    )
     expect(element).to.be.null
   })
 
   it('should return the child of valid tree with leaf inclusive', function () {
     const data = require('./common_data/merkle-patricia-tree/valid-MPT-leaf-inclusive.json')
     const element = Exonum.merklePatriciaProof(
-            data.root_hash,
-            data.proof,
-            data.searched_key
-        )
+      data.root_hash,
+      data.proof,
+      data.searched_key
+    )
     expect(element).to.deep.equal([2])
   })
 
   it('should return null when a tree with nested node exclusive', function () {
     const data = require('./common_data/merkle-patricia-tree/valid-MPT-nested-exclusive.json')
     const element = Exonum.merklePatriciaProof(
-            data.root_hash,
-            data.proof,
-            data.searched_key
-        )
+      data.root_hash,
+      data.proof,
+      data.searched_key
+    )
     expect(element).to.be.null
   })
 
   it('should return the child of an valid tree with nested node inclusive', function () {
     const data = require('./common_data/merkle-patricia-tree/valid-MPT-nested-inclusive.json')
     const element = Exonum.merklePatriciaProof(
-            data.root_hash,
-            data.proof,
-            data.searched_key
-        )
+      data.root_hash,
+      data.proof,
+      data.searched_key
+    )
     expect(element).to.deep.equal([36, 49, 15, 31, 163, 171, 247, 217])
   })
 
-  it('should return the child of an valid tree with hash stored in value', function () {
-    const data = require('./common_data/merkle-patricia-tree/valid-MPT-hash-values.json')
+  it('should return the child of an valid tree with hash stored in value', () => {
+    const data = require('./common_data/merkle-patricia-tree/valid-MPT-values.json')
     const element = Exonum.merklePatriciaProof(
-            data.root_hash,
-            data.proof,
-            data.searched_key
-        )
-    expect(element).to.equal('7a6dedabca50b700a834d37f91649b0b5b42883b4e39845df36da4c24c2bc64f')
+      data.root_hash,
+      data.proof,
+      data.searched_key
+    )
+    expect(element).to.equal('2cc250e3c24b9d91f26b162d79b5031684607bf1c406581281953a14dc149c70')
   })
 
   it('should return the child of an valid tree with children which has common prefix', function () {
     const data = require('./common_data/merkle-patricia-tree/valid-MPT-common-prefix-children.json')
     const element = Exonum.merklePatriciaProof(
-            data.root_hash,
-            data.proof,
-            data.searched_key
-        )
+      data.root_hash,
+      data.proof,
+      data.searched_key
+    )
     expect(element).to.deep.equal([186, 86, 216, 153, 23, 168, 188, 225])
   })
 
@@ -93,10 +93,10 @@ describe('Check proof of Merkle Patricia tree', function () {
   it('should return the child of an valid tree with children which has common prefix and hashes as values', function () {
     const data = require('./common_data/merkle-patricia-tree/valid-MPT-common-prefix-children-hash-values.json')
     const element = Exonum.merklePatriciaProof(
-            data.root_hash,
-            data.proof,
-            data.searched_key
-        )
+      data.root_hash,
+      data.proof,
+      data.searched_key
+    )
     expect(element).to.equal('7acfd59d96d77ed99169fdc0826a6ef8a6b45d87ac00536373882dfa7ba70925')
   })
 
@@ -136,14 +136,14 @@ describe('Check proof of Merkle Patricia tree', function () {
     const rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
     const proofNode = {}
     const args = [
-            [1, 114],
-            [1, true, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0],
-            [1, null, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0],
-            [1, undefined, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0],
-            [1, {}, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0],
-            [1, new Date(), 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0],
-            [1, 256, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0],
-            [1, -1, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0]
+      [1, 114],
+      [1, true, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0],
+      [1, null, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0],
+      [1, undefined, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0],
+      [1, {}, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0],
+      [1, new Date(), 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0],
+      [1, 256, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0],
+      [1, -1, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0]
     ]
 
     args.forEach(function (key) {
@@ -253,7 +253,7 @@ describe('Check proof of Merkle Patricia tree', function () {
 
   it('should throw error when invalid symbols in bytes array', function () {
     const vals = [
-            [1, 'a', 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4]
+      [1, 'a', 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4]
     ]
 
     vals.forEach(function (val) {
@@ -271,8 +271,8 @@ describe('Check proof of Merkle Patricia tree', function () {
 
   it('should throw error when invalid bytes array is on value position', function () {
     const vals = [
-            [1, -1, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4],
-            [1, 256, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4]
+      [1, -1, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4],
+      [1, 256, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4]
     ]
 
     vals.forEach(function (val) {

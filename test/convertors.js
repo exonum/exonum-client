@@ -103,5 +103,10 @@ describe('Convert data from one type to another', function () {
           .to.throw(TypeError, 'Wrong data type passed to convertor. Hexadecimal string is expected')
       })
     })
+
+    it('should convert hexadecimal to BinaryString and back', function () {
+      const hex = '0b513ad9b4924015ca0902ed079044d3ac5dbec2306f06948c10da8eb6e39f2d'
+      expect(Exonum.binaryStringToHexadecimal(Exonum.hexadecimalToBinaryString(hex))).to.equal(hex)
+    })
   })
 })
