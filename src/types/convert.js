@@ -38,13 +38,18 @@ export function hexadecimalToBinaryString (str) {
   if (!validate.validateHexadecimal(str, Math.ceil(str.length / 2))) {
     throw new TypeError('String of wrong type is passed. Hexadecimal expected.')
   }
-
+  let prevBin = null
   for (let i = 0; i < str.length; i++) {
-    let bin = parseInt(str[i], 16).toString(2)
+    let bin = strReverse(parseInt(str[i], 16).toString(2))
     while (bin.length < 4) {
-      bin = '0' + bin
+      bin = bin + '0'
     }
-    binaryStr += strReverse(bin)
+    if (!prevBin) {
+      prevBin = bin
+    } else {
+      binaryStr += bin + prevBin
+      prevBin = null
+    }
   }
 
   return binaryStr
@@ -122,7 +127,7 @@ export function binaryStringToHexadecimal (binaryStr) {
   for (let i = 0; i < binaryStr.length; i += 8) {
     let hex = parseInt(strReverse(binaryStr.substr(i, 8)), 2).toString(16)
     hex = (hex.length === 1) ? '0' + hex : hex
-    str += strReverse(hex)
+    str += hex
   }
 
   return str.toLowerCase()
