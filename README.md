@@ -14,6 +14,8 @@
 [codestyle-image]: https://img.shields.io/badge/code%20style-standard-brightgreen.svg
 [codestyle-url]: http://standardjs.com 
 
+*Compatible with Exonum [v0.5](https://github.com/exonum/exonum/releases/tag/v0.5).*
+
 A JavaScript library to work with Exonum blockchain from browser and Node.js.
 Used to sign transactions before sending to blockchain and verify blockchain responses using cryptographic proofs.
 Contains numerous helper functions.

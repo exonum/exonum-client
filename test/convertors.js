@@ -94,7 +94,7 @@ describe('Convert data from one type to another', function () {
       expect(Exonum.hexadecimalToBinaryString(data.from)).to.equal(data.to)
     })
 
-    it('should throw error when convert invalid hexadecimal into BinaryString', function () {
+    it('should throw error when convert invalid hexadecimal into binaryString', function () {
       expect(() => Exonum.hexadecimalToBinaryString('az'))
         .to.throw(TypeError, 'String of wrong type is passed. Hexadecimal expected.');
 
@@ -102,6 +102,11 @@ describe('Convert data from one type to another', function () {
         expect(() => Exonum.hexadecimalToBinaryString(value))
           .to.throw(TypeError, 'Wrong data type passed to convertor. Hexadecimal string is expected')
       })
+    })
+
+    it('should convert hexadecimal to BinaryString and back', function () {
+      const hex = '0b513ad9b4924015ca0902ed079044d3ac5dbec2306f06948c10da8eb6e39f2d'
+      expect(Exonum.binaryStringToHexadecimal(Exonum.hexadecimalToBinaryString(hex))).to.equal(hex)
     })
   })
 })
