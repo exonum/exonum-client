@@ -15,24 +15,29 @@ describe('Check proof of Merkle Patricia tree', function () {
     expect(element).to.be.null
   })
 
-  it('should return null when valid tree with leaf exclusive', function () {
-    const data = require('./common_data/merkle-patricia-tree/valid-MPT-leaf-exclusive.json')
+  it('should return the child of single child valid tree', function () {
+    const Type = Exonum.newType({
+      size: 80,
+      fields: {
+        pub_key: { type: Exonum.PublicKey, size: 32, from: 0, to: 32 },
+        balance: { type: Exonum.Uint64, size: 8, from: 32, to: 40 },
+        history_len: { type: Exonum.Uint64, size: 8, from: 40, to: 48 },
+        history_hash: { type: Exonum.Hash, size: 32, from: 48, to: 80 }
+      }
+    })
+    const data = require('./common_data/merkle-patricia-tree/valid-MPT-single-child.json')
     const element = Exonum.merklePatriciaProof(
       data.root_hash,
       data.proof,
-      data.searched_key
+      data.searched_key,
+      Type
     )
-    expect(element).to.be.null
-  })
-
-  it('should return the child of valid tree with leaf inclusive', function () {
-    const data = require('./common_data/merkle-patricia-tree/valid-MPT-leaf-inclusive.json')
-    const element = Exonum.merklePatriciaProof(
-      data.root_hash,
-      data.proof,
-      data.searched_key
-    )
-    expect(element).to.deep.equal([2])
+    expect(element).to.deep.equal({
+      'balance': '0',
+      'history_hash': '463a35a1b5998bb386cc483cbe4313e95ac4f5b80b366a8d9fd574710c7bcab1',
+      'history_len': '1',
+      'pub_key': 'd375769a1b903bd4e9a77b511c27f3d8cb7158e5c36d4e311b5425e626b57e9c'
+    })
   })
 
   it('should return null when a tree with nested node exclusive', function () {

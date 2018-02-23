@@ -93,7 +93,7 @@ export function binaryStringToUint8Array (binaryStr) {
   }
 
   for (let i = 0; i < binaryStr.length; i += 8) {
-    array.push(parseInt(binaryStr.substr(i, 8), 2))
+    array.push(parseInt(strReverse(binaryStr.substr(i, 8)), 2))
   }
 
   return new Uint8Array(array)

@@ -301,8 +301,7 @@ export function merklePatriciaProof (rootHash, proofNode, key, type) {
       const data = proofNode[i]
       let nodeHash
 
-      const nodeKeyBuffer = convert.binaryStringToUint8Array(i)
-      const nodeKey = convert.uint8ArrayToHexadecimal(nodeKeyBuffer)
+      const nodeKey = convert.binaryStringToHexadecimal(i)
 
       if (typeof data === 'string') {
         if (!validate.validateHexadecimal(data)) {
