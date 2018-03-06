@@ -612,6 +612,102 @@ describe('Check built-in types', function () {
     })
   })
 
+  describe('Process Float32', function () {
+    it('should serialize data and return array of 8-bit integers when the value is valid positive number', function () {
+      const buffer = scheme.getType('type16').serialize(typesMock.type16.data)
+      expect(buffer).to.deep.equal(typesMock.type16.serialized)
+    })
+
+    it('should serialize data and return array of 8-bit integers when the value is valid positive number as string', function () {
+      const data = { balance: '340282350000000000000000000000000000000.0' }
+      const buffer = scheme.getType('type16').serialize(data)
+
+      expect(buffer).to.deep.equal([255, 255, 127, 127])
+    })
+
+    it('should serialize data and return array of 8-bit integers when the value is valid negative number', function () {
+      const data = { balance: -1234.567 }
+      const buffer = scheme.getType('type16').serialize(data)
+
+      expect(buffer).to.deep.equal([37, 82, 154, 196])
+    })
+
+    it('should serialize data and return array of 8-bit integers when the value is valid negative number as string', function () {
+      const data = { balance: '-340282350000000000000000000000000000000.0' }
+      const buffer = scheme.getType('type16').serialize(data)
+
+      expect(buffer).to.deep.equal([255, 255, 127, 255])
+    })
+
+    it('should throw error when the range of segment is invalid', function () {
+      const Type = Exonum.newType({
+        size: 4,
+        fields: { balance: { type: Exonum.Float32, size: 4, from: 0, to: 3 } }
+      })
+
+      expect(() => Type.serialize({ balance: 3.14 }))
+        .to.throw(TypeError, 'Float32 of wrong type is passed: 3.14')
+    })
+
+    it('should throw error when the value of invalid type', function () {
+      expect(() => scheme.getType('type16').serialize({ balance: undefined }))
+        .to.throw(TypeError, 'Field balance is not defined.');
+
+      [true, null, [], {}, new Date()].forEach(function (balance) {
+        expect(() => scheme.getType('type16').serialize({ balance: balance }))
+          .to.throw(TypeError, /Float32 of wrong type is passed:/)
+      })
+    })
+  })
+
+  describe('Process Float64', function () {
+    it('should serialize data and return array of 8-bit integers when the value is valid positive number', function () {
+      const buffer = scheme.getType('type17').serialize(typesMock.type17.data)
+      expect(buffer).to.deep.equal(typesMock.type17.serialized)
+    })
+
+    it('should serialize data and return array of 8-bit integers when the value is valid positive number as string', function () {
+      const data = { balance: '179769313486231570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.0' }
+      const buffer = scheme.getType('type17').serialize(data)
+
+      expect(buffer).to.deep.equal([255, 255, 255, 255, 255, 255, 239, 127])
+    })
+
+    it('should serialize data and return array of 8-bit integers when the value is valid negative number', function () {
+      const data = { balance: -98765.4321 }
+      const buffer = scheme.getType('type17').serialize(data)
+
+      expect(buffer).to.deep.equal([138, 176, 225, 233, 214, 28, 248, 192])
+    })
+
+    it('should serialize data and return array of 8-bit integers when the value is valid negative number as string', function () {
+      const data = { balance: '-179769313486231570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.0' }
+      const buffer = scheme.getType('type17').serialize(data)
+
+      expect(buffer).to.deep.equal([255, 255, 255, 255, 255, 255, 239, 255])
+    })
+
+    it('should throw error when the range of segment is invalid', function () {
+      const Type = Exonum.newType({
+        size: 8,
+        fields: { balance: { type: Exonum.Float64, size: 8, from: 0, to: 4 } }
+      })
+
+      expect(() => Type.serialize({ balance: 613.228 }))
+        .to.throw(TypeError, 'Float64 of wrong type is passed: 613.228')
+    })
+
+    it('should throw error when the value of invalid type', function () {
+      expect(() => scheme.getType('type17').serialize({ balance: undefined }))
+        .to.throw(TypeError, 'Field balance is not defined.');
+
+      [true, null, [], {}, new Date()].forEach(function (balance) {
+        expect(() => scheme.getType('type17').serialize({ balance: balance }))
+          .to.throw(TypeError, /Float64 of wrong type is passed:/)
+      })
+    })
+  })
+
   describe('Process Array', function () {
     it('should serialize valid array of Hash type and return array of 8-bit integers', function () {
       let buffer = scheme.getType('type15-2').serialize(typesMock.type15.data)
