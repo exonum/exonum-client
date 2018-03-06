@@ -51,6 +51,25 @@ export function validateBigInteger (value, min, max, from, to, length) {
 }
 
 /**
+ * @param {number} value
+ * @param {number} from
+ * @param {number} to
+ * @param {number} length
+ * @returns {boolean}
+ */
+export function validateFloat (value, from, to, length) {
+  if (typeof value !== 'number' && typeof value !== 'string') {
+    // wrong type
+    return false
+  } else if ((to - from) !== length) {
+    // segment is of wrong length
+    return false
+  }
+
+  return true
+}
+
+/**
  * @param {string} hash
  * @param {number} [bytes=32] - optional
  * @returns {boolean}

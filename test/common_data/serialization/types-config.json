@@ -168,5 +168,27 @@
         "to": 8
       }
     }
+  },
+  "type16": {
+    "size": 4,
+    "fields": {
+      "balance": {
+        "type": "Float32",
+        "size": 4,
+        "from": 0,
+        "to": 4
+      }
+    }
+  },
+  "type17": {
+    "size": 8,
+    "fields": {
+      "balance": {
+        "type": "Float64",
+        "size": 8,
+        "from": 0,
+        "to": 8
+      }
+    }
   }
 }

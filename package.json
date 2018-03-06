@@ -16,6 +16,7 @@
   ],
   "dependencies": {
     "big-integer": "^1.6.17",
+    "ieee754": "^1.1.8",
     "sha.js": "^2.4.8",
     "tweetnacl": "^0.14.5"
   },

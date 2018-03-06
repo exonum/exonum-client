@@ -1,4 +1,5 @@
 import bigInt from 'big-integer'
+import * as ieee754 from 'ieee754'
 import * as validate from './validate'
 
 const MIN_INT8 = -128
@@ -48,6 +49,21 @@ function insertIntegerToByteArray (number, buffer, from, to) {
     buffer[pos] = divmod.remainder.value
     value = divmod.quotient
   }
+
+  return buffer
+}
+
+/**
+ * Insert IEEE754 floating point number into array as as little-endian
+ * @param {number} number
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} mLen - mantissa length
+ * @param {number} nBytes - number of bytes
+ * @returns {boolean}
+ */
+function insertFloatToByteArray (number, buffer, from, mLen, nBytes) {
+  ieee754.write(buffer, number, from, true, mLen, nBytes)
 
   return buffer
 }
@@ -219,6 +235,36 @@ export function Uint64 (value, buffer, from, to) {
   const val = bigInt(value)
 
   return insertIntegerToByteArray(val, buffer, from, to)
+}
+
+/**
+ * @param {number} value
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {Array}
+ */
+export function Float32 (value, buffer, from, to) {
+  if (!validate.validateFloat(value, from, to, 4)) {
+    throw new TypeError('Float32 of wrong type is passed: ' + value)
+  }
+
+  return insertFloatToByteArray(value, buffer, from, 23, 4)
+}
+
+/**
+ * @param {number} value
+ * @param {Array} buffer
+ * @param {number} from
+ * @param {number} to
+ * @returns {Array}
+ */
+export function Float64 (value, buffer, from, to) {
+  if (!validate.validateFloat(value, from, to, 8)) {
+    throw new TypeError('Float64 of wrong type is passed: ' + value)
+  }
+
+  return insertFloatToByteArray(value, buffer, from, 52, 8)
 }
 
 /**
