@@ -97,11 +97,10 @@ there must be a strict serialization rules. This rules are formed by the data st
 
 ```javascript
 let type = Exonum.newType({
-  size: 12,
-  fields: {
-    balance: {type: Exonum.Uint32, size: 4, from: 0, to: 4},
-    name: {type: Exonum.String, size: 8, from: 4, to: 12}
-  }
+  fields: [
+    { name: 'balance', type: Exonum.Uint32 },
+    { name: 'name', type: Exonum.String }
+  ]
 })
 ```
 
@@ -109,40 +108,37 @@ let type = Exonum.newType({
 
 | Property | Description | Type |
 |---|---|---|
-| **size** | The total length in bytes. | `Number` |
-| **fields** | List of fields. | `Object` |
+| **fields** | List of fields. | `Array` |
 
 Field structure:
 
 | Field | Description | Type |
 |---|---|---|
-| **type** | Definition of the field type. | [Built-in type](#built-in-types), [array](#arrays) or [custom data type](#nested-data-types) defined by the developer. | 
-| **size** | Total length of the field in bytes. | `Number` |
-| **from** | The beginning of the field segment in the byte array. | `Number` |
-| **to** | The end of the field segment in the byte array. | `Number` |
+| **name** | Field name. | `String` |
+| **type** | Definition of the field type. | [Built-in type](#built-in-types), [array](#arrays) or [custom data type](#nested-data-types) defined by the developer. |
 
 ### Built-in types
 
 There are several primitive types are built it into the library.
 These types must be used when constructing custom data types.
 
-| Name | Size | Description | Type |
-|---|---|---|---|
-| **Int8** | 1 | Number in a range from `-128` to `127`. | `Number` |
-| **Int16** | 2 | Number in a range from `-32768` to `32767`. | `Number` |
-| **Int32** | 4 | Number in a range from `-2147483648` to `2147483647`. | `Number` |
-| **Int64** | 8 | Number in a range from `-9223372036854775808` to `9223372036854775807`. | `Number` or `String`\* |
-| **Uint8** | 1 | Number in a range from `0` to `255`. | `Number` |
-| **Uint16** | 2 | Number in a range from `0` to `65535`. | `Number` |
-| **Uint32** | 4 | Number in a range from `0` to `4294967295`. | `Number` |
-| **Uint64** | 8 | Number in a range from `0` to `18446744073709551615`. | `Number` or `String`\* |
-| **Float32** | 4 | Floating point number in a range from `-3.40282347e+38f32` to `3.40282347e+38f32`. | `Number` or `String`\* |
-| **Float64** | 8 | Floating point number in a range from `-1.7976931348623157e+308f64` to `1.7976931348623157e+308f64`. | `Number` or `String`\* |
-| **String** | 8\*\* | A string of variable length consisting of UTF-8 characters. | `String` |
-| **Hash** | 32 | Hexadecimal string. | `String` |
-| **PublicKey** | 32 | Hexadecimal string. | `String` |
-| **Digest** | 64 | Hexadecimal string. | `String` |
-| **Bool** | 1 | Value of boolean type. | `Boolean` |
+| Name | Description | Type |
+|---|---|---|
+| **Int8** | Number in a range from `-128` to `127`. | `Number` |
+| **Int16** | Number in a range from `-32768` to `32767`. | `Number` |
+| **Int32** | Number in a range from `-2147483648` to `2147483647`. | `Number` |
+| **Int64** | Number in a range from `-9223372036854775808` to `9223372036854775807`. | `Number` or `String`\* |
+| **Uint8** | Number in a range from `0` to `255`. | `Number` |
+| **Uint16** | Number in a range from `0` to `65535`. | `Number` |
+| **Uint32** | Number in a range from `0` to `4294967295`. | `Number` |
+| **Uint64** | Number in a range from `0` to `18446744073709551615`. | `Number` or `String`\* |
+| **Float32** | Floating point number in a range from `-3.40282347e+38f32` to `3.40282347e+38f32`. | `Number` or `String`\* |
+| **Float64** | Floating point number in a range from `-1.7976931348623157e+308f64` to `1.7976931348623157e+308f64`. | `Number` or `String`\* |
+| **String** | A string of variable length consisting of UTF-8 characters. | `String` |
+| **Hash** | Hexadecimal string. | `String` |
+| **PublicKey** | Hexadecimal string. | `String` |
+| **Digest** | Hexadecimal string. | `String` |
+| **Bool** | Value of boolean type. | `Boolean` |
 
 *\*JavaScript limits minimum and maximum integer number.
 Minimum safe integer in JavaScript is `-(2^53-1)` which is equal to `-9007199254740991`.
@@ -151,38 +147,28 @@ For unsafe numbers out of the safe range use `String` only.
 To determine either number is safe use built-in JavaScript function
 [Number.isSafeInteger()][is-safe-integer].*
 
-*\*\*Size of 8 bytes is due to the specifics of string [serialization][docs:architecture:serialization:segment-pointers]
-using segment pointers.
-Actual string length is limited only by the general message size limits which is depends on OS, browser and
-hardware configuration.*
-
 ### Nested data types
 
 Custom data type defined by the developer can be a field of other custom data type.
-
-A nested type, regardless of its real size, always takes **8 bytes** in the parent type due to the specifics of its
-[serialization][docs:architecture:serialization:segment-pointers] using segment pointers.
 
 An example of a nested type:
 
 ```javascript
 // Define a nested data type
 let date = Exonum.newType({
-  size: 4,
-  fields: {
-    day: {type: Exonum.Uint8, size: 1, from: 0, to: 1},
-    month: {type: Exonum.Uint8, size: 1, from: 1, to: 2},
-    year: {type: Exonum.Uint16, size: 2, from: 2, to: 4}
-  }
+  fields: [
+    { name: 'day', type: Exonum.Uint8 },
+    { name: 'month', type: Exonum.Uint8 },
+    { name: 'year', type: Exonum.Uint16 }
+  ]
 })
 
 // Define a data type
 let payment = Exonum.newType({
-  size: 16,
-  fields: {
-    date: {type: date, size: 8, from: 0, to: 8},
-    amount: {type: Exonum.Uint64, size: 8, from: 8, to: 16}
-  }
+  fields: [
+    { name: 'date', type: date },
+    { name: 'amount', type: Exonum.Uint64 }
+  ]
 })
 ```
 
@@ -197,27 +183,21 @@ in the Rust language.
 
 | Property | Description | Type |
 |---|---|---|
-| **size** | Length of the nested field type. | `Number` |
 | **type** | Definition of the field type. | [Built-in type](#built-in-types), array or [custom data type](#nested-data-types) defined by the developer. |
-
-An array, regardless of its real size, always takes **8 bytes** in the parent type due to the specifics of its
-[serialization][docs:architecture:serialization:segment-pointers] using segment pointers.
 
 An example of an array type field: 
 
 ```javascript
 // Define an array
 let year = Exonum.newArray({
-  size: 2,
   type: Exonum.Uint16
 })
 
 // Define a data type
 let type = Exonum.newType({
-  size: 8,
-  fields: {
-    years: {type: year, size: 8, from: 0, to: 8}
-  }
+  fields: [
+    { name: 'years', type: year }
+  ]
 })
 ```
 
@@ -226,22 +206,19 @@ An example of an array nested in an array:
 ```javascript
 // Define an array
 let distance = Exonum.newArray({
-  size: 4,
   type: Exonum.Uint32
 })
 
 // Define an array with child elements of an array type
 let distances = Exonum.newArray({
-  size: 8,
   type: distance
 })
 
 // Define a data type
 let type = Exonum.newType({
-  size: 8,
-  fields: {
-    measurements: {type: distances, size: 8, from: 0, to: 8}
-  }
+  fields: [
+    { name: 'measurements', type: distances }
+  ]
 })
 ```
 
@@ -268,13 +245,12 @@ An example of serialization into a byte array:
 ```javascript
 // Define a data type
 let user = Exonum.newType({
-  size: 21,
-  fields: {
-    firstName: {type: Exonum.String, size: 8, from: 0, to: 8},
-    lastName: {type: Exonum.String, size: 8, from: 8, to: 16},
-    age: {type: Exonum.Uint8, size: 1, from: 16, to: 17},
-    balance: {type: Exonum.Uint32, size: 4, from: 17, to: 21}
-  }
+  fields: [
+    { name: 'firstName', type: Exonum.String },
+    { name: 'lastName', type: Exonum.String },
+    { name: 'age', type: Exonum.Uint8 },
+    { name: 'balance', type: Exonum.Uint32 }
+  ]
 })
 
 // Data to be serialized
@@ -319,13 +295,12 @@ An example of hash calculation:
 ```javascript
 // Define a data type
 let user = Exonum.newType({
-  size: 21,
-  fields: {
-    firstName: {type: Exonum.String, size: 8, from: 0, to: 8},
-    lastName: {type: Exonum.String, size: 8, from: 8, to: 16},
-    age: {type: Exonum.Uint8, size: 1, from: 16, to: 17},
-    balance: {type: Exonum.Uint32, size: 4, from: 17, to: 21}
-  }
+  fields: [
+    { name: 'firstName', type: Exonum.String },
+    { name: 'lastName', type: Exonum.String },
+    { name: 'age', type: Exonum.Uint8 },
+    { name: 'balance', type: Exonum.Uint32 }
+  ]
 })
 
 // Data that has been hashed
@@ -399,13 +374,12 @@ An example of data signing:
 ```javascript
 // Define a data type
 let user = Exonum.newType({
-  size: 21,
-  fields: {
-    firstName: {type: Exonum.String, size: 8, from: 0, to: 8},
-    lastName: {type: Exonum.String, size: 8, from: 8, to: 16},
-    age: {type: Exonum.Uint8, size: 1, from: 16, to: 17},
-    balance: {type: Exonum.Uint32, size: 4, from: 17, to: 21}
-  }
+  fields: [
+    { name: 'firstName', type: Exonum.String },
+    { name: 'lastName', type: Exonum.String },
+    { name: 'age', type: Exonum.Uint8 },
+    { name: 'balance', type: Exonum.Uint32 }
+  ]
 })
 
 // Data to be signed
@@ -453,13 +427,12 @@ An example of signature verification:
 ```javascript
 // Define a data type
 let user = Exonum.newType({
-  size: 21,
-  fields: {
-    firstName: {type: Exonum.String, size: 8, from: 0, to: 8},
-    lastName: {type: Exonum.String, size: 8, from: 8, to: 16},
-    age: {type: Exonum.Uint8, size: 1, from: 16, to: 17},
-    balance: {type: Exonum.Uint32, size: 4, from: 17, to: 21}
-  }
+  fields: [
+    { name: 'firstName', type: Exonum.String },
+    { name: 'lastName', type: Exonum.String },
+    { name: 'age', type: Exonum.Uint8 },
+    { name: 'balance', type: Exonum.Uint32 }
+  ]
 })
 
 // Data that has been signed
@@ -503,12 +476,11 @@ let sendFunds = Exonum.newMessage({
   protocol_version: 0,
   service_id: 130,
   message_id: 128,
-  size: 72,
-  fields: {
-    from: {type: Exonum.Hash, size: 32, from: 0, to: 32},
-    to: {type: Exonum.Hash, size: 32, from: 32, to: 64},
-    amount: {type: Exonum.Uint64, size: 8, from: 64, to: 72}
-  }
+  fields: [
+    { name: 'from', type: Exonum.Hash },
+    { name: 'to', type: Exonum.Hash },
+    { name: 'amount', type: Exonum.Uint64 }
+  ]
 })
 ```
 
@@ -521,8 +493,7 @@ let sendFunds = Exonum.newMessage({
 | **service_id** | [Service ID][docs:architecture:serialization:service-id]. | `Number` |
 | **message_id** | [Message ID][docs:architecture:serialization:message-id]. | `Number` |
 | **signature** | Signature as hexadecimal string. *Optional.* | `String` |
-| **size** | The total length in bytes. | `Number` |
-| **fields** | List of fields. | `Object` |
+| **fields** | List of fields. | `Array` |
 
 Field structure is identical to field structure of [custom data type](#define-data-type).
 
@@ -713,7 +684,6 @@ Exonum Client is licensed under the Apache License (Version 2.0). See [LICENSE](
 [docs:clients]: https://exonum.com/doc/architecture/clients
 [docs:architecture:services]: https://exonum.com/doc/architecture/services
 [docs:architecture:serialization]: https://exonum.com/doc/architecture/serialization
-[docs:architecture:serialization:segment-pointers]: https://exonum.com/doc/architecture/serialization/#segment-pointers
 [docs:architecture:serialization:network-id]: https://exonum.com/doc/architecture/serialization/#etwork-id
 [docs:architecture:serialization:protocol-version]: https://exonum.com/doc/architecture/serialization/#protocol-version
 [docs:architecture:serialization:service-id]: https://exonum.com/doc/architecture/serialization/#service-id

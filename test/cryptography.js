@@ -140,11 +140,10 @@ describe('Check cryptography', function () {
       const publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
       const signature = '7ccad21d76359c8c3ed1161eb8231edd44a91d53ea468d23f8528e2985e5547f72f98ccc61d96ecad173bdc29627abbf6d46908807f6dd0a0d767ae3887d040e'
       const User = Exonum.newType({
-        size: 16,
-        fields: {
-          firstName: { type: Exonum.String, size: 8, from: 0, to: 8 },
-          lastName: { type: Exonum.String, size: 8, from: 8, to: 16 }
-        }
+        fields: [
+          { name: 'firstName', type: Exonum.String },
+          { name: 'lastName', type: Exonum.String }
+        ]
       })
       const userData = {
         firstName: 'John',
@@ -158,11 +157,10 @@ describe('Check cryptography', function () {
       const publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
       const signature = '7ccad21d76359c8c3ed1161eb8231edd44a91d53ea468d23f8528e2985e5547f72f98ccc61d96ecad173bdc29627abbf6d46908807f6dd0a0d767ae3887d040e'
       const User = Exonum.newType({
-        size: 16,
-        fields: {
-          firstName: { type: Exonum.String, size: 8, from: 0, to: 8 },
-          lastName: { type: Exonum.String, size: 8, from: 8, to: 16 }
-        }
+        fields: [
+          { name: 'firstName', type: Exonum.String },
+          { name: 'lastName', type: Exonum.String }
+        ]
       })
       const userData = {
         firstName: 'John',
@@ -176,17 +174,16 @@ describe('Check cryptography', function () {
       const publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
       const signature = '4006cef1884941850a6b97a64ed7f12d1e1053188618ef71b8c9f87438b943b1969e08011e45db8299bb738fec60c9dcd1936ab9ba44392cacc7f0385f18dd09'
       const CustomMessage = Exonum.newMessage({
-        size: 18,
         network_id: 0,
         protocol_version: 0,
         service_id: 1,
         message_id: 2,
-        fields: {
-          name: { type: Exonum.String, size: 8, from: 0, to: 8 },
-          age: { type: Exonum.Uint8, size: 1, from: 8, to: 9 },
-          balance: { type: Exonum.Uint64, size: 8, from: 9, to: 17 },
-          status: { type: Exonum.Bool, size: 1, from: 17, to: 18 }
-        }
+        fields: [
+          { name: 'name', type: Exonum.String },
+          { name: 'age', type: Exonum.Uint8 },
+          { name: 'balance', type: Exonum.Uint64 },
+          { name: 'status', type: Exonum.Bool }
+        ]
       })
       const messageData = {
         name: 'John Doe',
@@ -202,17 +199,16 @@ describe('Check cryptography', function () {
       const publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
       const signature = '4006cef1884941850a6b97a64ed7f12d1e1053188618ef71b8c9f87438b943b1969e08011e45db8299bb738fec60c9dcd1936ab9ba44392cacc7f0385f18dd09'
       const CustomMessage = Exonum.newMessage({
-        size: 18,
         network_id: 0,
         protocol_version: 0,
         service_id: 1,
         message_id: 2,
-        fields: {
-          name: { type: Exonum.String, size: 8, from: 0, to: 8 },
-          age: { type: Exonum.Uint8, size: 1, from: 8, to: 9 },
-          balance: { type: Exonum.Uint64, size: 8, from: 9, to: 17 },
-          status: { type: Exonum.Bool, size: 1, from: 17, to: 18 }
-        }
+        fields: [
+          { name: 'name', type: Exonum.String },
+          { name: 'age', type: Exonum.Uint8 },
+          { name: 'balance', type: Exonum.Uint64 },
+          { name: 'status', type: Exonum.Bool }
+        ]
       })
       const messageData = {
         name: 'John Doe',
@@ -228,11 +224,10 @@ describe('Check cryptography', function () {
       const publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
       const signature = '7ccad21d76359c8c3ed1161eb8231edd44a91d53ea468d23f8528e2985e5547f72f98ccc61d96ecad173bdc29627abbf6d46908807f6dd0a0d767ae3887d040e'
       const User = Exonum.newType({
-        size: 16,
-        fields: {
-          firstName: { type: Exonum.String, size: 8, from: 0, to: 8 },
-          lastName: { type: Exonum.String, size: 8, from: 8, to: 16 }
-        }
+        fields: [
+          { name: 'firstName', type: Exonum.String },
+          { name: 'lastName', type: Exonum.String }
+        ]
       })
       const userData = {
         firstName: 'John',
@@ -247,11 +242,10 @@ describe('Check cryptography', function () {
       const publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
       const signature = '7ccad21d76359c8c3ed1161eb8231edd44a91d53ea468d23f8528e2985e5547f72f98ccc61d96ecad173bdc29627abbf6d46908807f6dd0a0d767ae3887d040b'
       const User = Exonum.newType({
-        size: 16,
-        fields: {
-          firstName: { type: Exonum.String, size: 8, from: 0, to: 8 },
-          lastName: { type: Exonum.String, size: 8, from: 8, to: 16 }
-        }
+        fields: [
+          { name: 'firstName', type: Exonum.String },
+          { name: 'lastName', type: Exonum.String }
+        ]
       })
       const userData = {
         firstName: 'John',
@@ -278,17 +272,16 @@ describe('Check cryptography', function () {
       const publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
       const signature = '24a5224702d670c95a78ef1f753c9e6e698da5b2a2c52dcc51b5bf9e556e717fb763b1a5e78bd39e5369a139ab68ae50dd19a129038e8da3af30985f09549500'
       const CustomMessage = Exonum.newMessage({
-        size: 18,
         network_id: 0,
         protocol_version: 0,
         service_id: 1,
         message_id: 2,
-        fields: {
-          name: { type: Exonum.String, size: 8, from: 0, to: 8 },
-          age: { type: Exonum.Uint8, size: 1, from: 8, to: 9 },
-          balance: { type: Exonum.Uint64, size: 8, from: 9, to: 17 },
-          status: { type: Exonum.Bool, size: 1, from: 17, to: 18 }
-        }
+        fields: [
+          { name: 'name', type: Exonum.String },
+          { name: 'age', type: Exonum.Uint8 },
+          { name: 'balance', type: Exonum.Uint64 },
+          { name: 'status', type: Exonum.Bool }
+        ]
       })
       const someData = {
         sum: 500,
@@ -318,11 +311,10 @@ describe('Check cryptography', function () {
       const publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
       const signature = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
       const User = Exonum.newType({
-        size: 16,
-        fields: {
-          firstName: { type: Exonum.String, size: 8, from: 0, to: 8 },
-          lastName: { type: Exonum.String, size: 8, from: 8, to: 16 }
-        }
+        fields: [
+          { name: 'firstName', type: Exonum.String },
+          { name: 'lastName', type: Exonum.String }
+        ]
       })
       const userData = {
         firstName: 'John',
@@ -338,11 +330,10 @@ describe('Check cryptography', function () {
       const publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
       const signature = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7Z'
       const User = Exonum.newType({
-        size: 16,
-        fields: {
-          firstName: { type: Exonum.String, size: 8, from: 0, to: 8 },
-          lastName: { type: Exonum.String, size: 8, from: 8, to: 16 }
-        }
+        fields: [
+          { name: 'firstName', type: Exonum.String },
+          { name: 'lastName', type: Exonum.String }
+        ]
       })
       const userData = {
         firstName: 'John',
@@ -357,11 +348,10 @@ describe('Check cryptography', function () {
     it('should throw error when the signature parameter is of wrong type', function () {
       const publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
       const User = Exonum.newType({
-        size: 16,
-        fields: {
-          firstName: { type: Exonum.String, size: 8, from: 0, to: 8 },
-          lastName: { type: Exonum.String, size: 8, from: 8, to: 16 }
-        }
+        fields: [
+          { name: 'firstName', type: Exonum.String },
+          { name: 'lastName', type: Exonum.String }
+        ]
       })
       const userData = {
         firstName: 'John',
@@ -379,11 +369,10 @@ describe('Check cryptography', function () {
       const publicKey = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C'
       const signature = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C'
       const User = Exonum.newType({
-        size: 16,
-        fields: {
-          firstName: { type: Exonum.String, size: 8, from: 0, to: 8 },
-          lastName: { type: Exonum.String, size: 8, from: 8, to: 16 }
-        }
+        fields: [
+          { name: 'firstName', type: Exonum.String },
+          { name: 'lastName', type: Exonum.String }
+        ]
       })
       const userData = {
         firstName: 'John',
@@ -399,11 +388,10 @@ describe('Check cryptography', function () {
       const publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C3Z'
       const signature = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C'
       const User = Exonum.newType({
-        size: 16,
-        fields: {
-          firstName: { type: Exonum.String, size: 8, from: 0, to: 8 },
-          lastName: { type: Exonum.String, size: 8, from: 8, to: 16 }
-        }
+        fields: [
+          { name: 'firstName', type: Exonum.String },
+          { name: 'lastName', type: Exonum.String }
+        ]
       })
       const userData = {
         firstName: 'John',
@@ -418,11 +406,10 @@ describe('Check cryptography', function () {
     it('should throw error when the publicKey parameter is of wrong type', function () {
       const signature = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C'
       const User = Exonum.newType({
-        size: 16,
-        fields: {
-          firstName: { type: Exonum.String, size: 8, from: 0, to: 8 },
-          lastName: { type: Exonum.String, size: 8, from: 8, to: 16 }
-        }
+        fields: [
+          { name: 'firstName', type: Exonum.String },
+          { name: 'lastName', type: Exonum.String }
+        ]
       })
       const userData = {
         firstName: 'John',
@@ -440,11 +427,10 @@ describe('Check cryptography', function () {
   describe('Generate key pair', function () {
     it('should generate random key pair of secret and public keys, serialize it and return serialized array', function () {
       const Type = Exonum.newType({
-        size: 96,
-        fields: {
-          publicKey: { type: Exonum.Hash, size: 32, from: 0, to: 32 },
-          secretKey: { type: Exonum.Digest, size: 64, from: 32, to: 96 }
-        }
+        fields: [
+          { name: 'publicKey', type: Exonum.Hash },
+          { name: 'secretKey', type: Exonum.Digest }
+        ]
       })
       const data = Exonum.keyPair()
       const buffer = Type.serialize(data)
@@ -456,8 +442,9 @@ describe('Check cryptography', function () {
   describe('Generate random Uint64', function () {
     it('should generate random value of Uint64 type, serialize and return serialized array', function () {
       const Type = Exonum.newType({
-        size: 8,
-        fields: { balance: { type: Exonum.Uint64, size: 8, from: 0, to: 8 } }
+        fields: [
+          { name: 'balance', type: Exonum.Uint64 }
+        ]
       })
       const data = { balance: Exonum.randomUint64() }
       const buffer = Type.serialize(data)

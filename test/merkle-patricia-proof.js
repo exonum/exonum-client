@@ -17,13 +17,12 @@ describe('Check proof of Merkle Patricia tree', function () {
 
   it('should return the child of single child valid tree', function () {
     const Type = Exonum.newType({
-      size: 80,
-      fields: {
-        pub_key: { type: Exonum.PublicKey, size: 32, from: 0, to: 32 },
-        balance: { type: Exonum.Uint64, size: 8, from: 32, to: 40 },
-        history_len: { type: Exonum.Uint64, size: 8, from: 40, to: 48 },
-        history_hash: { type: Exonum.Hash, size: 32, from: 48, to: 80 }
-      }
+      fields: [
+        { name: 'pub_key', type: Exonum.PublicKey },
+        { name: 'balance', type: Exonum.Uint64 },
+        { name: 'history_len', type: Exonum.Uint64 },
+        { name: 'history_hash', type: Exonum.Hash }
+      ]
     })
     const data = require('./common_data/merkle-patricia-tree/valid-MPT-single-child.json')
     const element = Exonum.merklePatriciaProof(
@@ -342,8 +341,9 @@ describe('Check proof of Merkle Patricia tree', function () {
     }
     const key = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
     const Type = Exonum.newType({
-      size: 8,
-      fields: { balance: { type: Exonum.Int64, size: 8, from: 0, to: 8 } }
+      fields: [
+        { name: 'balance', type: Exonum.Uint64 }
+      ]
     })
 
     expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key, Type)).to.throw(TypeError)
@@ -360,8 +360,9 @@ describe('Check proof of Merkle Patricia tree', function () {
     }
     const key = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
     const Type = Exonum.newType({
-      size: 8,
-      fields: { balance: { type: Exonum.Int64, size: 8, from: 0, to: 8 } }
+      fields: [
+        { name: 'balance', type: Exonum.Uint64 }
+      ]
     })
 
     expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key, Type)).to.throw(Error)
@@ -378,8 +379,9 @@ describe('Check proof of Merkle Patricia tree', function () {
     }
     const key = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
     const Type = Exonum.newType({
-      size: 8,
-      fields: { balance: { type: Exonum.Int64, size: 8, from: 0, to: 8 } }
+      fields: [
+        { name: 'balance', type: Exonum.Uint64 }
+      ]
     })
 
     expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key, Type)).to.throw(Error)
@@ -636,13 +638,12 @@ describe('Check proof of Merkle Patricia tree', function () {
     }
     const key = '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
     const Type = Exonum.newType({
-      size: 80,
-      fields: {
-        pub_key: { type: Exonum.PublicKey, size: 32, from: 0, to: 32 },
-        name: { type: Exonum.String, size: 8, from: 32, to: 40 },
-        balance: { type: Exonum.Uint64, size: 8, from: 40, to: 48 },
-        history_hash: { type: Exonum.Hash, size: 32, from: 48, to: 80 }
-      }
+      fields: [
+        { name: 'pub_key', type: Exonum.PublicKey },
+        { name: 'name', type: Exonum.String },
+        { name: 'balance', type: Exonum.Uint64 },
+        { name: 'history_hash', type: Exonum.Hash }
+      ]
     })
 
     expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key, Type)).to.throw(TypeError)
@@ -664,13 +665,12 @@ describe('Check proof of Merkle Patricia tree', function () {
     }
     const key = '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
     const Type = Exonum.newType({
-      size: 80,
-      fields: {
-        pub_key: { type: Exonum.PublicKey, size: 32, from: 0, to: 32 },
-        name: { type: Exonum.String, size: 8, from: 32, to: 40 },
-        balance: { type: Exonum.Uint64, size: 8, from: 40, to: 48 },
-        history_hash: { type: Exonum.Hash, size: 32, from: 48, to: 80 }
-      }
+      fields: [
+        { name: 'pub_key', type: Exonum.PublicKey },
+        { name: 'name', type: Exonum.String },
+        { name: 'balance', type: Exonum.Uint64 },
+        { name: 'history_hash', type: Exonum.Hash }
+      ]
     })
 
     expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key, Type)).to.throw(TypeError)

@@ -1,261 +1,188 @@
 {
   "type1": {
-    "size": 80,
-    "fields": {
-      "pub_key": {
-        "type": "PublicKey",
-        "size": 32,
-        "from": 0,
-        "to": 32
+    "fields": [
+      {
+        "name": "pub_key",
+        "type": "PublicKey"
       },
-      "name": {
-        "type": "String",
-        "size": 8,
-        "from": 32,
-        "to": 40
+      {
+        "name": "name",
+        "type": "String"
       },
-      "balance": {
-        "type": "Uint64",
-        "size": 8,
-        "from": 40,
-        "to": 48
+      {
+        "name": "balance",
+        "type": "Uint64"
       },
-      "history_hash": {
-        "type": "Hash",
-        "size": 32,
-        "from": 48,
-        "to": 80
+      {
+        "name": "history_hash",
+        "type": "Hash"
       }
-    }
+    ]
   },
   "type2": {
-    "size": 80,
-    "fields": {
-      "pub_key": {
-        "type": "PublicKey",
-        "size": 32,
-        "from": 0,
-        "to": 32
+    "fields": [
+      {
+        "name": "pub_key",
+        "type": "PublicKey"
       },
-      "name": {
-        "type": "String",
-        "size": 8,
-        "from": 32,
-        "to": 40
+      {
+        "name": "name",
+        "type": "String"
       },
-      "balance": {
-        "type": "Uint64",
-        "size": 8,
-        "from": 40,
-        "to": 48
+      {
+        "name": "balance",
+        "type": "Uint64"
       },
-      "history_hash": {
-        "type": "Hash",
-        "size": 32,
-        "from": 48,
-        "to": 80
+      {
+        "name": "history_hash",
+        "type": "Hash"
       }
-    }
+    ]
   },
   "type3": {
     "as": "message",
-    "size": 18,
     "network_id": 0,
     "protocol_version": 0,
     "service_id": 1,
     "message_id": 2,
-    "fields": {
-      "name": {
-        "type": "String",
-        "size": 8,
-        "from": 0,
-        "to": 8
+    "fields": [
+      {
+        "name": "name",
+        "type": "String"
       },
-      "age": {
-        "type": "Uint8",
-        "size": 1,
-        "from": 8,
-        "to": 9
+      {
+        "name": "age",
+        "type": "Uint8"
       },
-      "balance": {
-        "type": "Uint64",
-        "size": 8,
-        "from": 9,
-        "to": 17
+      {
+        "name": "balance",
+        "type": "Uint64"
       },
-      "status": {
-        "type": "Bool",
-        "size": 1,
-        "from": 17,
-        "to": 18
+      {
+        "name": "status",
+        "type": "Bool"
       }
-    },
+    ],
     "signature": "dad76b4c3b067d53265534bde4d9ff59987d00f87e0e1a633613576195a4cbc1e0a43a58c67c34c98019f791812699d010655c4eccec448e46e5524471a8c401"
   },
   "type4": {
     "as": "message",
-    "size": 18,
     "network_id": 0,
     "protocol_version": 0,
     "service_id": 1,
     "message_id": 2,
-    "fields": {
-      "name": {
-        "type": "String",
-        "size": 8,
-        "from": 0,
-        "to": 8
+    "fields": [
+      {
+        "name": "name",
+        "type": "String"
       },
-      "age": {
-        "type": "Uint8",
-        "size": 1,
-        "from": 8,
-        "to": 9
+      {
+        "name": "age",
+        "type": "Uint8"
       },
-      "balance": {
-        "type": "Uint64",
-        "size": 8,
-        "from": 9,
-        "to": 17
+      {
+        "name": "balance",
+        "type": "Uint64"
       },
-      "status": {
-        "type": "Bool",
-        "size": 1,
-        "from": 17,
-        "to": 18
+      {
+        "name": "status",
+        "type": "Bool"
       }
-    },
+    ],
     "signature": "dad76b4c3b067d53265534bde4d9ff59987d00f87e0e1a633613576195a4cbc1e0a43a58c67c34c98019f791812699d010655c4eccec448e46e5524471a8c401"
   },
   "type5": {
-    "size": 80,
-    "fields": {
-      "pub_key": {
-        "type": "PublicKey",
-        "size": 32,
-        "from": 0,
-        "to": 32
+    "fields": [
+      {
+        "name": "pub_key",
+        "type": "PublicKey"
       },
-      "name": {
-        "type": "String",
-        "size": 8,
-        "from": 32,
-        "to": 40
+      {
+        "name": "name",
+        "type": "String"
       },
-      "balance": {
-        "type": "Uint64",
-        "size": 8,
-        "from": 40,
-        "to": 48
+      {
+        "name": "balance",
+        "type": "Uint64"
       },
-      "history_hash": {
-        "type": "Hash",
-        "size": 32,
-        "from": 48,
-        "to": 80
+      {
+        "name": "history_hash",
+        "type": "Hash"
       }
-    }
+    ]
   },
   "type6": {
-    "size": 16,
-    "fields": {
-      "firstName": {
-        "type": "String",
-        "size": 8,
-        "from": 0,
-        "to": 8
+    "fields": [
+      {
+        "name": "firstName",
+        "type": "String"
       },
-      "lastName": {
-        "type": "String",
-        "size": 8,
-        "from": 8,
-        "to": 16
+      {
+        "name": "lastName",
+        "type": "String"
       }
-    }
+    ]
   },
   "type7": {
     "as": "message",
-    "size": 18,
     "network_id": 0,
     "protocol_version": 0,
     "service_id": 1,
     "message_id": 2,
-    "fields": {
-      "name": {
-        "type": "String",
-        "size": 8,
-        "from": 0,
-        "to": 8
+    "fields": [
+      {
+        "name": "name",
+        "type": "String"
       },
-      "age": {
-        "type": "Uint8",
-        "size": 1,
-        "from": 8,
-        "to": 9
+      {
+        "name": "age",
+        "type": "Uint8"
       },
-      "balance": {
-        "type": "Uint64",
-        "size": 8,
-        "from": 9,
-        "to": 17
+      {
+        "name": "balance",
+        "type": "Uint64"
       },
-      "status": {
-        "type": "Bool",
-        "size": 1,
-        "from": 17,
-        "to": 18
+      {
+        "name": "status",
+        "type": "Bool"
       }
-    }
+    ]
   },
   "type8": {
     "as": "message",
-    "size": 18,
     "network_id": 0,
     "protocol_version": 0,
     "service_id": 1,
     "message_id": 2,
-    "fields": {
-      "name": {
-        "type": "String",
-        "size": 8,
-        "from": 0,
-        "to": 8
+    "fields": [
+      {
+        "name": "name",
+        "type": "String"
       },
-      "age": {
-        "type": "Uint8",
-        "size": 1,
-        "from": 8,
-        "to": 9
+      {
+        "name": "age",
+        "type": "Uint8"
       },
-      "balance": {
-        "type": "Uint64",
-        "size": 8,
-        "from": 9,
-        "to": 17
+      {
+        "name": "balance",
+        "type": "Uint64"
       },
-      "status": {
-        "type": "Bool",
-        "size": 1,
-        "from": 17,
-        "to": 18
+      {
+        "name": "status",
+        "type": "Bool"
       }
-    }
+    ]
   },
   "type9": {
-    "size": 16,
-    "fields": {
-      "firstName": {
-        "type": "String",
-        "size": 8,
-        "from": 0,
-        "to": 8
+    "fields": [
+      {
+        "name": "firstName",
+        "type": "String"
       },
-      "lastName": {
-        "type": "String",
-        "size": 8,
-        "from": 8,
-        "to": 16
+      {
+        "name": "lastName",
+        "type": "String"
       }
-    }
+    ]
   }
 }

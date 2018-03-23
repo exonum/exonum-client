@@ -1,5 +1,6 @@
 import * as serialization from './serialization'
 import * as crypto from '../crypto'
+import { String } from './primitive'
 
 /**
  * @constructor
@@ -7,8 +8,26 @@ import * as crypto from '../crypto'
  */
 class NewType {
   constructor (type) {
-    this.size = type.size
+    type.fields.forEach(field => {
+      if (field.name === undefined) {
+        throw new TypeError('Name prop is missed.')
+      }
+      if (field.type === undefined) {
+        throw new TypeError('Type prop is missed.')
+      }
+    })
+
     this.fields = type.fields
+  }
+
+  size () {
+    return this.fields.reduce((accumulator, field) => {
+      if (fieldIsFixed(field)) {
+        return accumulator + field.type.size()
+      } else {
+        return accumulator + 8
+      }
+    }, 0)
   }
 
   /**
@@ -67,4 +86,35 @@ export function newType (type) {
  */
 export function isInstanceofOfNewType (type) {
   return type instanceof NewType
+}
+
+/**
+ * Check if field is of fixed-length type. Fixed-length means field serialized (inserted) directly into buffer without pointer
+ * @param {Object} field
+ * @returns {boolean}
+ */
+export function fieldIsFixed (field) {
+  if (isInstanceofOfNewType(field.type)) {
+    return newTypeIsFixed(field.type)
+  } else if (field.type === String) {
+    return false
+  }
+  return true
+}
+
+/**
+ * Check if all nested fields are of fixed-length type
+ * @param {Object} type
+ * @returns {boolean}
+ */
+export function newTypeIsFixed (type) {
+  let areFixed = true
+
+  type.fields.forEach(field => {
+    if (!fieldIsFixed(field)) {
+      areFixed = false
+    }
+  })
+
+  return areFixed
 }
