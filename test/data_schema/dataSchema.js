@@ -13,11 +13,9 @@ export default class DataSchema {
     Object.keys(schema).forEach(key => {
       const item = schema[key]
       if (!item.as || item.as === 'type' || item.as === 'message') {
-        Object.keys(item.fields)
-          .forEach(fieldKey => {
-            const field = item.fields[fieldKey]
-            field.type = this.getTypeOrArray(field.type)
-          })
+        item.fields.forEach(field => {
+          field.type = this.getTypeOrArray(field.type)
+        })
         if (!item.as || item.as === 'type') this.types[key] = Exonum.newType(item)
         if (item.as === 'message') this.messages[key] = Exonum.newMessage(item)
       } else if (item.as === 'array') {

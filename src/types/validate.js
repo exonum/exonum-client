@@ -5,15 +5,11 @@ import bigInt from 'big-integer'
  * @param {number} min
  * @param {number} max
  * @param {number} from
- * @param {number} to
  * @param {number} length
  * @returns {boolean}
  */
-export function validateInteger (value, min, max, from, to, length) {
+export function validateInteger (value, min, max, from, length) {
   if (typeof value !== 'number' || value < min || value > max) {
-    return false
-  } else if ((to - from) !== length) {
-    // segment is of wrong length
     return false
   }
 
@@ -25,17 +21,14 @@ export function validateInteger (value, min, max, from, to, length) {
  * @param {number} min
  * @param {number} max
  * @param {number} from
- * @param {number} to
  * @param {number} length
  * @returns {*}
  */
-export function validateBigInteger (value, min, max, from, to, length) {
+export function validateBigInteger (value, min, max, from, length) {
   if (!(typeof value === 'number' || typeof value === 'string')) {
     return false
-  } else if ((to - from) !== length) {
-    // segment is of wrong length
-    return false
   }
+
   let val
   try {
     val = bigInt(value)
@@ -53,16 +46,12 @@ export function validateBigInteger (value, min, max, from, to, length) {
 /**
  * @param {number} value
  * @param {number} from
- * @param {number} to
  * @param {number} length
  * @returns {boolean}
  */
-export function validateFloat (value, from, to, length) {
+export function validateFloat (value, from, length) {
   if (typeof value !== 'number' && typeof value !== 'string') {
     // wrong type
-    return false
-  } else if ((to - from) !== length) {
-    // segment is of wrong length
     return false
   }
 

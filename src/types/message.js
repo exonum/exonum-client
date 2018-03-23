@@ -1,5 +1,5 @@
 import * as primitive from './primitive'
-import { newType } from './generic'
+import { fieldIsFixed, newType } from './generic'
 import * as serialization from './serialization'
 import * as crypto from '../crypto'
 
@@ -11,13 +11,31 @@ const SIGNATURE_LENGTH = 64
  */
 class NewMessage {
   constructor (type) {
-    this.size = type.size
+    type.fields.forEach(field => {
+      if (field.name === undefined) {
+        throw new TypeError('Name prop is missed.')
+      }
+      if (field.type === undefined) {
+        throw new TypeError('Type prop is missed.')
+      }
+    })
+
     this.network_id = type.network_id
     this.protocol_version = type.protocol_version
     this.message_id = type.message_id
     this.service_id = type.service_id
     this.signature = type.signature
     this.fields = type.fields
+  }
+
+  size () {
+    return this.fields.reduce((accumulator, field) => {
+      if (fieldIsFixed(field)) {
+        return accumulator + field.type.size()
+      } else {
+        return accumulator + 8
+      }
+    }, 0)
   }
 
   /**
@@ -28,14 +46,13 @@ class NewMessage {
    */
   serialize (data, cutSignature) {
     const MessageHead = newType({
-      size: 10,
-      fields: {
-        network_id: { type: primitive.Uint8, size: 1, from: 0, to: 1 },
-        protocol_version: { type: primitive.Uint8, size: 1, from: 1, to: 2 },
-        message_id: { type: primitive.Uint16, size: 2, from: 2, to: 4 },
-        service_id: { type: primitive.Uint16, size: 2, from: 4, to: 6 },
-        payload: { type: primitive.Uint32, size: 4, from: 6, to: 10 }
-      }
+      fields: [
+        { name: 'network_id', type: primitive.Uint8 },
+        { name: 'protocol_version', type: primitive.Uint8 },
+        { name: 'message_id', type: primitive.Uint16 },
+        { name: 'service_id', type: primitive.Uint16 },
+        { name: 'payload', type: primitive.Uint32 }
+      ]
     })
 
     let buffer = MessageHead.serialize({
@@ -47,14 +64,14 @@ class NewMessage {
     })
 
     // serialize and append message body
-    buffer = serialization.serialize(buffer, MessageHead.size, data, this, true)
+    buffer = serialization.serialize(buffer, 10, data, this, true)
 
     // calculate payload and insert it into buffer
-    primitive.Uint32(buffer.length + SIGNATURE_LENGTH, buffer, MessageHead.fields.payload.from, MessageHead.fields.payload.to)
+    primitive.Uint32.serialize(buffer.length + SIGNATURE_LENGTH, buffer, 6)
 
     if (cutSignature !== true) {
       // append signature
-      primitive.Digest(this.signature, buffer, buffer.length, buffer.length + SIGNATURE_LENGTH)
+      primitive.Digest.serialize(this.signature, buffer, buffer.length)
     }
 
     return buffer

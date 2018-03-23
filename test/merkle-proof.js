@@ -293,8 +293,9 @@ describe('Check proof of Merkle tree', function () {
 
   it('should throw error when the tree with invalid value', function () {
     const Type = Exonum.newType({
-      size: 32,
-      fields: { hash: { type: Exonum.Hash, size: 32, from: 0, to: 32 } }
+      fields: [
+        { name: 'hash', type: Exonum.Hash }
+      ]
     });
 
     [42, 'Hello world', [], new Date()].forEach(function (val) {
@@ -312,8 +313,9 @@ describe('Check proof of Merkle tree', function () {
 
   it('should throw error when the tree with invalid value not corresponding to passed type', function () {
     const Type = Exonum.newType({
-      size: 32,
-      fields: { hash: { type: Exonum.Hash, size: 32, from: 0, to: 32 } }
+      fields: [
+        { name: 'hash', type: Exonum.Hash }
+      ]
     })
     const rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
     const count = 2

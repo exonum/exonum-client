@@ -9,23 +9,21 @@ const PROTOCOL_VERSION = 0
 const CORE_SERVICE_ID = 0
 const PRECOMMIT_MESSAGE_ID = 4
 const Block = newType({
-  size: 112,
-  fields: {
-    schema_version: { type: primitive.Uint16, size: 2, from: 0, to: 2 },
-    proposer_id: { type: primitive.Uint16, size: 2, from: 2, to: 4 },
-    height: { type: primitive.Uint64, size: 8, from: 4, to: 12 },
-    tx_count: { type: primitive.Uint32, size: 4, from: 12, to: 16 },
-    prev_hash: { type: primitive.Hash, size: 32, from: 16, to: 48 },
-    tx_hash: { type: primitive.Hash, size: 32, from: 48, to: 80 },
-    state_hash: { type: primitive.Hash, size: 32, from: 80, to: 112 }
-  }
+  fields: [
+    { name: 'schema_version', type: primitive.Uint16 },
+    { name: 'proposer_id', type: primitive.Uint16 },
+    { name: 'height', type: primitive.Uint64 },
+    { name: 'tx_count', type: primitive.Uint32 },
+    { name: 'prev_hash', type: primitive.Hash },
+    { name: 'tx_hash', type: primitive.Hash },
+    { name: 'state_hash', type: primitive.Hash }
+  ]
 })
 const SystemTime = newType({
-  size: 12,
-  fields: {
-    secs: { type: primitive.Uint64, size: 8, from: 0, to: 8 },
-    nanos: { type: primitive.Uint32, size: 4, from: 8, to: 12 }
-  }
+  fields: [
+    { name: 'secs', type: primitive.Uint64 },
+    { name: 'nanos', type: primitive.Uint32 }
+  ]
 })
 
 /**
@@ -63,19 +61,18 @@ export function verifyBlock (data, validators, networkId) {
   }
 
   const Precommit = newMessage({
-    size: 90,
     network_id: networkId,
     protocol_version: PROTOCOL_VERSION,
     message_id: PRECOMMIT_MESSAGE_ID,
     service_id: CORE_SERVICE_ID,
-    fields: {
-      validator: { type: primitive.Uint16, size: 2, from: 0, to: 2 },
-      height: { type: primitive.Uint64, size: 8, from: 2, to: 10 },
-      round: { type: primitive.Uint32, size: 4, from: 10, to: 14 },
-      propose_hash: { type: primitive.Hash, size: 32, from: 14, to: 46 },
-      block_hash: { type: primitive.Hash, size: 32, from: 46, to: 78 },
-      time: { type: SystemTime, size: 12, from: 78, to: 90 }
-    }
+    fields: [
+      { name: 'validator', type: primitive.Uint16 },
+      { name: 'height', type: primitive.Uint64 },
+      { name: 'round', type: primitive.Uint32 },
+      { name: 'propose_hash', type: primitive.Hash },
+      { name: 'block_hash', type: primitive.Hash },
+      { name: 'time', type: SystemTime }
+    ]
   })
 
   const validatorsTotalNumber = validators.length

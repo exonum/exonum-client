@@ -19,16 +19,11 @@ const MAX_UINT64 = '18446744073709551615'
  * @param {string} str
  * @param {Array} buffer
  * @param {number} from
- * @param {number} to
  */
-function insertHexadecimalToByteArray (str, buffer, from, to) {
+function insertHexadecimalToByteArray (str, buffer, from) {
   for (let i = 0; i < str.length; i += 2) {
     buffer[from] = parseInt(str.substr(i, 2), 16)
     from++
-
-    if (from > to) {
-      break
-    }
   }
   return buffer
 }
@@ -38,15 +33,15 @@ function insertHexadecimalToByteArray (str, buffer, from, to) {
  * @param {number|bigInt} number
  * @param {Array} buffer
  * @param {number} from
- * @param {number} to
+ * @param {number} size
  * @returns {boolean}
  */
-function insertIntegerToByteArray (number, buffer, from, to) {
+function insertIntegerToByteArray (number, buffer, from, size) {
   let value = bigInt(number) // convert a number-like object into a big integer
 
-  for (let pos = from; pos < to; pos++) {
+  for (let pos = 0; pos < size; pos++) {
     const divmod = value.divmod(256)
-    buffer[pos] = divmod.remainder.value
+    buffer[from + pos] = divmod.remainder.value
     value = divmod.quotient
   }
 
@@ -97,286 +92,350 @@ function insertStringToByteArray (str, buffer, from) {
   }
 }
 
-/**
- * @param {number} value
- * @param {Array} buffer
- * @param {number} from
- * @param {number} to
- * @returns {Array}
- */
-export function Int8 (value, buffer, from, to) {
-  if (!validate.validateInteger(value, MIN_INT8, MAX_INT8, from, to, 1)) {
-    throw new TypeError('Int8 of wrong type is passed: ' + value)
+export class Int8 {
+  static size () {
+    return 1
   }
 
-  if (value < 0) {
-    value = MAX_UINT8 + value + 1
-  }
+  /**
+   * @param {number} value
+   * @param {Array} buffer
+   * @param {number} from
+   * @returns {Array}
+   */
+  static serialize (value, buffer, from) {
+    if (!validate.validateInteger(value, MIN_INT8, MAX_INT8, from, this.size())) {
+      throw new TypeError('Int8 of wrong type is passed: ' + value)
+    }
 
-  return insertIntegerToByteArray(value, buffer, from, to)
+    if (value < 0) {
+      value = MAX_UINT8 + value + 1
+    }
+
+    return insertIntegerToByteArray(value, buffer, from, this.size())
+  }
 }
 
-/**
- * @param {number} value
- * @param {Array} buffer
- * @param {number} from
- * @param {number} to
- * @returns {Array}
- */
-export function Int16 (value, buffer, from, to) {
-  if (!validate.validateInteger(value, MIN_INT16, MAX_INT16, from, to, 2)) {
-    throw new TypeError('Int16 of wrong type is passed: ' + value)
+export class Int16 {
+  static size () {
+    return 2
   }
 
-  if (value < 0) {
-    value = MAX_UINT16 + value + 1
-  }
+  /**
+   * @param {number} value
+   * @param {Array} buffer
+   * @param {number} from
+   * @returns {Array}
+   */
+  static serialize (value, buffer, from) {
+    if (!validate.validateInteger(value, MIN_INT16, MAX_INT16, from, this.size())) {
+      throw new TypeError('Int16 of wrong type is passed: ' + value)
+    }
 
-  return insertIntegerToByteArray(value, buffer, from, to)
+    if (value < 0) {
+      value = MAX_UINT16 + value + 1
+    }
+
+    return insertIntegerToByteArray(value, buffer, from, this.size())
+  }
 }
 
-/**
- * @param {number} value
- * @param {Array} buffer
- * @param {number} from
- * @param {number} to
- * @returns {Array}
- */
-export function Int32 (value, buffer, from, to) {
-  if (!validate.validateInteger(value, MIN_INT32, MAX_INT32, from, to, 4)) {
-    throw new TypeError('Int32 of wrong type is passed: ' + value)
+export class Int32 {
+  static size () {
+    return 4
   }
 
-  if (value < 0) {
-    value = MAX_UINT32 + value + 1
-  }
+  /**
+   * @param {number} value
+   * @param {Array} buffer
+   * @param {number} from
+   * @returns {Array}
+   */
+  static serialize (value, buffer, from) {
+    if (!validate.validateInteger(value, MIN_INT32, MAX_INT32, from, this.size())) {
+      throw new TypeError('Int32 of wrong type is passed: ' + value)
+    }
 
-  return insertIntegerToByteArray(value, buffer, from, to)
+    if (value < 0) {
+      value = MAX_UINT32 + value + 1
+    }
+
+    return insertIntegerToByteArray(value, buffer, from, this.size())
+  }
 }
 
-/**
- * @param {number|string} value
- * @param {Array} buffer
- * @param {number} from
- * @param {number} to
- * @returns {Array}
- */
-export function Int64 (value, buffer, from, to) {
-  if (!validate.validateBigInteger(value, MIN_INT64, MAX_INT64, from, to, 8)) {
-    throw new TypeError('Int64 of wrong type is passed: ' + value)
+export class Int64 {
+  static size () {
+    return 8
   }
 
-  let val = bigInt(value)
+  /**
+   * @param {number|string} value
+   * @param {Array} buffer
+   * @param {number} from
+   * @returns {Array}
+   */
+  static serialize (value, buffer, from) {
+    if (!validate.validateBigInteger(value, MIN_INT64, MAX_INT64, from, this.size())) {
+      throw new TypeError('Int64 of wrong type is passed: ' + value)
+    }
 
-  if (val.isNegative()) {
-    val = bigInt(MAX_UINT64).plus(1).plus(val)
+    let val = bigInt(value)
+
+    if (val.isNegative()) {
+      val = bigInt(MAX_UINT64).plus(1).plus(val)
+    }
+
+    return insertIntegerToByteArray(val, buffer, from, this.size())
   }
-
-  return insertIntegerToByteArray(val, buffer, from, to)
 }
 
-/**
- * @param {number} value
- * @param {Array} buffer
- * @param {number} from
- * @param {number} to
- * @returns {Array}
- */
-export function Uint8 (value, buffer, from, to) {
-  if (!validate.validateInteger(value, 0, MAX_UINT8, from, to, 1)) {
-    throw new TypeError('Uint8 of wrong type is passed: ' + value)
+export class Uint8 {
+  static size () {
+    return 1
   }
 
-  return insertIntegerToByteArray(value, buffer, from, to)
+  /**
+   * @param {number} value
+   * @param {Array} buffer
+   * @param {number} from
+   * @returns {Array}
+   */
+  static serialize (value, buffer, from) {
+    if (!validate.validateInteger(value, 0, MAX_UINT8, from, this.size())) {
+      throw new TypeError('Uint8 of wrong type is passed: ' + value)
+    }
+
+    return insertIntegerToByteArray(value, buffer, from, this.size())
+  }
 }
 
-/**
- * @param {number} value
- * @param {Array} buffer
- * @param {number} from
- * @param {number} to
- * @returns {Array}
- */
-export function Uint16 (value, buffer, from, to) {
-  if (!validate.validateInteger(value, 0, MAX_UINT16, from, to, 2)) {
-    throw new TypeError('Uint16 of wrong type is passed: ' + value)
+export class Uint16 {
+  static size () {
+    return 2
   }
 
-  return insertIntegerToByteArray(value, buffer, from, to)
+  /**
+   * @param {number} value
+   * @param {Array} buffer
+   * @param {number} from
+   * @returns {Array}
+   */
+  static serialize (value, buffer, from) {
+    if (!validate.validateInteger(value, 0, MAX_UINT16, from, this.size())) {
+      throw new TypeError('Uint16 of wrong type is passed: ' + value)
+    }
+
+    return insertIntegerToByteArray(value, buffer, from, this.size())
+  }
 }
 
-/**
- * @param {number} value
- * @param {Array} buffer
- * @param {number} from
- * @param {number} to
- * @returns {Array}
- */
-export function Uint32 (value, buffer, from, to) {
-  if (!validate.validateInteger(value, 0, MAX_UINT32, from, to, 4)) {
-    throw new TypeError('Uint32 of wrong type is passed: ' + value)
+export class Uint32 {
+  static size () {
+    return 4
   }
 
-  return insertIntegerToByteArray(value, buffer, from, to)
+  /**
+   * @param {number} value
+   * @param {Array} buffer
+   * @param {number} from
+   * @returns {Array}
+   */
+  static serialize (value, buffer, from) {
+    if (!validate.validateInteger(value, 0, MAX_UINT32, from, this.size())) {
+      throw new TypeError('Uint32 of wrong type is passed: ' + value)
+    }
+
+    return insertIntegerToByteArray(value, buffer, from, this.size())
+  }
 }
 
-/**
- * @param {number|string} value
- * @param {Array} buffer
- * @param {number} from
- * @param {number} to
- * @returns {Array}
- */
-export function Uint64 (value, buffer, from, to) {
-  if (!validate.validateBigInteger(value, 0, MAX_UINT64, from, to, 8)) {
-    throw new TypeError('Uint64 of wrong type is passed: ' + value)
+export class Uint64 {
+  static size () {
+    return 8
   }
 
-  const val = bigInt(value)
+  /**
+   * @param {number|string} value
+   * @param {Array} buffer
+   * @param {number} from
+   * @returns {Array}
+   */
+  static serialize (value, buffer, from) {
+    if (!validate.validateBigInteger(value, 0, MAX_UINT64, from, this.size())) {
+      throw new TypeError('Uint64 of wrong type is passed: ' + value)
+    }
 
-  return insertIntegerToByteArray(val, buffer, from, to)
+    const val = bigInt(value)
+
+    return insertIntegerToByteArray(val, buffer, from, this.size())
+  }
 }
 
-/**
- * @param {number} value
- * @param {Array} buffer
- * @param {number} from
- * @param {number} to
- * @returns {Array}
- */
-export function Float32 (value, buffer, from, to) {
-  if (!validate.validateFloat(value, from, to, 4)) {
-    throw new TypeError('Float32 of wrong type is passed: ' + value)
+export class Float32 {
+  static size () {
+    return 4
   }
 
-  return insertFloatToByteArray(value, buffer, from, 23, 4)
+  /**
+   * @param {string} value
+   * @param {Array} buffer
+   * @param {number} from
+   * @returns {Array}
+   */
+  static serialize (value, buffer, from) {
+    if (!validate.validateFloat(value, from, this.size())) {
+      throw new TypeError('Float32 of wrong type is passed: ' + value)
+    }
+
+    return insertFloatToByteArray(value, buffer, from, 23, this.size())
+  }
 }
 
-/**
- * @param {number} value
- * @param {Array} buffer
- * @param {number} from
- * @param {number} to
- * @returns {Array}
- */
-export function Float64 (value, buffer, from, to) {
-  if (!validate.validateFloat(value, from, to, 8)) {
-    throw new TypeError('Float64 of wrong type is passed: ' + value)
+export class Float64 {
+  static size () {
+    return 8
   }
 
-  return insertFloatToByteArray(value, buffer, from, 52, 8)
+  /**
+   * @param {string} value
+   * @param {Array} buffer
+   * @param {number} from
+   * @returns {Array}
+   */
+  static serialize (value, buffer, from) {
+    if (!validate.validateFloat(value, from, this.size())) {
+      throw new TypeError('Float64 of wrong type is passed: ' + value)
+    }
+
+    return insertFloatToByteArray(value, buffer, from, 52, this.size())
+  }
 }
 
-/**
- * @param {string} string
- * @param {Array} buffer
- * @param {number} from
- * @param {number} to
- * @param {number} relativeFromIndex
- * @returns {Array}
- */
-export function String (string, buffer, from, to, relativeFromIndex) {
-  if (typeof string !== 'string') {
-    throw new TypeError('Wrong data type is passed as String. String is required')
-  } else if ((to - from) !== 8) {
-    throw new Error('String segment is of wrong length. 8 bytes long is required to store transmitted value.')
+export class String {
+  static size () {
+    return 8
   }
 
-  const bufferLength = buffer.length
-  Uint32(relativeFromIndex, buffer, from, from + 4) // index where string content starts in buffer
-  insertStringToByteArray(string, buffer, bufferLength) // string content
-  Uint32(buffer.length - bufferLength, buffer, from + 4, from + 8) // string length
+  /**
+   * @param {string} string
+   * @param {Array} buffer
+   * @param {number} from
+   * @param {number} relativeFromIndex
+   * @returns {Array}
+   */
+  static serialize (string, buffer, from, relativeFromIndex) {
+    if (typeof string !== 'string') {
+      throw new TypeError('Wrong data type is passed as String. String is required')
+    }
 
-  return buffer
+    const bufferLength = buffer.length
+    Uint32.serialize(relativeFromIndex, buffer, from) // index where string content starts in buffer
+    insertStringToByteArray(string, buffer, bufferLength) // string content
+    Uint32.serialize(buffer.length - bufferLength, buffer, from + 4) // string length
+
+    return buffer
+  }
 }
 
-/**
- * @param {string} hash
- * @param {Array} buffer
- * @param {number} from
- * @param {number} to
- * @returns {Array}
- */
-export function Hash (hash, buffer, from, to) {
-  if (!validate.validateHexadecimal(hash)) {
-    throw new TypeError('Hash of wrong type is passed: ' + hash)
+export class Hash {
+  static size () {
+    return 32
   }
 
-  if ((to - from) !== 32) {
-    throw new Error('Hash segment is of wrong length. 32 bytes long is required to store transmitted value.')
-  }
+  /**
+   * @param {string} value
+   * @param {Array} buffer
+   * @param {number} from
+   * @returns {Array}
+   */
+  static serialize (value, buffer, from) {
+    if (!validate.validateHexadecimal(value)) {
+      throw new TypeError('Hash of wrong type is passed: ' + value)
+    }
 
-  return insertHexadecimalToByteArray(hash, buffer, from, to)
+    return insertHexadecimalToByteArray(value, buffer, from)
+  }
 }
 
-/**
- * @param {string} digest
- * @param {Array} buffer
- * @param {number} from
- * @param {number} to
- * @returns {Array}
- */
-export function Digest (digest, buffer, from, to) {
-  if (!validate.validateHexadecimal(digest, 64)) {
-    throw new TypeError('Digest of wrong type is passed: ' + digest)
+export class Digest {
+  static size () {
+    return 64
   }
 
-  if ((to - from) !== 64) {
-    throw new Error('Digest segment is of wrong length. 64 bytes long is required to store transmitted value.')
-  }
+  /**
+   * @param {string} value
+   * @param {Array} buffer
+   * @param {number} from
+   * @returns {Array}
+   */
+  static serialize (value, buffer, from) {
+    if (!validate.validateHexadecimal(value, this.size())) {
+      throw new TypeError('Digest of wrong type is passed: ' + value)
+    }
 
-  return insertHexadecimalToByteArray(digest, buffer, from, to)
+    return insertHexadecimalToByteArray(value, buffer, from)
+  }
 }
 
-/**
- * @param {string} publicKey
- * @param {Array} buffer
- * @param {number} from
- * @param {number} to
- * @returns {Array}
- */
-export function PublicKey (publicKey, buffer, from, to) {
-  if (!validate.validateHexadecimal(publicKey)) {
-    throw new TypeError('PublicKey of wrong type is passed: ' + publicKey)
+export class PublicKey {
+  static size () {
+    return 32
   }
 
-  if ((to - from) !== 32) {
-    throw new Error('PublicKey segment is of wrong length. 32 bytes long is required to store transmitted value.')
-  }
+  /**
+   * @param {string} value
+   * @param {Array} buffer
+   * @param {number} from
+   * @returns {Array}
+   */
+  static serialize (value, buffer, from) {
+    if (!validate.validateHexadecimal(value)) {
+      throw new TypeError('PublicKey of wrong type is passed: ' + value)
+    }
 
-  return insertHexadecimalToByteArray(publicKey, buffer, from, to)
+    return insertHexadecimalToByteArray(value, buffer, from)
+  }
 }
 
-/**
- * @param {boolean} value
- * @param {Array} buffer
- * @param {number} from
- * @param {number} to
- * @returns {Array}
- */
-export function Bool (value, buffer, from, to) {
-  if (typeof value !== 'boolean') {
-    throw new TypeError('Wrong data type is passed as Boolean. Boolean is required')
-  } else if ((to - from) !== 1) {
-    throw new Error('Bool segment is of wrong length. 1 bytes long is required to store transmitted value.')
+export class Bool {
+  static size () {
+    return 1
   }
 
-  return insertIntegerToByteArray(value ? 1 : 0, buffer, from, to)
+  /**
+   * @param {boolean} value
+   * @param {Array} buffer
+   * @param {number} from
+   * @returns {Array}
+   */
+  static serialize (value, buffer, from) {
+    if (typeof value !== 'boolean') {
+      throw new TypeError('Wrong data type is passed as Boolean. Boolean is required')
+    }
+
+    return insertIntegerToByteArray(value ? 1 : 0, buffer, from, this.size())
+  }
 }
+
+export class Timespec {
+  static size () {
+    return 8
+  }
 
 /**
  * @param {number|string} nanoseconds
  * @param {Array} buffer
  * @param {number} from
- * @param {number} to
  * @returns {Array}
  */
-export function Timespec (nanoseconds, buffer, from, to) {
-  if (!validate.validateBigInteger(nanoseconds, 0, MAX_UINT64, from, to, 8)) {
-    throw new TypeError('Timespec of wrong type is passed: ' + nanoseconds)
+  static serialize (nanoseconds, buffer, from) {
+    if (!validate.validateBigInteger(nanoseconds, 0, MAX_UINT64, from, this.size())) {
+      throw new TypeError('Timespec of wrong type is passed: ' + nanoseconds)
+    }
+
+    const val = bigInt(nanoseconds)
+
+    return insertIntegerToByteArray(val, buffer, from, this.size())
   }
-
-  const val = bigInt(nanoseconds)
-
-  return insertIntegerToByteArray(val, buffer, from, to)
 }

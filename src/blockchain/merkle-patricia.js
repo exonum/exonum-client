@@ -17,28 +17,25 @@ const MERKLE_PATRICIA_KEY_LENGTH = 32
  */
 export function merklePatriciaProof (rootHash, proofNode, key, type) {
   const DBKey = newType({
-    size: 34,
-    fields: {
-      variant: { type: primitive.Uint8, size: 1, from: 0, to: 1 },
-      key: { type: primitive.Hash, size: 32, from: 1, to: 33 },
-      length: { type: primitive.Uint8, size: 1, from: 33, to: 34 }
-    }
+    fields: [
+      { name: 'variant', type: primitive.Uint8 },
+      { name: 'key', type: primitive.Hash },
+      { name: 'length', type: primitive.Uint8 }
+    ]
   })
   const Branch = newType({
-    size: 132,
-    fields: {
-      left_hash: { type: primitive.Hash, size: 32, from: 0, to: 32 },
-      right_hash: { type: primitive.Hash, size: 32, from: 32, to: 64 },
-      left_key: { type: DBKey, size: 34, from: 64, to: 98 },
-      right_key: { type: DBKey, size: 34, from: 98, to: 132 }
-    }
+    fields: [
+      { name: 'left_hash', type: primitive.Hash },
+      { name: 'right_hash', type: primitive.Hash },
+      { name: 'left_key', type: DBKey },
+      { name: 'right_key', type: DBKey }
+    ]
   })
   const RootBranch = newType({
-    size: 66,
-    fields: {
-      key: { type: DBKey, size: 34, from: 0, to: 34 },
-      hash: { type: primitive.Hash, size: 32, from: 34, to: 66 }
-    }
+    fields: [
+      { name: 'key', type: DBKey },
+      { name: 'hash', type: primitive.Hash }
+    ]
   })
 
   /**

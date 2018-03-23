@@ -7,11 +7,10 @@ const Exonum = require('../src')
 describe('Examples from README.md', function () {
   describe('Custom type section', function () {
     const User = Exonum.newType({
-      size: 9,
-      fields: {
-        name: { type: Exonum.String, size: 8, from: 0, to: 8 },
-        age: { type: Exonum.Int8, size: 1, from: 8, to: 9 }
-      }
+      fields: [
+        { name: 'name', type: Exonum.String },
+        { name: 'age', type: Exonum.Int8 }
+      ]
     })
     const data = {
       name: 'Tom',
@@ -34,16 +33,15 @@ describe('Examples from README.md', function () {
 
   describe('Transaction section', function () {
     const SendFunds = Exonum.newMessage({
-      size: 72,
       network_id: 0,
       protocol_version: 0,
       service_id: 0,
       message_id: 0,
-      fields: {
-        from: { type: Exonum.Hash, size: 32, from: 0, to: 32 },
-        to: { type: Exonum.Hash, size: 32, from: 32, to: 64 },
-        amount: { type: Exonum.Uint64, size: 8, from: 64, to: 72 }
-      }
+      fields: [
+        { name: 'from', type: Exonum.Hash },
+        { name: 'to', type: Exonum.Hash },
+        { name: 'amount', type: Exonum.Uint64 }
+      ]
     })
     const data = {
       from: '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030',

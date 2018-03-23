@@ -7,7 +7,10 @@ import * as serialization from './serialization'
 class NewArray {
   constructor (type) {
     this.type = type.type
-    this.size = type.size
+  }
+
+  size () {
+    return 8
   }
 
   /**

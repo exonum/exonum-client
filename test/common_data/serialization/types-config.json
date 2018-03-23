@@ -1,194 +1,142 @@
 {
   "type1": {
-    "size": 32,
-    "fields": {
-      "hash": {
-        "type": "Hash",
-        "size": 32,
-        "from": 0,
-        "to": 32
+    "fields": [
+      {
+        "name": "hash",
+        "type": "Hash"
       }
-    }
+    ]
   },
   "type2": {
-    "size": 32,
-    "fields": {
-      "key": {
-        "type": "PublicKey",
-        "size": 32,
-        "from": 0,
-        "to": 32
+    "fields": [
+      {
+        "name": "key",
+        "type": "PublicKey"
       }
-    }
+    ]
   },
   "type3": {
-    "size": 64,
-    "fields": {
-      "key": {
-        "type": "Digest",
-        "size": 64,
-        "from": 0,
-        "to": 64
+    "fields": [
+      {
+        "name": "key",
+        "type": "Digest"
       }
-    }
+    ]
   },
   "type4": {
-    "size": 8,
-    "fields": {
-      "since": {
-        "type": "Timespec",
-        "size": 8,
-        "from": 0,
-        "to": 8
+    "fields": [
+      {
+        "name": "since",
+        "type": "Timespec"
       }
-    }
+    ]
   },
   "type5": {
-    "size": 1,
-    "fields": {
-      "active": {
-        "type": "Bool",
-        "size": 1,
-        "from": 0,
-        "to": 1
+    "fields": [
+      {
+        "name": "active",
+        "type": "Bool"
       }
-    }
+    ]
   },
   "type6": {
-    "size": 8,
-    "fields": {
-      "text": {
-        "type": "String",
-        "size": 8,
-        "from": 0,
-        "to": 8
+    "fields": [
+      {
+        "name": "text",
+        "type": "String"
       }
-    }
+    ]
   },
   "type7": {
-    "size": 1,
-    "fields": {
-      "balance": {
-        "type": "Int8",
-        "size": 1,
-        "from": 0,
-        "to": 1
+    "fields": [
+      {
+        "name": "balance",
+        "type": "Int8"
       }
-    }
+    ]
   },
   "type8": {
-    "size": 2,
-    "fields": {
-      "balance": {
-        "type": "Int16",
-        "size": 2,
-        "from": 0,
-        "to": 2
+    "fields": [
+      {
+        "name": "balance",
+        "type": "Int16"
       }
-    }
+    ]
   },
   "type9": {
-    "size": 4,
-    "fields": {
-      "balance": {
-        "type": "Int32",
-        "size": 4,
-        "from": 0,
-        "to": 4
+    "fields": [
+      {
+        "name": "balance",
+        "type": "Int32"
       }
-    }
+    ]
   },
   "type10": {
-    "size": 8,
-    "fields": {
-      "balance": {
-        "type": "Int64",
-        "size": 8,
-        "from": 0,
-        "to": 8
+    "fields": [
+      {
+        "name": "balance",
+        "type": "Int64"
       }
-    }
+    ]
   },
   "type11": {
-    "size": 1,
-    "fields": {
-      "balance": {
-        "type": "Uint8",
-        "size": 1,
-        "from": 0,
-        "to": 1
+    "fields": [
+      {
+        "name": "balance",
+        "type": "Uint8"
       }
-    }
+    ]
   },
   "type12": {
-    "size": 2,
-    "fields": {
-      "balance": {
-        "type": "Uint16",
-        "size": 2,
-        "from": 0,
-        "to": 2
+    "fields": [
+      {
+        "name": "balance",
+        "type": "Uint16"
       }
-    }
+    ]
   },
   "type13": {
-    "size": 4,
-    "fields": {
-      "balance": {
-        "type": "Uint32",
-        "size": 4,
-        "from": 0,
-        "to": 4
+    "fields": [
+      {
+        "name": "balance",
+        "type": "Uint32"
       }
-    }
+    ]
   },
   "type14": {
-    "size": 8,
-    "fields": {
-      "balance": {
-        "type": "Uint64",
-        "size": 8,
-        "from": 0,
-        "to": 8
+    "fields": [
+      {
+        "name": "balance",
+        "type": "Uint64"
       }
-    }
+    ]
   },
   "type15-1": {
     "as": "array",
-    "size": 32,
     "type": "Hash"
   },
   "type15-2": {
-    "size": 8,
-    "fields": {
-      "list": {
-        "type": "type15-1",
-        "size": 8,
-        "from": 0,
-        "to": 8
+    "fields": [
+      {
+        "name": "list",
+        "type": "type15-1"
       }
-    }
+    ]
   },
   "type16": {
-    "size": 4,
-    "fields": {
-      "balance": {
-        "type": "Float32",
-        "size": 4,
-        "from": 0,
-        "to": 4
+    "fields": [
+      {
+        "name": "balance",
+        "type": "Float32"
       }
-    }
+    ]
   },
   "type17": {
-    "size": 8,
-    "fields": {
-      "balance": {
-        "type": "Float64",
-        "size": 8,
-        "from": 0,
-        "to": 8
+    "fields": [
+      {
+        "name": "balance",
+        "type": "Float64"
       }
-    }
+    ]
   }
 }
