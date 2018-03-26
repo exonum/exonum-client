@@ -119,8 +119,6 @@ function precheckProof () {
         throw MapProofError.duplicatePath(path)
       case 1:
         throw MapProofError.invalidOrdering(prevPath, path)
-      default:
-        throw new Error('unreachable')
     }
   }
 

@@ -403,8 +403,9 @@ describe('MapProof', () => {
     const validKey = validHash
     const validValue = {
       pub_key: validKey,
-      name: 'Alice',
-      balance: '100'
+      balance: '100',
+      history_len: '0',
+      history_hash: '0000000000000000000000000000000000000000000000000000000000000000'
     }
     const malformedEntries = [
       // No `missing` or `key` / `value`
@@ -417,7 +418,11 @@ describe('MapProof', () => {
 
       // Malformed `key` / `value`
       { key: validKey },
-      { value: validValue }
+      { value: validValue },
+
+      // Ambigous entry type
+      { missing: validKey, key: validKey },
+      { missing: validKey, value: validValue }
     ]
 
     malformedEntries.forEach(entry => {
