@@ -5,7 +5,26 @@ import { newType } from '../types/generic'
 import * as primitive from '../types/primitive'
 import ProofPath from './ProofPath'
 
+/**
+ * Proof of existence and/or absence of certain elements from a Merkelized
+ * map index.
+ */
 export class MapProof {
+  /**
+   * Creates a new instance of a proof.
+   *
+   * @param {Object} json
+   *   JSON object containing (untrusted) proof
+   * @param {{serialize: (any) => Array<number>}} keyType
+   *   Type of keys used in the underlying Merkelized map. Usually, `PublicKey`
+   *   or `Hash`. The keys must serialize to exactly 32 bytes.
+   * @param {{hash?: (any) => string, serialize: (any) => Array<number>}} valueType
+   *   Type of values used in the underlying Merkelized map. Usually, it should
+   *   be a type created with the `newType` function. The type should possess
+   *   one of `hash` or `serialize` methods.
+   * @throws {MapProofError}
+   *   if the proof is malformed
+   */
   constructor (json, keyType, valueType) {
     this.proof = parseProof(json.proof)
     this.entries = parseEntries(json.entries, keyType, valueType)

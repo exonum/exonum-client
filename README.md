@@ -535,21 +535,26 @@ An [example of verifying a Merkle tree](examples/merkle-tree.md).
 ### Merkle Patricia tree
 
 ```javascript
-let data = Exonum.merklePatriciaProof(rootHash, proofNode, key, type)
+let proof = new Exonum.MapProof(json, KeyType, ValueType)
+console.log(proof.entries)
 ```
 
-The `merklePatriciaProof` method is used to validate the Merkle Patricia tree and extract a **data**.
-
-Returns `null` if the tree is valid but data is not found.
+The `MapProof` class is used to validate proofs for Merkelized maps.
 
 | Argument | Description | Type |
 |---|---|---|
-| **rootHash** | The root hash of the Merkle Patricia tree as hexadecimal string. | `String` |
-| **proofNode** | The Merkle Patricia tree. | `Object` |
-| **key** | Searched data key as hexadecimal string. | `String` |
-| **type** | Definition of the data type. *Optional. The `merklePatriciaProof` method expects to find byte array as value in the tree if `type` is not passed.* | [Custom data type](#define-data-type) |
+| **json** | The JSON presentation of the proof obtained from a full node. | `Object` |
+| **KeyType** | Data type for keys in the Merkelized map. | [Custom](#define-data-type) or built-in data type |
+| **ValueType** | Data type for values in the Merkelized map. | [Custom data type](#define-data-type) |
 
-An [example of verifying a Merkle Patricia tree](examples/merkle-patricia-tree.md).
+The returned object has the following fields:
+
+- **merkleRoot:** string  
+  Hexadecimal hash of the root of the underlying Merkelized map
+- **missingKeys:** Set<KeyType\>  
+  Set of keys which the proof asserts as missing from the map
+- **entries:** Map<KeyType, ValueType\>  
+  Map of key-value pairs that the are proved to exist in the map
 
 ## Integrity checks
 
