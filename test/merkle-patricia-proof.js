@@ -323,6 +323,40 @@ describe('MapProof', () => {
     ]
   })
 
+  describe('type checks', () => {
+    it('should fail on missing key and value type', () => {
+      const json = { entries: [], proof: [] }
+      expect(() => new MapProof(json)).to.throw('key type')
+    })
+
+    it('should fail on missing value type', () => {
+      const json = { entries: [], proof: [] }
+      expect(() => new MapProof(json, PublicKey)).to.throw('value type')
+    })
+
+    it('should fail on incorrect key type', () => {
+      const json = { entries: [], proof: [] }
+      const MyType = { foo: 'bar' }
+      expect(() => new MapProof(json, MyType, Wallet)).to.throw('key type')
+    })
+
+    it('should fail on incorrect value type', () => {
+      const json = { entries: [], proof: [] }
+      const MyType = { foo: 'bar' }
+      expect(() => new MapProof(json, PublicKey, MyType)).to.throw('value type')
+    })
+
+    it('should fail on incorrect key type serialization size', () => {
+      const json = {
+        proof: [],
+        entries: [
+          { missing: 100 }
+        ]
+      }
+      expect(() => new MapProof(json, Exonum.Uint32, Wallet)).to.throw('key type')
+    })
+  })
+
   describe('initial parsing', () => {
     it('should throw on malformed `proof` field', () => {
       const objects = [

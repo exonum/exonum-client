@@ -148,6 +148,11 @@ export default class ProofPath {
   }
 }
 
+/**
+ * Expected length of byte buffers used to create `ProofPath`s.
+ */
+ProofPath.BYTE_LENGTH = BIT_LENGTH / 8
+
 ProofPath.TYPE = newType({
   fields: [
     { name: 'isTerminal', type: primitive.Bool },

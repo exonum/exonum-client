@@ -9,7 +9,18 @@ export class MapProof {
   constructor (json, keyType, valueType) {
     this.proof = parseProof(json.proof)
     this.entries = parseEntries(json.entries, keyType, valueType)
+
+    if (!keyType || typeof keyType.serialize !== 'function') {
+      throw new TypeError('No `serialize` method in the key type')
+    }
     this.keyType = keyType
+
+    if (!valueType || (
+      typeof valueType.serialize !== 'function' &&
+      typeof valueType.hash !== 'function'
+    )) {
+      throw new TypeError('No `hash` or `serialize` method in the value type')
+    }
     this.valueType = valueType
 
     precheckProof.call(this)
@@ -68,6 +79,10 @@ function parseProof (proof) {
 function parseEntries (entries, keyType, valueType) {
   function createPath (data) {
     const bytes = keyType.serialize(data, [], 0)
+    if (bytes.length !== ProofPath.BYTE_LENGTH) {
+      throw MapProofError.invalidKeyType(ProofPath.BYTE_LENGTH)
+    }
+
     return new ProofPath(Uint8Array.from(bytes))
   }
 
@@ -262,5 +277,9 @@ export class MapProofError extends Error {
 
   static nonTerminalNode (path) {
     return new this('non-terminal isolated node in proof')
+  }
+
+  static invalidKeyType (expectedLength) {
+    return new this(`invalid key type; keys should serialize to ${expectedLength}-byte buffers`)
   }
 }
