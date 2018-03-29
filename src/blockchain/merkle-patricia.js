@@ -58,7 +58,7 @@ export class MapProof {
       ]
 
       if (pathA.compare(pathB) === 0) {
-        throw MapProofError.duplicatePath(pathA)
+        throw new MapProofError('duplicatePath', pathA)
       }
     }
 
@@ -78,7 +78,7 @@ export class MapProof {
 
 function parseProof (proof) {
   if (!Array.isArray(proof)) {
-    throw MapProofError.malformedProof()
+    throw new MapProofError('malformedProof')
   }
 
   const validEntries = proof.every(({ path, hash }) => {
@@ -86,7 +86,7 @@ function parseProof (proof) {
       /^[0-9a-f]{64}$/i.test(hash)
   })
   if (!validEntries) {
-    throw MapProofError.malformedProof()
+    throw new MapProofError('malformedProof')
   }
 
   return proof.map(({ path, hash }) => ({
@@ -99,22 +99,23 @@ function parseEntries (entries, keyType, valueType) {
   function createPath (data) {
     const bytes = keyType.serialize(data, [], 0)
     if (bytes.length !== ProofPath.BYTE_LENGTH) {
-      throw MapProofError.invalidKeyType(ProofPath.BYTE_LENGTH)
+      throw new TypeError('invalid key type; keys should serialize to ' +
+        `${ProofPath.BYTE_LENGTH}-byte buffers`)
     }
 
     return new ProofPath(Uint8Array.from(bytes))
   }
 
   if (!Array.isArray(entries)) {
-    throw MapProofError.malformedEntries()
+    throw new MapProofError('malformedEntries')
   }
 
   return entries.map(({ missing, key, value }) => {
     if (missing === undefined && (key === undefined || value === undefined)) {
-      throw MapProofError.unknownEntryType()
+      throw new MapProofError('unknownEntryType')
     }
     if (missing !== undefined && (key !== undefined || value !== undefined)) {
-      throw MapProofError.ambiguousEntryType()
+      throw new MapProofError('ambiguousEntryType')
     }
 
     if (missing !== undefined) {
@@ -146,13 +147,13 @@ function precheckProof () {
     switch (prevPath.compare(path)) {
       case -1:
         if (path.startsWith(prevPath)) {
-          throw MapProofError.embeddedPaths(prevPath, path)
+          throw new MapProofError('embeddedPaths', prevPath, path)
         }
         break
       case 0:
-        throw MapProofError.duplicatePath(path)
+        throw new MapProofError('duplicatePath', path)
       case 1:
-        throw MapProofError.invalidOrdering(prevPath, path)
+        throw new MapProofError('invalidOrdering', prevPath, path)
     }
   }
 
@@ -165,14 +166,14 @@ function precheckProof () {
     })
 
     if (index >= 0) {
-      throw MapProofError.duplicatePath(keyPath)
+      throw new MapProofError('duplicatePath', keyPath)
     } else {
       const insertionIndex = -index - 1
 
       if (insertionIndex > 0) {
         const prevPath = this.proof[insertionIndex - 1].path
         if (keyPath.startsWith(prevPath)) {
-          throw MapProofError.embeddedPaths(prevPath, keyPath)
+          throw new MapProofError('embeddedPaths', prevPath, keyPath)
         }
       }
     }
@@ -231,7 +232,7 @@ function collect (entries) {
 
     case 1:
       if (!entries[0].path.isTerminal) {
-        throw MapProofError.nonTerminalNode(entries[0].path)
+        throw new MapProofError('nonTerminalNode', entries[0].path)
       } else {
         return hashIsolatedNode(entries[0])
       }
@@ -265,40 +266,34 @@ function collect (entries) {
   }
 }
 
+/**
+ * Error indicating a malformed `MapProof`.
+ */
 export class MapProofError extends Error {
-  static malformedProof () {
-    return new this('malformed `proof` part of the proof')
-  }
-
-  static malformedEntries () {
-    return new this('malformed `entries` part of the proof')
-  }
-
-  static unknownEntryType () {
-    return new this('malformed `entries` part of the proof')
-  }
-
-  static ambiguousEntryType () {
-    return new this('malformed `entries` part of the proof')
-  }
-
-  static embeddedPaths (prevPath, path) {
-    return new this(`embedded paths in proof: ${prevPath} is a prefix of ${path}`)
-  }
-
-  static duplicatePath (path) {
-    return new this(`duplicate ${path} in proof`)
-  }
-
-  static invalidOrdering (prevPath, path) {
-    return new this('invalid path ordering')
-  }
-
-  static nonTerminalNode (path) {
-    return new this('non-terminal isolated node in proof')
-  }
-
-  static invalidKeyType (expectedLength) {
-    return new this(`invalid key type; keys should serialize to ${expectedLength}-byte buffers`)
+  constructor (type, ...args) {
+    switch (type) {
+      case 'malformedProof':
+        super('malformed `proof` part of the proof')
+        break
+      case 'malformedEntries':
+      case 'unknownEntryType':
+      case 'ambiguousEntryType':
+        super('malformed `entries` part of the proof')
+        break
+      case 'embeddedPaths':
+        super(`embedded paths in proof: ${args[0]} is a prefix of ${args[1]}`)
+        break
+      case 'duplicatePath':
+        super(`duplicate ${args[0]} in proof`)
+        break
+      case 'invalidOrdering':
+        super('invalid path ordering')
+        break
+      case 'nonTerminalNode':
+        super('non-terminal isolated node in proof')
+        break
+      default:
+        super(type)
+    }
   }
 }
