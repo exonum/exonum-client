@@ -20,13 +20,12 @@ const proofNode = {
 }
 const key = 'f1ea85f36673a9a8d226bd4c3ba12489a17dbee038aee1ccce1a06b1676223af'
 let user = Exonum.newType({
-  size: 21,
-  fields: {
-    firstName: {type: Exonum.String, size: 8, from: 0, to: 8},
-    lastName: {type: Exonum.String, size: 8, from: 8, to: 16},
-    age: {type: Exonum.Uint8, size: 1, from: 16, to: 17},
-    balance: {type: Exonum.Uint32, size: 4, from: 17, to: 21}
-  }
+  fields: [
+    { name: 'firstName', type: Exonum.String },
+    { name: 'lastName', type: Exonum.String },
+    { name: 'age', type: Exonum.Uint8 },
+    { name: 'balance', type: Exonum.Uint32 }
+  ]
 })
 
 let data = Exonum.merklePatriciaProof(rootHash, proofNode, key, user) // {firstName: 'John', lastName: 'Doe', age: 28, balance: 2500}

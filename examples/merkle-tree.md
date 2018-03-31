@@ -21,13 +21,12 @@ const proofNode = {
 }
 const range = [0, 0]
 let user = Exonum.newType({
-  size: 21,
-  fields: {
-    firstName: {type: Exonum.String, size: 8, from: 0, to: 8},
-    lastName: {type: Exonum.String, size: 8, from: 8, to: 16},
-    age: {type: Exonum.Uint8, size: 1, from: 16, to: 17},
-    balance: {type: Exonum.Uint32, size: 4, from: 17, to: 21}
-  }
+  fields: [
+    { name: 'firstName', type: Exonum.String },
+    { name: 'lastName', type: Exonum.String },
+    { name: 'age', type: Exonum.Uint8 },
+    { name: 'balance', type: Exonum.Uint32 }
+  ]
 })
 
 let elements = Exonum.merkleProof(rootHash, count, proofNode, range, user) // [{firstName: 'John', lastName: 'Doe', age: 28, balance: 2500}]
