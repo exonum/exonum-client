@@ -53,6 +53,7 @@ Contains numerous helper functions.
 * [Contributing](#contributing)
   * [Coding standards](#coding-standards)
   * [Test coverage](#test-coverage)
+* [Changelog](#changelog)
 * [License](#license)
 
 ## Getting started
@@ -676,6 +677,10 @@ we used [`.editorconfig`](.editorconfig) configuration file.
 
 All functions must include relevant unit tests.
 This applies to both of adding new features and fixing existed bugs.
+
+## Changelog
+
+Detailed changes for each release are documented in the [CHANGELOG](CHANGELOG.md) file.
 
 ## License
 
