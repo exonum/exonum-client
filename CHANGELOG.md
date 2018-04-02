@@ -18,6 +18,8 @@ This problem also affected the validation of the Merkle Patricia tree. #80
 
 ## 0.4.0 (Feb 9, 2018)
 
+**Light client become compatible with Exonum core starting with version [0.5](https://github.com/exonum/exonum/blob/master/CHANGELOG.md#05---2018-01-30)**.
+
 * Change order of bytes and bits in the `DBKey` keys of Merkle Patricia.
 Order is changed in Exonum core in [0.5](https://github.com/exonum/exonum/blob/master/CHANGELOG.md#05---2018-01-30). #78
 * Extend usage examples and move them into separate files. #77
@@ -52,4 +54,4 @@ Order is changed in Exonum core in [0.5](https://github.com/exonum/exonum/blob/m
 ## 0.1.0 (Jul 18, 2017)
 
 The first release of JavaScript client for Exonum blockchain,
-matching [the corresponding release](https://github.com/exonum/exonum/releases/tag/v0.1) of the Exonum core repository.
+matching [release 0.1](https://github.com/exonum/exonum/releases/tag/v0.1) of the Exonum core repository.
