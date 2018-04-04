@@ -77,6 +77,29 @@ export function uint8ArrayToHexadecimal (uint8arr) {
 }
 
 /**
+ * Convert uint8Array into binary string
+ * @param {Uint8Array} uint8arr
+ * @returns {string}
+ */
+export function uint8ArrayToBinaryString (uint8arr) {
+  let binaryStr = ''
+
+  if (!(uint8arr instanceof Uint8Array)) {
+    throw new TypeError('Wrong data type of array of 8-bit integers. Uint8Array is expected')
+  }
+
+  for (let i = 0; i < uint8arr.length; i++) {
+    let bin = strReverse(uint8arr[i].toString(2))
+    while (bin.length < 8) {
+      bin = bin + '0'
+    }
+    binaryStr += bin
+  }
+
+  return binaryStr
+}
+
+/**
  * Convert binary string into uint8Array
  * @param {string} binaryStr
  * @returns {Uint8Array}

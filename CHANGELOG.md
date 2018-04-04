@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.1 (Apr 4, 2018)
+
+* Add Uint8Array to Binary String convertor (`uint8ArrayToBinaryString` method). #88
+
 ## 0.6.0 (Mar 24, 2018)
 
 * Custom data type and transaction no longer require manual `size`, `from` and `to` specification.
