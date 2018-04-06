@@ -165,7 +165,6 @@
   },
   "addUserArray": {
     "as": "message",
-    "network_id": 0,
     "protocol_version": 0,
     "service_id": 198,
     "message_id": 0,
@@ -183,7 +182,6 @@
   },
   "addUser": {
     "as": "message",
-    "network_id": 0,
     "protocol_version": 0,
     "service_id": 198,
     "message_id": 0,

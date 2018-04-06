@@ -41,7 +41,6 @@ const data = {
           validator: 0
         },
         message_id: 4,
-        network_id: 0,
         protocol_version: 0,
         service_id: 0,
         signature: '59a120495197181f083abbfb48da224b80ac7f3adaf2afcb9d82edd5344669e1c985b8ca3e365b38506d314a95150c5f3a41dd1e06217ca68c3f17f2d3562d01'
@@ -59,7 +58,6 @@ const data = {
           validator: 5
         },
         message_id: 4,
-        network_id: 0,
         protocol_version: 0,
         service_id: 0,
         signature: '027d006a929d787d52174b13a52203a754d71554097cdc224a44a592f1d3f9e71eab146b4786cba50705d47be1171b8edf9f15a5dd0438c588a76372a74b0706'
@@ -77,7 +75,6 @@ const data = {
           validator: 1
         },
         message_id: 4,
-        network_id: 0,
         protocol_version: 0,
         service_id: 0,
         signature: 'c92a3e4089e4b8df8777b11d91607f4bba54f526d717b18a3432689325bb6438fbbb9384217591a6bd425a08e68d18231c06aaa3f451875139bd9d6ee2eb4901'
@@ -95,7 +92,6 @@ const data = {
           validator: 3
         },
         message_id: 4,
-        network_id: 0,
         protocol_version: 0,
         service_id: 0,
         signature: 'fb870e5801b2b8f79feccd39a39297823aa288c48c8abd434a22ed7c22e02145ac5975e87d35793140314ffec9c9b9d5b51681efefbabcd8d7410ccd0425090a'
@@ -113,7 +109,6 @@ const data = {
           validator: 4
         },
         message_id: 4,
-        network_id: 0,
         protocol_version: 0,
         service_id: 0,
         signature: 'ac1fd97ec1cf8240c34bd0fa2a525ba0c5379ecf4c1ebc856ff57279a7752de8dffcb11b2f78b477f2351e65d4e4c20694ecb2c59dbaa12f77dc51e1066d3a09'

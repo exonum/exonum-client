@@ -7,7 +7,6 @@ An example of serialization into a byte array:
 ```javascript
 // Define a transaction
 let sendFunds = Exonum.newMessage({
-  network_id: 0,
   protocol_version: 0,
   service_id: 130,
   message_id: 128,
@@ -38,7 +37,6 @@ An example of transaction signing:
 ```javascript
 // Define a transaction
 let sendFunds = Exonum.newMessage({
-  network_id: 0,
   protocol_version: 0,
   service_id: 130,
   message_id: 128,
@@ -74,7 +72,6 @@ An example of signature verification:
 ```javascript
 // Define a transaction
 let sendFunds = Exonum.newMessage({
-  network_id: 0,
   protocol_version: 0,
   service_id: 130,
   message_id: 128,
@@ -116,7 +113,6 @@ Example of calculation of a transaction hash:
 ```javascript
 // Define a transaction
 let sendFunds = Exonum.newMessage({
-  network_id: 0,
   protocol_version: 0,
   service_id: 130,
   message_id: 128,

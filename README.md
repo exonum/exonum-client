@@ -473,7 +473,6 @@ An example of a transaction definition:
 
 ```javascript
 let sendFunds = Exonum.newMessage({
-  network_id: 0,
   protocol_version: 0,
   service_id: 130,
   message_id: 128,
@@ -489,7 +488,6 @@ let sendFunds = Exonum.newMessage({
 
 | Property | Description | Type |
 |---|---|---|
-| **network_id** | [Network ID][docs:architecture:serialization:network-id]. | `Number` |
 | **protocol_version** | [Protocol version][docs:architecture:serialization:protocol-version]. | `Number` |
 | **service_id** | [Service ID][docs:architecture:serialization:service-id]. | `Number` |
 | **message_id** | [Message ID][docs:architecture:serialization:message-id]. | `Number` |
@@ -557,7 +555,7 @@ An [example of verifying a Merkle Patricia tree](examples/merkle-patricia-tree.m
 ### Verify block
 
 ```javascript
-Exonum.verifyBlock(data, validators, networkId)
+Exonum.verifyBlock(data, validators)
 ```
 
 Each new block in Exonum blockchain is signed by [validators][docs:glossary:validator].
@@ -572,7 +570,6 @@ Returns `true` if verification is succeeded or `false` if it is failed.
 |---|---|---|
 | **data** | Structure with block and precommits. | `Object` |
 | **validators** | An array of validators public keys as a hexadecimal strings. | `Array` |
-| **networkId** | This field will be used to send inter-blockchain messages in future releases. For now, it is not used and must be equal to `0`. | `Number` |
 
 An example of [block verification](examples/block.md).
 
