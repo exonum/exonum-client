@@ -53,6 +53,7 @@ Contains numerous helper functions.
 * [Contributing](#contributing)
   * [Coding standards](#coding-standards)
   * [Test coverage](#test-coverage)
+* [Changelog](#changelog)
 * [License](#license)
 
 ## Getting started
@@ -641,6 +642,14 @@ const arr = new Uint8Array([103, 71, 24, 23, 139, 217, 125, 58, 197, 149, 61, 13
 Exonum.uint8ArrayToHexadecimal(arr) // '674718178bd97d3ac5953d0d8e5649ea373c4d98b3b61befd5699800eaa8513b'
 ```
 
+#### Uint8Array to BinaryString
+
+```javascript
+const arr = new Uint8Array([103, 71, 24, 23, 139, 217, 125, 58, 197, 149, 61, 13, 142, 86, 73, 234, 55, 60, 77, 152, 179, 182, 27, 239, 213, 105, 152, 0, 234, 168, 81, 59])
+
+Exonum.uint8ArrayToBinaryString(arr) // '0110011101000111000110000001011110001011110110010111110100111010110001011001010100111101000011011000111001010110010010011110101000110111001111000100110110011000101100111011011000011011111011111101010101101001100110000000000011101010101010000101000100111011'
+```
+
 #### Binary String to Uint8Array
 
 ```javascript
@@ -681,6 +690,10 @@ we used [`.editorconfig`](.editorconfig) configuration file.
 
 All functions must include relevant unit tests.
 This applies to both of adding new features and fixing existed bugs.
+
+## Changelog
+
+Detailed changes for each release are documented in the [CHANGELOG](CHANGELOG.md) file.
 
 ## License
 

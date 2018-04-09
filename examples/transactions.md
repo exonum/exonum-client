@@ -11,12 +11,11 @@ let sendFunds = Exonum.newMessage({
   protocol_version: 0,
   service_id: 130,
   message_id: 128,
-  size: 72,
-  fields: {
-    from: {type: Exonum.Hash, size: 32, from: 0, to: 32},
-    to: {type: Exonum.Hash, size: 32, from: 32, to: 64},
-    amount: {type: Exonum.Uint64, size: 8, from: 64, to: 72}
-  }
+  fields: [
+    { name: 'from', type: Exonum.Hash },
+    { name: 'to', type: Exonum.Hash },
+    { name: 'amount', type: Exonum.Uint64 }
+  ]
 })
 
 // Data to be serialized
@@ -43,12 +42,11 @@ let sendFunds = Exonum.newMessage({
   protocol_version: 0,
   service_id: 130,
   message_id: 128,
-  size: 72,
-  fields: {
-    from: {type: Exonum.Hash, size: 32, from: 0, to: 32},
-    to: {type: Exonum.Hash, size: 32, from: 32, to: 64},
-    amount: {type: Exonum.Uint64, size: 8, from: 64, to: 72}
-  }
+  fields: [
+    { name: 'from', type: Exonum.Hash },
+    { name: 'to', type: Exonum.Hash },
+    { name: 'amount', type: Exonum.Uint64 }
+  ]
 })
 
 // Data to be signed
@@ -80,12 +78,11 @@ let sendFunds = Exonum.newMessage({
   protocol_version: 0,
   service_id: 130,
   message_id: 128,
-  size: 72,
-  fields: {
-    from: {type: Exonum.Hash, size: 32, from: 0, to: 32},
-    to: {type: Exonum.Hash, size: 32, from: 32, to: 64},
-    amount: {type: Exonum.Uint64, size: 8, from: 64, to: 72}
-  }
+  fields: [
+    { name: 'from', type: Exonum.Hash },
+    { name: 'to', type: Exonum.Hash },
+    { name: 'amount', type: Exonum.Uint64 }
+  ]
 })
 
 // Data that has been signed
@@ -123,12 +120,11 @@ let sendFunds = Exonum.newMessage({
   protocol_version: 0,
   service_id: 130,
   message_id: 128,
-  size: 72,
-  fields: {
-    from: {type: Exonum.Hash, size: 32, from: 0, to: 32},
-    to: {type: Exonum.Hash, size: 32, from: 32, to: 64},
-    amount: {type: Exonum.Uint64, size: 8, from: 64, to: 72}
-  }
+  fields: [
+    { name: 'from', type: Exonum.Hash },
+    { name: 'to', type: Exonum.Hash },
+    { name: 'amount', type: Exonum.Uint64 }
+  ]
 })
 
 // Data

@@ -179,11 +179,10 @@ if (!Exonum.verifyBlock(data.block_info, validators, networkId)) {
 
 // Calculate the key of the Merkle Patricia tree with the wallets in the Merkle Patricia tree with all the trees
 let TableKey = Exonum.newType({
-  size: 4,
-  fields: {
-    service_id: {type: Exonum.Uint16, size: 2, from: 0, to: 2},
-    table_index: {type: Exonum.Uint16, size: 2, from: 2, to: 4}
-  }
+  fields: [
+    { name: 'service_id', type: Exonum.Uint16 },
+    { name: 'table_index', type: Exonum.Uint16 }
+  ]
 })
 const tableKeyData = {
   service_id: serviceId,
@@ -196,14 +195,13 @@ const walletsTreeRootHash = Exonum.merklePatriciaProof(data.block_info.block.sta
 
 // Define the structure of the wallet
 let Wallet = Exonum.newType({
-  size: 88,
-  fields: {
-    pub_key: {type: Exonum.PublicKey, size: 32, from: 0, to: 32},
-    login: {type: Exonum.String, size: 8, from: 32, to: 40},
-    balance: {type: Exonum.Uint64, size: 8, from: 40, to: 48},
-    history_len: {type: Exonum.Uint64, size: 8, from: 48, to: 56},
-    history_hash: {type: Exonum.Hash, size: 32, from: 56, to: 88}
-  }
+  fields: [
+    { name: 'pub_key', type: Exonum.PublicKey },
+    { name: 'login', type: Exonum.String },
+    { name: 'balance', type: Exonum.Uint64 },
+    { name: 'history_len', type: Exonum.Uint64 },
+    { name: 'history_hash', type: Exonum.Hash }
+  ]
 })
  
 // Verify the Merkle Patricia tree of all wallets and extract the requested wallet

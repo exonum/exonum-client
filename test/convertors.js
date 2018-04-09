@@ -71,6 +71,20 @@ describe('Convert data from one type to another', function () {
     })
   })
 
+  describe('Check Exonum.uint8ArrayToBinaryString', function () {
+    it('should convert valid Uint8Array into binaryString', function () {
+      const data = require('./data/convertors/uint8ArrayToBinaryString.json')
+      expect(Exonum.uint8ArrayToBinaryString(new Uint8Array(data.from))).to.equal(data.to)
+    })
+
+    it('should throw error when convert invalid Uint8Array into binaryString', function () {
+      [null, false, 42, new Date(), {}, 'Hello world', [4, 56]].forEach(function (value) {
+        expect(() => Exonum.uint8ArrayToBinaryString(value))
+          .to.throw(TypeError, 'Wrong data type of array of 8-bit integers. Uint8Array is expected')
+      })
+    })
+  })
+
   describe('Check Exonum.binaryStringToHexadecimal', function () {
     it('should convert valid binaryString into hexadecimal', function () {
       const data = require('./data/convertors/binaryStringToHexadecimal.json')
