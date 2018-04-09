@@ -6,6 +6,7 @@ publish = false
 
 [dependencies]
 exonum = "0.6.0"
+rand = "0.4.2"
 rocket = "=0.3.6"
 rocket_codegen = "=0.3.6"
 serde = "1.0.36"

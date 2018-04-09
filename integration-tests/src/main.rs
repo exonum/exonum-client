@@ -14,23 +14,23 @@
 
 //! Rocket-powered web service implementing CRUD operations on a `ProofMapIndex`.
 
-#![feature(plugin, nll)]
+#![feature(plugin, custom_derive, nll)]
 #![plugin(rocket_codegen)]
 
 #[macro_use]
 extern crate exonum;
+extern crate rand;
 extern crate rocket;
 extern crate rocket_contrib;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 
-use exonum::crypto::{Hash, PublicKey};
-use exonum::storage::{Database, MapProof, MemoryDB, ProofMapIndex};
-use rocket::State;
-use rocket::config::{Config, Environment};
-use rocket::http::RawStr;
-use rocket::request::FromParam;
+use exonum::{crypto::{self, Hash, PublicKey, Seed},
+             storage::{Database, MapProof, MemoryDB, ProofMapIndex}};
+use rand::{Rng, SeedableRng, XorShiftRng, seq::sample_slice_ref};
+use rocket::{State, config::{Config, Environment}, http::RawStr, request::FromParam,
+             response::status::BadRequest};
 use rocket_contrib::Json;
 
 use std::str::FromStr;
@@ -114,7 +114,9 @@ fn create_wallet(db: State<MemoryDB>, wallet: Json<Wallet>) -> Json<IndexInfo> {
         let pubkey = wallet.pub_key().clone();
         index.put(&pubkey, wallet.into_inner());
 
-        IndexInfo { size: index.iter().count() }
+        IndexInfo {
+            size: index.iter().count(),
+        }
     };
     db.merge(fork.into_patch()).unwrap();
     Json(info)
@@ -130,7 +132,9 @@ fn create_wallets(db: State<MemoryDB>, wallets: Json<Vec<Wallet>>) -> Json<Index
             index.put(&pubkey, wallet);
         }
 
-        IndexInfo { size: index.iter().count() }
+        IndexInfo {
+            size: index.iter().count(),
+        }
     };
     db.merge(fork.into_patch()).unwrap();
     Json(info)
@@ -147,6 +151,64 @@ fn reset(db: State<MemoryDB>) {
     db.merge(fork.into_patch()).unwrap();
 }
 
+#[derive(Debug, FromForm)]
+struct RandomParams {
+    seed: u64,
+    wallets: usize,
+    wallets_in_proof: Option<usize>,
+    missing_keys: Option<usize>,
+}
+
+#[get("/random?<params>")]
+fn generate_proof(params: RandomParams) -> Result<Json<WalletProof>, BadRequest<String>> {
+    let wallets_in_proof = params
+        .wallets_in_proof
+        .unwrap_or_else(|| params.wallets / 4);
+    if wallets_in_proof > params.wallets {
+        return Err(BadRequest(Some(
+            "more wallets in proof than wallets".to_string(),
+        )));
+    }
+    let missing_keys = params.missing_keys.unwrap_or(wallets_in_proof);
+
+    let mut rng = XorShiftRng::from_seed([params.seed as u32, (params.seed >> 32) as u32, 0, 0]);
+    let db = MemoryDB::new();
+    let mut fork = db.fork();
+    let mut index: ProofMapIndex<_, PublicKey, Wallet> = ProofMapIndex::new(INDEX_NAME, &mut fork);
+
+    let wallets: Vec<_> = (0..params.wallets)
+        .map(|_| {
+            let mut seed = [0u8; 32];
+            rng.fill_bytes(&mut seed);
+            let pubkey = crypto::gen_keypair_from_seed(&Seed::new(seed)).0;
+
+            Wallet::new(&pubkey, &pubkey.to_string()[..8], rng.next_u64())
+        })
+        .collect();
+
+    let mut wallet_keys: Vec<_> = sample_slice_ref(&mut rng, &wallets, wallets_in_proof)
+        .iter()
+        .map(|wallet| wallet.pub_key())
+        .cloned()
+        .collect();
+    let missing_keys = (0..missing_keys).map(|_| {
+        let mut seed = [0u8; 32];
+        rng.fill_bytes(&mut seed);
+        crypto::gen_keypair_from_seed(&Seed::new(seed)).0
+    });
+    wallet_keys.extend(missing_keys);
+
+    for wallet in wallets {
+        let key = *wallet.pub_key();
+        index.put(&key, wallet);
+    }
+
+    Ok(Json(WalletProof {
+        proof: index.get_multiproof(wallet_keys),
+        trusted_root: index.merkle_root(),
+    }))
+}
+
 fn config() -> Config {
     Config::build(Environment::Development)
         .address("127.0.0.1")
@@ -159,6 +221,7 @@ fn main() {
         .mount(
             "/",
             routes![
+                generate_proof,
                 get_wallets,
                 get_wallet,
                 create_wallet,

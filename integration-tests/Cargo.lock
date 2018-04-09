@@ -532,6 +532,7 @@ name = "integration_tests"
 version = "0.0.0"
 dependencies = [
  "exonum 0.6.0 (git+https://github.com/exonum/exonum.git?rev=f5927dd136df2b88ea8075f194c2960df2412d1a)",
+ "rand 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "rocket 0.3.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "rocket_codegen 0.3.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "rocket_contrib 0.3.6 (registry+https://github.com/rust-lang/crates.io-index)",
