@@ -1,6 +1,7 @@
 /**
  * Example how to use `MapProof`s in client apps.
  */
+'use strict'
 
 const exonum = require('..')
 const expect = require('chai').expect

@@ -16,6 +16,7 @@ cache:
 
 script:
 - grunt
+- node examples/map-proof.js
 
 jobs:
   include:
