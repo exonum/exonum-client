@@ -498,11 +498,11 @@ Field structure is identical to field structure of [custom data type](#define-da
 
 Examples of operations on transactions:
 
-* [Define transaction](examples/transaction.md#define-transaction)
-* [Serialize transaction](examples/transaction.md#serialize-transaction)
-* [Sign transaction](examples/transaction.md#sign-transaction)
-* [Verify signed transaction](examples/transaction.md#verify-signed-transaction)
-* [Get a transaction hash](examples/transaction.md#get-a-transaction-hash)
+* [Define transaction](examples/transactions.md#define-transaction)
+* [Serialize transaction](examples/transactions.md#serialize-transaction)
+* [Sign transaction](examples/transactions.md#sign-transaction)
+* [Verify signed transaction](examples/transactions.md#verify-signed-transaction)
+* [Get a transaction hash](examples/transactions.md#get-a-transaction-hash)
 
 ## Cryptographic proofs
 
