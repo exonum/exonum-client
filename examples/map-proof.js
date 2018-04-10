@@ -3,15 +3,15 @@
  */
 'use strict'
 
-const exonum = require('..')
+const Exonum = require('..')
 const expect = require('chai').expect
 
 // Declare the value type used in the proof.
-const Wallet = exonum.newType({
+const Wallet = Exonum.newType({
   fields: [
-    { name: 'pub_key', type: exonum.PublicKey },
-    { name: 'name', type: exonum.String },
-    { name: 'balance', type: exonum.Uint64 }
+    { name: 'pub_key', type: Exonum.PublicKey },
+    { name: 'name', type: Exonum.String },
+    { name: 'balance', type: Exonum.Uint64 }
   ]
 })
 
@@ -58,7 +58,7 @@ let proof = {
 
 // Create a `MapProof` instance. The constructor will throw an error if
 // the supplied JSON is malformed.
-proof = new exonum.MapProof(proof, exonum.PublicKey, Wallet)
+proof = new Exonum.MapProof(proof, Exonum.PublicKey, Wallet)
 expect(proof.entries.size).to.equal(2)
 expect(proof.missingKeys.size).to.equal(2)
 
