@@ -550,12 +550,13 @@ The `MapProof` class is used to validate proofs for Merkelized maps.
 
 The returned object has the following fields:
 
-- **merkleRoot:** string  
-  Hexadecimal hash of the root of the underlying Merkelized map
-- **missingKeys:** Set<KeyType\>  
-  Set of keys which the proof asserts as missing from the map
-- **entries:** Map<KeyType, ValueType\>  
-  Map of key-value pairs that the are proved to exist in the map
+| Field | Description | Type |
+|---|---|---|
+| **merkleRoot** | Hexadecimal hash of the root of the underlying Merkelized map | `String` |
+| **missingKeys** | Set of keys which the proof asserts as missing from the map | `Set<KeyType>` |
+| **entries** | Map of key-value pairs that the are proved to exist in the map | `Map<KeyType, ValueType>` |
+
+An [example of using a `MapProof`](examples/map-proof.js).
 
 ## Integrity checks
 
