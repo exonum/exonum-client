@@ -36,12 +36,6 @@ describe('Verify block of precommits', function () {
     })
   })
 
-  it('should return false when network_id is of wrong type', function () {
-    [null, undefined, -5, 260, 'Hello world', [], new Date()].forEach(function (_id) {
-      expect(Exonum.verifyBlock({ block: {} }, validators, _id)).to.be.false
-    })
-  })
-
   it('should return false when body field of wrong type in precommit', function () {
     [null, 42, 'Hello world', [], new Date()].forEach(function (body) {
       expect(Exonum.verifyBlock({ block: {}, precommits: [{ body: body }] }, validators, networkId)).to.be.false
@@ -130,7 +124,6 @@ describe('Verify block of precommits', function () {
             propose_hash: '1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a',
             block_hash: '1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a'
           },
-          network_id: 0,
           protocol_version: 0,
           message_id: 4,
           service_id: 0,
@@ -144,7 +137,6 @@ describe('Verify block of precommits', function () {
             propose_hash: '1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a',
             block_hash: '1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a'
           },
-          network_id: 0,
           protocol_version: 0,
           message_id: 4,
           service_id: 0,
@@ -158,7 +150,6 @@ describe('Verify block of precommits', function () {
             propose_hash: '1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a',
             block_hash: '1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a'
           },
-          network_id: 0,
           protocol_version: 0,
           message_id: 4,
           service_id: 0,
@@ -188,7 +179,6 @@ describe('Verify block of precommits', function () {
             propose_hash: '1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a',
             block_hash: 'c2513f88478a32767c3cf7c068d60523212a005374d8d7398473c9601bf3d369'
           },
-          network_id: 0,
           protocol_version: 0,
           message_id: 4,
           service_id: 0,
@@ -202,7 +192,6 @@ describe('Verify block of precommits', function () {
             propose_hash: '1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a',
             block_hash: 'c2513f88478a32767c3cf7c068d60523212a005374d8d7398473c9601bf3d369'
           },
-          network_id: 0,
           protocol_version: 0,
           message_id: 4,
           service_id: 0,
@@ -216,7 +205,6 @@ describe('Verify block of precommits', function () {
             propose_hash: '1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a',
             block_hash: 'c2513f88478a32767c3cf7c068d60523212a005374d8d7398473c9601bf3d369'
           },
-          network_id: 0,
           protocol_version: 0,
           message_id: 4,
           service_id: 0,
@@ -246,7 +234,6 @@ describe('Verify block of precommits', function () {
             propose_hash: '1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a',
             block_hash: 'c2513f88478a32767c3cf7c068d60523212a005374d8d7398473c9601bf3d369'
           },
-          network_id: 0,
           protocol_version: 0,
           message_id: 4,
           service_id: 0,
@@ -276,7 +263,6 @@ describe('Verify block of precommits', function () {
             propose_hash: '1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a',
             block_hash: 'c2513f88478a32767c3cf7c068d60523212a005374d8d7398473c9601bf3d369'
           },
-          network_id: 0,
           protocol_version: 0,
           message_id: 4,
           service_id: 0,
@@ -306,7 +292,6 @@ describe('Verify block of precommits', function () {
             propose_hash: '1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a',
             block_hash: 'c2513f88478a32767c3cf7c068d60523212a005374d8d7398473c9601bf3d369'
           },
-          network_id: 0,
           protocol_version: 0,
           message_id: 4,
           service_id: 0,
@@ -320,7 +305,6 @@ describe('Verify block of precommits', function () {
             propose_hash: '1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a',
             block_hash: 'c2513f88478a32767c3cf7c068d60523212a005374d8d7398473c9601bf3d369'
           },
-          network_id: 0,
           protocol_version: 0,
           message_id: 4,
           service_id: 0,
@@ -334,7 +318,6 @@ describe('Verify block of precommits', function () {
             propose_hash: '1783d20a053b5c45b40e76358a51a7fce90eea391a409decfb9f9cbbb5a4875a',
             block_hash: 'c2513f88478a32767c3cf7c068d60523212a005374d8d7398473c9601bf3d369'
           },
-          network_id: 0,
           protocol_version: 0,
           message_id: 4,
           service_id: 0,

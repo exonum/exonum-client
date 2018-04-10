@@ -20,7 +20,6 @@ class NewMessage {
       }
     })
 
-    this.network_id = type.network_id
     this.protocol_version = type.protocol_version
     this.message_id = type.message_id
     this.service_id = type.service_id
@@ -56,7 +55,7 @@ class NewMessage {
     })
 
     let buffer = MessageHead.serialize({
-      network_id: this.network_id,
+      network_id: 0,
       protocol_version: this.protocol_version,
       message_id: this.message_id,
       service_id: this.service_id,

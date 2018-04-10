@@ -30,10 +30,9 @@ const SystemTime = newType({
  * Validate block and each precommit in block
  * @param {Object} data
  * @param {Array} validators
- * @param {number} networkId
  * @return {boolean}
  */
-export function verifyBlock (data, validators, networkId) {
+export function verifyBlock (data, validators) {
   if (!isObject(data)) {
     return false
   } else if (!isObject(data.block)) {
@@ -56,12 +55,7 @@ export function verifyBlock (data, validators, networkId) {
     return false
   }
 
-  if (typeof networkId !== 'number' || networkId < 0 || networkId > 255) {
-    return false
-  }
-
   const Precommit = newMessage({
-    network_id: networkId,
     protocol_version: PROTOCOL_VERSION,
     message_id: PRECOMMIT_MESSAGE_ID,
     service_id: CORE_SERVICE_ID,
@@ -98,8 +92,7 @@ export function verifyBlock (data, validators, networkId) {
       uniqueValidators.push(precommit.body.validator)
     }
 
-    if (precommit.network_id !== networkId ||
-      precommit.protocol_version !== PROTOCOL_VERSION ||
+    if (precommit.protocol_version !== PROTOCOL_VERSION ||
       precommit.service_id !== CORE_SERVICE_ID ||
       precommit.message_id !== PRECOMMIT_MESSAGE_ID) {
       return false

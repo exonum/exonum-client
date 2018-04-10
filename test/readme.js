@@ -33,7 +33,6 @@ describe('Examples from README.md', function () {
 
   describe('Transaction section', function () {
     const SendFunds = Exonum.newMessage({
-      network_id: 0,
       protocol_version: 0,
       service_id: 0,
       message_id: 0,

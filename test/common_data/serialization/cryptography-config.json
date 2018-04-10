@@ -41,7 +41,6 @@
   },
   "type3": {
     "as": "message",
-    "network_id": 0,
     "protocol_version": 0,
     "service_id": 1,
     "message_id": 2,
@@ -67,7 +66,6 @@
   },
   "type4": {
     "as": "message",
-    "network_id": 0,
     "protocol_version": 0,
     "service_id": 1,
     "message_id": 2,
@@ -125,7 +123,6 @@
   },
   "type7": {
     "as": "message",
-    "network_id": 0,
     "protocol_version": 0,
     "service_id": 1,
     "message_id": 2,
@@ -150,7 +147,6 @@
   },
   "type8": {
     "as": "message",
-    "network_id": 0,
     "protocol_version": 0,
     "service_id": 1,
     "message_id": 2,

@@ -174,7 +174,6 @@ describe('Check cryptography', function () {
       const publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
       const signature = '4006cef1884941850a6b97a64ed7f12d1e1053188618ef71b8c9f87438b943b1969e08011e45db8299bb738fec60c9dcd1936ab9ba44392cacc7f0385f18dd09'
       const CustomMessage = Exonum.newMessage({
-        network_id: 0,
         protocol_version: 0,
         service_id: 1,
         message_id: 2,
@@ -199,7 +198,6 @@ describe('Check cryptography', function () {
       const publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
       const signature = '4006cef1884941850a6b97a64ed7f12d1e1053188618ef71b8c9f87438b943b1969e08011e45db8299bb738fec60c9dcd1936ab9ba44392cacc7f0385f18dd09'
       const CustomMessage = Exonum.newMessage({
-        network_id: 0,
         protocol_version: 0,
         service_id: 1,
         message_id: 2,
@@ -272,7 +270,6 @@ describe('Check cryptography', function () {
       const publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
       const signature = '24a5224702d670c95a78ef1f753c9e6e698da5b2a2c52dcc51b5bf9e556e717fb763b1a5e78bd39e5369a139ab68ae50dd19a129038e8da3af30985f09549500'
       const CustomMessage = Exonum.newMessage({
-        network_id: 0,
         protocol_version: 0,
         service_id: 1,
         message_id: 2,

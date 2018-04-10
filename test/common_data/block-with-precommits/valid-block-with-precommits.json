@@ -22,7 +22,6 @@
                 "validator": 0
             },
             "message_id": 4,
-            "network_id": 0,
             "protocol_version": 0,
             "service_id": 0,
             "signature": "f69f1cd9bd8dfd822a923f427556842b2cb194b75fc437248a6260f218e0d188911c1ef4616db3edcda78176d8d56273417439a1824a90e5df16775edb8dd608"
@@ -40,7 +39,6 @@
                 "validator": 1
             },
             "message_id": 4,
-            "network_id": 0,
             "protocol_version": 0,
             "service_id": 0,
             "signature": "0660b18a35e6e9ee2a9f9447a2362a1e498314843aa8ddb838a81112dd2b290ff54cdd089a1877a82c3505b7376dc91e7e0d0f9a1150064ce1199a12845d560b"
@@ -58,7 +56,6 @@
                 "validator": 2
             },
             "message_id": 4,
-            "network_id": 0,
             "protocol_version": 0,
             "service_id": 0,
             "signature": "02e26fac66f7e6fd9013f34832d53f7bbf928bd5824900594f8a247d4f4ec5f84c77420dd2bb98ebbf0910e48539d3abd9b57be70f15ca5ceccb85a92d41270a"
