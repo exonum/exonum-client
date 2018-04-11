@@ -1,738 +1,703 @@
 /* eslint-env node, mocha */
-/* eslint-disable no-unused-expressions */
 
-const expect = require('chai').expect
+const sha = require('sha.js')
+const expect = require('chai')
+  .use(require('dirty-chai'))
+  .expect
+
+const ProofPath = require('../src/blockchain/ProofPath').default
 const Exonum = require('../src')
+const { MapProof, MapProofError } = Exonum
 
-describe('Check proof of Merkle Patricia tree', function () {
-  it('should return null when an empty tree', function () {
-    const data = require('./common_data/merkle-patricia-tree/valid-MPT-empty-tree.json')
-    const element = Exonum.merklePatriciaProof(
-      data.root_hash,
-      data.proof,
-      data.searched_key
-    )
-    expect(element).to.be.null
-  })
+const samples = require('./data/map-proof.json')
 
-  it('should return the child of single child valid tree', function () {
-    const Type = Exonum.newType({
-      fields: [
-        { name: 'pub_key', type: Exonum.PublicKey },
-        { name: 'balance', type: Exonum.Uint64 },
-        { name: 'history_len', type: Exonum.Uint64 },
-        { name: 'history_hash', type: Exonum.Hash }
-      ]
-    })
-    const data = require('./common_data/merkle-patricia-tree/valid-MPT-single-child.json')
-    const element = Exonum.merklePatriciaProof(
-      data.root_hash,
-      data.proof,
-      data.searched_key,
-      Type
-    )
-    expect(element).to.deep.equal({
-      'balance': '0',
-      'history_hash': '463a35a1b5998bb386cc483cbe4313e95ac4f5b80b366a8d9fd574710c7bcab1',
-      'history_len': '1',
-      'pub_key': 'd375769a1b903bd4e9a77b511c27f3d8cb7158e5c36d4e311b5425e626b57e9c'
-    })
-  })
-
-  it('should return null when a tree with nested node exclusive', function () {
-    const data = require('./common_data/merkle-patricia-tree/valid-MPT-nested-exclusive.json')
-    const element = Exonum.merklePatriciaProof(
-      data.root_hash,
-      data.proof,
-      data.searched_key
-    )
-    expect(element).to.be.null
-  })
-
-  it('should return the child of an valid tree with nested node inclusive', function () {
-    const data = require('./common_data/merkle-patricia-tree/valid-MPT-nested-inclusive.json')
-    const element = Exonum.merklePatriciaProof(
-      data.root_hash,
-      data.proof,
-      data.searched_key
-    )
-    expect(element).to.deep.equal([36, 49, 15, 31, 163, 171, 247, 217])
-  })
-
-  it('should return the child of an valid tree with hash stored in value', () => {
-    const data = require('./common_data/merkle-patricia-tree/valid-MPT-values.json')
-    const element = Exonum.merklePatriciaProof(
-      data.root_hash,
-      data.proof,
-      data.searched_key
-    )
-    expect(element).to.equal('2cc250e3c24b9d91f26b162d79b5031684607bf1c406581281953a14dc149c70')
-  })
-
-  it('should return the child of an valid tree with children which has common prefix', function () {
-    const data = require('./common_data/merkle-patricia-tree/valid-MPT-common-prefix-children.json')
-    const element = Exonum.merklePatriciaProof(
-      data.root_hash,
-      data.proof,
-      data.searched_key
-    )
-    expect(element).to.deep.equal([186, 86, 216, 153, 23, 168, 188, 225])
-  })
-
-  it('should throw error when keys one key is full prefix of another', function () {
-    const data = require('./data/invalid-MPT-common-prefix-children.json')
-    expect(() => Exonum.merklePatriciaProof(data.root_hash, data.proof, data.searched_key)).to.throw(Error, 'Impossible to determine left and right nodes.')
-  })
-
-  it('should throw error when common-prefix keys are found on non-zero level', function () {
-    const data = require('./data/invalid-MPT-common-prefix-children-at-non-zero-lvl.json')
-    expect(() => Exonum.merklePatriciaProof(data.root_hash, data.proof, data.searched_key)).to.throw(Error, 'Nodes with common-prefix keys are located on non-zero level of the tree.')
-  })
-
-  it('should throw error when key suffix is of zero-length', function () {
-    const data = require('./data/invalid-MPT-zero-len-keys-suffix.json')
-    expect(() => Exonum.merklePatriciaProof(data.root_hash, data.proof, data.searched_key)).to.throw(Error, 'Empty key suffix is passed.')
-  })
-
-  it('should return the child of an valid tree with children which has common prefix and hashes as values', function () {
-    const data = require('./common_data/merkle-patricia-tree/valid-MPT-common-prefix-children-hash-values.json')
-    const element = Exonum.merklePatriciaProof(
-      data.root_hash,
-      data.proof,
-      data.searched_key
-    )
-    expect(element).to.equal('7acfd59d96d77ed99169fdc0826a6ef8a6b45d87ac00536373882dfa7ba70925')
-  })
-
-  it('should throw error when rootHash parameter of wrong type', function () {
-    const args = [
-      true, null, undefined, [], {}, 42, new Date()
-    ]
-
-    args.forEach(function (rootHash) {
-      expect(() => Exonum.merklePatriciaProof(rootHash)).to.throw(TypeError)
-    })
-  })
-
-  it('should throw error when invalid rootHash parameter', function () {
-    const args = [
-      '6z56f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13',
-      '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff1'
-    ]
-
-    args.forEach(function (rootHash) {
-      expect(() => Exonum.merklePatriciaProof(rootHash)).to.throw(Error)
-    })
-  })
-
-  it('should throw error when invalid proofNode parameter', function () {
-    const rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-    const args = [
-      true, null, undefined, [], 42, 'Hello world', new Date()
-    ]
-
-    args.forEach(function (proofNode) {
-      expect(() => Exonum.merklePatriciaProof(rootHash, proofNode)).to.throw(TypeError)
-    })
-  })
-
-  it('should throw error when invalid byte array key parameter', function () {
-    const rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-    const proofNode = {}
-    const args = [
-      [1, 114],
-      [1, true, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0],
-      [1, null, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0],
-      [1, undefined, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0],
-      [1, {}, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0],
-      [1, new Date(), 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0],
-      [1, 256, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0],
-      [1, -1, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0, 1, 114, 5, 0]
-    ]
-
-    args.forEach(function (key) {
-      expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(Error)
-    })
-  })
-
-  it('should throw error when invalid string key parameter', function () {
-    const rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-    const proofNode = {}
-    const args = [
-      '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff1',
-      '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff1z',
-      ''
-    ]
-
-    args.forEach(function (key) {
-      expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(Error)
-    })
-  })
-
-  it('should throw error when key parameter of wrong type', function () {
-    const rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-    const proofNode = {}
-    const args = [
-      true, null, undefined, 42, [], {}, new Date()
-    ]
-
-    args.forEach(function (key) {
-      expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(Error)
-    })
-  })
-
-  it('should throw error when root is empty but rootHash is wrong', function () {
-    const rootHash = '0000000000000000000000000000000000000000000000000000000000000001'
-    const proofNode = {}
-    const key = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-
-    expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(Error)
-  })
-
-  it('should throw error when key of node is invalid binary string', function () {
-    const rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-    let proofNode = { '11110000111100': {} }
-    const key = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-
-    expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(Error)
-
-    proofNode = { '111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001a': {} }
-
-    expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(Error)
-
-    proofNode = { '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110013': {} }
-
-    expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(Error)
-  })
-
-  it('should throw error when it is invalid hash is value of tree node', function () {
-    const vals = [
-      '',
-      '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff1',
-      '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff1z'
-    ]
-
-    vals.forEach(function (val) {
-      const rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-      const proofNode = { '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': val }
-      const key = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-
-      expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(Error)
-    })
-  })
-
-  it('should throw error when wrong rootHash parameter is passed (element is not found)', function () {
-    const rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-    const proofNode = { '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13' }
-    const key = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-
-    expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(Error)
-  })
-
-  it('should throw error when invalid key with hash is in the root (element is not found)', function () {
-    const rootHash = '335ec501d811725a9e60f89a1b67103e6fa5e65712a007ed33324719a6e2de3a'
-    const proofNode = { '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13' }
-    const key = 'f0f1f2f3f0f1f2f3f0f1f2f3f0f1f2f3f0f1f2f3f0f1f2f3f0f1f2f3f0f1f2f3'
-
-    expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(Error)
-  })
-
-  it('should throw error when value is of invalid type', function () {
-    const vals = [
-      false, null, undefined, 'Hello world', 42, new Date()
-    ]
-
-    vals.forEach(function (val) {
-      const rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-      const proofNode = {
-        '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': {
-          val: val
-        }
-      }
-      const key = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-
-      expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(Error)
-    })
-  })
-
-  it('should throw error when invalid symbols in bytes array', function () {
-    const vals = [
-      [1, 'a', 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4]
-    ]
-
-    vals.forEach(function (val) {
-      const rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-      const proofNode = {
-        '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': {
-          val: val
-        }
-      }
-      const key = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-
-      expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(TypeError)
-    })
-  })
-
-  it('should throw error when invalid bytes array is on value position', function () {
-    const vals = [
-      [1, -1, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4],
-      [1, 256, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4]
-    ]
-
-    vals.forEach(function (val) {
-      const rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-      const proofNode = {
-        '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': {
-          val: val
-        }
-      }
-      const key = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-
-      expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(TypeError)
-    })
-  })
-
-  it('should throw error when invalid value type', function () {
-    const vals = [
-      false, undefined, [], 42, new Date()
-    ]
-
-    vals.forEach(function (val) {
-      const rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-      const proofNode = {
-        '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': val
-      }
-      const key = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-
-      expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(Error)
-    })
-  })
-
-  it('should throw error when invalid type parameter', function () {
-    const vals = [
-      null, false, 42, {}, [], new Date()
-    ]
-
-    vals.forEach(function (type) {
-      const rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-      const proofNode = {
-        '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': {
-          val: {
-            name: 'John',
-            surname: 'Doe'
-          }
-        }
-      }
-      const key = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-
-      expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key, type)).to.throw(TypeError)
-    })
-  })
-
-  it('should throw error when single node tree with wrong type parameter', function () {
-    const rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-    const proofNode = {
-      '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': {
-        val: {
-          name: 'John',
-          surname: 'Doe'
-        }
-      }
+/**
+ * Helper function for hashing a variable number of arguments.
+ *
+ * @param {Array<string | number[] | Uint8Array>} args
+ */
+function streamHash (...args) {
+  const stream = args.reduce((acc, arg) => {
+    if (Array.isArray(arg)) {
+      arg = Uint8Array.from(arg)
     }
-    const key = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-    const Type = Exonum.newType({
-      fields: [
-        { name: 'balance', type: Exonum.Uint64 }
-      ]
-    })
 
-    expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key, Type)).to.throw(TypeError)
-  })
+    const encoding = (typeof arg === 'string') ? 'hex' : undefined
+    return acc.update(arg, encoding)
+  }, sha('sha256'))
 
-  it('should throw error when single node tree with rootHash parameter not equal to actual hash (element is found)', function () {
-    const rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-    const proofNode = {
-      '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': {
-        val: {
-          balance: 4096
+  return stream.digest('hex')
+}
+
+describe('ProofPath', () => {
+  const binaryStrings = [
+    '0',
+    '1',
+    '10',
+    '011',
+    '10101',
+    '1010101010010001',
+    '10101010010100010010100101',
+    '100000000000000000000001000000000000000000000000000000000000000000000000'
+  ]
+
+  describe('constructor', () => {
+    binaryStrings.forEach(seq => {
+      it(`should construct path from short bit sequence: ${seq}`, () => {
+        const path = new ProofPath(seq)
+        expect(path.bitLength()).to.equal(seq.length)
+        expect(path.isTerminal).to.be.false()
+
+        for (let i = 0; i < seq.length; i++) {
+          expect(+seq[i]).to.equal(path.bit(i))
         }
-      }
-    }
-    const key = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-    const Type = Exonum.newType({
-      fields: [
-        { name: 'balance', type: Exonum.Uint64 }
-      ]
+        expect(path.bit(seq.length)).to.be.undefined()
+      })
     })
 
-    expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key, Type)).to.throw(Error)
-  })
+    it('should construct path from 256-bit sequence', () => {
+      const bits = Array.from(
+        { length: 256 },
+        () => (Math.random() > 0.5) ? '1' : '0'
+      ).join('')
+      expect(bits).to.match(/^[01]{256}$/)
 
-  it('should throw error when single node tree with invalid key with value in the root (element is found)', function () {
-    const rootHash = '8cc79fea15327c3d6b11b8427ea0ea0a975fae454fbca696da03a033498cee05'
-    const proofNode = {
-      '1111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011111100001111000111110010111100111111000011110001111100101111001111110000111100011111001011110011': {
-        val: {
-          balance: 4096
-        }
+      const path = new ProofPath(bits)
+      expect(path.bitLength()).to.equal(256)
+      expect(path.isTerminal).to.be.true()
+      for (let i = 0; i < bits.length; i++) {
+        expect(+bits[i]).to.equal(path.bit(i))
       }
-    }
-    const key = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-    const Type = Exonum.newType({
-      fields: [
-        { name: 'balance', type: Exonum.Uint64 }
-      ]
     })
 
-    expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key, Type)).to.throw(Error)
+    it('should construct path from byte buffer', () => {
+      const buffer = new Uint8Array(32)
+      buffer[0] = 1
+
+      const path = new ProofPath(buffer)
+      expect(path.bitLength()).to.equal(256)
+      expect(path.isTerminal).to.be.true()
+      expect(path.bit(0)).to.equal(1)
+      for (let i = 1; i < 256; i++) {
+        expect(path.bit(i)).to.equal(0)
+      }
+    })
+
+    it('should not construct paths from incorrectly typed objects', () => {
+      const objects = [
+        undefined,
+        null,
+        5,
+        [],
+        {},
+        () => {}
+      ]
+
+      objects.forEach(obj => {
+        expect(() => new ProofPath(obj)).to.throw(TypeError)
+      })
+    })
+
+    it('should not construct paths from buffer with incorrect length', () => {
+      const invalidBuffers = [
+        new Uint8Array(10),
+        new Uint8Array(40)
+      ]
+
+      invalidBuffers.forEach(buffer => {
+        expect(() => new ProofPath(buffer)).to.throw(TypeError)
+      })
+    })
   })
 
-  it('should throw error when single node tree with invalid key in the root of proofNode parameter', function () {
-    const rootHash = '8be78622dc7fd18b069a226133f1e943652bc5d53fd5df3d59735f49da1df692'
-    const proofNode = {
-      '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': 'dbc1b4c900ffe48d575b5da5c638040125f65db0fe3e24494b76ea986457d986'
-    }
-    const key = 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
+  describe('serialization', () => {
+    it('should serialize as a 34-byte buffer', () => {
+      const path = new ProofPath('10101')
+      const buffer = ProofPath.TYPE.serialize(path)
 
-    expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(Error)
+      expect(buffer).to.have.lengthOf(34)
+      expect(buffer[0]).to.equal(0) // leaf marker
+      expect(buffer[1]).to.equal(0b00010101)
+      for (let i = 2; i < 33; i++) {
+        expect(buffer[i]).to.equal(0)
+      }
+      expect(buffer[33]).to.equal(5)
+    })
+
+    it('should serialize leaf paths correctly', () => {
+      const source = Uint8Array.from({ length: 32 }, () => Math.random() * 256)
+      const path = new ProofPath(source)
+      const buffer = ProofPath.TYPE.serialize(path)
+
+      expect(buffer).to.have.lengthOf(34)
+      expect(buffer[0]).to.equal(1)
+      for (let i = 1; i < 33; i++) {
+        expect(buffer[i]).to.equal(source[i - 1])
+      }
+      expect(buffer[33]).to.equal(0)
+    })
   })
 
-  it('should throw error when single node tree with invalid key with value in the root', function () {
-    const rootHash = '8be78622dc7fd18b069a226133f1e943652bc5d53fd5df3d59735f49da1df692'
-    const proofNode = {
-      '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
-        'val': [
-          2
+  describe('compare', () => {
+    it('should compare 2 equal full-length instances', () => {
+      const buffer = new Uint8Array(32)
+      let path = new ProofPath(buffer)
+      let otherPath = new ProofPath(buffer)
+      expect(path.compare(otherPath)).to.equal(0)
+
+      buffer[0] = 192
+      buffer[10] = 100
+      path = new ProofPath(buffer)
+      otherPath = new ProofPath(buffer)
+      expect(path.compare(otherPath)).to.equal(0)
+    })
+
+    it('should compare 2 equal partial-length instances', () => {
+      let path = new ProofPath('100010')
+      let otherPath = new ProofPath('100010')
+      expect(path.compare(otherPath)).to.equal(0)
+
+      path = new ProofPath('1000101010001010')
+      otherPath = new ProofPath('1000101010001010')
+      expect(path.compare(otherPath)).to.equal(0)
+    })
+
+    binaryStrings.forEach(str => {
+      const path = new ProofPath(str)
+
+      binaryStrings.forEach(otherStr => {
+        const otherPath = new ProofPath(otherStr)
+
+        it(`should correctly compare ${str} and ${otherStr}`, () => {
+          const comp = (str === otherStr)
+            ? 0
+            : (str < otherStr) ? -1 : 1
+          expect(path.compare(otherPath)).to.equal(comp)
+        })
+      })
+    })
+
+    it('should correctly compare substring instances', () => {
+      let path = new ProofPath('10001')
+      let otherPath = new ProofPath('100010')
+      expect(path.compare(otherPath)).to.equal(-1)
+      expect(otherPath.compare(path)).to.equal(1)
+
+      path = new ProofPath('1000100')
+      otherPath = new ProofPath('10001000')
+      expect(path.compare(otherPath)).to.equal(-1)
+      expect(otherPath.compare(path)).to.equal(1)
+
+      path = new ProofPath('1000100')
+      otherPath = new ProofPath('100010001')
+      expect(path.compare(otherPath)).to.equal(-1)
+      expect(otherPath.compare(path)).to.equal(1)
+    })
+  })
+
+  describe('truncate', () => {
+    binaryStrings.forEach(str => {
+      const repr = (str.length > 40) ? str.substring(0, 40) + '...' : str
+
+      for (let len = 0; len < str.length; len++) {
+        it(`should truncate bit string ${repr} to length ${len}`, () => {
+          const path = new ProofPath(str).truncate(len)
+          expect(path.bitLength()).to.equal(len)
+          expect(path.toJSON()).to.equal(str.substring(0, len))
+        })
+      }
+    })
+
+    it('should throw when instructed to truncate to an excessive length', () => {
+      const path = new ProofPath('110101')
+      expect(() => path.truncate(7)).to.throw(/Cannot truncate bit slice/i)
+    })
+  })
+
+  describe('commonPrefix', () => {
+    const pairs = [
+      [ '100', '10001', '100' ],
+      [ '1001', '1011101', '10' ],
+      [ '1001', '1001', '1001' ],
+      [ '00010100', '0001010111', '0001010' ],
+      [ '000101010', '0001010111', '00010101' ],
+      [ '0001001010000101010', '00010010100001010111', '000100101000010101' ]
+    ]
+
+    pairs.forEach(({ 0: xStr, 1: yStr, 2: prefix }) => {
+      it(`should find common prefix for bit slices ${xStr} and ${yStr}`, () => {
+        const x = new ProofPath(xStr)
+        const y = new ProofPath(yStr)
+        expect(x.commonPrefix(y).toJSON()).to.equal(prefix)
+        expect(y.commonPrefix(x).toJSON()).to.equal(prefix)
+      })
+    })
+
+    it('should return an empty bit slice when appropriate', () => {
+      let x = new ProofPath('00')
+      let y = new ProofPath('10001')
+      expect(x.commonPrefix(y).toJSON()).to.equal('')
+      expect(y.commonPrefix(x).toJSON()).to.equal('')
+
+      x = new ProofPath('0000100000000000000000')
+      expect(x.commonPrefix(y).toJSON()).to.equal('')
+      expect(y.commonPrefix(x).toJSON()).to.equal('')
+    })
+  })
+
+  describe('startsWith', () => {
+    const prefixPairs = [
+      ['01', '0'],
+      ['111', ''],
+      ['01000101', '0100010'],
+      ['010001011', '0100010'],
+      ['010001011', '01000101']
+    ]
+
+    prefixPairs.forEach(({ 0: full, 1: prefix }) => {
+      const fullPath = new ProofPath(full)
+      const prefixPath = new ProofPath(prefix)
+
+      it(`should recognize ${prefixPath} as prefix of ${fullPath}`, () => {
+        expect(fullPath.startsWith(prefixPath)).to.be.true()
+        expect(prefixPath.startsWith(fullPath)).to.be.false()
+      })
+    })
+
+    const nonPrefixPairs = [
+      ['0', '1'],
+      ['1001', '101'],
+      ['10000000', '10000001'],
+      ['100000001', '100000011']
+    ]
+
+    nonPrefixPairs.forEach(({ 0: full, 1: nonPrefix }) => {
+      const fullPath = new ProofPath(full)
+      const nonPrefixPath = new ProofPath(nonPrefix)
+
+      it(`should recognize ${nonPrefixPath} as non-prefix of ${fullPath}`, () => {
+        expect(fullPath.startsWith(nonPrefixPath)).to.be.false()
+        expect(nonPrefixPath.startsWith(fullPath)).to.be.false()
+      })
+    })
+
+    it('should recognize path as a prefix of self', () => {
+      const path = new ProofPath('1001001')
+      expect(path.startsWith(path)).to.be.true()
+    })
+  })
+
+  describe('toJSON', () => {
+    binaryStrings.forEach(str => {
+      const repr = (str.length > 40) ? str.substring(0, 40) + '...' : str
+
+      it(`should serialize non-terminal bit string '${repr}'`, () => {
+        const path = new ProofPath(str)
+        expect(path.toJSON()).to.equal(str)
+      })
+    })
+  })
+
+  describe('toString', () => {
+    it('should output full bit contents for short slice', () => {
+      const path = new ProofPath('110111')
+      expect(path.toString()).to.equal('path(110111)')
+    })
+
+    it('should shorten bit contents for long slice', () => {
+      const path = new ProofPath('1010101001')
+      expect(path.toString()).to.equal('path(10101010...)')
+    })
+  })
+})
+
+describe('MapProof', () => {
+  const PublicKey = Exonum.PublicKey
+
+  const Wallet = Exonum.newType({
+    fields: [
+      { name: 'pub_key', type: Exonum.PublicKey },
+      { name: 'balance', type: Exonum.Uint64 },
+      { name: 'history_len', type: Exonum.Uint64 },
+      { name: 'history_hash', type: Exonum.Hash }
+    ]
+  })
+
+  describe('type checks', () => {
+    it('should fail on missing key and value type', () => {
+      const json = { entries: [], proof: [] }
+      expect(() => new MapProof(json)).to.throw('key type')
+    })
+
+    it('should fail on missing value type', () => {
+      const json = { entries: [], proof: [] }
+      expect(() => new MapProof(json, PublicKey)).to.throw('value type')
+    })
+
+    it('should fail on incorrect key type', () => {
+      const json = { entries: [], proof: [] }
+      const MyType = { foo: 'bar' }
+      expect(() => new MapProof(json, MyType, Wallet)).to.throw('key type')
+    })
+
+    it('should fail on incorrect value type', () => {
+      const json = { entries: [], proof: [] }
+      const MyType = { foo: 'bar' }
+      expect(() => new MapProof(json, PublicKey, MyType)).to.throw('value type')
+    })
+
+    it('should fail on incorrect key type serialization size', () => {
+      const json = {
+        proof: [],
+        entries: [
+          { missing: 100 }
         ]
       }
-    }
-    const key = 'f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4f4'
-
-    expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(Error)
-  })
-
-  it('should throw error when invalid number of children in the root node', function () {
-    const rootHash = '0000000000000000000000000000000000000000000000000000000000000001'
-    const proofNode = {
-      '1': '',
-      '2': '',
-      '3': ''
-    }
-    const key = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
-
-    expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(Error)
-  })
-
-  it('should throw error when tree with array as key parameter is passed ', function () {
-    const rootHash = '8be78622dc7fd18b069a226133f1e943652bc5d53fd5df3d59735f49da1df692'
-    const proofNode = {
-      '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': 'dbc1b4c900ffe48d575b5da5c638040125f65db0fe3e24494b76ea986457d986'
-    }
-    const key = [244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244, 244]
-
-    expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(TypeError)
-  })
-
-  it('should throw error when wrong rootHash parameter', function () {
-    const data = require('./data/invalid-MPT-wrong-root-hash.json')
-    const rootHash = data.root_hash
-    const proofNode = data.proof
-    const key = data.searched_key
-
-    expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(Error)
-  })
-
-  it('should throw error when invalid binary key', function () {
-    const rootHash = '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55'
-    const proofNode = {
-      '12323': {},
-      '5927': {}
-    }
-    const key = '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-
-    expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(TypeError)
-  })
-
-  it('should throw error when tree contains non full key and value of wrong type', function () {
-    [true, null, undefined, [], 42, new Date()].forEach(function (val) {
-      const rootHash = '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55'
-      const proofNode = {
-        '0': val,
-        '1': {}
-      }
-      const key = '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-
-      expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(TypeError)
+      expect(() => new MapProof(json, Exonum.Uint32, Wallet)).to.throw('key type')
     })
   })
 
-  it('should throw error when tree contains full key and value of wrong type', function () {
-    [true, null, undefined, [], 42, new Date()].forEach(function (val) {
-      const rootHash = '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55'
-      const proofNode = {
-        '0011001010001111110000101101101011111110000101010111001100101110011110010011110000111001011111111011110110100101111111111110111001110011111110011111001110011110111100001100100101110011010010111111011110001001000010000110000001000101101111100000101010100': val,
-        '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-      }
-      const key = '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-
-      expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(TypeError)
-    })
-  })
-
-  it('should throw error when tree contains non full key and invalid hash', function () {
-    const args = [
-      'Hello world',
-      'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6ez',
-      ''
-    ]
-
-    args.forEach(function (val) {
-      const rootHash = '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55'
-      const proofNode = {
-        '0': val,
-        '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-      }
-      const key = '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-
-      expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(Error)
-    })
-  })
-
-  it('should throw error when tree contains full key and invalid hash', function () {
-    const args = [
-      'Hello world',
-      'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6ez',
-      ''
-    ]
-
-    args.forEach(function (val) {
-      const rootHash = '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55'
-      const proofNode = {
-        '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': val,
-        '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-      }
-      const key = '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-
-      expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(Error)
-    })
-  })
-
-  it('should throw error when tree contains full key and missed value', function () {
-    const rootHash = '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55'
-    const proofNode = {
-      '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
-        'age': 5
-      },
-      '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-    }
-    const key = '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-
-    expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(Error)
-  })
-
-  it('should throw error when tree contains full key and duplicated value', function () {
-    const rootHash = '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55'
-    const proofNode = {
-      '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
-        val: [25, 13]
-      },
-      '0110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
-        val: [71]
-      }
-    }
-    const key = '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-
-    expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(Error)
-  })
-
-  it('should throw error when tree contains non full key and value on wrong position', function () {
-    const rootHash = '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55'
-    const proofNode = {
-      '011001101': {
-        val: [25, 13]
-      },
-      '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-    }
-    const key = '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-
-    expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(Error)
-  })
-
-  it('should throw error when tree contains key is of wrong length', function () {
-    const rootHash = '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55'
-    const proofNode = {
-      '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6',
-      '11100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101': {
-        val: [25, 13]
-      }
-    }
-    const key = '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-
-    expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(Error)
-  })
-
-  it('should throw error when tree contains full key and value of wrong type', function () {
-    [false, null, 42].forEach(function (val) {
-      const rootHash = '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55'
-      const proofNode = {
-        '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': val,
-        '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-      }
-      const key = '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-
-      expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(TypeError)
-    })
-  })
-
-  it('should throw error when tree contains full key and invalid value', function () {
-    ['Hello world'].forEach(function (val) {
-      const rootHash = '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55'
-      const proofNode = {
-        '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': val,
-        '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-      }
-      const key = '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-
-      expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(Error)
-    })
-  })
-
-  it('should throw error when tree contains full key and value as invalid binary array', function () {
-    [[false], [null], ['Hello world'], [[]], [{}], [new Date()]].forEach(function (val) {
-      const rootHash = '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55'
-      const proofNode = {
-        '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
-          val: val
-        },
-        '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-      }
-      const key = '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-
-      expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(TypeError)
-    })
-  })
-
-  it('should throw error when tree contains full key and value as binary array with wrong value', function () {
-    const rootHash = '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55'
-    const proofNode = {
-      '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
-        val: [257]
-      },
-      '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-    }
-    const key = '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-
-    expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(TypeError)
-  })
-
-  it('should throw error when tree contains full key and wrong type parameter', function () {
-    const rootHash = '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55'
-    const proofNode = {
-      '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110': {
-        val: {
-          name: 'John',
-          surname: 'Doe'
-        }
-      },
-      '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-    }
-    const key = '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-    const Type = Exonum.newType({
-      fields: [
-        { name: 'pub_key', type: Exonum.PublicKey },
-        { name: 'name', type: Exonum.String },
-        { name: 'balance', type: Exonum.Uint64 },
-        { name: 'history_hash', type: Exonum.Hash }
+  describe('initial parsing', () => {
+    it('should throw on malformed `proof` field', () => {
+      const objects = [
+        { entries: [] }, // no proof
+        { proof: 'abc', entries: [] },
+        { proof: null, entries: [] },
+        { proof: 124, entries: [] },
+        { proof: { foo: 'bar' }, entries: [] }
       ]
+
+      objects.forEach(obj => {
+        expect(() => new MapProof(obj, PublicKey, Wallet)).to.throw(
+          /malformed `proof`/i,
+          MapProofError
+        )
+      })
     })
 
-    expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key, Type)).to.throw(TypeError)
+    const validPath = '100101'
+    const validHash = Exonum.hash(new Uint8Array(10))
+
+    const malformedProofEntries = [
+      // No hash or path
+      1,
+      false,
+      'foobar',
+      [],
+      { },
+
+      // malformed hash
+      { hash: false, path: validPath },
+      { hash: 1234, path: validPath },
+      { hash: 'foobar', path: validPath },
+      { hash: '012345', path: validPath },
+
+      // malformed path
+      { hash: validHash, path: true },
+      { hash: validHash, path: [] },
+      { hash: validHash, path: 'f00' },
+      { hash: validHash, path: '' },
+      { hash: validHash, path: '0212' }
+    ]
+    const validProofEntry = { hash: validHash, path: '000000000000' }
+
+    malformedProofEntries.forEach(entry => {
+      it(`should throw on malformed entry in proof: ${JSON.stringify(entry)}`, () => {
+        let obj = { proof: [entry], entries: [] }
+        expect(() => new MapProof(obj, PublicKey, Wallet)).to.throw(
+          /malformed `proof`/i,
+          MapProofError
+        )
+
+        obj = { proof: [validProofEntry, entry], entries: [] }
+        expect(() => new MapProof(obj, PublicKey, Wallet)).to.throw(
+          /malformed `proof`/i,
+          MapProofError
+        )
+      })
+    })
+
+    it('should throw on malformed `entries` field', () => {
+      const objects = [
+        { proof: [] }, // no entries
+        { proof: [], entries: 'abc' },
+        { proof: [], entries: null },
+        { proof: [], entries: 124 },
+        { proof: [], entries: { foo: 'bar' } }
+      ]
+
+      objects.forEach(obj => {
+        expect(() => new MapProof(obj, PublicKey, Wallet)).to.throw(
+          /malformed `entries`/i,
+          MapProofError
+        )
+      })
+    })
+
+    const validKey = validHash
+    const validValue = {
+      pub_key: validKey,
+      balance: '100',
+      history_len: '0',
+      history_hash: '0000000000000000000000000000000000000000000000000000000000000000'
+    }
+    const malformedEntries = [
+      // No `missing` or `key` / `value`
+      1,
+      false,
+      'foobar',
+      [],
+      { },
+      { foo: 'bar' },
+
+      // Malformed `key` / `value`
+      { key: validKey },
+      { value: validValue },
+
+      // Ambigous entry type
+      { missing: validKey, key: validKey },
+      { missing: validKey, value: validValue }
+    ]
+
+    malformedEntries.forEach(entry => {
+      it(`should throw on malformed entry: ${JSON.stringify(entry)}`, () => {
+        let obj = { proof: [], entries: [entry] }
+        expect(() => new MapProof(obj, PublicKey, Wallet)).to.throw(
+          /malformed `entries`/i,
+          MapProofError
+        )
+
+        obj = { proof: [], entries: [{ missing: validKey }, entry] }
+        expect(() => new MapProof(obj, PublicKey, Wallet)).to.throw(
+          /malformed `entries`/i,
+          MapProofError
+        )
+      })
+    })
   })
 
-  it('should throw error when tree contains non full key and wrong type parameter', function () {
-    const rootHash = '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55'
-    const proofNode = {
-      '111': {
-        '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6',
-        '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100': {
-          val: {
-            name: 'John',
-            surname: 'Doe'
+  describe('path prechecks', () => {
+    it('should throw on non-terminal solitary node', () => {
+      const json = {
+        entries: [],
+        proof: [
+          { path: '001', hash: '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011' }
+        ]
+      }
+      expect(() => new MapProof(json, PublicKey, Wallet)).to.throw(/non-terminal isolated node/i)
+    })
+
+    it('should throw on discovered prefix key pairs', () => {
+      let json = {
+        entries: [],
+        proof: [
+          { path: '0', hash: '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011' },
+          { path: '001', hash: '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011' }
+        ]
+      }
+      expect(() => new MapProof(json, PublicKey, Exonum.Uint64))
+        .to.throw('path(0) is a prefix of path(001)')
+
+      json = {
+        entries: [
+          { key: '3434343434343434343434343434343434343434343434343434343434343434', value: '10000' }
+        ],
+        proof: [
+          { path: '001', hash: '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011' }
+        ]
+      }
+      expect(() => new MapProof(json, PublicKey, Exonum.Uint64))
+        .to.throw('path(001) is a prefix of path(00101100')
+
+      json = {
+        entries: [
+          { missing: '3434343434343434343434343434343434343434343434343434343434343434' }
+        ],
+        proof: [
+          { path: '001', hash: '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011' }
+        ]
+      }
+      expect(() => new MapProof(json, PublicKey, Exonum.Uint64))
+        .to.throw('path(001) is a prefix of path(00101100')
+    })
+
+    it('should throw on duplicate paths', () => {
+      let json = {
+        entries: [],
+        proof: [
+          { path: '001', hash: '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011' },
+          { path: '001', hash: '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4012' }
+        ]
+      }
+      expect(() => new MapProof(json, PublicKey, Exonum.Uint64))
+        .to.throw('duplicate path(001)')
+
+      json = {
+        entries: [
+          { missing: '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011' },
+          {
+            key: '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011',
+            value: '123'
           }
-        }
-      },
-      '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-    }
-    const key = '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
-    const Type = Exonum.newType({
-      fields: [
-        { name: 'pub_key', type: Exonum.PublicKey },
-        { name: 'name', type: Exonum.String },
-        { name: 'balance', type: Exonum.Uint64 },
-        { name: 'history_hash', type: Exonum.Hash }
-      ]
+        ],
+        proof: []
+      }
+      expect(() => new MapProof(json, PublicKey, Exonum.Uint64))
+        .to.throw('duplicate path(00101100')
+
+      const path = Exonum.hexadecimalToBinaryString(json.entries[0].missing)
+      json = {
+        entries: [
+          { missing: '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011' }
+        ],
+        proof: [
+          { path, hash: '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011' }
+        ]
+      }
+      expect(() => new MapProof(json, PublicKey, Exonum.Uint64))
+        .to.throw('duplicate path(00101100')
     })
 
-    expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key, Type)).to.throw(TypeError)
+    it('should throw on unordered paths in proof', () => {
+      let json = {
+        entries: [],
+        proof: [
+          { path: '001', hash: '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011' },
+          { path: '0', hash: '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011' }
+        ]
+      }
+      expect(() => new MapProof(json, PublicKey, Exonum.Uint64))
+        .to.throw('invalid path ordering')
+    })
   })
 
-  it('should throw error when tree contains duplicated left leaf', function () {
-    const rootHash = '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55'
-    const proofNode = {
-      '111': {
-        '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6',
-        '0110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100': {
-          val: [255, 0, 5]
-        }
-      },
-      '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-    }
-    const key = '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+  describe('merkleRoot', () => {
+    it('should return zeros on empty map', () => {
+      const proof = new MapProof({
+        entries: [],
+        proof: []
+      }, PublicKey, Exonum.Uint64)
 
-    expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(Error)
+      const expHash = '0000000000000000000000000000000000000000000000000000000000000000'
+      expect(proof.merkleRoot).to.equal(expHash)
+    })
+
+    it('should calculate hash for a single exposed node', () => {
+      const key = '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011'
+      const proof = new MapProof({
+        entries: [
+          { key, value: '100' }
+        ],
+        proof: []
+      }, PublicKey, Exonum.Uint64)
+
+      const expHash = streamHash(
+        Exonum.Bool.serialize(true, [], 0),
+        Exonum.PublicKey.serialize(key, [], 0),
+        Exonum.Uint8.serialize(0, [], 0),
+        Exonum.hash(Exonum.Uint64.serialize('100', [], 0))
+      )
+      expect(proof.merkleRoot).to.equal(expHash)
+    })
+
+    it('should calculate hash for a single hashed node', () => {
+      const key = '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011'
+      const proof = new MapProof({
+        entries: [],
+        proof: [
+          {
+            path: Exonum.hexadecimalToBinaryString(key),
+            hash: key
+          }
+        ]
+      }, PublicKey, Exonum.Uint64)
+
+      const expHash = streamHash(
+        Exonum.Bool.serialize(true, [], 0),
+        Exonum.PublicKey.serialize(key, [], 0),
+        Exonum.Uint8.serialize(0, [], 0),
+        key
+      )
+      expect(proof.merkleRoot).to.equal(expHash)
+    })
+
+    it('should calculate hash for 2-node tree', () => {
+      const proof = new MapProof({
+        entries: [],
+        proof: [
+          {
+            path: '0',
+            hash: '0000000000000000000000000000000000000000000000000000000000000000'
+          },
+          {
+            path: '10',
+            hash: '0f00000000000000000000000000000000000000000000000000000000000000'
+          }
+        ]
+      }, PublicKey, Exonum.Uint64)
+
+      const expHash = streamHash(
+        '0000000000000000000000000000000000000000000000000000000000000000',
+        '0f00000000000000000000000000000000000000000000000000000000000000',
+        // left path
+        Exonum.Bool.serialize(false, [], 0),
+        '0000000000000000000000000000000000000000000000000000000000000000',
+        Exonum.Uint8.serialize(1, [], 0),
+        // right path
+        Exonum.Bool.serialize(false, [], 0),
+        '0100000000000000000000000000000000000000000000000000000000000000',
+        Exonum.Uint8.serialize(2, [], 0)
+      )
+      expect(proof.merkleRoot).to.equal(expHash)
+    })
   })
 
-  it('should throw error when tree contains duplicated right leaf', function () {
-    const rootHash = '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55'
-    const proofNode = {
-      '111': {
-        '1': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6',
-        '1110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100110111001101110011011100': {
-          val: [255, 0, 5]
-        }
-      },
-      '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-    }
-    const key = '2dd5bcc350a02229e987e1d2be7d6a3bc62daab50f8d7ce71eaf69b6093fcdc3'
+  function testValidSample (sampleName) {
+    it(`should work on sample ${sampleName}`, () => {
+      const sample = samples[sampleName]
+      const expected = sample.expected
+      const json = sample.data
 
-    expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(Error)
-  })
+      const entries = expected.entries || []
+      const missingKeys = expected.missingKeys || []
 
-  it('should throw error when tree contains left key which is part of search key but branch is not expanded', function () {
-    const rootHash = '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55'
-    const proofNode = {
-      '111': {
-        '01111111010111000100100111101010110010111100011010100000100111111110101011011000011000000000100001000100000101101101100010101110110101101010001100000101110100011101101111100100101110100110010011011100011111011010110010100011111011010011000101111011010': '9be1fdaa5e58640e6c17dba7e734c56ec7ccab77f823933301661e3514284dd7',
-        '11111111010111000100100111101010110010111100011010100000100110111110101011011000011000000000100001000100000101101101100010101110110101101010001100000101110100011101101111100100101110100110010011011100011111011010110010100011111011010011000101111011010': '9be1fdaa5e58640e6c17dba7e734c56ec7ccab77f823933301661e3514284dd7'
-      },
-      '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-    }
-    const key = 'ecdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdc'
+      let valueType
+      switch (expected.valueType) {
+        case 'Wallet':
+          valueType = Wallet
+          break
+        case 'UniqueHash':
+          valueType = {
+            hash: (value) => value
+          }
+          break
+        case 'Uint64':
+          valueType = Exonum.Uint64
+          break
+        default:
+          throw new TypeError(`Unknown value type: ${expected.valueType}`)
+      }
 
-    expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(Error)
-  })
+      const proof = new MapProof(json, Exonum.PublicKey, valueType)
+      expect(proof.entries.size).to.equal(entries.length)
 
-  it('should throw error when tree contains right key which is part of search key but branch is not expanded', function () {
-    const rootHash = '95d1d8dbad15bb04478fad0c3a9343ac32502ae975858749a8c29cb24cccdd55'
-    const proofNode = {
-      '111': {
-        '01111111010111000100100111101010110010111100011010100000100111111110101011011000011000000000100001000100000101101101100010101110110101101010001100000101110100011101101111100100101110100110010011011100011111011010110010100011111011010011000101111011010': '9be1fdaa5e58640e6c17dba7e734c56ec7ccab77f823933301661e3514284dd7',
-        '11111111010111000100100111101010110010111100011010100000100110111110101011011000011000000000100001000100000101101101100010101110110101101010001100000101110100011101101111100100101110100110010011011100011111011010110010100011111011010011000101111011010': '9be1fdaa5e58640e6c17dba7e734c56ec7ccab77f823933301661e3514284dd7'
-      },
-      '0': 'e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6'
-    }
-    const key = 'fcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdc'
+      entries.forEach(({ 0: key, 1: val }) => {
+        expect(proof.entries.has(key)).to.be.true()
+        expect(proof.entries.get(key)).to.deep.equal(val)
+      })
+      missingKeys.forEach(key => {
+        expect(proof.missingKeys.has(key)).to.be.true()
+      })
 
-    expect(() => Exonum.merklePatriciaProof(rootHash, proofNode, key)).to.throw(Error)
-  })
+      expect(proof.merkleRoot).to.equal(expected.merkleRoot)
+    })
+  }
+
+  testValidSample('valid-hash-value-short')
+  testValidSample('valid-uint64-value-short')
+  testValidSample('valid-empty')
+  testValidSample('valid-hash-value')
+  testValidSample('valid-uint64-value')
+  testValidSample('valid-not-found')
+  testValidSample('valid-single-wallet')
 })

@@ -1,362 +1,299 @@
-import { isObject } from '../helpers'
-import * as primitive from '../types/primitive'
-import { newType } from '../types/generic'
-import * as validate from '../types/validate'
-import * as convert from '../types/convert'
-import { hash } from '../crypto'
+import binarySearch from 'binary-search'
 
-const MERKLE_PATRICIA_KEY_LENGTH = 32
+import { hash } from '../crypto'
+import { newType } from '../types/generic'
+import * as primitive from '../types/primitive'
+import ProofPath from './ProofPath'
 
 /**
- * Check Merkle Patricia tree proof and return element
- * @param {string} rootHash
- * @param {Object} proofNode
- * @param {string} key
- * @param {NewType} [type] - optional
- * @return {Object}
+ * Proof of existence and/or absence of certain elements from a Merkelized
+ * map index.
  */
-export function merklePatriciaProof (rootHash, proofNode, key, type) {
-  const DBKey = newType({
-    fields: [
-      { name: 'variant', type: primitive.Uint8 },
-      { name: 'key', type: primitive.Hash },
-      { name: 'length', type: primitive.Uint8 }
-    ]
+export class MapProof {
+  /**
+   * Creates a new instance of a proof.
+   *
+   * @param {Object} json
+   *   JSON object containing (untrusted) proof
+   * @param {{serialize: (any) => Array<number>}} keyType
+   *   Type of keys used in the underlying Merkelized map. Usually, `PublicKey`
+   *   or `Hash`. The keys must serialize to exactly 32 bytes.
+   * @param {{hash?: (any) => string, serialize: (any) => Array<number>}} valueType
+   *   Type of values used in the underlying Merkelized map. Usually, it should
+   *   be a type created with the `newType` function. The type should possess
+   *   one of `hash` or `serialize` methods.
+   * @throws {MapProofError}
+   *   if the proof is malformed
+   */
+  constructor (json, keyType, valueType) {
+    this.proof = parseProof(json.proof)
+    this.entries = parseEntries(json.entries, keyType, valueType)
+
+    if (!keyType || typeof keyType.serialize !== 'function') {
+      throw new TypeError('No `serialize` method in the key type')
+    }
+    this.keyType = keyType
+
+    if (!valueType || (
+      typeof valueType.serialize !== 'function' &&
+      typeof valueType.hash !== 'function'
+    )) {
+      throw new TypeError('No `hash` or `serialize` method in the value type')
+    }
+    this.valueType = valueType
+
+    precheckProof.call(this)
+
+    const completeProof = this.proof
+      .concat(this.entries)
+      .sort(({ path: pathA }, { path: pathB }) => pathA.compare(pathB))
+
+    // This check is required as duplicate paths can be introduced by entries
+    // (further, it's generally possible that two different entry keys lead
+    //  to the same `ProofPath`).
+    for (let i = 1; i < completeProof.length; i++) {
+      const [{ path: pathA }, { path: pathB }] = [
+        completeProof[i - 1],
+        completeProof[i]
+      ]
+
+      if (pathA.compare(pathB) === 0) {
+        throw new MapProofError('duplicatePath', pathA)
+      }
+    }
+
+    this.merkleRoot = collect(completeProof.filter(({ hash }) => !!hash))
+    this.missingKeys = new Set(
+      this.entries
+        .filter(e => e.missing !== undefined)
+        .map(({ missing }) => missing)
+    )
+    this.entries = new Map(
+      this.entries
+        .filter(e => e.key !== undefined)
+        .map(({ key, value }) => [key, value])
+    )
+  }
+}
+
+function parseProof (proof) {
+  if (!Array.isArray(proof)) {
+    throw new MapProofError('malformedProof')
+  }
+
+  const validEntries = proof.every(({ path, hash }) => {
+    return /^[01]{1,256}$/.test(path) &&
+      /^[0-9a-f]{64}$/i.test(hash)
   })
-  const Branch = newType({
-    fields: [
-      { name: 'left_hash', type: primitive.Hash },
-      { name: 'right_hash', type: primitive.Hash },
-      { name: 'left_key', type: DBKey },
-      { name: 'right_key', type: DBKey }
-    ]
+  if (!validEntries) {
+    throw new MapProofError('malformedProof')
+  }
+
+  return proof.map(({ path, hash }) => ({
+    path: new ProofPath(path),
+    hash
+  }))
+}
+
+function parseEntries (entries, keyType, valueType) {
+  function createPath (data) {
+    const bytes = keyType.serialize(data, [], 0)
+    if (bytes.length !== ProofPath.BYTE_LENGTH) {
+      throw new TypeError('invalid key type; keys should serialize to ' +
+        `${ProofPath.BYTE_LENGTH}-byte buffers`)
+    }
+
+    return new ProofPath(Uint8Array.from(bytes))
+  }
+
+  if (!Array.isArray(entries)) {
+    throw new MapProofError('malformedEntries')
+  }
+
+  return entries.map(({ missing, key, value }) => {
+    if (missing === undefined && (key === undefined || value === undefined)) {
+      throw new MapProofError('unknownEntryType')
+    }
+    if (missing !== undefined && (key !== undefined || value !== undefined)) {
+      throw new MapProofError('ambiguousEntryType')
+    }
+
+    if (missing !== undefined) {
+      return {
+        missing,
+        path: createPath(missing)
+      }
+    } else {
+      return {
+        key,
+        value,
+        path: createPath(key),
+        hash: typeof valueType.hash === 'function'
+          ? valueType.hash(value) // `newType`s
+          : hash(valueType.serialize(value, [], 0)) // "primitive" types
+      }
+    }
   })
-  const RootBranch = newType({
-    fields: [
-      { name: 'key', type: DBKey },
-      { name: 'hash', type: primitive.Hash }
-    ]
+}
+
+/**
+ * @param this MapProof
+ */
+function precheckProof () {
+  // Check that entries in proof are in increasing order
+  for (let i = 1; i < this.proof.length; i++) {
+    const [{ path: prevPath }, { path }] = [this.proof[i - 1], this.proof[i]]
+
+    switch (prevPath.compare(path)) {
+      case -1:
+        if (path.startsWith(prevPath)) {
+          throw new MapProofError('embeddedPaths', prevPath, path)
+        }
+        break
+      case 0:
+        throw new MapProofError('duplicatePath', path)
+      case 1:
+        throw new MapProofError('invalidOrdering', prevPath, path)
+    }
+  }
+
+  // Check that no entry has a prefix among the paths in the proof entries.
+  // In order to do this, it suffices to locate the closest smaller path
+  // in the proof entries and check only it.
+  this.entries.forEach(({ path: keyPath }) => {
+    const index = binarySearch(this.proof, keyPath, ({ path }, needle) => {
+      return path.compare(needle)
+    })
+
+    if (index >= 0) {
+      throw new MapProofError('duplicatePath', keyPath)
+    } else {
+      const insertionIndex = -index - 1
+
+      if (insertionIndex > 0) {
+        const prevPath = this.proof[insertionIndex - 1].path
+        if (keyPath.startsWith(prevPath)) {
+          throw new MapProofError('embeddedPaths', prevPath, keyPath)
+        }
+      }
+    }
   })
+}
 
-  /**
-   * Get element from node
-   * @param data
-   * @returns {string} or {Array} or {Object}
-   */
-  function getElement (data) {
-    if (typeof data === 'string') {
-      if (!validate.validateHexadecimal(data)) {
-        throw new TypeError('Element of wrong type is passed. Hexadecimal expected.')
-      }
-      return data
-    } else if (Array.isArray(data)) {
-      if (!validate.validateBytesArray(data)) {
-        throw new TypeError('Element of wrong type is passed. Bytes array expected.')
-      }
-      return data.slice(0) // clone array of 8-bit integers
-    } else if (isObject(data)) {
-      return JSON.parse(JSON.stringify(data)) // deep clone
-    }
+const IsolatedNode = newType({
+  fields: [
+    { name: 'path', type: ProofPath.TYPE },
+    { name: 'hash', type: primitive.Hash }
+  ]
+})
+
+const BranchNode = newType({
+  fields: [
+    { name: 'left_hash', type: primitive.Hash },
+    { name: 'right_hash', type: primitive.Hash },
+    { name: 'left_path', type: ProofPath.TYPE },
+    { name: 'right_path', type: ProofPath.TYPE }
+  ]
+})
+
+function collect (entries) {
+  function hashIsolatedNode ({ path, hash: valueHash }) {
+    return hash({ hash: valueHash, path }, IsolatedNode)
   }
 
-  /**
-   * Get hash of element
-   * @param element
-   * @returns {string}
-   */
-  function getHash (element) {
-    if (typeof element === 'string') {
-      return element
-    } else if (Array.isArray(element)) {
-      return hash(element)
-    } else if (isObject(element)) {
-      return hash(element, type)
-    }
-  }
-
-  /**
-   * Check either suffix is a part of search key
-   * @param {string} prefix
-   * @param {string} suffix
-   * @returns {boolean}
-   */
-  function isPartOfSearchKey (prefix, suffix) {
-    // remove prefix from searched binary key
-    const diff = keyBinary.substr(prefix.length)
-    return diff.indexOf(suffix) === 0
-  }
-
-  /**
-   * Order left and right nodes in a tree
-   * @param {Array} nodes
-   * @returns {Array} or {null}
-   */
-  function orderNodes (nodes) {
-    const child1 = nodes[0]
-    const child2 = nodes[1]
-    const len = Math.min(child1.suffix.length, child2.suffix.length)
-    for (let i = 0; i < len; i++) {
-      if (child1.suffix[i] !== child2.suffix[i]) {
-        return child1.suffix[i] === '0' ? [child1, child2] : [child2, child1]
-      }
-    }
-    return null
-  }
-
-  /**
-   * Recursive tree traversal function
-   * @param {Object} node
-   * @param {string} keyPrefix
-   * @returns {string}
-   */
-  function recursive (node, keyPrefix) {
-    if (Object.keys(node).length !== 2) {
-      throw new Error('Invalid number of children in the tree node.')
-    }
-
-    const nodes = []
-    let fullKey
-
-    for (const keySuffix in node) {
-      if (!node.hasOwnProperty(keySuffix)) {
-        continue
-      } else if (keySuffix.length === 0) {
-        throw new TypeError('Empty key suffix is passed.')
-      }
-
-      // validate key
-      if (!validate.validateBinaryString(keySuffix)) {
-        throw new TypeError('Key suffix of wrong type is passed. Binary string expected.')
-      }
-
-      let branchValueHash
-      const nodeValue = node[keySuffix]
-      let branchType
-      let branchKey
-      let branchKeyHash
-
-      fullKey = keyPrefix + keySuffix
-
-      if (fullKey.length === MERKLE_PATRICIA_KEY_LENGTH * 8) {
-        if (typeof nodeValue === 'string') {
-          if (!validate.validateHexadecimal(nodeValue)) {
-            throw new TypeError('Tree node of wrong type is passed. Hexadecimal expected.')
-          }
-
-          branchValueHash = nodeValue
-          branchType = 'hash'
-        } else if (isObject(nodeValue)) {
-          if (nodeValue.val === undefined) {
-            throw new TypeError('Leaf tree contains invalid data.')
-          } else if (element !== undefined) {
-            throw new Error('Tree can not contains more than one node with value.')
-          }
-
-          element = getElement(nodeValue.val)
-          branchValueHash = getHash(element)
-
-          branchType = 'value'
-        } else {
-          throw new TypeError('Invalid type of node in tree leaf.')
-        }
-
-        branchKeyHash = convert.binaryStringToHexadecimal(fullKey)
-
-        branchKey = {
-          variant: 1,
-          key: branchKeyHash,
-          length: 0
-        }
-      } else if (fullKey.length < MERKLE_PATRICIA_KEY_LENGTH * 8) { // node is branch
-        if (typeof nodeValue === 'string') {
-          if (!validate.validateHexadecimal(nodeValue)) {
-            throw new TypeError('Tree node of wrong type is passed. Hexadecimal expected.')
-          }
-
-          branchValueHash = nodeValue
-          branchType = 'hash'
-        } else if (isObject(nodeValue)) {
-          if (nodeValue.val !== undefined) {
-            throw new Error('Node with value is at non-leaf position in tree.')
-          }
-
-          branchValueHash = recursive(nodeValue, fullKey)
-
-          branchType = 'branch'
-        } else {
-          throw new TypeError('Invalid type of node in tree.')
-        }
-
-        const binaryKeyLength = fullKey.length
-        let binaryKey = fullKey
-
-        for (let j = 0; j < (MERKLE_PATRICIA_KEY_LENGTH * 8 - fullKey.length); j++) {
-          binaryKey += '0'
-        }
-
-        branchKeyHash = convert.binaryStringToHexadecimal(binaryKey)
-
-        branchKey = {
-          variant: 0,
-          key: branchKeyHash,
-          length: binaryKeyLength
-        }
-      } else {
-        throw new Error('Invalid length of key in tree.')
-      }
-
-      nodes.push({
-        hash: branchValueHash,
-        key: branchKey,
-        type: branchType,
-        suffix: keySuffix,
-        size: fullKey.length
-      })
-    }
-
-    if (nodes[0].suffix[0] === nodes[1].suffix[0] && keyPrefix.length > 0) {
-      throw new Error('Nodes with common-prefix keys are located on non-zero level of the tree.')
-    }
-
-    let orderedNodes = orderNodes(nodes)
-
-    if (!orderedNodes) {
-      throw new Error('Impossible to determine left and right nodes.')
-    }
-
-    const left = orderedNodes[0]
-    const right = orderedNodes[1]
-
-    if (
-      left.type === 'hash' &&
-      right.type === 'hash' &&
-      fullKey.length < MERKLE_PATRICIA_KEY_LENGTH * 8
-    ) {
-      if (isPartOfSearchKey(keyPrefix, left.suffix)) {
-        throw new Error('Tree is invalid. Left key is a part of search key but its branch is not expanded.')
-      } else if (isPartOfSearchKey(keyPrefix, right.suffix)) {
-        throw new Error('Tree is invalid. Right key is a part of search key but its branch is not expanded.')
-      }
-    }
-
-    return hash({
+  function hashBranch (left, right) {
+    const branch = {
       left_hash: left.hash,
       right_hash: right.hash,
-      left_key: left.key,
-      right_key: right.key
-    }, Branch)
-  }
-
-  let element
-
-  // validate rootHash
-  if (!validate.validateHexadecimal(rootHash)) {
-    throw new TypeError('Root hash of wrong type is passed. Hexadecimal expected.')
-  }
-
-  rootHash = rootHash.toLowerCase()
-
-  // validate proofNode parameter
-  if (!isObject(proofNode)) {
-    throw new TypeError('Invalid type of proofNode parameter. Object expected.')
-  }
-
-  // validate key parameter
-  if (Array.isArray(key)) {
-    if (!validate.validateBytesArray(key, MERKLE_PATRICIA_KEY_LENGTH)) {
-      throw new TypeError('Key parameter of wrong type is passed. Bytes array expected.')
+      left_path: left.path,
+      right_path: right.path
     }
 
-    key = convert.uint8ArrayToHexadecimal(key)
-  } else if (typeof key === 'string') {
-    if (!validate.validateHexadecimal(key, MERKLE_PATRICIA_KEY_LENGTH)) {
-      throw new TypeError('Key parameter of wrong type is passed. Hexadecimal expected.')
-    }
-  } else {
-    throw new TypeError('Invalid type of key parameter. Array of 8-bit integers or hexadecimal string is expected.')
+    return hash(branch, BranchNode)
   }
 
-  const keyBinary = convert.hexadecimalToBinaryString(key)
+  function fold (contour, lastPrefix) {
+    const lastEntry = contour.pop()
+    const penultimateEntry = contour.pop()
 
-  const proofNodeRootNumberOfNodes = Object.keys(proofNode).length
-  if (proofNodeRootNumberOfNodes === 0) {
-    if (rootHash === (new Uint8Array(MERKLE_PATRICIA_KEY_LENGTH * 2)).join('')) {
-      return null
-    } else {
-      throw new Error('Invalid rootHash parameter of empty tree.')
-    }
-  } else if (proofNodeRootNumberOfNodes === 1) {
-    for (const i in proofNode) {
-      if (!proofNode.hasOwnProperty(i)) {
-        continue
-      }
+    contour.push({
+      path: lastPrefix,
+      hash: hashBranch(penultimateEntry, lastEntry)
+    })
 
-      if (!validate.validateBinaryString(i, 256)) {
-        throw new TypeError('Tree key of wrong type is passed. Binary string expected.')
-      }
+    return (contour.length > 1)
+      ? lastPrefix.commonPrefix(contour[contour.length - 2].path)
+      : null
+  }
 
-      const data = proofNode[i]
-      let nodeHash
+  switch (entries.length) {
+    case 0:
+      return '0000000000000000000000000000000000000000000000000000000000000000'
 
-      const nodeKey = convert.binaryStringToHexadecimal(i)
-
-      if (typeof data === 'string') {
-        if (!validate.validateHexadecimal(data)) {
-          throw new TypeError('Tree element of wrong type is passed. Hexadecimal expected.')
-        }
-
-        nodeHash = hash({
-          key: {
-            variant: 1,
-            key: nodeKey,
-            length: 0
-          },
-          hash: data
-        }, RootBranch)
-
-        if (rootHash === nodeHash) {
-          if (key !== nodeKey) {
-            return null // no element with data in tree
-          } else {
-            throw new Error('Invalid key with hash is in the root of proofNode parameter.')
-          }
-        } else {
-          throw new Error('rootHash parameter is not equal to actual hash.')
-        }
-      } else if (isObject(data)) {
-        element = getElement(data.val)
-
-        nodeHash = hash({
-          key: {
-            variant: 1,
-            key: nodeKey,
-            length: 0
-          },
-          hash: getHash(element)
-        }, RootBranch)
-
-        if (rootHash === nodeHash) {
-          if (key === nodeKey) {
-            return element
-          } else {
-            throw new Error('Invalid key with value is in the root of proofNode parameter.')
-          }
-        } else {
-          throw new Error('rootHash parameter is not equal to actual hash.')
-        }
+    case 1:
+      if (!entries[0].path.isTerminal) {
+        throw new MapProofError('nonTerminalNode', entries[0].path)
       } else {
-        throw new Error('Invalid type of value in the root of proofNode parameter.')
+        return hashIsolatedNode(entries[0])
       }
-    }
-  } else {
-    const actualHash = recursive(proofNode, '')
 
-    if (rootHash !== actualHash) {
-      throw new Error('rootHash parameter is not equal to actual hash.')
-    } else if (element === undefined) {
-      return null // no element with data in tree
-    }
+    default:
+      const contour = []
 
-    return element
+      // invariant: equal to the common prefix of the 2 last nodes in the contour
+      let lastPrefix = entries[0].path.commonPrefix(entries[1].path)
+      contour.push(entries[0], entries[1])
+
+      for (let i = 2; i < entries.length; i++) {
+        const entry = entries[i]
+        const newPrefix = entry.path.commonPrefix(contour[contour.length - 1].path)
+
+        while (contour.length > 1 && newPrefix.bitLength() < lastPrefix.bitLength()) {
+          const foldedPrefix = fold(contour, lastPrefix)
+          if (foldedPrefix) {
+            lastPrefix = foldedPrefix
+          }
+        }
+
+        contour.push(entry)
+        lastPrefix = newPrefix
+      }
+
+      while (contour.length > 1) {
+        lastPrefix = fold(contour, lastPrefix)
+      }
+      return contour[0].hash
+  }
+}
+
+/**
+ * Error indicating a malformed `MapProof`.
+ */
+export class MapProofError extends Error {
+  constructor (type, ...args) {
+    switch (type) {
+      case 'malformedProof':
+        super('malformed `proof` part of the proof')
+        break
+      case 'malformedEntries':
+      case 'unknownEntryType':
+      case 'ambiguousEntryType':
+        super('malformed `entries` part of the proof')
+        break
+      case 'embeddedPaths':
+        super(`embedded paths in proof: ${args[0]} is a prefix of ${args[1]}`)
+        break
+      case 'duplicatePath':
+        super(`duplicate ${args[0]} in proof`)
+        break
+      case 'invalidOrdering':
+        super('invalid path ordering')
+        break
+      case 'nonTerminalNode':
+        super('non-terminal isolated node in proof')
+        break
+      default:
+        super(type)
+    }
   }
 }

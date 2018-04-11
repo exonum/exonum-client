@@ -3,11 +3,39 @@ node_js:
 - '4'
 - '6'
 - '8'
+
+env:
+  matrix:
+  - FEATURE=test
+
 cache:
   directories:
   - node_modules
+  - integration-tests/target
+  - $HOME/.cargo
+
 script:
 - grunt
+- node examples/map-proof.js
+
+jobs:
+  include:
+    - env: FEATURE=integration
+      language: rust
+      rust: nightly-2018-03-28
+      before_install:
+      - nvm install 8 && nvm use 8
+      - node --version
+      - npm --version
+      install:
+      - npm install
+      # Compile the server beforehand
+      - npm run integration:build
+      script:
+      - npm run integration:unix
+      after_script:
+      - npm run postintegration:unix
+
 deploy:
   skip_cleanup: true
   provider: npm

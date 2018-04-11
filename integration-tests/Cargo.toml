@@ -1,0 +1,21 @@
+[package]
+name = "integration_tests"
+version = "0.0.0"
+authors = ["Exonum Team <exonum@bitfury.com>"]
+publish = false
+
+[dependencies]
+exonum = "0.6.0"
+rand = "0.4.2"
+rocket = "=0.3.6"
+rocket_codegen = "=0.3.6"
+serde = "1.0.36"
+serde_derive = "1.0.36"
+
+[dependencies.rocket_contrib]
+version = "=0.3.6"
+default-features = false
+features = ["json"]
+
+[patch.crates-io]
+exonum = { git = "https://github.com/exonum/exonum.git", rev = "f5927dd136df2b88ea8075f194c2960df2412d1a" }
