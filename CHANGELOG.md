@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.2 (Apr 11, 2018)
+
+* Add static `hash` method to `Exonum.Hash` primitive type. #94
+
 ## 0.7.1 (Apr 11, 2018)
 
 * Fix missed `MapProof` method. #93
