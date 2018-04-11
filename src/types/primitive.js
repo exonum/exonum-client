@@ -356,6 +356,18 @@ export class Hash {
 
     return insertHexadecimalToByteArray(value, buffer, from)
   }
+
+  /**
+   * @param value
+   * @returns value
+   */
+  static hash (value) {
+    if (!validate.validateHexadecimal(value)) {
+      throw new TypeError('Hash of wrong type is passed: ' + value)
+    }
+
+    return value
+  }
 }
 
 export class Digest {
