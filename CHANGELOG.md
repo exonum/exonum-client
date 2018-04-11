@@ -1,6 +1,10 @@
 # Changelog
 
-## 0.7.0
+## 0.7.1 (Apr 11, 2018)
+
+* Fix missed `MapProof` method. #93
+
+## 0.7.0 (Apr 11, 2018)
 
 * Proofs of existence in Merkle Patricia tree have been reworked.
 Method is changed in Exonum core in 0.7. #85
