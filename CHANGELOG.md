@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.7.0
+
+* Proofs of existence in Merkle Patricia tree have been reworked.
+Method is changed in Exonum core in 0.7. #85
+* `network_id` attribute has been removed from custom data types, transactions and proofs.
+Attribute is removed in Exonum core in 0.7. #90
+
 ## 0.6.1 (Apr 4, 2018)
 
 * Add Uint8Array to Binary String convertor (`uint8ArrayToBinaryString` method). #88
