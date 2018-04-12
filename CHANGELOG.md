@@ -11,9 +11,9 @@
 ## 0.7.0 (Apr 11, 2018)
 
 * Proofs of existence in Merkle Patricia tree have been reworked.
-Method is changed in Exonum core in 0.7. #85
+Method is changed in Exonum core in [0.7](https://github.com/exonum/exonum/blob/master/CHANGELOG.md#07---2018-04-11). #85
 * `network_id` attribute has been removed from custom data types, transactions and proofs.
-Attribute is removed in Exonum core in 0.7. #90
+Attribute is removed in Exonum core in [0.7](https://github.com/exonum/exonum/blob/master/CHANGELOG.md#07---2018-04-11). #90
 
 ## 0.6.1 (Apr 4, 2018)
 
