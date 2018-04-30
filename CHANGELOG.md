@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.3 (Apr 30, 2018)
+
+* Update third-party dependencies to fix potential security vulnerabilities. #96
+
 ## 0.7.2 (Apr 11, 2018)
 
 * Add static `hash` method to `Exonum.Hash` primitive type. #94

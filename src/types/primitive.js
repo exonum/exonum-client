@@ -435,12 +435,12 @@ export class Timespec {
     return 8
   }
 
-/**
- * @param {number|string} nanoseconds
- * @param {Array} buffer
- * @param {number} from
- * @returns {Array}
- */
+  /**
+   * @param {number|string} nanoseconds
+   * @param {Array} buffer
+   * @param {number} from
+   * @returns {Array}
+   */
   static serialize (nanoseconds, buffer, from) {
     if (!validate.validateBigInteger(nanoseconds, 0, MAX_UINT64, from, this.size())) {
       throw new TypeError('Timespec of wrong type is passed: ' + nanoseconds)
