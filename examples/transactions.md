@@ -54,13 +54,15 @@ const data = {
   amount: 1000
 }
 
-// Define the signing key pair 
-const publicKey = 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
-const secretKey = '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2b' +
- 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
+// Define a signing key pair
+const keyPair = {
+  publicKey: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
+  secretKey: '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2b' +
+  'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
+}
 
 // Sign the data
-let signature = sendFunds.sign(secretKey, data) // 'c304505c8a46ca19454ff5f18335d520823cd0eb984521472ec7638b312a0f5b1180a3c39a50cbe3b68ed15023c6761ed1495da648c7fe484876f92a659ee10a'
+let signature = sendFunds.sign(keyPair.secretKey, data) // 'c304505c8a46ca19454ff5f18335d520823cd0eb984521472ec7638b312a0f5b1180a3c39a50cbe3b68ed15023c6761ed1495da648c7fe484876f92a659ee10a'
 ```
 
 Read more about [data signing](../README.md#sign-data).
@@ -89,17 +91,19 @@ const data = {
   amount: 1000
 }
 
-// Define a signing key pair 
-const publicKey = 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
-const secretKey = '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2b' +
- 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
+// Define a signing key pair
+const keyPair = {
+  publicKey: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
+  secretKey: '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2b' +
+  'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
+}
 
 // Signature obtained upon signing using secret key
 const signature = 'c304505c8a46ca19454ff5f18335d520823cd0eb984521472ec7638b312a0f5b' +
  '1180a3c39a50cbe3b68ed15023c6761ed1495da648c7fe484876f92a659ee10a'
 
 // Verify the signature
-let result = sendFunds.verifySignature(signature, publicKey, data) // true
+let result = sendFunds.verifySignature(signature, keyPair.publicKey, data) // true
 ```
 
 Read more about [signature verification](../README.md#verify-signature).
@@ -130,13 +134,15 @@ const data = {
   amount: 1000
 }
 
-// Define a signing key pair 
-const publicKey = 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
-const secretKey = '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2b' +
- 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
+// Define a signing key pair
+const keyPair = {
+  publicKey: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
+  secretKey: '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2b' +
+  'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
+}
 
 // Sign the data
-const signature = sendFunds.sign(secretKey, data)
+const signature = sendFunds.sign(keyPair.secretKey, data)
 
 // Add a signature field
 sendFunds.signature = signature
@@ -146,3 +152,100 @@ let hash = sendFunds.hash(data) // '383900f7721acc9b7b45dd2495b28072d203b4e60137
 ```
 
 Read more about [hashes](../README.md#hash).
+
+## Send transaction
+
+```javascript
+// Define a transaction
+let sendFunds = Exonum.newMessage({
+  protocol_version: 0,
+  service_id: 130,
+  message_id: 128,
+  fields: [
+    { name: 'from', type: Exonum.Hash },
+    { name: 'to', type: Exonum.Hash },
+    { name: 'amount', type: Exonum.Uint64 }
+  ]
+})
+
+// Define public address of a blockchain node
+const endpoint = 'http://127.0.0.1:8200'
+
+// Data
+const data = {
+  from: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
+  to: 'f7ea8fd02cb41cc2cd45fd5adc89ca1bf605b2e31f796a3417ddbcd4a3634647',
+  amount: 1000
+}
+
+// Define a signing key pair
+const keyPair = {
+  publicKey: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
+  secretKey: '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2b' +
+  'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
+}
+
+// Sign the data
+const signature = sendFunds.sign(keyPair.secretKey, data)
+
+// Send transaction
+sendFunds.send(endpoint, data, signature).then(response => {
+  // ...
+})
+```
+
+## Send multiple transactions
+
+```javascript
+// Define a transaction
+let sendFunds = Exonum.newMessage({
+  protocol_version: 0,
+  service_id: 130,
+  message_id: 128,
+  fields: [
+    { name: 'from', type: Exonum.Hash },
+    { name: 'to', type: Exonum.Hash },
+    { name: 'amount', type: Exonum.Uint64 }
+  ]
+})
+
+// Define public address of a blockchain node
+const endpoint = 'http://127.0.0.1:8200'
+
+// Data
+const transactions = [
+  {
+    data: {
+      from: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
+      to: 'f7ea8fd02cb41cc2cd45fd5adc89ca1bf605b2e31f796a3417ddbcd4a3634647',
+      amount: 1000
+    },
+    type: sendFunds
+  },
+  {
+    data: {
+      from: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
+      to: 'd45fd5adc89ca1bf605b2e31f796a3417ddbcd4a3634647f7ea8fd02cb41cc2c',
+      amount: 250
+    },
+    type: sendFunds
+  }
+]
+
+// Define a signing key pair
+const keyPair = {
+  publicKey: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
+  secretKey: '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2b' +
+  'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
+}
+
+// Sign the data
+transactions.forEach(transaction => {
+  transaction.signature = transaction.type.sign(keyPair.secretKey, transaction.data)
+})
+
+// Send transaction
+sendFunds.sendQueue(endpoint, transactions, true).then(response => {
+  // ...
+})
+```
