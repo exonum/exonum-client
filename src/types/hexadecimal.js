@@ -4,7 +4,7 @@ class BaseHexType {
   constructor (size, name) {
     this.size = () => size
     this.name = name
-    this.type = name.toLowerCase();
+    this.type = name.toLowerCase()
   }
 
   /**
