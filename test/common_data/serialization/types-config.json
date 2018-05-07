@@ -138,5 +138,13 @@
         "type": "Float64"
       }
     ]
+  },
+  "type18": {
+    "fields": [
+      {
+        "name": "uuid",
+        "type": "Uuid"
+      }
+    ]
   }
 }

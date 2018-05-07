@@ -988,4 +988,64 @@ describe('Check built-in types', function () {
       expect(() => Type.serialize(data)).to.throw(TypeError)
     })
   })
+
+  describe('Process Uuid', function () {
+    it('should serialize data and return array of 8-bit integers when the value is valid hexadecimal string', function () {
+      const buffer = scheme.getType('type18').serialize(typesMock['type18-1'].data)
+      expect(buffer).to.deep.equal(typesMock['type18-1'].serialized)
+    })
+
+    it('should serialize data and return array of 8-bit integers when the value is valid hexadecimal string with dashes', function () {
+      const buffer = scheme.getType('type18').serialize(typesMock['type18-2'].data)
+      expect(buffer).to.deep.equal(typesMock['type18-2'].serialized)
+    })
+
+    it('should throw error when the name prop is missed', function () {
+      expect(() => Exonum.newType({
+        fields: [
+          { type: Exonum.Uuid }
+        ]
+      }))
+        .to.throw(Error, 'Name prop is missed.')
+    })
+
+    it('should throw error when the type prop is missed', function () {
+      expect(() => Exonum.newType({
+        fields: [
+          { name: 'uuid' }
+        ]
+      }))
+        .to.throw(Error, 'Type prop is missed.')
+    })
+
+    it('should throw error when the value is too short string', function () {
+      expect(() => scheme.getType('type18').serialize(invalidTypesMock['type18-1'].data))
+        .to.throw(TypeError, 'Uuid of wrong type is passed: f5864ab6a5a219')
+    })
+
+    it('should throw error when the value is too long string', function () {
+      expect(() => scheme.getType('type18').serialize(invalidTypesMock['type18-2'].data))
+        .to.throw(TypeError, 'Uuid of wrong type is passed: f5864ab6a5a2190666b47c676bcf15a1f2f07')
+    })
+
+    it('should throw error when the value is invalid string', function () {
+      expect(() => scheme.getType('type18').serialize(invalidTypesMock['type18-3'].data))
+        .to.throw(TypeError, 'Uuid of wrong type is passed: OIf5864ab6a5a2190666b47c676bcf1')
+    })
+
+    it('should throw error when the value has wrong delimiters', function () {
+      expect(() => scheme.getType('type18').serialize(invalidTypesMock['type18-4'].data))
+        .to.throw(TypeError, 'Uuid of wrong type is passed: f5864ab6+a5a2+1906+66b4+7c676bcf15a')
+    })
+
+    it('should throw error when the value of invalid type', function () {
+      expect(() => scheme.getType('type18').serialize({ uuid: undefined }))
+        .to.throw(TypeError, 'Field uuid is not defined.');
+
+      [true, null, 57, [], {}, new Date()].forEach(function (uuid) {
+        expect(() => scheme.getType('type18').serialize({ uuid: uuid }))
+          .to.throw(TypeError, /Uuid of wrong type is passed:/)
+      })
+    })
+  })
 })

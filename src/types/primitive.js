@@ -16,19 +16,6 @@ const MAX_UINT32 = 4294967295
 const MAX_UINT64 = '18446744073709551615'
 
 /**
- * @param {string} str
- * @param {Array} buffer
- * @param {number} from
- */
-function insertHexadecimalToByteArray (str, buffer, from) {
-  for (let i = 0; i < str.length; i += 2) {
-    buffer[from] = parseInt(str.substr(i, 2), 16)
-    from++
-  }
-  return buffer
-}
-
-/**
  * Insert number into array as as little-endian
  * @param {number|bigInt} number
  * @param {Array} buffer
@@ -335,78 +322,6 @@ export class String {
     Uint32.serialize(buffer.length - bufferLength, buffer, from + 4) // string length
 
     return buffer
-  }
-}
-
-export class Hash {
-  static size () {
-    return 32
-  }
-
-  /**
-   * @param {string} value
-   * @param {Array} buffer
-   * @param {number} from
-   * @returns {Array}
-   */
-  static serialize (value, buffer, from) {
-    if (!validate.validateHexadecimal(value)) {
-      throw new TypeError('Hash of wrong type is passed: ' + value)
-    }
-
-    return insertHexadecimalToByteArray(value, buffer, from)
-  }
-
-  /**
-   * @param value
-   * @returns value
-   */
-  static hash (value) {
-    if (!validate.validateHexadecimal(value)) {
-      throw new TypeError('Hash of wrong type is passed: ' + value)
-    }
-
-    return value
-  }
-}
-
-export class Digest {
-  static size () {
-    return 64
-  }
-
-  /**
-   * @param {string} value
-   * @param {Array} buffer
-   * @param {number} from
-   * @returns {Array}
-   */
-  static serialize (value, buffer, from) {
-    if (!validate.validateHexadecimal(value, this.size())) {
-      throw new TypeError('Digest of wrong type is passed: ' + value)
-    }
-
-    return insertHexadecimalToByteArray(value, buffer, from)
-  }
-}
-
-export class PublicKey {
-  static size () {
-    return 32
-  }
-
-  /**
-   * @param {string} value
-   * @param {Array} buffer
-   * @param {number} from
-   * @returns {Array}
-   */
-  static serialize (value, buffer, from) {
-    if (!validate.validateHexadecimal(value)) {
-      throw new TypeError('PublicKey of wrong type is passed: ' + value)
-    }
-
-    return insertHexadecimalToByteArray(value, buffer, from)
   }
 }
 

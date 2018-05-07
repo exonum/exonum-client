@@ -153,5 +153,25 @@
     "data": {
       "balance": -9223372036854775809
     }
+  },
+  "type18-1": {
+    "data": {
+      "uuid": "f5864ab6a5a219"
+    }
+  },
+  "type18-2": {
+    "data": {
+      "uuid": "f5864ab6a5a2190666b47c676bcf15a1f2f07"
+    }
+  },
+  "type18-3": {
+    "data": {
+      "uuid": "OIf5864ab6a5a2190666b47c676bcf1"
+    }
+  },
+  "type18-4": {
+    "data": {
+      "uuid": "f5864ab6+a5a2+1906+66b4+7c676bcf15a"
+    }
   }
 }
