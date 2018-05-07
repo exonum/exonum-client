@@ -168,8 +168,11 @@ let sendFunds = Exonum.newMessage({
   ]
 })
 
-// Define public address of a blockchain node
-const endpoint = 'http://127.0.0.1:8200'
+// Define transaction handler address
+const transactionEndpoint = 'http://127.0.0.1:8200/api/services/cryptocurrency/v1/wallets'
+
+// Define transaction explorer address
+const explorerBasePath = 'http://127.0.0.1:8200/api/explorer/v1/transactions/'
 
 // Data
 const data = {
@@ -189,7 +192,7 @@ const keyPair = {
 const signature = sendFunds.sign(keyPair.secretKey, data)
 
 // Send transaction
-sendFunds.send(endpoint, data, signature).then(response => {
+sendFunds.send(transactionEndpoint, explorerBasePath, data, signature).then(response => {
   // ...
 })
 ```
@@ -209,8 +212,11 @@ let sendFunds = Exonum.newMessage({
   ]
 })
 
-// Define public address of a blockchain node
-const endpoint = 'http://127.0.0.1:8200'
+// Define transaction handler address
+const transactionEndpoint = 'http://127.0.0.1:8200/api/services/cryptocurrency/v1/wallets'
+
+// Define transaction explorer address
+const explorerBasePath = 'http://127.0.0.1:8200/api/explorer/v1/transactions/'
 
 // Data
 const transactions = [
@@ -245,7 +251,7 @@ transactions.forEach(transaction => {
 })
 
 // Send transaction
-sendFunds.sendQueue(endpoint, transactions, true).then(response => {
+sendFunds.sendQueue(transactionEndpoint, explorerBasePath, transactions, true).then(response => {
   // ...
 })
 ```

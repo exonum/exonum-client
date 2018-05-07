@@ -2,6 +2,7 @@ import * as primitive from './primitive'
 import { fieldIsFixed, newType } from './generic'
 import * as serialization from './serialization'
 import * as crypto from '../crypto'
+import { send } from '../blockchain/transport'
 
 const SIGNATURE_LENGTH = 64
 
@@ -104,6 +105,18 @@ class NewMessage {
    */
   verifySignature (signature, publicKey, data) {
     return crypto.verifySignature(signature, publicKey, data, this)
+  }
+
+  /**
+   * Get ED25519 signature
+   * @param {string} transactionEndpoint
+   * @param {string} explorerBasePath
+   * @param {Object} data
+   * @param {string} signature
+   * @returns {Promise}
+   */
+  send (transactionEndpoint, explorerBasePath, data, signature) {
+    return send(transactionEndpoint, explorerBasePath, data, signature, this)
   }
 }
 

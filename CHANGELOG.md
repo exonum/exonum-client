@@ -2,8 +2,8 @@
 
 ## 0.8.0 (???)
 
-* Add a new `send` method to send transaction to the blockchain. #???
-* Add a new `sendQueue` method to send multiple transactions to the blockchain. #???
+* Add a new `send` method to send transaction to the blockchain. #98
+* Add a new `sendQueue` method to send multiple transactions to the blockchain. #98
 
 ## 0.7.3 (Apr 30, 2018)
 

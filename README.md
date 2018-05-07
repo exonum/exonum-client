@@ -538,14 +538,15 @@ To submit transaction to the blockchain `send` function can be used.
 There are two possible signatures of the `send` function:
 
 ```javascript
-Exonum.send(endpoint, data, signature, transaction)
+Exonum.send(transactionEndpoint, explorerBasePath, data, signature, transaction)
 
-sendFunds.send(endpoint, data, signature)
+sendFunds.send(transactionEndpoint, explorerBasePath, data, signature)
 ```
 
 | Property | Description | Type |
 |---|---|---|
-| **endpoint** | API address of transaction handler on a blockchain node. | `String` |
+| **transactionEndpoint** | API address of transaction handler on a blockchain node. | `String` |
+| **explorerBasePath** | API address of transaction explorer on a blockchain node. | `String` |
 | **data** | Data that has been signed. | `Object` |
 | **signature** | Signature as hexadecimal string. | `String` |
 | **transaction** | Definition of the transaction. | [Transaction](#define-transaction). |
@@ -557,10 +558,13 @@ Fulfilled value contained transaction hash.
 An example of a transaction sending:
 
 ```javascript
-// Define public address of a blockchain node
-const endpoint = 'http://127.0.0.1:8200'
+// Define transaction handler address
+const transactionEndpoint = 'http://127.0.0.1:8200/api/services/cryptocurrency/v1/wallets'
 
-sendFunds.send(endpoint, data, signature)
+// Define transaction explorer address
+const explorerBasePath = 'http://127.0.0.1:8200/api/explorer/v1/transactions/'
+
+sendFunds.send(transactionEndpoint, explorerBasePath, data, signature)
 ```
 
 ### Send multiple transactions
@@ -568,12 +572,13 @@ sendFunds.send(endpoint, data, signature)
 To submit multiple transactions to the blockchain `sendQueue` function can be used.
 
 ```javascript
-Exonum.sendQueue(endpoint, transactions, keepOrder)
+Exonum.sendQueue(transactionEndpoint, explorerBasePath, transactions, keepOrder)
 ```
 
 | Property | Description | Type |
 |---|---|---|
-| **endpoint** | API address of transaction handler on a blockchain node. | `String` |
+| **transactionEndpoint** | API address of transaction handler on a blockchain node. | `String` |
+| **explorerBasePath** | API address of transaction explorer on a blockchain node. | `String` |
 | **transactions** | List of transactions. | `Array` |
 | **keepOrder** | This flag signals that transactions must be stored in the appropriate order. Each transaction from the queue will be sent to the blockchain only after the previous transaction is accepted to the block. *Optional.* | `Boolean` |
 
