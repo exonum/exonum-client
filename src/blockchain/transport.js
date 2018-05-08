@@ -7,43 +7,15 @@ const ATTEMPTS = 10
 const ATTEMPT_TIMEOUT = 500
 
 /**
- * Wait transaction to be accepted to the block.
- * @param response
- */
-function waitForAcceptance (response) {
-  let attempt = ATTEMPTS
-
-  if (response.data.debug) {
-    throw new Error(response.data.description)
-  }
-
-  return (function makeAttempt () {
-    return axios.get(`/api/explorer/v1/transactions/${response.data}`).then(response => {
-      if (response.data.type === 'committed') {
-        return response.data
-      } else {
-        if (--attempt > 0) {
-          return new Promise((resolve) => {
-            setTimeout(resolve, ATTEMPT_TIMEOUT)
-          }).then(makeAttempt)
-        } else {
-          throw new Error('Transaction has not been accepted to the block')
-        }
-      }
-    })
-  })()
-}
-
-/**
  * Send transaction to the blockchain
  * @param {string} transactionEndpoint
  * @param {string} explorerBasePath
  * @param {Object} data
  * @param {string} signature
- * @param {NewMessage} transaction
+ * @param {NewMessage} type
  * @return {Promise}
  */
-export function send (transactionEndpoint, explorerBasePath, data, signature, transaction) {
+export function send (transactionEndpoint, explorerBasePath, data, signature, type) {
   if (typeof transactionEndpoint !== 'string') {
     throw new TypeError('Transaction endpoint of wrong data type is passed. String is required')
   } else if (typeof explorerBasePath !== 'string') {
@@ -52,26 +24,62 @@ export function send (transactionEndpoint, explorerBasePath, data, signature, tr
     throw new TypeError('Data of wrong data type is passed. Object is required')
   } else if (!validate.validateHexadecimal(signature, 64)) {
     throw new TypeError('Signature of wrong type is passed. Hexadecimal expected.')
-  } else if (!isInstanceofOfNewMessage(transaction)) {
+  } else if (!isInstanceofOfNewMessage(type)) {
     throw new TypeError('Transaction of wrong type of data.')
   }
 
-  // TODO explorerBasePath ???
-
-  axios.post(transactionEndpoint, {
-    protocol_version: transaction.protocol_version,
-    service_id: transaction.service_id,
-    message_id: transaction.message_id,
+  return axios.post(transactionEndpoint, {
+    protocol_version: type.protocol_version,
+    service_id: type.service_id,
+    message_id: type.message_id,
     body: data,
     signature: signature
-  }).then(waitForAcceptance)
+  }).then(response => {
+    let count = ATTEMPTS
+
+    if (response.data.debug) {
+      throw new Error(response.data.description)
+    }
+
+    return (function attempt () {
+      return axios.get(`${explorerBasePath}${response.data}`).then(response => {
+        if (response.data.type === 'committed') {
+          return response.data
+        } else {
+          if (--count > 0) {
+            return new Promise((resolve) => {
+              setTimeout(resolve, ATTEMPT_TIMEOUT)
+            }).then(attempt)
+          } else {
+            throw new Error('Transaction has not been accepted to the block')
+          }
+        }
+      })
+    })()
+  })
 }
 
 /**
  * Send transaction to the blockchain
- * @param {string} endpoint
+ * @param {string} transactionEndpoint
+ * @param {string} explorerBasePath
  * @param {Array} transactions
- * @param {boolean} keepOrder
  * @return {Promise}
  */
-export function sendQueue (endpoint, transactions, keepOrder) {}
+export function sendQueue (transactionEndpoint, explorerBasePath, transactions) {
+  let index = 0
+  let responses = []
+
+  return (function shift () {
+    let transaction = transactions[index++]
+
+    return send(transactionEndpoint, explorerBasePath, transaction.data, transaction.signature, transaction.type).then(response => {
+      responses.push(response)
+      if (index < transactions.length) {
+        return shift()
+      } else {
+        return responses
+      }
+    })
+  })()
+}

@@ -538,7 +538,7 @@ To submit transaction to the blockchain `send` function can be used.
 There are two possible signatures of the `send` function:
 
 ```javascript
-Exonum.send(transactionEndpoint, explorerBasePath, data, signature, transaction)
+Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds)
 
 sendFunds.send(transactionEndpoint, explorerBasePath, data, signature)
 ```
@@ -549,7 +549,7 @@ sendFunds.send(transactionEndpoint, explorerBasePath, data, signature)
 | **explorerBasePath** | API address of transaction explorer on a blockchain node. | `String` |
 | **data** | Data that has been signed. | `Object` |
 | **signature** | Signature as hexadecimal string. | `String` |
-| **transaction** | Definition of the transaction. | [Transaction](#define-transaction). |
+| **type** | Definition of the transaction. | [Transaction](#define-transaction). |
 
 The `send` function returns value of `Promise` type.
 Fulfilled state means that transaction is accepted to the block.
@@ -570,9 +570,11 @@ sendFunds.send(transactionEndpoint, explorerBasePath, data, signature)
 ### Send multiple transactions
 
 To submit multiple transactions to the blockchain `sendQueue` function can be used.
+Transactions will be stored in the appropriate order.
+Each transaction from the queue will be sent to the blockchain only after the previous transaction is accepted to the block.
 
 ```javascript
-Exonum.sendQueue(transactionEndpoint, explorerBasePath, transactions, keepOrder)
+Exonum.sendQueue(transactionEndpoint, explorerBasePath, transactions)
 ```
 
 | Property | Description | Type |
@@ -580,7 +582,6 @@ Exonum.sendQueue(transactionEndpoint, explorerBasePath, transactions, keepOrder)
 | **transactionEndpoint** | API address of transaction handler on a blockchain node. | `String` |
 | **explorerBasePath** | API address of transaction explorer on a blockchain node. | `String` |
 | **transactions** | List of transactions. | `Array` |
-| **keepOrder** | This flag signals that transactions must be stored in the appropriate order. Each transaction from the queue will be sent to the blockchain only after the previous transaction is accepted to the block. *Optional.* | `Boolean` |
 
 Transaction structure:
 

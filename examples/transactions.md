@@ -250,8 +250,8 @@ transactions.forEach(transaction => {
   transaction.signature = transaction.type.sign(keyPair.secretKey, transaction.data)
 })
 
-// Send transaction
-sendFunds.sendQueue(transactionEndpoint, explorerBasePath, transactions, true).then(response => {
+// Send transactions queue
+sendFunds.sendQueue(transactionEndpoint, explorerBasePath, transactions).then(response => {
   // ...
 })
 ```
