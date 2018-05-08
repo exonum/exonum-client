@@ -553,7 +553,7 @@ sendFunds.send(transactionEndpoint, explorerBasePath, data, signature)
 
 The `send` function returns value of `Promise` type.
 Fulfilled state means that transaction is accepted to the block.
-Fulfilled value contained transaction hash.
+Fulfilled value contained transaction with its proof.
 
 An example of a transaction sending:
 
@@ -590,6 +590,10 @@ Transaction structure:
 | **data** | Transaction data that has been signed. | `Object` |
 | **signature** | Signature as hexadecimal string. | `String` |
 | **type** | Definition of the transaction. | [Transaction](#define-transaction). |
+
+The `sendQueue` function returns value of `Promise` type.
+Fulfilled state means that all transactions are accepted to the block.
+Fulfilled value contained an array of transactions with its proofs.
 
 Find more examples of operations on transactions:
 

@@ -2,7 +2,11 @@
 /* eslint-disable no-unused-expressions */
 
 const expect = require('chai').expect
+const MockAdapter = require('axios-mock-adapter')
+const axios = require('axios')
 const Exonum = require('../src')
+
+const mock = new MockAdapter(axios)
 
 describe('Verify block of precommits', function () {
   const validators = [
@@ -376,6 +380,143 @@ describe('Verify block of precommits', function () {
 
     [['asda123'], ['eb7e3ad55f97e5d5693fe0e69f4c26bd1173077dbffb5fff5b69f213f71bee3f']].forEach(function (validators) {
       expect(Exonum.verifyBlock(block, validators, networkId)).to.be.false
+    })
+  })
+})
+
+describe('Send transaction to the blockchain', function () {
+  before(function () {
+    mock
+      .onPost('http://127.0.0.1:8200/api/services/cryptocurrency/v1/wallets')
+      .reply(200, 'ba85afa683852b30ea5d336acbd385b623efad937ef2c3b635da98e9eb686199')
+
+    mock
+      .onGet('http://127.0.0.1:8200/api/explorer/v1/transactions/ba85afa683852b30ea5d336acbd385b623efad937ef2c3b635da98e9eb686199')
+      .replyOnce(200, {
+        type: 'in-pool'
+      })
+      .onGet('http://127.0.0.1:8200/api/explorer/v1/transactions/ba85afa683852b30ea5d336acbd385b623efad937ef2c3b635da98e9eb686199')
+      .replyOnce(200, {
+        type: 'committed'
+      })
+  })
+
+  after(function () {
+    mock.reset()
+  })
+
+  it('should return fulfilled Promise state when valid transaction has accepted to the blockchain', function () {
+    let sendFunds = Exonum.newMessage({
+      protocol_version: 0,
+      service_id: 130,
+      message_id: 128,
+      fields: [
+        { name: 'from', type: Exonum.Hash },
+        { name: 'to', type: Exonum.Hash },
+        { name: 'amount', type: Exonum.Uint64 }
+      ]
+    })
+    const transactionEndpoint = 'http://127.0.0.1:8200/api/services/cryptocurrency/v1/wallets'
+    const explorerBasePath = 'http://127.0.0.1:8200/api/explorer/v1/transactions/'
+    const keyPair = {
+      publicKey: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
+      secretKey: '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2bfa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
+    }
+    const data = {
+      from: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
+      to: 'f7ea8fd02cb41cc2cd45fd5adc89ca1bf605b2e31f796a3417ddbcd4a3634647',
+      amount: 1000
+    }
+    const signature = sendFunds.sign(keyPair.secretKey, data)
+
+    return Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds).then(response => {
+      expect(response).to.deep.equal({
+        type: 'committed'
+      })
+    })
+  })
+})
+
+describe('Send multiple transactions to the blockchain', function () {
+  before(function () {
+    mock
+      .onPost('http://127.0.0.1:8200/api/services/cryptocurrency/v1/wallets')
+      .replyOnce(200, 'ba85afa683852b30ea5d336acbd385b623efad937ef2c3b635da98e9eb686199')
+      .onPost('http://127.0.0.1:8200/api/services/cryptocurrency/v1/wallets')
+      .reply(200, 'cd4a3634647f7ea8fd02cb41cc2cd45fd5adc89ca1bf605b2e31f796a3417ddb')
+
+    mock
+      .onGet('http://127.0.0.1:8200/api/explorer/v1/transactions/ba85afa683852b30ea5d336acbd385b623efad937ef2c3b635da98e9eb686199')
+      .replyOnce(200, {
+        type: 'in-pool'
+      })
+      .onGet('http://127.0.0.1:8200/api/explorer/v1/transactions/ba85afa683852b30ea5d336acbd385b623efad937ef2c3b635da98e9eb686199')
+      .replyOnce(200, {
+        type: 'committed'
+      })
+      .onGet('http://127.0.0.1:8200/api/explorer/v1/transactions/cd4a3634647f7ea8fd02cb41cc2cd45fd5adc89ca1bf605b2e31f796a3417ddb')
+      .replyOnce(200, {
+        type: 'in-pool'
+      })
+      .onGet('http://127.0.0.1:8200/api/explorer/v1/transactions/cd4a3634647f7ea8fd02cb41cc2cd45fd5adc89ca1bf605b2e31f796a3417ddb')
+      .replyOnce(200, {
+        type: 'committed'
+      })
+  })
+
+  after(function () {
+    mock.reset()
+  })
+
+  it('should return fulfilled Promise state when queue of valid transactions has accepted to the blockchain', function () {
+    let sendFunds = Exonum.newMessage({
+      protocol_version: 0,
+      service_id: 130,
+      message_id: 128,
+      fields: [
+        { name: 'from', type: Exonum.Hash },
+        { name: 'to', type: Exonum.Hash },
+        { name: 'amount', type: Exonum.Uint64 }
+      ]
+    })
+    const transactionEndpoint = 'http://127.0.0.1:8200/api/services/cryptocurrency/v1/wallets'
+    const explorerBasePath = 'http://127.0.0.1:8200/api/explorer/v1/transactions/'
+    const keyPair = {
+      publicKey: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
+      secretKey: '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2bfa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
+    }
+    const transactions = [
+      {
+        data: {
+          from: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
+          to: 'f7ea8fd02cb41cc2cd45fd5adc89ca1bf605b2e31f796a3417ddbcd4a3634647',
+          amount: 1000
+        },
+        type: sendFunds
+      },
+      {
+        data: {
+          from: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
+          to: '5fd5adc89ca1bf605b2e31f796a3417ddbcd4a3634647f7ea8fd02cb41cc2cd4',
+          amount: 250
+        },
+        type: sendFunds
+      }
+    ]
+
+    transactions.forEach(transaction => {
+      transaction.signature = transaction.type.sign(keyPair.secretKey, transaction.data)
+    })
+
+    return Exonum.sendQueue(transactionEndpoint, explorerBasePath, transactions).then(response => {
+      expect(response).to.deep.equal([
+        {
+          type: 'committed'
+        },
+        {
+          type: 'committed'
+        }
+      ])
     })
   })
 })

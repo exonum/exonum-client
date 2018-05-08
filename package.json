@@ -23,6 +23,7 @@
     "tweetnacl": "^0.14.5"
   },
   "devDependencies": {
+    "axios-mock-adapter": "^1.15.0",
     "babel-cli": "^6.26.0",
     "babel-plugin-istanbul": "^4.1.6",
     "babel-preset-es2015": "^6.24.1",
