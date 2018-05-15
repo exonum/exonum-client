@@ -215,6 +215,7 @@ describe('MapProof integration', function () {
         })
 
         it(`should recognize a mixed proof with density ${density}`, async () => {
+          this.timeout(10000)
           const wallets = generateWallets(n)
           let requestedKeys = chooseKeys(wallets, density * n)
 

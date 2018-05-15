@@ -12,7 +12,7 @@
 [coveralls-image]: https://coveralls.io/repos/github/exonum/exonum-client/badge.svg?branch=master
 [coveralls-url]: https://coveralls.io/github/exonum/exonum-client?branch=master
 [codestyle-image]: https://img.shields.io/badge/code%20style-standard-brightgreen.svg
-[codestyle-url]: http://standardjs.com 
+[codestyle-url]: http://standardjs.com
 
 A JavaScript library to work with Exonum blockchain from browser and Node.js.
 Used to sign transactions before sending to blockchain and verify blockchain responses using cryptographic proofs.
@@ -32,6 +32,10 @@ Contains numerous helper functions.
   * [Sign data](#sign-data)
   * [Verify signature](#verify-signature)
 * [Transactions](#transactions)
+  * [Define transaction](#define-transaction)
+  * [Sign transaction](#sign-transaction)
+  * [Send transaction](#send-transaction)
+  * [Send multiple transactions](#send-multiple-transactions)
 * [Cryptographic proofs](#cryptographic-proofs)
   * [Merkle tree](#merkle-tree)
   * [Merkle Patricia tree](#merkle-patricia-tree)
@@ -389,13 +393,15 @@ const data = {
   balance: 2500
 }
 
-// Define the signing key pair 
-const publicKey = 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
-const secretKey = '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2b' +
- 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
+// Define a signing key pair
+const keyPair = {
+  publicKey: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
+  secretKey: '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2b' +
+  'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
+}
 
 // Sign the data
-let signature = Exonum.sign(secretKey, data, user) // '41884c5270631510357bb37e6bcbc8da61603b4bdb05a2c70fc11d6624792e07c99321f8cffac02bbf028398a4118801a2cf1750f5de84cc654f7bf0df71ec00'
+let signature = Exonum.sign(keyPair.secretKey, data, user)
 ```
 
 ### Verify signature
@@ -442,7 +448,12 @@ const data = {
   balance: 2500
 }
 
-// Define a signing key pair 
+// Define a signing key pair
+const keyPair = {
+  publicKey: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
+  secretKey: '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2b' +
+  'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
+}
 const publicKey = 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
 const secretKey = '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2b' +
  'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
@@ -460,12 +471,15 @@ let result = Exonum.verifySignature(signature, publicKey, data, user) // true
 Transaction in Exonum is a operation to change the data stored in blockchain.
 Transaction processing rules is a part of business logic implemented on [service][docs:architecture:services] side.
 
-When creating a transaction on the client side, all the fields of transaction are first described using
-[custom data types](#define-data-type).
-Then [signed](#sign-data) using signing key pair.
-And finally can be sent to the service.
+Sending data to the blockchain from a light client consist of 3 steps:
+
+1) Describe the fields of transaction using [custom data types](#define-data-type);
+2) [Sign](#sign-data) data of transaction using signing key pair;
+3) [Send transaction](#send-single-transaction) to the blockchain.
  
 Read more about [transactions][docs:architecture:transactions] in Exonum.
+
+### Define transaction
 
 An example of a transaction definition:
 
@@ -494,13 +508,102 @@ let sendFunds = Exonum.newMessage({
 
 Field structure is identical to field structure of [custom data type](#define-data-type).
 
-Examples of operations on transactions:
+### Sign transaction
+
+An example of a transaction signing:
+
+```javascript
+// Signing key pair
+const keyPair = {
+  publicKey: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
+  secretKey: '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2b' +
+  'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
+}
+
+// Transaction data to be signed
+const data = {
+  from: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
+  to: 'f7ea8fd02cb41cc2cd45fd5adc89ca1bf605b2e31f796a3417ddbcd4a3634647',
+  amount: 1000
+}
+
+// Sign the data
+let signature = sendFunds.sign(keyPair.secretKey, data)
+```
+
+### Send transaction
+
+To submit transaction to the blockchain `send` function can be used.
+
+There are two possible signatures of the `send` function:
+
+```javascript
+Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds)
+
+sendFunds.send(transactionEndpoint, explorerBasePath, data, signature)
+```
+
+| Property | Description | Type |
+|---|---|---|
+| **transactionEndpoint** | API address of transaction handler on a blockchain node. | `String` |
+| **explorerBasePath** | API address of transaction explorer on a blockchain node. | `String` |
+| **data** | Data that has been signed. | `Object` |
+| **signature** | Signature as hexadecimal string. | `String` |
+| **type** | Definition of the transaction. | [Transaction](#define-transaction). |
+
+The `send` function returns value of `Promise` type.
+Fulfilled state means that transaction is accepted to the block.
+Fulfilled value contained transaction with its proof.
+
+An example of a transaction sending:
+
+```javascript
+// Define transaction handler address
+const transactionEndpoint = 'http://127.0.0.1:8200/api/services/cryptocurrency/v1/wallets'
+
+// Define transaction explorer address
+const explorerBasePath = 'http://127.0.0.1:8200/api/explorer/v1/transactions/'
+
+sendFunds.send(transactionEndpoint, explorerBasePath, data, signature)
+```
+
+### Send multiple transactions
+
+To submit multiple transactions to the blockchain `sendQueue` function can be used.
+Transactions will be stored in the appropriate order.
+Each transaction from the queue will be sent to the blockchain only after the previous transaction is accepted to the block.
+
+```javascript
+Exonum.sendQueue(transactionEndpoint, explorerBasePath, transactions)
+```
+
+| Property | Description | Type |
+|---|---|---|
+| **transactionEndpoint** | API address of transaction handler on a blockchain node. | `String` |
+| **explorerBasePath** | API address of transaction explorer on a blockchain node. | `String` |
+| **transactions** | List of transactions. | `Array` |
+
+Transaction structure:
+
+| Field | Description | Type |
+|---|---|---|
+| **data** | Transaction data that has been signed. | `Object` |
+| **signature** | Signature as hexadecimal string. | `String` |
+| **type** | Definition of the transaction. | [Transaction](#define-transaction). |
+
+The `sendQueue` function returns value of `Promise` type.
+Fulfilled state means that all transactions are accepted to the block.
+Fulfilled value contained an array of transactions with its proofs.
+
+Find more examples of operations on transactions:
 
 * [Define transaction](examples/transactions.md#define-transaction)
 * [Serialize transaction](examples/transactions.md#serialize-transaction)
 * [Sign transaction](examples/transactions.md#sign-transaction)
 * [Verify signed transaction](examples/transactions.md#verify-signed-transaction)
 * [Get a transaction hash](examples/transactions.md#get-a-transaction-hash)
+* [Send transaction](examples/transactions.md#send-transaction)
+* [Send multiple transactions](examples/transactions.md#send-multiple-transaction)
 
 ## Cryptographic proofs
 
