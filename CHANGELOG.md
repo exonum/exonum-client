@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.8.0 (???)
+## 0.8.0 (May 15, 2018)
 
 * Add a new `send` method to send transaction to the blockchain. #98
 * Add a new `sendQueue` method to send multiple transactions to the blockchain. #98
