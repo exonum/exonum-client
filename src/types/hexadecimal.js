@@ -1,6 +1,5 @@
 import * as validate from './validate'
 
-
 /**
  * Encoder
  *
@@ -57,7 +56,7 @@ function hexTypeFactory (serizalizer, size, name) {
     serialize: {
       get: () => serizalizer
     }
-  });
+  })
 }
 
 /**
@@ -70,7 +69,7 @@ function hexTypeFactory (serizalizer, size, name) {
  * @private
  */
 function serializer (encoder, validator) {
-  return (value, buffer, from) => encoder(validator(value), buffer, from);
+  return (value, buffer, from) => encoder(validator(value), buffer, from)
 }
 
 /**
@@ -83,17 +82,17 @@ function serializer (encoder, validator) {
  * @private
  */
 function Uuid (validator, serializer, factory) {
-  const size = 16;
-  const name = 'Uuid';
+  const size = 16
+  const name = 'Uuid'
 
   function cleaner (value) {
-    return String(value).replace(/-/g, '');
+    return String(value).replace(/-/g, '')
   }
 
-  validator = validator.bind(null, name, size);
-  serializer = serializer((value) => validator(cleaner(value)));
+  validator = validator.bind(null, name, size)
+  serializer = serializer((value) => validator(cleaner(value)))
 
-  return factory(serializer, size, name);
+  return factory(serializer, size, name)
 }
 
 /**
@@ -106,21 +105,21 @@ function Uuid (validator, serializer, factory) {
  * @private
  */
 function Hash (validator, serializer, factory) {
-  const size = 32;
-  const name = 'Hash';
+  const size = 32
+  const name = 'Hash'
 
-  validator = validator.bind(null, name, size);
-  serializer = serializer(validator);
+  validator = validator.bind(null, name, size)
+  serializer = serializer(validator)
 
   const hasher = function (value) {
-    return validator(value) && value;
+    return validator(value) && value
   }
 
   return Object.defineProperty(factory(serializer, size, name),
     'hash',
     {
       value: hasher
-    });
+    })
 }
 
 /**
@@ -133,13 +132,13 @@ function Hash (validator, serializer, factory) {
  * @private
  */
 function Digest (validator, serializer, factory) {
-  const size = 64;
-  const name = 'Digest';
+  const size = 64
+  const name = 'Digest'
 
-  validator = validator.bind(null, name, size);
-  serializer = serializer(validator);
+  validator = validator.bind(null, name, size)
+  serializer = serializer(validator)
 
-  return factory(serializer, size, name);
+  return factory(serializer, size, name)
 }
 
 /**
@@ -152,20 +151,20 @@ function Digest (validator, serializer, factory) {
  * @private
  */
 function PublicKey (validator, serializer, factory) {
-  const size = 32;
-  const name = 'PublicKey';
+  const size = 32
+  const name = 'PublicKey'
 
-  validator = validator.bind(null, name, size);
-  serializer = serializer(validator);
+  validator = validator.bind(null, name, size)
+  serializer = serializer(validator)
 
-  return factory(serializer, size, name);
+  return factory(serializer, size, name)
 }
 
-const baseSerializer = serializer.bind(null, insertHexadecimalToByteArray);
+const baseSerializer = serializer.bind(null, insertHexadecimalToByteArray)
 
-const uuid = Uuid(validateHexadecimal, baseSerializer, hexTypeFactory);
-const hash = Hash(validateHexadecimal, baseSerializer, hexTypeFactory);
-const digest = Digest(validateHexadecimal, baseSerializer, hexTypeFactory);
-const publicKey = PublicKey(validateHexadecimal, baseSerializer, hexTypeFactory);
+const uuid = Uuid(validateHexadecimal, baseSerializer, hexTypeFactory)
+const hash = Hash(validateHexadecimal, baseSerializer, hexTypeFactory)
+const digest = Digest(validateHexadecimal, baseSerializer, hexTypeFactory)
+const publicKey = PublicKey(validateHexadecimal, baseSerializer, hexTypeFactory)
 
 export { uuid as Uuid, hash as Hash, digest as Digest, publicKey as PublicKey }

@@ -1,6 +1,6 @@
 import { isObject } from '../helpers'
 import * as primitive from '../types/primitive'
-import { Hash }from '../types/hexadecimal'
+import { Hash } from '../types/hexadecimal'
 import { newType } from '../types/generic'
 import { newMessage } from '../types/message'
 import { validateHexadecimal } from '../types/validate'
