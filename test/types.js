@@ -1000,24 +1000,6 @@ describe('Check built-in types', function () {
       expect(buffer).to.deep.equal(typesMock['type18-2'].serialized)
     })
 
-    it('should throw error when the name prop is missed', function () {
-      expect(() => Exonum.newType({
-        fields: [
-          { type: Exonum.Uuid }
-        ]
-      }))
-        .to.throw(Error, 'Name prop is missed.')
-    })
-
-    it('should throw error when the type prop is missed', function () {
-      expect(() => Exonum.newType({
-        fields: [
-          { name: 'uuid' }
-        ]
-      }))
-        .to.throw(Error, 'Type prop is missed.')
-    })
-
     it('should throw error when the value is too short string', function () {
       expect(() => scheme.getType('type18').serialize(invalidTypesMock['type18-1'].data))
         .to.throw(TypeError, 'Uuid of wrong type is passed: f5864ab6a5a219')
