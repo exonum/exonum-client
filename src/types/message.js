@@ -1,5 +1,5 @@
 import * as primitive from './primitive'
-import * as hexadecimal from './hexadecimal'
+import { Digest } from './hexadecimal'
 import { fieldIsFixed, newType } from './generic'
 import * as serialization from './serialization'
 import * as crypto from '../crypto'
@@ -71,7 +71,7 @@ class NewMessage {
 
     if (cutSignature !== true) {
       // append signature
-      hexadecimal.Digest.serialize(this.signature, buffer, buffer.length)
+      Digest.serialize(this.signature, buffer, buffer.length)
     }
 
     return buffer

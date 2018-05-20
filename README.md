@@ -12,7 +12,7 @@
 [coveralls-image]: https://coveralls.io/repos/github/exonum/exonum-client/badge.svg?branch=master
 [coveralls-url]: https://coveralls.io/github/exonum/exonum-client?branch=master
 [codestyle-image]: https://img.shields.io/badge/code%20style-standard-brightgreen.svg
-[codestyle-url]: http://standardjs.com 
+[codestyle-url]: http://standardjs.com
 
 A JavaScript library to work with Exonum blockchain from browser and Node.js.
 Used to sign transactions before sending to blockchain and verify blockchain responses using cryptographic proofs.
@@ -137,6 +137,7 @@ These types must be used when constructing custom data types.
 | **Hash** | Hexadecimal string. | `String` |
 | **PublicKey** | Hexadecimal string. | `String` |
 | **Digest** | Hexadecimal string. | `String` |
+| **Uuid** | Hexadecimal string. | `String` |
 | **Bool** | Value of boolean type. | `Boolean` |
 
 *\*JavaScript limits minimum and maximum integer number.
@@ -184,7 +185,7 @@ in the Rust language.
 |---|---|---|
 | **type** | Definition of the field type. | [Built-in type](#built-in-types), array or [custom data type](#nested-data-types) defined by the developer. |
 
-An example of an array type field: 
+An example of an array type field:
 
 ```javascript
 // Define an array
@@ -389,7 +390,7 @@ const data = {
   balance: 2500
 }
 
-// Define the signing key pair 
+// Define the signing key pair
 const publicKey = 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
 const secretKey = '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2b' +
  'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
@@ -442,7 +443,7 @@ const data = {
   balance: 2500
 }
 
-// Define a signing key pair 
+// Define a signing key pair
 const publicKey = 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
 const secretKey = '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2b' +
  'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
@@ -464,7 +465,7 @@ When creating a transaction on the client side, all the fields of transaction ar
 [custom data types](#define-data-type).
 Then [signed](#sign-data) using signing key pair.
 And finally can be sent to the service.
- 
+
 Read more about [transactions][docs:architecture:transactions] in Exonum.
 
 An example of a transaction definition:
@@ -607,7 +608,7 @@ const pair = Exonum.keyPair()
 
 ```javascript
 const rand = Exonum.randomUint64()
-``` 
+```
 
 **Exonum.randomUint64** function generates a new random `Uint64` number of cryptographic quality using the
 [TweetNaCl][tweetnacl:random-bytes] cryptographic library.

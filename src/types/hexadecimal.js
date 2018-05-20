@@ -1,93 +1,171 @@
 import * as validate from './validate'
 
-class BaseHexType {
-  constructor (size, name) {
-    this.size = () => size
-    this.name = name
-    this.type = name.toLowerCase()
+
+/**
+ * Encoder
+ *
+ * @param {string} str string to encode
+ * @param {Array} buffer buffer to place result to
+ * @param {number} from position to write from
+ * @returns {Array} modified buffer
+ * @private
+ */
+function insertHexadecimalToByteArray (str, buffer, from) {
+  for (let i = 0; i < str.length; i += 2) {
+    buffer[from] = parseInt(str.substr(i, 2), 16)
+    from++
+  }
+  return buffer
+}
+
+/**
+ * Validator wrapper
+ *
+ * @param {string} name structure name
+ * @param {number} size value size in bytes
+ * @param {string} value value representation
+ * @returns {string} value if validation passes
+ * @throws {TypeError} in case of validation break
+ * @private
+ */
+function validateHexadecimal (name, size, value) {
+  if (!validate.validateHexadecimal(value, size)) {
+    throw new TypeError(`${name} of wrong type is passed: ${value}`)
   }
 
-  /**
-   * @param {string} str string to encode
-   * @param {Array} buffer buffer to place result to
-   * @param {number} from position to write from
-   * @returns {Array} modified buffer
-   */
-  _insertHexadecimalToByteArray (str, buffer, from) {
-    for (let i = 0; i < str.length; i += 2) {
-      buffer[from] = parseInt(str.substr(i, 2), 16)
-      from++
+  return value
+}
+
+/**
+ * Factory for building Hex Types
+ *
+ * @param {function(value, buffer, from)} serizalizer function accepting value, buffer, position and returns modified buffer
+ * @param {number} size type size in bytes
+ * @param {string} name type name to distinguish between types
+ * @returns {Object} hex type
+ */
+function hexTypeFactory (serizalizer, size, name) {
+  return Object.defineProperties({}, {
+    size: {
+      get: () => () => size,
+      enumerable: true
+    },
+    name: {
+      get: () => name,
+      enumerable: true
+    },
+    serialize: {
+      get: () => serizalizer
     }
-    return buffer
-  }
-
-  validate (value) {
-    if (!validate.validateHexadecimal(value, this.size())) {
-      throw new TypeError(`${this.name} of wrong type is passed: ${value}`)
-    }
-  }
-
-  /**
-   * @param {string} value hex string to encode
-   * @param {Array} buffer buffer to output encoded string
-   * @param {number} from position to write to
-   * @returns {Array} buffer with encoded data appended
-   */
-  serialize (value, buffer, from) {
-    this.validate(value)
-
-    return this._insertHexadecimalToByteArray(value, buffer, from)
-  }
+  });
 }
 
-class Uuid extends BaseHexType {
-  constructor () {
-    super(16, 'Uuid')
-  }
-
-  /**
-   * @param {string} value hex string to encode
-   * @param {Array} buffer buffer to output encoded string
-   * @param {number} from position to write to
-   * @returns {Array} buffer with encoded data appended
-   */
-  serialize (value, buffer, from) {
-    value = value && String(value).replace(/-/g, '')
-    return super.serialize(value, buffer, from)
-  }
+/**
+ * Common serializer
+ *
+ * @param {function(name, size, value)} validator hexadecimal validator
+ * @param {function(value, buffer, from)} encoder function accepting value, buffer, position and returns modified buffer
+ * @returns {function(value, buffer, from)} encoder wrapper
+ * @throws {TypeError} in case of validation break
+ * @private
+ */
+function serializer (encoder, validator) {
+  return (value, buffer, from) => encoder(validator(value), buffer, from);
 }
 
-class Hash extends BaseHexType {
-  constructor () {
-    super(32, 'Hash')
+/**
+ * Uuid type factory
+ *
+ * @param {function(name, size, value)} validator hexadecimal validator
+ * @param {function(validator, value, buffer, from)} encoder function accepting validator, value, buffer, position and returns modified buffer
+ * @param {function(serizalizer, size, name)} factory type builder factory
+ * @returns {Object} hex type
+ * @private
+ */
+function Uuid (validator, serializer, factory) {
+  const size = 16;
+  const name = 'Uuid';
+
+  function cleaner (value) {
+    return String(value).replace(/-/g, '');
   }
 
-  /**
-   * @param value
-   * @returns value
-   */
-  hash (value) {
-    this.validate(value)
+  validator = validator.bind(null, name, size);
+  serializer = serializer((value) => validator(cleaner(value)));
 
-    return value
-  }
+  return factory(serializer, size, name);
 }
 
-class Digest extends BaseHexType {
-  constructor () {
-    super(64, 'Digest')
+/**
+ * Hash type factory
+ *
+ * @param {function(name, size, value)} validator hexadecimal validator
+ * @param {function(validator, value, buffer, from)} encoder function accepting validator, value, buffer, position and returns modified buffer
+ * @param {function(serizalizer, size, name)} factory type builder factory
+ * @returns {Object} hex type
+ * @private
+ */
+function Hash (validator, serializer, factory) {
+  const size = 32;
+  const name = 'Hash';
+
+  validator = validator.bind(null, name, size);
+  serializer = serializer(validator);
+
+  const hasher = function (value) {
+    return validator(value) && value;
   }
+
+  return Object.defineProperty(factory(serializer, size, name),
+    'hash',
+    {
+      value: hasher
+    });
 }
 
-class PublicKey extends BaseHexType {
-  constructor () {
-    super(32, 'PublicKey')
-  }
+/**
+ * Digest type factory
+ *
+ * @param {function(name, size, value)} validator hexadecimal validator
+ * @param {function(validator, value, buffer, from)} encoder function accepting validator, value, buffer, position and returns modified buffer
+ * @param {function(serizalizer, size, name)} factory type builder factory
+ * @returns {Object} hex type
+ * @private
+ */
+function Digest (validator, serializer, factory) {
+  const size = 64;
+  const name = 'Digest';
+
+  validator = validator.bind(null, name, size);
+  serializer = serializer(validator);
+
+  return factory(serializer, size, name);
 }
 
-const uuid = new Uuid()
-const hash = new Hash()
-const digest = new Digest()
-const publicKey = new PublicKey()
+/**
+ * PublicKey type factory
+ *
+ * @param {function(name, size, value)} validator hexadecimal validator
+ * @param {function(validator, value, buffer, from)} encoder function accepting validator, value, buffer, position and returns modified buffer
+ * @param {function(serizalizer, size, name)} factory type builder factory
+ * @returns {Object} hex type
+ * @private
+ */
+function PublicKey (validator, serializer, factory) {
+  const size = 32;
+  const name = 'PublicKey';
+
+  validator = validator.bind(null, name, size);
+  serializer = serializer(validator);
+
+  return factory(serializer, size, name);
+}
+
+const baseSerializer = serializer.bind(null, insertHexadecimalToByteArray);
+
+const uuid = Uuid(validateHexadecimal, baseSerializer, hexTypeFactory);
+const hash = Hash(validateHexadecimal, baseSerializer, hexTypeFactory);
+const digest = Digest(validateHexadecimal, baseSerializer, hexTypeFactory);
+const publicKey = PublicKey(validateHexadecimal, baseSerializer, hexTypeFactory);
 
 export { uuid as Uuid, hash as Hash, digest as Digest, publicKey as PublicKey }

@@ -4,6 +4,7 @@
 /* eslint-env node, mocha */
 
 const exonum = require('../src')
+const uuid = require('uuid/v4')
 const fetch = require('node-fetch')
 const expect = require('chai')
   .use(require('dirty-chai'))
@@ -17,7 +18,8 @@ const Wallet = newType({
   fields: [
     { name: 'pub_key', type: PublicKey },
     { name: 'name', type: exonum.String },
-    { name: 'balance', type: exonum.Uint64 }
+    { name: 'balance', type: exonum.Uint64 },
+    { name: 'uniq_id', type: exonum.Uuid }
   ]
 })
 
@@ -141,7 +143,8 @@ describe('MapProof integration', function () {
     const wallet = {
       pub_key: publicKey,
       name: 'Alice',
-      balance: '100'
+      balance: '100',
+      uniq_id: uuid()
     }
 
     await service.createWallet(wallet)
@@ -156,7 +159,8 @@ describe('MapProof integration', function () {
       wallets.push({
         pub_key: publicKey,
         name: `Alice #${i}`,
-        balance: '100'
+        balance: '100',
+        uniq_id: uuid()
       })
     }
     return wallets
