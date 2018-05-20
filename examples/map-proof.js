@@ -3,7 +3,7 @@
  */
 'use strict'
 
-const Exonum = require('..')
+const Exonum = require('../')
 const expect = require('chai').expect
 
 // Declare the value type used in the proof.
