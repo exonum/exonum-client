@@ -39,6 +39,8 @@ export function send (transactionEndpoint, explorerBasePath, data, signature, ty
 
     if (response.data.debug) {
       throw new Error(response.data.description)
+    } else if (!validate.validateHexadecimal(response.data)) {
+      throw new Error('Unexpected format of transaction hash.')
     }
 
     return (function attempt () {
