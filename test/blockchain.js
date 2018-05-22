@@ -509,6 +509,28 @@ describe('Send transaction to the blockchain', function () {
       })
     })
 
+    describe('Unexpected format of transaction hash', function () {
+      before(function () {
+        mock
+          .onPost(transactionEndpoint)
+          .reply(200, {
+            foo: 'bar'
+          })
+      })
+
+      after(function () {
+        mock.reset()
+      })
+
+      it('should return rejected Promise state', function () {
+        return Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds).catch(error => {
+          expect(() => {
+            throw new Error(error)
+          }).to.throw(Error, 'Unexpected format of transaction hash.')
+        })
+      })
+    })
+
     describe('Stay suspended in pool', function () {
       before(function () {
         mock

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.8.1 (May 21, 2018)
+
+* Add a new `version` property to check library version. #101
+* Cover the case when the blockchain explorer down or return the unexpected response. #102
+
 ## 0.8.0 (May 15, 2018)
 
 * Add a new `send` method to send transaction to the blockchain. #98
