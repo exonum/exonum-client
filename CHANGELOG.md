@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.8.2 (May 23, 2018)
+
+* Refactor `send` method to remove dependency onto service response format during pushing the transaction. #103
+
 ## 0.8.1 (May 21, 2018)
 
 * Add a new `version` property to check library version. #101

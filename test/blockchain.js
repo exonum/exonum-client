@@ -412,14 +412,14 @@ describe('Send transaction to the blockchain', function () {
     before(function () {
       mock
         .onPost(transactionEndpoint)
-        .reply(200, 'ba85afa683852b30ea5d336acbd385b623efad937ef2c3b635da98e9eb686199')
+        .reply(200, '383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380')
 
       mock
-        .onGet(`${explorerBasePath}ba85afa683852b30ea5d336acbd385b623efad937ef2c3b635da98e9eb686199`)
+        .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
         .replyOnce(200, {
           type: 'in-pool'
         })
-        .onGet(`${explorerBasePath}ba85afa683852b30ea5d336acbd385b623efad937ef2c3b635da98e9eb686199`)
+        .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
         .replyOnce(200, {
           type: 'committed'
         })
@@ -486,59 +486,14 @@ describe('Send transaction to the blockchain', function () {
   })
 
   describe('Unexpected node behavior', function () {
-    describe('Node detected error in transaction and rejected it', function () {
-      before(function () {
-        mock
-          .onPost(transactionEndpoint)
-          .reply(200, {
-            debug: 'Some error message',
-            description: 'Error description'
-          })
-      })
-
-      after(function () {
-        mock.reset()
-      })
-
-      it('should return rejected Promise state', function () {
-        return Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds).catch(error => {
-          expect(() => {
-            throw new Error(error)
-          }).to.throw(Error, 'Error description')
-        })
-      })
-    })
-
-    describe('Unexpected format of transaction hash', function () {
-      before(function () {
-        mock
-          .onPost(transactionEndpoint)
-          .reply(200, {
-            foo: 'bar'
-          })
-      })
-
-      after(function () {
-        mock.reset()
-      })
-
-      it('should return rejected Promise state', function () {
-        return Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds).catch(error => {
-          expect(() => {
-            throw new Error(error)
-          }).to.throw(Error, 'Unexpected format of transaction hash.')
-        })
-      })
-    })
-
     describe('Stay suspended in pool', function () {
       before(function () {
         mock
           .onPost(transactionEndpoint)
-          .reply(200, 'ba85afa683852b30ea5d336acbd385b623efad937ef2c3b635da98e9eb686199')
+          .reply(200, '383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380')
 
         mock
-          .onGet(`${explorerBasePath}ba85afa683852b30ea5d336acbd385b623efad937ef2c3b635da98e9eb686199`)
+          .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
           .reply(200, {
             type: 'in-pool'
           })
@@ -562,10 +517,10 @@ describe('Send transaction to the blockchain', function () {
       before(function () {
         mock
           .onPost(transactionEndpoint)
-          .reply(200, 'ba85afa683852b30ea5d336acbd385b623efad937ef2c3b635da98e9eb686199')
+          .reply(200, '383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380')
 
         mock
-          .onGet(`${explorerBasePath}ba85afa683852b30ea5d336acbd385b623efad937ef2c3b635da98e9eb686199`)
+          .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
           .reply(200, {
             type: 'unknown'
           })
@@ -580,30 +535,6 @@ describe('Send transaction to the blockchain', function () {
           expect(() => {
             throw new Error(error)
           }).to.throw(Error, 'Unknown transaction has been passed.')
-        })
-      })
-    })
-
-    describe('Unknown node error', function () {
-      before(function () {
-        mock
-          .onPost(transactionEndpoint)
-          .reply(200, 'ba85afa683852b30ea5d336acbd385b623efad937ef2c3b635da98e9eb686199')
-
-        mock
-          .onGet(`${explorerBasePath}ba85afa683852b30ea5d336acbd385b623efad937ef2c3b635da98e9eb686199`)
-          .reply(200, {})
-      })
-
-      after(function () {
-        mock.reset()
-      })
-
-      it('should return rejected Promise state', function () {
-        return Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds).catch(error => {
-          expect(() => {
-            throw new Error(error)
-          }).to.throw(Error, 'Unexpected format of transaction explorer response.')
         })
       })
     })
@@ -653,24 +584,24 @@ describe('Send multiple transactions to the blockchain', function () {
   before(function () {
     mock
       .onPost(transactionEndpoint)
-      .replyOnce(200, 'ba85afa683852b30ea5d336acbd385b623efad937ef2c3b635da98e9eb686199')
+      .replyOnce(200, '83224bad1283ab98aee8ffbd070988f37fa2e799a3b50ffbad5e54191d0ec7b5')
       .onPost(transactionEndpoint)
-      .reply(200, 'cd4a3634647f7ea8fd02cb41cc2cd45fd5adc89ca1bf605b2e31f796a3417ddb')
+      .reply(200, '8297bda142673d33fa23cbe7a8de10de86407d6891bf21803ee1b67332d634ce')
 
     mock
-      .onGet(`${explorerBasePath}ba85afa683852b30ea5d336acbd385b623efad937ef2c3b635da98e9eb686199`)
+      .onGet(`${explorerBasePath}83224bad1283ab98aee8ffbd070988f37fa2e799a3b50ffbad5e54191d0ec7b5`)
       .replyOnce(200, {
         type: 'in-pool'
       })
-      .onGet(`${explorerBasePath}ba85afa683852b30ea5d336acbd385b623efad937ef2c3b635da98e9eb686199`)
+      .onGet(`${explorerBasePath}83224bad1283ab98aee8ffbd070988f37fa2e799a3b50ffbad5e54191d0ec7b5`)
       .replyOnce(200, {
         type: 'committed'
       })
-      .onGet(`${explorerBasePath}cd4a3634647f7ea8fd02cb41cc2cd45fd5adc89ca1bf605b2e31f796a3417ddb`)
+      .onGet(`${explorerBasePath}8297bda142673d33fa23cbe7a8de10de86407d6891bf21803ee1b67332d634ce`)
       .replyOnce(200, {
         type: 'in-pool'
       })
-      .onGet(`${explorerBasePath}cd4a3634647f7ea8fd02cb41cc2cd45fd5adc89ca1bf605b2e31f796a3417ddb`)
+      .onGet(`${explorerBasePath}8297bda142673d33fa23cbe7a8de10de86407d6891bf21803ee1b67332d634ce`)
       .replyOnce(200, {
         type: 'committed'
       })
