@@ -28,23 +28,20 @@ export function send (transactionEndpoint, explorerBasePath, data, signature, ty
     throw new TypeError('Transaction of wrong type is passed.')
   }
 
+  type.signature = signature
+  const hash = type.hash(data)
+
   return axios.post(transactionEndpoint, {
     protocol_version: type.protocol_version,
     service_id: type.service_id,
     message_id: type.message_id,
     body: data,
     signature: signature
-  }).then(response => {
+  }).then(() => {
     let count = ATTEMPTS
 
-    if (response.data.debug) {
-      throw new Error(response.data.description)
-    } else if (!validate.validateHexadecimal(response.data)) {
-      throw new Error('Unexpected format of transaction hash.')
-    }
-
     return (function attempt () {
-      return axios.get(`${explorerBasePath}${response.data}`).then(response => {
+      return axios.get(`${explorerBasePath}${hash}`).then(response => {
         if (response.data.type === 'committed') {
           return response.data
         } else if (response.data.type === 'in-pool') {
