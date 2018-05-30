@@ -37,11 +37,10 @@ Contains numerous helper functions.
   * [Send transaction](#send-transaction)
   * [Send multiple transactions](#send-multiple-transactions)
 * [Cryptographic proofs](#cryptographic-proofs)
-  * [Merkle tree](#merkle-tree)
-  * [Merkle Patricia tree](#merkle-patricia-tree)
+  * [Merkle tree proof](#merkle-tree-proof)
+  * [Map proof](#map-proof)
 * [Integrity checks](#integrity-checks)
   * [Verify block](#verify-block)
-  * [An example of checking the existence of data](#an-example-of-checking-the-existence-of-data)
 * [Helpers](#helpers)
   * [Generate key pair](#generate-key-pair)
   * [Get random number](#get-random-number)
@@ -614,7 +613,7 @@ Light client library validates the cryptographic proof and can prove the integri
 
 Read more about design of [cryptographic proofs][docs:advanced:merkelized-list] in Exonum.
 
-### Merkle tree
+### Merkle tree proof
 
 ```javascript
 let elements = Exonum.merkleProof(rootHash, count, tree, range, type)
@@ -632,7 +631,7 @@ The `merkleProof` method is used to validate the Merkle tree and extract a **lis
 
 An [example of verifying a Merkle tree](examples/merkle-tree.md).
 
-### Merkle Patricia tree
+### Map proof
 
 ```javascript
 let proof = new Exonum.MapProof(json, KeyType, ValueType)
@@ -679,14 +678,6 @@ Returns `true` if verification is succeeded or `false` if it is failed.
 | **validators** | An array of validators public keys as a hexadecimal strings. | `Array` |
 
 An example of [block verification](examples/block.md).
-
-### An example of checking the existence of data
-
-In a real-world application, it is recommended to verify the entire path from the data
-to the block in which this data is written.
-Only such a verification can guarantee the integrity and reliability of the data.
-
-An example of [checking the existence of data](examples/check-existence.md).
 
 ## Helpers
 
