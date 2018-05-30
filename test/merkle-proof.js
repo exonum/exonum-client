@@ -54,7 +54,7 @@ describe('Check proof of Merkle tree', function () {
     ])
   })
 
-  it('should return array of children of valid tree with hashes as values', function () {
+  it('should return array of children of valid tree with byte arrays as values', function () {
     const data = require('./common_data/merkle-tree/valid-merkle-tree-with-byte-arrays-as-values.json')
     const elements = Exonum.merkleProof(
       data.root_hash,
@@ -134,6 +134,21 @@ describe('Check proof of Merkle tree', function () {
       [42, 182, 237, 121, 206, 58, 234, 33, 57, 179],
       [146, 109, 161, 235, 50, 152, 154, 204, 249, 233],
       [106, 37, 197, 193, 108, 6, 226, 7, 120, 12]
+    ])
+  })
+
+  it('should return array of children of valid tree with hashes as values', function () {
+    const data = require('./common_data/merkle-tree/valid-merkle-tree-with-hashes-as-values.json')
+    const elements = Exonum.merkleProof(
+      data.root_hash,
+      data.list_length,
+      data.proof,
+      [data.range_st, data.range_end - 1]
+    )
+    expect(elements).to.deep.equal([
+      'eeeebb395347996b3ee7aa2e91f9b74c498c84440ec98bc1dac97fa8a3aac38c',
+      'fc44dbdc3cf6adbe4b75937c3cca9d632abaf53d8326fe8a8943964a25cf2e1e',
+      'a90939b4eaefcaf740ca80a704efafa25230e4995eeb381e9410d7b07b1b140b'
     ])
   })
 

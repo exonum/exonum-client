@@ -627,7 +627,7 @@ The `merkleProof` method is used to validate the Merkle tree and extract a **lis
 | **count** | The total number of elements in the Merkle tree. | `Number` |
 | **proofNode** | The Merkle tree. | `Object` |
 | **range** | An array of two elements of `Number` type. Represents list of obtained elements: `[startIndex; endIndex)`. | `Array` |
-| **type** | Definition of the elements type. *Optional. The `merkleProof` method expects to find byte arrays as values in the tree if `type` is not passed.* | [Custom data type](#define-data-type) |
+| **type** | Definition of the elements type. *Optional. The `merkleProof` method expects to find byte arrays or hashes as values in the tree if `type` is not passed.* | [Custom data type](#define-data-type) |
 
 An [example of verifying a Merkle tree](examples/merkle-tree.md).
 
