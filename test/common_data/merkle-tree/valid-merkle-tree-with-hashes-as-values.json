@@ -1,0 +1,37 @@
+{
+  "root_hash": "f50588d6bb95ad44492a472c976818ff53382846d88d2c309b855ea4070a0040",
+  "list_length": 100,
+  "proof": {
+    "left": {
+      "left": "0438082601f8b38ae010a621a48f4b4cd021c4e6e69219e3c2d8abab482039e9",
+      "right": {
+        "left": "53d8e8a89be4b96326ff43c3cf6ad4a25cf2e1ec44dbd75937c3cca9d632abaf",
+        "right": {
+          "left": "91f3479b74c954440ec98bc1dac97fa8a3aac38ceeeebb3996b3ee7aa2e498c8",
+          "right": {
+            "left": {
+              "left": {
+                "left": "77aed0fb2f30b04e29c006a137d9d879c7fee98d9757fde7580bccd72dce8946",
+                "right": {
+                  "val": "eeeebb395347996b3ee7aa2e91f9b74c498c84440ec98bc1dac97fa8a3aac38c"
+                }
+              },
+              "right": {
+                "left": {
+                  "val": "fc44dbdc3cf6adbe4b75937c3cca9d632abaf53d8326fe8a8943964a25cf2e1e"
+                },
+                "right": {
+                  "val": "a90939b4eaefcaf740ca80a704efafa25230e4995eeb381e9410d7b07b1b140b"
+                }
+              }
+            },
+            "right": "cf0710f238e771f3e73d08ad1eb5bc8e6cbf88afa343ea94954f95005c4553f0"
+          }
+        }
+      }
+    },
+    "right": "b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc"
+  },
+  "range_st": 57,
+  "range_end": 60
+}

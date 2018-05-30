@@ -32,6 +32,24 @@ let user = Exonum.newType({
 let elements = Exonum.merkleProof(rootHash, count, proofNode, range, user) // [{firstName: 'John', lastName: 'Doe', age: 28, balance: 2500}]
 ```
 
+An example of verifying a Merkle tree with elements passed as hashes:
+
+```javascript
+const rootHash = 'd61dc473664954eaffc1c418a55cab83f7b49cc4276a8a799a42cbdc9722a009'
+const count = 2
+const proofNode = {
+  left: {
+    val: 'c19569c5b391b1106e16021f50d20763cbece4199fd1356f2d3e429ff13e1345'
+  },
+  right: {
+    val: '3e1ff2f54195207e42d36ff0de1b345be9c59111b67263c31364506d11e2190f'
+  }
+}
+const range = [0, 8]
+
+let elements = Exonum.merkleProof(rootHash, count, proofNode, range) // ['c19569c5b391b1106e16021f50d20763cbece4199fd1356f2d3e429ff13e1345', '3e1ff2f54195207e42d36ff0de1b345be9c59111b67263c31364506d11e2190f']
+```
+
 An example of verifying a Merkle tree with elements passed as byte arrays:
 
 ```javascript
