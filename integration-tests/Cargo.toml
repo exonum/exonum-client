@@ -5,15 +5,16 @@ authors = ["Exonum Team <exonum@bitfury.com>"]
 publish = false
 
 [dependencies]
-exonum = "0.6.0"
-rand = "0.4.2"
-rocket = "=0.3.6"
-rocket_codegen = "=0.3.6"
-serde = "1.0.36"
-serde_derive = "1.0.36"
+exonum = "0.7.0"
+rand = "=0.4.2"
+rocket = "=0.3.11"
+rocket_codegen = "=0.3.11"
+serde = "=1.0.36"
+serde_derive = "=1.0.36"
+uuid = "=0.6.3"
 
 [dependencies.rocket_contrib]
-version = "=0.3.6"
+version = "=0.3.11"
 default-features = false
 features = ["json"]
 

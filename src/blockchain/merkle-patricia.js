@@ -2,7 +2,7 @@ import binarySearch from 'binary-search'
 
 import { hash } from '../crypto'
 import { newType } from '../types/generic'
-import * as primitive from '../types/primitive'
+import { Hash } from '../types/hexadecimal'
 import ProofPath from './ProofPath'
 
 /**
@@ -183,14 +183,14 @@ function precheckProof () {
 const IsolatedNode = newType({
   fields: [
     { name: 'path', type: ProofPath.TYPE },
-    { name: 'hash', type: primitive.Hash }
+    { name: 'hash', type: Hash }
   ]
 })
 
 const BranchNode = newType({
   fields: [
-    { name: 'left_hash', type: primitive.Hash },
-    { name: 'right_hash', type: primitive.Hash },
+    { name: 'left_hash', type: Hash },
+    { name: 'right_hash', type: Hash },
     { name: 'left_path', type: ProofPath.TYPE },
     { name: 'right_path', type: ProofPath.TYPE }
   ]

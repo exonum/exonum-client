@@ -1,4 +1,5 @@
 import * as primitive from '../types/primitive'
+import { Hash } from '../types/hexadecimal'
 import { newType } from '../types/generic'
 import {
   binaryStringToUint8Array,
@@ -156,7 +157,7 @@ ProofPath.BYTE_LENGTH = BIT_LENGTH / 8
 ProofPath.TYPE = newType({
   fields: [
     { name: 'isTerminal', type: primitive.Bool },
-    { name: 'hexKey', type: primitive.Hash },
+    { name: 'hexKey', type: Hash },
     { name: 'lengthByte', type: primitive.Uint8 }
   ]
 })

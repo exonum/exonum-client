@@ -1,5 +1,6 @@
 import { isObject } from '../helpers'
 import * as primitive from '../types/primitive'
+import { Hash } from '../types/hexadecimal'
 import { newType } from '../types/generic'
 import { newMessage } from '../types/message'
 import { validateHexadecimal } from '../types/validate'
@@ -14,9 +15,9 @@ const Block = newType({
     { name: 'proposer_id', type: primitive.Uint16 },
     { name: 'height', type: primitive.Uint64 },
     { name: 'tx_count', type: primitive.Uint32 },
-    { name: 'prev_hash', type: primitive.Hash },
-    { name: 'tx_hash', type: primitive.Hash },
-    { name: 'state_hash', type: primitive.Hash }
+    { name: 'prev_hash', type: Hash },
+    { name: 'tx_hash', type: Hash },
+    { name: 'state_hash', type: Hash }
   ]
 })
 const SystemTime = newType({
@@ -63,8 +64,8 @@ export function verifyBlock (data, validators) {
       { name: 'validator', type: primitive.Uint16 },
       { name: 'height', type: primitive.Uint64 },
       { name: 'round', type: primitive.Uint32 },
-      { name: 'propose_hash', type: primitive.Hash },
-      { name: 'block_hash', type: primitive.Hash },
+      { name: 'propose_hash', type: Hash },
+      { name: 'block_hash', type: Hash },
       { name: 'time', type: SystemTime }
     ]
   })

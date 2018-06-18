@@ -25,6 +25,7 @@ extern crate rocket_contrib;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
+extern crate uuid;
 
 use exonum::{crypto::{self, Hash, PublicKey, Seed},
              storage::{Database, MapProof, MemoryDB, ProofMapIndex}};
@@ -35,6 +36,8 @@ use rocket_contrib::Json;
 
 use std::str::FromStr;
 
+use uuid::{Uuid, UuidVersion};
+
 const INDEX_NAME: &str = "wallets";
 
 encoding_struct! {
@@ -42,6 +45,7 @@ encoding_struct! {
         pub_key: &PublicKey,
         name: &str,
         balance: u64,
+        uniq_id: Uuid
     }
 }
 
@@ -181,8 +185,9 @@ fn generate_proof(params: RandomParams) -> Result<Json<WalletProof>, BadRequest<
             let mut seed = [0u8; 32];
             rng.fill_bytes(&mut seed);
             let pubkey = crypto::gen_keypair_from_seed(&Seed::new(seed)).0;
+            let uuid = Uuid::new(UuidVersion::Random);
 
-            Wallet::new(&pubkey, &pubkey.to_string()[..8], rng.next_u64())
+            Wallet::new(&pubkey, &pubkey.to_string()[..8], rng.next_u64(), uuid.unwrap())
         })
         .collect();
 
