@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.9.0 (Jun 18, 2018)
+
+* Add support of `UUID` serialization. #97
+
 ## 0.8.2 (May 23, 2018)
 
 * Refactor `send` method to remove dependency onto service response format during pushing the transaction. #103
