@@ -379,11 +379,16 @@ export class Decimal {
    * @returns {Array}
    */
   static serialize (value, buffer, from) {
+    if (typeof value !== 'string') {
+      throw new TypeError('Wrong data type is passed as String. String is required')
+    }
+
     const pointIndex = value.indexOf('.')
     buffer[from + 2] = pointIndex > -1 ? value.length - 1 - pointIndex : 0
     if (pointIndex > -1) {
       value = value.replace('.', '')
     }
+
     let val = bigInt(value)
     buffer[from + 3] = val.gt(0) ? 0 : 128
     from += 4

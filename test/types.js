@@ -1073,5 +1073,15 @@ describe('Check built-in types', function () {
 
       expect(buffer).to.deep.equal(typesMock['type19-7'].serialized)
     })
+
+    it('should throw error when the value of invalid type', function () {
+      expect(() => scheme.getType('type19-1').serialize({ balance: undefined }))
+        .to.throw(TypeError, 'Field balance is not defined.');
+
+      [true, null, [], {}, new Date()].forEach(function (balance) {
+        expect(() => scheme.getType('type19-1').serialize({ balance: balance }))
+          .to.throw(TypeError, /Wrong data type is passed as String. String is required/)
+      })
+    })
   })
 })
