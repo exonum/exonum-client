@@ -7,7 +7,7 @@ export default class DataSchema {
     this.messages = {}
 
     const ExonumTypes = ['Uuid', 'PublicKey', 'String', 'Hash', 'Digest', 'Timespec',
-      'Bool', 'Int8', 'Int16', 'Int32', 'Int64', 'Uint8', 'Uint16', 'Uint32', 'Uint64', 'Float32', 'Float64']
+      'Bool', 'Int8', 'Int16', 'Int32', 'Int64', 'Uint8', 'Uint16', 'Uint32', 'Uint64', 'Float32', 'Float64', 'Decimal']
     ExonumTypes.forEach(item => (this.types[item] = Exonum[item]))
 
     Object.keys(schema).forEach(key => {

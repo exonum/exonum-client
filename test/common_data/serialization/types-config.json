@@ -146,5 +146,61 @@
         "type": "Uuid"
       }
     ]
+  },
+  "type19-1": {
+    "fields": [
+      {
+        "name": "balance",
+        "type": "Decimal"
+      }
+    ]
+  },  
+  "type19-2": {
+    "fields": [
+      {
+        "name": "balance",
+        "type": "Decimal"
+      }
+    ]
+  },
+  "type19-3": {
+    "fields": [
+      {
+        "name": "balance",
+        "type": "Decimal"
+      }
+    ]
+  },
+  "type19-4": {
+    "fields": [
+      {
+        "name": "balance",
+        "type": "Decimal"
+      }
+    ]
+  },
+  "type19-5": {
+    "fields": [
+      {
+        "name": "balance",
+        "type": "Decimal"
+      }
+    ]
+  },  
+  "type19-6": {
+    "fields": [
+      {
+        "name": "balance",
+        "type": "Decimal"
+      }
+    ]
+  },
+  "type19-7": {
+    "fields": [
+      {
+        "name": "balance",
+        "type": "Decimal"
+      }
+    ]
   }
 }

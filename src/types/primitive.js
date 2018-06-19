@@ -366,3 +366,27 @@ export class Timespec {
     return insertIntegerToByteArray(val, buffer, from, this.size())
   }
 }
+
+export class Decimal {
+  static size () {
+    return 12
+  }
+
+  /**
+   * @param {number|string} value
+   * @param {Array} buffer
+   * @param {number} from
+   * @returns {Array}
+   */
+  static serialize (value, buffer, from) {
+    const pointIndex = value.indexOf('.')
+    buffer[from + 2] = pointIndex > -1 ? value.length - 1 - pointIndex : 0
+    if (pointIndex > -1) {
+      value = value.replace('.', '')
+    }
+    let val = bigInt(value)
+    buffer[from + 3] = val.gt(0) ? 0 : 128
+    from += 4
+    return insertIntegerToByteArray(val.abs(), buffer, from, this.size())
+  }
+}

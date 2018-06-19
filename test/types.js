@@ -1030,4 +1030,48 @@ describe('Check built-in types', function () {
       })
     })
   })
+
+  describe('Process Decimal', function () {
+    it('should serialize data and return array of 16-bit integers when the value is valid', function () {
+      const buffer = scheme.getType('type19-1').serialize(typesMock['type19-1'].data)
+
+      expect(buffer).to.deep.equal(typesMock['type19-1'].serialized)
+    })
+
+    it('should serialize data and return array of 16-bit integers when the value is valid', function () {
+      const buffer = scheme.getType('type19-2').serialize(typesMock['type19-2'].data)
+
+      expect(buffer).to.deep.equal(typesMock['type19-2'].serialized)
+    })
+
+    it('should serialize data and return array of 16-bit integers when the value is valid', function () {
+      const buffer = scheme.getType('type19-3').serialize(typesMock['type19-3'].data)
+
+      expect(buffer).to.deep.equal(typesMock['type19-3'].serialized)
+    })
+
+    it('should serialize data and return array of 16-bit integers when the value is valid', function () {
+      const buffer = scheme.getType('type19-4').serialize(typesMock['type19-4'].data)
+
+      expect(buffer).to.deep.equal(typesMock['type19-4'].serialized)
+    })
+
+    it('should serialize data and return array of 16-bit integers when the value is valid', function () {
+      const buffer = scheme.getType('type19-5').serialize(typesMock['type19-5'].data)
+
+      expect(buffer).to.deep.equal(typesMock['type19-5'].serialized)
+    })
+
+    it('should serialize data and return array of 16-bit integers when the value is valid', function () {
+      const buffer = scheme.getType('type19-6').serialize(typesMock['type19-6'].data)
+
+      expect(buffer).to.deep.equal(typesMock['type19-6'].serialized)
+    })
+
+    it('should serialize data and return array of 16-bit integers when the value is valid', function () {
+      const buffer = scheme.getType('type19-7').serialize(typesMock['type19-7'].data)
+
+      expect(buffer).to.deep.equal(typesMock['type19-7'].serialized)
+    })
+  })
 })
