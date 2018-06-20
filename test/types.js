@@ -1033,59 +1033,59 @@ describe('Check built-in types', function () {
 
   describe('Process Decimal', function () {
     it('should serialize data and return array of 16-bit integers when the value is valid', function () {
-      const buffer = scheme.getType('type19-1').serialize(typesMock['type19-1'].data)
+      const buffer = scheme.getType('type19').serialize(typesMock['type19-1'].data)
 
       expect(buffer).to.deep.equal(typesMock['type19-1'].serialized)
     })
 
     it('should serialize data and return array of 16-bit integers when the value is valid', function () {
-      const buffer = scheme.getType('type19-2').serialize(typesMock['type19-2'].data)
+      const buffer = scheme.getType('type19').serialize(typesMock['type19-2'].data)
 
       expect(buffer).to.deep.equal(typesMock['type19-2'].serialized)
     })
 
     it('should serialize data and return array of 16-bit integers when the value is valid', function () {
-      const buffer = scheme.getType('type19-3').serialize(typesMock['type19-3'].data)
+      const buffer = scheme.getType('type19').serialize(typesMock['type19-3'].data)
 
       expect(buffer).to.deep.equal(typesMock['type19-3'].serialized)
     })
 
     it('should serialize data and return array of 16-bit integers when the value is valid', function () {
-      const buffer = scheme.getType('type19-4').serialize(typesMock['type19-4'].data)
+      const buffer = scheme.getType('type19').serialize(typesMock['type19-4'].data)
 
       expect(buffer).to.deep.equal(typesMock['type19-4'].serialized)
     })
 
     it('should serialize data and return array of 16-bit integers when the value is valid', function () {
-      const buffer = scheme.getType('type19-5').serialize(typesMock['type19-5'].data)
+      const buffer = scheme.getType('type19').serialize(typesMock['type19-5'].data)
 
       expect(buffer).to.deep.equal(typesMock['type19-5'].serialized)
     })
 
     it('should serialize data and return array of 16-bit integers when the value is valid', function () {
-      const buffer = scheme.getType('type19-6').serialize(typesMock['type19-6'].data)
+      const buffer = scheme.getType('type19').serialize(typesMock['type19-6'].data)
 
       expect(buffer).to.deep.equal(typesMock['type19-6'].serialized)
     })
 
     it('should serialize data and return array of 16-bit integers when the value is valid', function () {
-      const buffer = scheme.getType('type19-7').serialize(typesMock['type19-7'].data)
+      const buffer = scheme.getType('type19').serialize(typesMock['type19-7'].data)
 
       expect(buffer).to.deep.equal(typesMock['type19-7'].serialized)
     })
 
     it('should throw error when the value of invalid type', function () {
-      expect(() => scheme.getType('type19-1').serialize({ balance: undefined }))
+      expect(() => scheme.getType('type19').serialize({ balance: undefined }))
         .to.throw(TypeError, 'Field balance is not defined.');
 
       [true, null, [], {}, new Date()].forEach(function (balance) {
-        expect(() => scheme.getType('type19-1').serialize({ balance: balance }))
+        expect(() => scheme.getType('type19').serialize({ balance: balance }))
           .to.throw(TypeError, /Wrong data type is passed as String. String is required/)
       })
     })
 
     it('should throw error when the value more than max', function () {
-      expect(() => scheme.getType('type19-8').serialize(typesMock['type19-8'].data)).to.throw(TypeError, 'Wrong format')
+      expect(() => scheme.getType('type19').serialize(typesMock['type19-8'].data)).to.throw(TypeError, 'Decimal value is out of range')
     })
   })
 })

@@ -396,7 +396,7 @@ export class Decimal {
 
     val = val.abs()
     if (val.gt(MAX_DECIMAL)) {
-      throw new TypeError('Wrong format')
+      throw new TypeError('Decimal value is out of range')
     }
 
     return insertIntegerToByteArray(val, buffer, from, this.size())

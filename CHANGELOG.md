@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.10.0 (Jun 20, 2018)
+
+* Add serialization support of decimal type (`Decimal`). #108
+Decimal type is added into Exonum core in [0.8](https://github.com/exonum/exonum/blob/master/CHANGELOG.md#08---2018-05-31). #671
+
 ## 0.9.0 (Jun 18, 2018)
 
 * Add support of `UUID` serialization. #97
