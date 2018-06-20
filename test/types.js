@@ -1083,5 +1083,9 @@ describe('Check built-in types', function () {
           .to.throw(TypeError, /Wrong data type is passed as String. String is required/)
       })
     })
+
+    it('should throw error when the value more than max', function () {
+      expect(() => scheme.getType('type19-8').serialize(typesMock['type19-8'].data)).to.throw(TypeError, 'Wrong format')
+    })
   })
 })

@@ -14,6 +14,7 @@ const MAX_UINT8 = 255
 const MAX_UINT16 = 65535
 const MAX_UINT32 = 4294967295
 const MAX_UINT64 = '18446744073709551615'
+const MAX_DECIMAL = '79228162514264337593543950336'
 
 /**
  * Insert number into array as as little-endian
@@ -392,6 +393,12 @@ export class Decimal {
     let val = bigInt(value)
     buffer[from + 3] = val.gt(0) ? 0 : 128
     from += 4
-    return insertIntegerToByteArray(val.abs(), buffer, from, this.size())
+
+    val = val.abs()
+    if (val.gt(MAX_DECIMAL)) {
+      throw new TypeError('Wrong format')
+    }
+
+    return insertIntegerToByteArray(val, buffer, from, this.size())
   }
 }

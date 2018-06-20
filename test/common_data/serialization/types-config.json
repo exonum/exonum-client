@@ -202,5 +202,13 @@
         "type": "Decimal"
       }
     ]
+  },
+  "type19-8": {
+    "fields": [
+      {
+        "name": "balance",
+        "type": "Decimal"
+      }
+    ]
   }
 }
