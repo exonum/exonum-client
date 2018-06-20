@@ -146,5 +146,13 @@
         "type": "Uuid"
       }
     ]
+  },
+  "type19": {
+    "fields": [
+      {
+        "name": "balance",
+        "type": "Decimal"
+      }
+    ]
   }
 }

@@ -14,6 +14,7 @@ const MAX_UINT8 = 255
 const MAX_UINT16 = 65535
 const MAX_UINT32 = 4294967295
 const MAX_UINT64 = '18446744073709551615'
+const MAX_DECIMAL = '79228162514264337593543950336'
 
 /**
  * Insert number into array as as little-endian
@@ -362,6 +363,41 @@ export class Timespec {
     }
 
     const val = bigInt(nanoseconds)
+
+    return insertIntegerToByteArray(val, buffer, from, this.size())
+  }
+}
+
+export class Decimal {
+  static size () {
+    return 12
+  }
+
+  /**
+   * @param {number|string} value
+   * @param {Array} buffer
+   * @param {number} from
+   * @returns {Array}
+   */
+  static serialize (value, buffer, from) {
+    if (typeof value !== 'string') {
+      throw new TypeError('Wrong data type is passed as String. String is required')
+    }
+
+    const pointIndex = value.indexOf('.')
+    buffer[from + 2] = pointIndex > -1 ? value.length - 1 - pointIndex : 0
+    if (pointIndex > -1) {
+      value = value.replace('.', '')
+    }
+
+    let val = bigInt(value)
+    buffer[from + 3] = val.gt(0) ? 0 : 128
+    from += 4
+
+    val = val.abs()
+    if (val.gt(MAX_DECIMAL)) {
+      throw new TypeError('Decimal value is out of range')
+    }
 
     return insertIntegerToByteArray(val, buffer, from, this.size())
   }

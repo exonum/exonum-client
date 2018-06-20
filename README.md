@@ -136,6 +136,7 @@ These types must be used when constructing custom data types.
 | **Uint64** | Number in a range from `0` to `18446744073709551615`. | `Number` or `String`\* |
 | **Float32** | Floating point number in a range from `-3.40282347e+38f32` to `3.40282347e+38f32`. | `Number` or `String`\* |
 | **Float64** | Floating point number in a range from `-1.7976931348623157e+308f64` to `1.7976931348623157e+308f64`. | `Number` or `String`\* |
+| **Decimal** | Decimal fixed point `79228162514264337593543950336 * 10^-28` to `79228162514264337593543950336`. | `String`\* |
 | **String** | A string of variable length consisting of UTF-8 characters. | `String` |
 | **Hash** | Hexadecimal string. | `String` |
 | **PublicKey** | Hexadecimal string. | `String` |
