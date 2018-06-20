@@ -98,9 +98,8 @@ export default class ProofPath {
 
     if (pos === intersectingBits) {
       return Math.sign(thisLen - otherLen)
-    } else {
-      return this.bit(pos) - other.bit(pos)
     }
+    return this.bit(pos) - other.bit(pos)
   }
 
   /**
