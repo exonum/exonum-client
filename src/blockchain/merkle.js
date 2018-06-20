@@ -44,9 +44,13 @@ export function merkleProof (rootHash, count, proofNode, range, type) {
 
     if (depth !== 0 && (depth + 1) !== height) {
       throw new Error('Value node is on wrong height in tree.')
-    } else if (start.gt(index) || end.lt(index)) {
+    }
+
+    if (start.gt(index) || end.lt(index)) {
       throw new Error('Wrong index of value node.')
-    } else if (start.plus(elements.length).neq(index)) {
+    }
+
+    if (start.plus(elements.length).neq(index)) {
       throw new Error('Value node is on wrong position in tree.')
     }
 
@@ -56,21 +60,23 @@ export function merkleProof (rootHash, count, proofNode, range, type) {
       }
       element = data
       elementsHash = element
-    } else if (Array.isArray(data)) {
-      if (!validateBytesArray(data)) {
-        throw new TypeError('Tree element of wrong type is passed. Bytes array expected.')
-      }
-      element = data.slice(0) // clone array of 8-bit integers
-      elementsHash = hash(element)
-    } else if (isObject(data)) {
-      if (isInstanceofOfNewType(type)) {
+    } else {
+      if (Array.isArray(data)) {
+        if (!validateBytesArray(data)) {
+          throw new TypeError('Tree element of wrong type is passed. Bytes array expected.')
+        }
+        element = data.slice(0) // clone array of 8-bit integers
+        elementsHash = hash(element)
+      } else {
+        if (!isObject(data)) {
+          throw new TypeError('Invalid value of data parameter.')
+        }
+        if (!isInstanceofOfNewType(type)) {
+          throw new TypeError('Invalid type of type parameter.')
+        }
         element = data
         elementsHash = hash(element, type)
-      } else {
-        throw new TypeError('Invalid type of type parameter.')
       }
-    } else {
-      throw new TypeError('Invalid value of data parameter.')
     }
 
     elements.push(element)
@@ -94,23 +100,23 @@ export function merkleProof (rootHash, count, proofNode, range, type) {
       return getHash(node.val, depth, index * 2)
     }
 
-    if (node.left !== undefined) {
-      if (typeof node.left === 'string') {
-        if (!validateHexadecimal(node.left)) {
-          throw new TypeError('Tree element of wrong type is passed. Hexadecimal expected.')
-        }
-        hashLeft = node.left
-      } else if (isObject(node.left)) {
-        if (node.left.val !== undefined) {
-          hashLeft = getHash(node.left.val, depth, index * 2)
-        } else {
-          hashLeft = recursive(node.left, depth + 1, index * 2)
-        }
-      } else {
+    if (node.left === undefined) {
+      throw new Error('Left node is missed.')
+    }
+    if (typeof node.left === 'string') {
+      if (!validateHexadecimal(node.left)) {
+        throw new TypeError('Tree element of wrong type is passed. Hexadecimal expected.')
+      }
+      hashLeft = node.left
+    } else {
+      if (!isObject(node.left)) {
         throw new TypeError('Invalid type of left node.')
       }
-    } else {
-      throw new Error('Left node is missed.')
+      if (node.left.val !== undefined) {
+        hashLeft = getHash(node.left.val, depth, index * 2)
+      } else {
+        hashLeft = recursive(node.left, depth + 1, index * 2)
+      }
     }
 
     if (depth === 0) {
@@ -123,22 +129,25 @@ export function merkleProof (rootHash, count, proofNode, range, type) {
           throw new TypeError('Tree element of wrong type is passed. Hexadecimal expected.')
         }
         hashRight = node.right
-      } else if (isObject(node.right)) {
+      } else {
+        if (!isObject(node.right)) {
+          throw new TypeError('Invalid type of right node.')
+        }
+
         if (node.right.val !== undefined) {
           hashRight = getHash(node.right.val, depth, index * 2 + 1)
         } else {
           hashRight = recursive(node.right, depth + 1, index * 2 + 1)
         }
-      } else {
-        throw new TypeError('Invalid type of right node.')
       }
 
       summingBuffer = new Uint8Array(64)
       summingBuffer.set(hexadecimalToUint8Array(hashLeft))
       summingBuffer.set(hexadecimalToUint8Array(hashRight), 32)
-    } else if (depth === 0 || rootBranch === 'left') {
-      throw new Error('Right leaf is missed in left branch of tree.')
     } else {
+      if (depth === 0 || rootBranch === 'left') {
+        throw new Error('Right leaf is missed in left branch of tree.')
+      }
       summingBuffer = hexadecimalToUint8Array(hashLeft)
     }
 
@@ -164,9 +173,11 @@ export function merkleProof (rootHash, count, proofNode, range, type) {
   // validate range
   if (!Array.isArray(range) || range.length !== 2) {
     throw new TypeError('Invalid type of range parameter. Array of two elements expected.')
-  } else if (!(typeof range[0] === 'number' || typeof range[0] === 'string')) {
+  }
+  if (!(typeof range[0] === 'number' || typeof range[0] === 'string')) {
     throw new TypeError('Invalid value is passed as start of range parameter.')
-  } else if (!(typeof range[1] === 'number' || typeof range[1] === 'string')) {
+  }
+  if (!(typeof range[1] === 'number' || typeof range[1] === 'string')) {
     throw new TypeError('Invalid value is passed as end of range parameter.')
   }
 
@@ -175,11 +186,14 @@ export function merkleProof (rootHash, count, proofNode, range, type) {
 
   if (rangeStart.gt(rangeEnd)) {
     throw new RangeError('Invalid range parameter. Start index can\'t be out of range.')
-  } else if (rangeStart.lt(0)) {
+  }
+  if (rangeStart.lt(0)) {
     throw new RangeError('Invalid range parameter. Start index can\'t be below zero.')
-  } else if (rangeEnd.lt(0)) {
+  }
+  if (rangeEnd.lt(0)) {
     throw new RangeError('Invalid range parameter. End index can\'t be below zero.')
-  } else if (rangeStart.gt(count.minus(1))) {
+  }
+  if (rangeStart.gt(count.minus(1))) {
     return []
   }
 
@@ -196,7 +210,8 @@ export function merkleProof (rootHash, count, proofNode, range, type) {
 
   if (rootHash.toLowerCase() !== actualHash) {
     throw new Error('rootHash parameter is not equal to actual hash.')
-  } else if (bigInt(elements.length).neq(end.eq(start) ? 1 : end.minus(start).plus(1))) {
+  }
+  if (bigInt(elements.length).neq(end.eq(start) ? 1 : end.minus(start).plus(1))) {
     throw new Error('Actual elements in tree amount is not equal to requested.')
   }
 

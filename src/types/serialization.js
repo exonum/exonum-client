@@ -24,13 +24,13 @@ export function serialize (buffer, shift, data, type, isTransactionBody) {
   function serializeInstanceofOfNewType (buffer, shift, from, data, type) {
     if (newTypeIsFixed(type)) {
       buffer = serialize(buffer, from, data, type)
-    } else {
-      const end = buffer.length
-      Uint32.serialize(end - shift, buffer, from) // start index
-      buffer = serialize(buffer, end, data, type)
-      Uint32.serialize(buffer.length - end, buffer, from + 4) // length
+      return buffer
     }
 
+    const end = buffer.length
+    Uint32.serialize(end - shift, buffer, from) // start index
+    buffer = serialize(buffer, end, data, type)
+    Uint32.serialize(buffer.length - end, buffer, from + 4) // length
     return buffer
   }
 
@@ -46,6 +46,10 @@ export function serialize (buffer, shift, data, type, isTransactionBody) {
   function serializeInstanceofOfNewArray (buffer, shift, from, data, type) {
     if (!Array.isArray(data)) {
       throw new TypeError('Data of wrong type is passed. Array expected.')
+    }
+
+    if (type.type === String) {
+      throw new TypeError('Array of String types is not supported.')
     }
 
     Uint32.serialize(buffer.length, buffer, from) // start index
@@ -67,7 +71,10 @@ export function serialize (buffer, shift, data, type, isTransactionBody) {
         buffer = serialize(buffer, end, data[i], type.type)
         Uint32.serialize(buffer.length - end, buffer, index + 4) // length
       }
-    } else if (isInstanceofOfNewArray(type.type)) {
+      return buffer
+    }
+
+    if (isInstanceofOfNewArray(type.type)) {
       const start = buffer.length
 
       // reserve segment for pointers
@@ -80,12 +87,11 @@ export function serialize (buffer, shift, data, type, isTransactionBody) {
 
         buffer = serializeInstanceofOfNewArray(buffer, shift, index, data[i], type.type)
       }
-    } else if (type.type === String) {
-      throw new TypeError('Array of String types is not supported.')
-    } else {
-      for (let item of data) {
-        buffer = type.type.serialize(item, buffer, buffer.length, buffer.length + type.type.size())
-      }
+      return buffer
+    }
+
+    for (const item of data) {
+      buffer = type.type.serialize(item, buffer, buffer.length, buffer.length + type.type.size())
     }
 
     return buffer

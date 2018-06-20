@@ -7,52 +7,52 @@ const DataSchema = require('./data_schema/dataSchema').default
 const cryptographyMock = require('./common_data/serialization/cryptography.json')
 const invalidCryptographyMock = require('./common_data/serialization/cryptography-invalid.json')
 const cryptography = require('./common_data/serialization/cryptography-config.json')
-const scheme = new DataSchema(cryptography)
+const schema = new DataSchema(cryptography)
 
 describe('Check cryptography', function () {
   describe('Get SHA256 hash', function () {
     it('should return hash of data of newType type', function () {
-      const hash = Exonum.hash(cryptographyMock.type1.data, scheme.getType('type1'))
+      const hash = Exonum.hash(cryptographyMock.type1.data, schema.getType('type1'))
       expect(hash).to.equal(cryptographyMock.type1.hash)
     })
 
     it('should return hash of data of newType type using built-in method', function () {
-      const hash = scheme.getType('type2').hash(cryptographyMock.type2.data)
+      const hash = schema.getType('type2').hash(cryptographyMock.type2.data)
       expect(hash).to.equal(cryptographyMock.type2.hash)
     })
 
     it('should return hash of data of newMessage type', function () {
-      const hash = Exonum.hash(cryptographyMock.type3.data, scheme.getMessage('type3'))
+      const hash = Exonum.hash(cryptographyMock.type3.data, schema.getMessage('type3'))
       expect(hash).to.equal(cryptographyMock.type3.hash)
     })
 
     it('should return hash of data of newMessage type using built-in method', function () {
-      const hash = scheme.getMessage('type4').hash(cryptographyMock.type4.data)
+      const hash = schema.getMessage('type4').hash(cryptographyMock.type4.data)
       expect(hash).to.equal(cryptographyMock.type4.hash)
     })
 
     it('should return hash of the array of 8-bit integers', function () {
-      const buffer = scheme.getType('type5').serialize(cryptographyMock.type5.data)
+      const buffer = schema.getType('type5').serialize(cryptographyMock.type5.data)
       const hash = Exonum.hash(buffer)
       expect(hash).to.equal(cryptographyMock.type5.hash)
     })
 
     it('should throw error when data of invalid NewType type', function () {
-      expect(() => Exonum.hash(undefined, scheme.getType('type1')))
+      expect(() => Exonum.hash(undefined, schema.getType('type1')))
         .to.throw(TypeError, 'Cannot read property \'pub_key\' of undefined');
 
       [false, 42, new Date(), []].forEach(function (_hash) {
-        expect(() => Exonum.hash(_hash, scheme.getType('type1')))
+        expect(() => Exonum.hash(_hash, schema.getType('type1')))
           .to.throw(TypeError, 'Field pub_key is not defined.')
       })
     })
 
     it('should throw error when data of invalid NewMessage type', function () {
-      expect(() => Exonum.hash(undefined, scheme.getMessage('type3')))
+      expect(() => Exonum.hash(undefined, schema.getMessage('type3')))
         .to.throw(TypeError, 'Cannot read property \'name\' of undefined');
 
       [false, 42, new Date(), []].forEach(function (_hash) {
-        expect(() => Exonum.hash(_hash, scheme.getMessage('type3')))
+        expect(() => Exonum.hash(_hash, schema.getMessage('type3')))
           .to.throw(TypeError, 'Field name is not defined.')
       })
     })
@@ -60,38 +60,38 @@ describe('Check cryptography', function () {
 
   describe('Get ED25519 signature', function () {
     it('should return signature of the data of NewType type', function () {
-      const signature = scheme.getType('type6').sign(cryptographyMock.type6.secretKey, cryptographyMock.type6.data)
+      const signature = schema.getType('type6').sign(cryptographyMock.type6.secretKey, cryptographyMock.type6.data)
       expect(signature).to.equal(cryptographyMock.type6.signed)
     })
 
     it('should return signature of the data of NewType type using built-in method', function () {
-      const signature = scheme.getType('type6').sign(cryptographyMock.type6.secretKey, cryptographyMock.type6.data)
+      const signature = schema.getType('type6').sign(cryptographyMock.type6.secretKey, cryptographyMock.type6.data)
       expect(signature).to.equal(cryptographyMock.type6.signed)
     })
 
     it('should return signature of the data of NewMessage type', function () {
-      const signature = Exonum.sign(cryptographyMock.type7.secretKey, cryptographyMock.type7.data, scheme.getMessage('type7'))
+      const signature = Exonum.sign(cryptographyMock.type7.secretKey, cryptographyMock.type7.data, schema.getMessage('type7'))
       expect(signature).to.equal(cryptographyMock.type7.signed)
     })
 
     it('should return signature of the data of NewMessage type using built-in method', function () {
-      const signature = scheme.getMessage('type8').sign(cryptographyMock.type8.secretKey, cryptographyMock.type8.data)
+      const signature = schema.getMessage('type8').sign(cryptographyMock.type8.secretKey, cryptographyMock.type8.data)
       expect(signature).to.equal(cryptographyMock.type8.signed)
     })
 
     it('should return signature of the array of 8-bit integers', function () {
-      const buffer = scheme.getType('type9').serialize(cryptographyMock.type9.data)
+      const buffer = schema.getType('type9').serialize(cryptographyMock.type9.data)
       const signature = Exonum.sign(cryptographyMock.type9.secretKey, buffer)
       expect(signature).to.equal(cryptographyMock.type9.signed)
     })
 
     it('should throw error when the data parameter of wrong NewType type', function () {
-      expect(() => Exonum.sign(invalidCryptographyMock.type6.secretKey, invalidCryptographyMock.type6.data, scheme.getType('type6')))
+      expect(() => Exonum.sign(invalidCryptographyMock.type6.secretKey, invalidCryptographyMock.type6.data, schema.getType('type6')))
         .to.throw(TypeError, 'Field firstName is not defined.')
     })
 
     it('should throw error when the data parameter of wrong NewMessage type', function () {
-      expect(() => Exonum.sign(invalidCryptographyMock.type7.secretKey, invalidCryptographyMock.type7.data, scheme.getMessage('type7')))
+      expect(() => Exonum.sign(invalidCryptographyMock.type7.secretKey, invalidCryptographyMock.type7.data, schema.getMessage('type7')))
         .to.throw(TypeError, 'Field name is not defined.')
     })
 
@@ -110,13 +110,13 @@ describe('Check cryptography', function () {
     })
 
     it('should throw error when the secretKey parameter of wrong length', function () {
-      const buffer = scheme.getType('type6').serialize(invalidCryptographyMock['type6-1'].data)
+      const buffer = schema.getType('type6').serialize(invalidCryptographyMock['type6-1'].data)
       expect(() => Exonum.sign(invalidCryptographyMock['type6-1'].secretKey, buffer))
         .to.throw(TypeError, 'secretKey of wrong type is passed. Hexadecimal expected.')
     })
 
     it('should throw error when wrong secretKey parameter', function () {
-      const buffer = scheme.getType('type6').serialize(invalidCryptographyMock['type6-2'].data)
+      const buffer = schema.getType('type6').serialize(invalidCryptographyMock['type6-2'].data)
       expect(() => Exonum.sign(invalidCryptographyMock['type6-2'].secretKey, buffer))
         .to.throw(TypeError, 'secretKey of wrong type is passed. Hexadecimal expected.')
     })
@@ -126,7 +126,7 @@ describe('Check cryptography', function () {
         firstName: 'John',
         lastName: 'Doe'
       }
-      const buffer = scheme.getType('type6').serialize(userData);
+      const buffer = schema.getType('type6').serialize(userData);
 
       [true, null, undefined, [], {}, 51, new Date()].forEach(function (secretKey) {
         expect(() => Exonum.sign(secretKey, buffer))
@@ -262,7 +262,7 @@ describe('Check cryptography', function () {
         hash: 'Hello world'
       }
 
-      expect(() => Exonum.verifySignature(signature, publicKey, userData, scheme.getType('type6')))
+      expect(() => Exonum.verifySignature(signature, publicKey, userData, schema.getType('type6')))
         .to.throw(TypeError, 'Field firstName is not defined.')
     })
 

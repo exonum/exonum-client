@@ -50,12 +50,7 @@ export function validateBigInteger (value, min, max, from, length) {
  * @returns {boolean}
  */
 export function validateFloat (value, from, length) {
-  if (typeof value !== 'number' && typeof value !== 'string') {
-    // wrong type
-    return false
-  }
-
-  return true
+  return !(typeof value !== 'number' && typeof value !== 'string')
 }
 
 /**

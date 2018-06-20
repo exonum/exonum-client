@@ -33,9 +33,8 @@ class NewMessage {
     return this.fields.reduce((accumulator, field) => {
       if (fieldIsFixed(field)) {
         return accumulator + field.type.size()
-      } else {
-        return accumulator + 8
       }
+      return accumulator + 8
     }, 0)
   }
 
