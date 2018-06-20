@@ -63,7 +63,8 @@ export function validateHexadecimal (hash, bytes) {
 
   if (typeof hash !== 'string') {
     return false
-  } else if (hash.length !== bytes * 2) {
+  }
+  if (hash.length !== bytes * 2) {
     // 'hexadecimal string is of wrong length
     return false
   }
