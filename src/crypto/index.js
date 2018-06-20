@@ -17,16 +17,19 @@ export function hash (data, type) {
 
   if (isInstanceofOfNewType(type) || isInstanceofOfNewMessage(type)) {
     buffer = type.serialize(data)
-  } else if (type === undefined) {
+  } else {
+    if (type !== undefined) {
+      throw new TypeError('Wrong type of data.')
+    }
+
     if (data instanceof Uint8Array) {
       buffer = data
-    } else if (Array.isArray(data)) {
-      buffer = new Uint8Array(data)
     } else {
-      throw new TypeError('Invalid data parameter.')
+      if (!Array.isArray(data)) {
+        throw new TypeError('Invalid data parameter.')
+      }
+      buffer = new Uint8Array(data)
     }
-  } else {
-    throw new TypeError('Wrong type of data.')
   }
 
   return sha('sha256').update(buffer, 'utf8').digest('hex')
@@ -52,20 +55,23 @@ export function sign (secretKey, data, type) {
 
   if (isInstanceofOfNewType(type)) {
     buffer = new Uint8Array(type.serialize(data))
-  } else if (isInstanceofOfNewMessage(type)) {
-    buffer = new Uint8Array(type.serialize(data, true))
-  } else if (type === undefined) {
-    if (data instanceof Uint8Array) {
-      buffer = data
-    } else if (Array.isArray(data)) {
-      buffer = new Uint8Array(data)
-    } else {
-      throw new TypeError('Invalid data parameter.')
-    }
   } else {
-    throw new TypeError('Wrong type of data.')
+    if (isInstanceofOfNewMessage(type)) {
+      buffer = new Uint8Array(type.serialize(data, true))
+    } else {
+      if (type !== undefined) {
+        throw new TypeError('Wrong type of data.')
+      }
+      if (data instanceof Uint8Array) {
+        buffer = data
+      } else {
+        if (!Array.isArray(data)) {
+          throw new TypeError('Invalid data parameter.')
+        }
+        buffer = new Uint8Array(data)
+      }
+    }
   }
-
   signature = nacl.sign.detached(buffer, secretKeyUint8Array)
 
   return convert.uint8ArrayToHexadecimal(signature)
