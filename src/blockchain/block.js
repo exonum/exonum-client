@@ -36,11 +36,14 @@ const SystemTime = newType({
 export function verifyBlock (data, validators) {
   if (!isObject(data)) {
     return false
-  } else if (!isObject(data.block)) {
+  }
+  if (!isObject(data.block)) {
     return false
-  } else if (!Array.isArray(data.precommits)) {
+  }
+  if (!Array.isArray(data.precommits)) {
     return false
-  } else if (!Array.isArray(validators)) {
+  }
+  if (!Array.isArray(validators)) {
     return false
   }
 
@@ -79,11 +82,9 @@ export function verifyBlock (data, validators) {
     if (!isObject(precommit.body)) {
       return false
     }
-
     if (!validateHexadecimal(precommit.signature, 64)) {
       return false
     }
-
     if (precommit.body.validator >= validatorsTotalNumber) {
       // validator does not exist
       return false
@@ -102,14 +103,16 @@ export function verifyBlock (data, validators) {
     if (precommit.body.height !== data.block.height) {
       // wrong height of block in precommit
       return false
-    } else if (precommit.body.block_hash !== blockHash) {
+    }
+    if (precommit.body.block_hash !== blockHash) {
       // wrong hash of block in precommit
       return false
     }
 
     if (round === undefined) {
       round = precommit.body.round
-    } else if (precommit.body.round !== round) {
+    }
+    if (precommit.body.round !== round) {
       // wrong round in precommit
       return false
     }
