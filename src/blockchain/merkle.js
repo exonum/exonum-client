@@ -144,13 +144,13 @@ export function merkleProof (rootHash, count, proofNode, range, type) {
       summingBuffer = new Uint8Array(64)
       summingBuffer.set(hexadecimalToUint8Array(hashLeft))
       summingBuffer.set(hexadecimalToUint8Array(hashRight), 32)
-    } else {
-      if (depth === 0 || rootBranch === 'left') {
-        throw new Error('Right leaf is missed in left branch of tree.')
-      }
-      summingBuffer = hexadecimalToUint8Array(hashLeft)
+      return hash(summingBuffer)
     }
 
+    if (depth === 0 || rootBranch === 'left') {
+      throw new Error('Right leaf is missed in left branch of tree.')
+    }
+    summingBuffer = hexadecimalToUint8Array(hashLeft)
     return hash(summingBuffer)
   }
 
