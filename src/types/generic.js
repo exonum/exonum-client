@@ -98,7 +98,7 @@ export function fieldIsFixed (field) {
     return newTypeIsFixed(field.type)
   }
 
-  return !(field.type === String)
+  return field.type !== String
 }
 
 /**
