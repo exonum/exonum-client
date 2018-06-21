@@ -123,15 +123,15 @@ function parseEntries (entries, keyType, valueType) {
         missing,
         path: createPath(missing)
       }
-    } else {
-      return {
-        key,
-        value,
-        path: createPath(key),
-        hash: typeof valueType.hash === 'function'
-          ? valueType.hash(value) // `newType`s
-          : hash(valueType.serialize(value, [], 0)) // "primitive" types
-      }
+    }
+
+    return {
+      key,
+      value,
+      path: createPath(key),
+      hash: typeof valueType.hash === 'function'
+        ? valueType.hash(value) // `newType`s
+        : hash(valueType.serialize(value, [], 0)) // "primitive" types
     }
   })
 }
@@ -167,14 +167,13 @@ function precheckProof () {
 
     if (index >= 0) {
       throw new MapProofError('duplicatePath', keyPath)
-    } else {
-      const insertionIndex = -index - 1
+    }
 
-      if (insertionIndex > 0) {
-        const prevPath = this.proof[insertionIndex - 1].path
-        if (keyPath.startsWith(prevPath)) {
-          throw new MapProofError('embeddedPaths', prevPath, keyPath)
-        }
+    const insertionIndex = -index - 1
+    if (insertionIndex > 0) {
+      const prevPath = this.proof[insertionIndex - 1].path
+      if (keyPath.startsWith(prevPath)) {
+        throw new MapProofError('embeddedPaths', prevPath, keyPath)
       }
     }
   })
@@ -233,9 +232,8 @@ function collect (entries) {
     case 1:
       if (!entries[0].path.isTerminal) {
         throw new MapProofError('nonTerminalNode', entries[0].path)
-      } else {
-        return hashIsolatedNode(entries[0])
       }
+      return hashIsolatedNode(entries[0])
 
     default:
       const contour = []

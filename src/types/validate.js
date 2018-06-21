@@ -50,12 +50,7 @@ export function validateBigInteger (value, min, max, from, length) {
  * @returns {boolean}
  */
 export function validateFloat (value, from, length) {
-  if (typeof value !== 'number' && typeof value !== 'string') {
-    // wrong type
-    return false
-  }
-
-  return true
+  return typeof value === 'number' || typeof value === 'string'
 }
 
 /**
@@ -68,7 +63,8 @@ export function validateHexadecimal (hash, bytes) {
 
   if (typeof hash !== 'string') {
     return false
-  } else if (hash.length !== bytes * 2) {
+  }
+  if (hash.length !== bytes * 2) {
     // 'hexadecimal string is of wrong length
     return false
   }

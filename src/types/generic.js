@@ -96,10 +96,9 @@ export function isInstanceofOfNewType (type) {
 export function fieldIsFixed (field) {
   if (isInstanceofOfNewType(field.type)) {
     return newTypeIsFixed(field.type)
-  } else if (field.type === String) {
-    return false
   }
-  return true
+
+  return field.type !== String
 }
 
 /**

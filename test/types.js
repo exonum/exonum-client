@@ -7,12 +7,12 @@ const DataSchema = require('./data_schema/dataSchema').default
 const typesMock = require('./common_data/serialization/types.json')
 const invalidTypesMock = require('./common_data/serialization/types-invalid.json')
 const types = require('./common_data/serialization/types-config.json')
-const scheme = new DataSchema(types)
+const schema = new DataSchema(types)
 
 describe('Check built-in types', function () {
   describe('Process Hash', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid hexadecimal string', function () {
-      const buffer = scheme.getType('type1').serialize(typesMock.type1.data)
+      const buffer = schema.getType('type1').serialize(typesMock.type1.data)
       expect(buffer).to.deep.equal(typesMock.type1.serialized)
     })
 
@@ -35,26 +35,26 @@ describe('Check built-in types', function () {
     })
 
     it('should throw error when the value is invalid string', function () {
-      expect(() => scheme.getType('type1').serialize(invalidTypesMock.type1.data))
+      expect(() => schema.getType('type1').serialize(invalidTypesMock.type1.data))
         .to.throw(TypeError, 'Hash of wrong type is passed: f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3z')
     })
 
     it('should throw error when the value is too long string', function () {
-      expect(() => scheme.getType('type1').serialize(invalidTypesMock['type1-1'].data))
+      expect(() => schema.getType('type1').serialize(invalidTypesMock['type1-1'].data))
         .to.throw(TypeError, 'Hash of wrong type is passed: f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365')
     })
 
     it('should throw error when the value is too short string', function () {
-      expect(() => scheme.getType('type1').serialize(invalidTypesMock['type1-2'].data))
+      expect(() => schema.getType('type1').serialize(invalidTypesMock['type1-2'].data))
         .to.throw(TypeError, 'Hash of wrong type is passed: f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3')
     })
 
     it('should throw error when the value of invalid type', function () {
-      expect(() => scheme.getType('type1').serialize({ hash: undefined }))
+      expect(() => schema.getType('type1').serialize({ hash: undefined }))
         .to.throw(TypeError, 'Field hash is not defined.');
 
       [true, null, 57, [], {}, new Date()].forEach(function (hash) {
-        expect(() => scheme.getType('type1').serialize({ hash: hash }))
+        expect(() => schema.getType('type1').serialize({ hash: hash }))
           .to.throw(TypeError, /Hash of wrong type is passed:/)
       })
     })
@@ -62,32 +62,32 @@ describe('Check built-in types', function () {
 
   describe('Process PublicKey', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid string', function () {
-      const buffer = scheme.getType('type2').serialize(typesMock.type2.data)
+      const buffer = schema.getType('type2').serialize(typesMock.type2.data)
 
       expect(buffer).to.deep.equal(typesMock.type2.serialized)
     })
 
     it('should throw error when the value is invalid string', function () {
-      expect(() => scheme.getType('type2').serialize(invalidTypesMock.type2.data))
+      expect(() => schema.getType('type2').serialize(invalidTypesMock.type2.data))
         .to.throw(TypeError, 'PublicKey of wrong type is passed: f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3z')
     })
 
     it('should throw error when the value is too long string', function () {
-      expect(() => scheme.getType('type2').serialize(invalidTypesMock['type2-1'].data))
+      expect(() => schema.getType('type2').serialize(invalidTypesMock['type2-1'].data))
         .to.throw(TypeError, 'PublicKey of wrong type is passed: f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365')
     })
 
     it('should throw error when the value is too short string', function () {
-      expect(() => scheme.getType('type2').serialize(invalidTypesMock['type2-2'].data))
+      expect(() => schema.getType('type2').serialize(invalidTypesMock['type2-2'].data))
         .to.throw(TypeError, 'PublicKey of wrong type is passed: f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3')
     })
 
     it('should throw error when the value of invalid type', function () {
-      expect(() => scheme.getType('type2').serialize({ key: undefined }))
+      expect(() => schema.getType('type2').serialize({ key: undefined }))
         .to.throw(TypeError, 'Field key is not defined.');
 
       [true, null, 57, [], {}, new Date()].forEach(function (key) {
-        expect(() => scheme.getType('type2').serialize({ key: key }))
+        expect(() => schema.getType('type2').serialize({ key: key }))
           .to.throw(TypeError, /PublicKey of wrong type is passed:/)
       })
     })
@@ -95,31 +95,31 @@ describe('Check built-in types', function () {
 
   describe('Process Digest', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid string', function () {
-      const buffer = scheme.getType('type3').serialize(typesMock.type3.data)
+      const buffer = schema.getType('type3').serialize(typesMock.type3.data)
       expect(buffer).to.deep.equal(typesMock.type3.serialized)
     })
 
     it('should throw error when the value is invalid string', function () {
-      expect(() => scheme.getType('type3').serialize(invalidTypesMock.type3.data))
+      expect(() => schema.getType('type3').serialize(invalidTypesMock.type3.data))
         .to.throw(TypeError, 'Digest of wrong type is passed: f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3zf5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3z')
     })
 
     it('should throw error when the value is too long string', function () {
-      expect(() => scheme.getType('type3').serialize(invalidTypesMock['type3-1'].data))
+      expect(() => schema.getType('type3').serialize(invalidTypesMock['type3-1'].data))
         .to.throw(TypeError, 'Digest of wrong type is passed: f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c365')
     })
 
     it('should throw error when the value is too short string', function () {
-      expect(() => scheme.getType('type3').serialize(invalidTypesMock['type3-2'].data))
+      expect(() => schema.getType('type3').serialize(invalidTypesMock['type3-2'].data))
         .to.throw(TypeError, 'Digest of wrong type is passed: f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c3')
     })
 
     it('should throw error when the value of invalid type', function () {
-      expect(() => scheme.getType('type3').serialize({ key: undefined }))
+      expect(() => schema.getType('type3').serialize({ key: undefined }))
         .to.throw(TypeError, 'Field key is not defined.');
 
       [true, null, 57, [], {}, new Date()].forEach(function (key) {
-        expect(() => scheme.getType('type3').serialize({ key: key }))
+        expect(() => schema.getType('type3').serialize({ key: key }))
           .to.throw(TypeError, /Digest of wrong type is passed: /)
       })
     })
@@ -127,7 +127,7 @@ describe('Check built-in types', function () {
 
   describe('Process Timespec', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid timestamp in nanoseconds passed as positive number', function () {
-      const buffer = scheme.getType('type4').serialize(typesMock.type4.data)
+      const buffer = schema.getType('type4').serialize(typesMock.type4.data)
       expect(buffer).to.deep.equal(typesMock.type4.serialized)
     })
 
@@ -144,21 +144,21 @@ describe('Check built-in types', function () {
     })
 
     it('should throw error when the value is negative number', function () {
-      expect(() => scheme.getType('type4').serialize(invalidTypesMock.type4.data))
+      expect(() => schema.getType('type4').serialize(invalidTypesMock.type4.data))
         .to.throw(TypeError, 'Timespec of wrong type is passed: -1483979894237')
     })
 
     it('should throw error when the value is out of range', function () {
-      expect(() => scheme.getType('type4').serialize(invalidTypesMock['type4-1'].data))
+      expect(() => schema.getType('type4').serialize(invalidTypesMock['type4-1'].data))
         .to.throw(TypeError, 'Timespec of wrong type is passed: 18446744073709551616')
     })
 
     it('should throw error when the value of invalid type', function () {
-      expect(() => scheme.getType('type4').serialize({ since: undefined }))
+      expect(() => schema.getType('type4').serialize({ since: undefined }))
         .to.throw(TypeError, 'Field since is not defined.');
 
       [true, null, [], {}, new Date()].forEach(function (since) {
-        expect(() => scheme.getType('type4').serialize({ since: since }))
+        expect(() => schema.getType('type4').serialize({ since: since }))
           .to.throw(TypeError, /Timespec of wrong type is passed: /)
       })
     })
@@ -166,7 +166,7 @@ describe('Check built-in types', function () {
 
   describe('Process Bool', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid positive boolean', function () {
-      const buffer = scheme.getType('type5').serialize(typesMock.type5.data)
+      const buffer = schema.getType('type5').serialize(typesMock.type5.data)
 
       expect(buffer).to.deep.equal(typesMock.type5.serialized)
     })
@@ -184,11 +184,11 @@ describe('Check built-in types', function () {
     })
 
     it('should throw error when the value of invalid type', function () {
-      expect(() => scheme.getType('type5').serialize({ active: undefined }))
+      expect(() => schema.getType('type5').serialize({ active: undefined }))
         .to.throw(TypeError, 'Field active is not defined.');
 
       ['Hello world', null, 57, [], {}, new Date()].forEach(function (active) {
-        expect(() => scheme.getType('type5').serialize({ active: active }))
+        expect(() => schema.getType('type5').serialize({ active: active }))
           .to.throw(TypeError, 'Wrong data type is passed as Boolean. Boolean is required')
       })
     })
@@ -196,16 +196,16 @@ describe('Check built-in types', function () {
 
   describe('Process String', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid string', function () {
-      const buffer = scheme.getType('type6').serialize(typesMock.type6.data)
+      const buffer = schema.getType('type6').serialize(typesMock.type6.data)
       expect(buffer).to.deep.equal(typesMock.type6.serialized)
     })
 
     it('should throw error when the value of invalid type', function () {
-      expect(() => scheme.getType('type6').serialize({ text: undefined }))
+      expect(() => schema.getType('type6').serialize({ text: undefined }))
         .to.throw(TypeError, 'Field text is not defined.');
 
       [true, null, 57, [], {}, new Date()].forEach(function (text) {
-        expect(() => scheme.getType('type6').serialize({ text: text }))
+        expect(() => schema.getType('type6').serialize({ text: text }))
           .to.throw(TypeError, 'Wrong data type is passed as String. String is required')
       })
     })
@@ -213,7 +213,7 @@ describe('Check built-in types', function () {
 
   describe('Process Int8', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid positive number', function () {
-      const buffer = scheme.getType('type7').serialize(typesMock.type7.data)
+      const buffer = schema.getType('type7').serialize(typesMock.type7.data)
 
       expect(buffer).to.deep.equal(typesMock.type7.serialized)
     })
@@ -231,21 +231,21 @@ describe('Check built-in types', function () {
     })
 
     it('should throw error when the value is too big positive number', function () {
-      expect(() => scheme.getType('type7').serialize(invalidTypesMock.type7.data))
+      expect(() => schema.getType('type7').serialize(invalidTypesMock.type7.data))
         .to.throw(TypeError, 'Int8 of wrong type is passed: 130')
     })
 
     it('should throw error when the value is too big negative number', function () {
-      expect(() => scheme.getType('type7').serialize(invalidTypesMock['type7-1'].data))
+      expect(() => schema.getType('type7').serialize(invalidTypesMock['type7-1'].data))
         .to.throw(TypeError, 'Int8 of wrong type is passed: -130')
     })
 
     it('should throw error when the value of invalid type', function () {
-      expect(() => scheme.getType('type7').serialize({ balance: undefined }))
+      expect(() => schema.getType('type7').serialize({ balance: undefined }))
         .to.throw(TypeError, 'Field balance is not defined.');
 
       [true, null, [], {}, new Date()].forEach(function (balance) {
-        expect(() => scheme.getType('type7').serialize({ balance: balance }))
+        expect(() => schema.getType('type7').serialize({ balance: balance }))
           .to.throw(TypeError, /Int8 of wrong type is passed:/)
       })
     })
@@ -253,33 +253,33 @@ describe('Check built-in types', function () {
 
   describe('Process Int16', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid positive number', function () {
-      const buffer = scheme.getType('type8').serialize(typesMock.type8.data)
+      const buffer = schema.getType('type8').serialize(typesMock.type8.data)
       expect(buffer).to.deep.equal(typesMock.type8.serialized)
     })
 
     it('should serialize data and return array of 8-bit integers when the value is valid negative number', function () {
       const data = { balance: -30767 }
-      const buffer = scheme.getType('type8').serialize(data)
+      const buffer = schema.getType('type8').serialize(data)
 
       expect(buffer).to.deep.equal([209, 135])
     })
 
     it('should throw error when the value is too big positive number', function () {
-      expect(() => scheme.getType('type8').serialize(invalidTypesMock.type8.data))
+      expect(() => schema.getType('type8').serialize(invalidTypesMock.type8.data))
         .to.throw(TypeError, 'Int16 of wrong type is passed: 32769')
     })
 
     it('should throw error when the value is too big negative number', function () {
-      expect(() => scheme.getType('type8').serialize(invalidTypesMock['type8-1'].data))
+      expect(() => schema.getType('type8').serialize(invalidTypesMock['type8-1'].data))
         .to.throw(TypeError, 'Int16 of wrong type is passed: -32770')
     })
 
     it('should throw error when the value of invalid type', function () {
-      expect(() => scheme.getType('type8').serialize({ balance: undefined }))
+      expect(() => schema.getType('type8').serialize({ balance: undefined }))
         .to.throw(TypeError, 'Field balance is not defined.');
 
       [true, null, [], {}, new Date()].forEach(function (balance) {
-        expect(() => scheme.getType('type8').serialize({ balance: balance }))
+        expect(() => schema.getType('type8').serialize({ balance: balance }))
           .to.throw(TypeError, /Int16 of wrong type is passed:/)
       })
     })
@@ -287,34 +287,34 @@ describe('Check built-in types', function () {
 
   describe('Process Int32', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid positive number', function () {
-      const buffer = scheme.getType('type9').serialize(typesMock.type9.data)
+      const buffer = schema.getType('type9').serialize(typesMock.type9.data)
 
       expect(buffer).to.deep.equal(typesMock.type9.serialized)
     })
 
     it('should serialize data and return array of 8-bit integers when the value is valid negative number', function () {
       const data = { balance: -1147483648 }
-      const buffer = scheme.getType('type9').serialize(data)
+      const buffer = schema.getType('type9').serialize(data)
 
       expect(buffer).to.deep.equal([0, 202, 154, 187])
     })
 
     it('should throw error when the value is too big positive number', function () {
-      expect(() => scheme.getType('type9').serialize(invalidTypesMock.type9.data))
+      expect(() => schema.getType('type9').serialize(invalidTypesMock.type9.data))
         .to.throw(TypeError, 'Int32 of wrong type is passed: 2147483649')
     })
 
     it('should throw error when the value is too big negative number', function () {
-      expect(() => scheme.getType('type9').serialize(invalidTypesMock['type9-1'].data))
+      expect(() => schema.getType('type9').serialize(invalidTypesMock['type9-1'].data))
         .to.throw(TypeError, 'Int32 of wrong type is passed: -2147483650')
     })
 
     it('should throw error when the value of invalid type', function () {
-      expect(() => scheme.getType('type9').serialize({ balance: undefined }))
+      expect(() => schema.getType('type9').serialize({ balance: undefined }))
         .to.throw(TypeError, 'Field balance is not defined.');
 
       [true, null, [], {}, new Date()].forEach(function (balance) {
-        expect(() => scheme.getType('type9').serialize({ balance: balance }))
+        expect(() => schema.getType('type9').serialize({ balance: balance }))
           .to.throw(TypeError, /Int32 of wrong type is passed:/)
       })
     })
@@ -322,20 +322,20 @@ describe('Check built-in types', function () {
 
   describe('Process Int64', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid positive number', function () {
-      const buffer = scheme.getType('type10').serialize(typesMock.type10.data)
+      const buffer = schema.getType('type10').serialize(typesMock.type10.data)
       expect(buffer).to.deep.equal(typesMock.type10.serialized)
     })
 
     it('should serialize data and return array of 8-bit integers when the value is valid positive number as string', function () {
       const data = { balance: '9223372036854775807' }
-      const buffer = scheme.getType('type10').serialize(data)
+      const buffer = schema.getType('type10').serialize(data)
 
       expect(buffer).to.deep.equal([255, 255, 255, 255, 255, 255, 255, 127])
     })
 
     it('should serialize data and return array of 8-bit integers when the value is valid negative number', function () {
       const data = { balance: -90071992547 }
-      const buffer = scheme.getType('type10').serialize(data)
+      const buffer = schema.getType('type10').serialize(data)
 
       expect(buffer).to.deep.equal([29, 119, 74, 7, 235, 255, 255, 255])
     })
@@ -353,21 +353,21 @@ describe('Check built-in types', function () {
     })
 
     it('should throw error when the value is too big positive number', function () {
-      expect(() => scheme.getType('type10').serialize(invalidTypesMock.type10.data))
+      expect(() => schema.getType('type10').serialize(invalidTypesMock.type10.data))
         .to.throw(TypeError, 'Int64 of wrong type is passed: 9223372036854775808')
     })
 
     it('should throw error when the value is too big negative number', function () {
-      expect(() => scheme.getType('type10').serialize(invalidTypesMock['type10-1'].data))
+      expect(() => schema.getType('type10').serialize(invalidTypesMock['type10-1'].data))
         .to.throw(TypeError, 'Int64 of wrong type is passed: -9223372036854775809')
     })
 
     it('should throw error when the value of invalid type', function () {
-      expect(() => scheme.getType('type10').serialize({ balance: undefined }))
+      expect(() => schema.getType('type10').serialize({ balance: undefined }))
         .to.throw(TypeError, 'Field balance is not defined.');
 
       [true, null, [], {}, new Date()].forEach(function (balance) {
-        expect(() => scheme.getType('type10').serialize({ balance: balance }))
+        expect(() => schema.getType('type10').serialize({ balance: balance }))
           .to.throw(TypeError, /Int64 of wrong type is passed:/)
       })
     })
@@ -375,26 +375,26 @@ describe('Check built-in types', function () {
 
   describe('Process Uint8', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid positive number', function () {
-      const buffer = scheme.getType('type11').serialize(typesMock.type11.data)
+      const buffer = schema.getType('type11').serialize(typesMock.type11.data)
       expect(buffer).to.deep.equal(typesMock.type11.serialized)
     })
 
     it('should throw error when the value is negative number', function () {
-      expect(() => scheme.getType('type11').serialize(invalidTypesMock.type11.data))
+      expect(() => schema.getType('type11').serialize(invalidTypesMock.type11.data))
         .to.throw(TypeError, 'Uint8 of wrong type is passed: -1')
     })
 
     it('should throw error when the value is out of range', function () {
-      expect(() => scheme.getType('type11').serialize(invalidTypesMock['type11-1'].data))
+      expect(() => schema.getType('type11').serialize(invalidTypesMock['type11-1'].data))
         .to.throw(TypeError, 'Uint8 of wrong type is passed: 256')
     })
 
     it('should throw error when the value of invalid type', function () {
-      expect(() => scheme.getType('type11').serialize({ balance: undefined }))
+      expect(() => schema.getType('type11').serialize({ balance: undefined }))
         .to.throw(TypeError, 'Field balance is not defined.');
 
       [true, null, [], {}, new Date()].forEach(function (balance) {
-        expect(() => scheme.getType('type11').serialize({ balance: balance }))
+        expect(() => schema.getType('type11').serialize({ balance: balance }))
           .to.throw(TypeError, /Uint8 of wrong type is passed:/)
       })
     })
@@ -402,26 +402,26 @@ describe('Check built-in types', function () {
 
   describe('Process Uint16', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid positive number', function () {
-      const buffer = scheme.getType('type12').serialize(typesMock.type12.data)
+      const buffer = schema.getType('type12').serialize(typesMock.type12.data)
       expect(buffer).to.deep.equal(typesMock.type12.serialized)
     })
 
     it('should throw error when the value is negative number', function () {
-      expect(() => scheme.getType('type12').serialize(invalidTypesMock.type12.data))
+      expect(() => schema.getType('type12').serialize(invalidTypesMock.type12.data))
         .to.throw(TypeError, 'Uint16 of wrong type is passed: -1')
     })
 
     it('should throw error when the value is out of range', function () {
-      expect(() => scheme.getType('type12').serialize(invalidTypesMock['type12-1'].data))
+      expect(() => schema.getType('type12').serialize(invalidTypesMock['type12-1'].data))
         .to.throw(TypeError, 'Uint16 of wrong type is passed: 65536')
     })
 
     it('should throw error when the value of invalid type', function () {
-      expect(() => scheme.getType('type12').serialize({ balance: undefined }))
+      expect(() => schema.getType('type12').serialize({ balance: undefined }))
         .to.throw(TypeError, 'Field balance is not defined.');
 
       [true, null, [], {}, new Date()].forEach(function (balance) {
-        expect(() => scheme.getType('type12').serialize({ balance: balance }))
+        expect(() => schema.getType('type12').serialize({ balance: balance }))
           .to.throw(TypeError, /Uint16 of wrong type is passed:/)
       })
     })
@@ -429,26 +429,26 @@ describe('Check built-in types', function () {
 
   describe('Process Uint32', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid positive number', function () {
-      const buffer = scheme.getType('type13').serialize(typesMock.type13.data)
+      const buffer = schema.getType('type13').serialize(typesMock.type13.data)
       expect(buffer).to.deep.equal(typesMock.type13.serialized)
     })
 
     it('should throw error when the value is negative number', function () {
-      expect(() => scheme.getType('type13').serialize(invalidTypesMock.type13.data))
+      expect(() => schema.getType('type13').serialize(invalidTypesMock.type13.data))
         .to.throw(TypeError, 'Uint32 of wrong type is passed: -1')
     })
 
     it('should throw error when the value is out of range', function () {
-      expect(() => scheme.getType('type13').serialize(invalidTypesMock['type13-1'].data))
+      expect(() => schema.getType('type13').serialize(invalidTypesMock['type13-1'].data))
         .to.throw(TypeError, 'Uint32 of wrong type is passed: 4294967296')
     })
 
     it('should throw error when the value of invalid type', function () {
-      expect(() => scheme.getType('type13').serialize({ balance: undefined }))
+      expect(() => schema.getType('type13').serialize({ balance: undefined }))
         .to.throw(TypeError, 'Field balance is not defined.');
 
       [true, null, [], {}, new Date()].forEach(function (balance) {
-        expect(() => scheme.getType('type13').serialize({ balance: balance }))
+        expect(() => schema.getType('type13').serialize({ balance: balance }))
           .to.throw(TypeError, /Uint32 of wrong type is passed:/)
       })
     })
@@ -456,7 +456,7 @@ describe('Check built-in types', function () {
 
   describe('Process Uint64', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid positive number', function () {
-      const buffer = scheme.getType('type14').serialize(typesMock.type14.data)
+      const buffer = schema.getType('type14').serialize(typesMock.type14.data)
       expect(buffer).to.deep.equal(typesMock.type14.serialized)
     })
 
@@ -473,21 +473,21 @@ describe('Check built-in types', function () {
     })
 
     it('should throw error when the value is negative number', function () {
-      expect(() => scheme.getType('type14').serialize(invalidTypesMock.type14.data))
+      expect(() => schema.getType('type14').serialize(invalidTypesMock.type14.data))
         .to.throw(TypeError, 'Uint64 of wrong type is passed: -613228')
     })
 
     it('should throw error when the value is out of range', function () {
-      expect(() => scheme.getType('type14').serialize(invalidTypesMock['type14-1'].data))
+      expect(() => schema.getType('type14').serialize(invalidTypesMock['type14-1'].data))
         .to.throw(TypeError, 'Uint64 of wrong type is passed: 18446744073709551616')
     })
 
     it('should throw error when the value of invalid type', function () {
-      expect(() => scheme.getType('type14').serialize({ balance: undefined }))
+      expect(() => schema.getType('type14').serialize({ balance: undefined }))
         .to.throw(TypeError, 'Field balance is not defined.');
 
       [true, null, [], {}, new Date()].forEach(function (balance) {
-        expect(() => scheme.getType('type14').serialize({ balance: balance }))
+        expect(() => schema.getType('type14').serialize({ balance: balance }))
           .to.throw(TypeError, /Uint64 of wrong type is passed:/)
       })
     })
@@ -495,37 +495,37 @@ describe('Check built-in types', function () {
 
   describe('Process Float32', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid positive number', function () {
-      const buffer = scheme.getType('type16').serialize(typesMock.type16.data)
+      const buffer = schema.getType('type16').serialize(typesMock.type16.data)
       expect(buffer).to.deep.equal(typesMock.type16.serialized)
     })
 
     it('should serialize data and return array of 8-bit integers when the value is valid positive number as string', function () {
       const data = { balance: '340282350000000000000000000000000000000.0' }
-      const buffer = scheme.getType('type16').serialize(data)
+      const buffer = schema.getType('type16').serialize(data)
 
       expect(buffer).to.deep.equal([255, 255, 127, 127])
     })
 
     it('should serialize data and return array of 8-bit integers when the value is valid negative number', function () {
       const data = { balance: -1234.567 }
-      const buffer = scheme.getType('type16').serialize(data)
+      const buffer = schema.getType('type16').serialize(data)
 
       expect(buffer).to.deep.equal([37, 82, 154, 196])
     })
 
     it('should serialize data and return array of 8-bit integers when the value is valid negative number as string', function () {
       const data = { balance: '-340282350000000000000000000000000000000.0' }
-      const buffer = scheme.getType('type16').serialize(data)
+      const buffer = schema.getType('type16').serialize(data)
 
       expect(buffer).to.deep.equal([255, 255, 127, 255])
     })
 
     it('should throw error when the value of invalid type', function () {
-      expect(() => scheme.getType('type16').serialize({ balance: undefined }))
+      expect(() => schema.getType('type16').serialize({ balance: undefined }))
         .to.throw(TypeError, 'Field balance is not defined.');
 
       [true, null, [], {}, new Date()].forEach(function (balance) {
-        expect(() => scheme.getType('type16').serialize({ balance: balance }))
+        expect(() => schema.getType('type16').serialize({ balance: balance }))
           .to.throw(TypeError, /Float32 of wrong type is passed:/)
       })
     })
@@ -533,37 +533,37 @@ describe('Check built-in types', function () {
 
   describe('Process Float64', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid positive number', function () {
-      const buffer = scheme.getType('type17').serialize(typesMock.type17.data)
+      const buffer = schema.getType('type17').serialize(typesMock.type17.data)
       expect(buffer).to.deep.equal(typesMock.type17.serialized)
     })
 
     it('should serialize data and return array of 8-bit integers when the value is valid positive number as string', function () {
       const data = { balance: '179769313486231570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.0' }
-      const buffer = scheme.getType('type17').serialize(data)
+      const buffer = schema.getType('type17').serialize(data)
 
       expect(buffer).to.deep.equal([255, 255, 255, 255, 255, 255, 239, 127])
     })
 
     it('should serialize data and return array of 8-bit integers when the value is valid negative number', function () {
       const data = { balance: -98765.4321 }
-      const buffer = scheme.getType('type17').serialize(data)
+      const buffer = schema.getType('type17').serialize(data)
 
       expect(buffer).to.deep.equal([138, 176, 225, 233, 214, 28, 248, 192])
     })
 
     it('should serialize data and return array of 8-bit integers when the value is valid negative number as string', function () {
       const data = { balance: '-179769313486231570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.0' }
-      const buffer = scheme.getType('type17').serialize(data)
+      const buffer = schema.getType('type17').serialize(data)
 
       expect(buffer).to.deep.equal([255, 255, 255, 255, 255, 255, 239, 255])
     })
 
     it('should throw error when the value of invalid type', function () {
-      expect(() => scheme.getType('type17').serialize({ balance: undefined }))
+      expect(() => schema.getType('type17').serialize({ balance: undefined }))
         .to.throw(TypeError, 'Field balance is not defined.');
 
       [true, null, [], {}, new Date()].forEach(function (balance) {
-        expect(() => scheme.getType('type17').serialize({ balance: balance }))
+        expect(() => schema.getType('type17').serialize({ balance: balance }))
           .to.throw(TypeError, /Float64 of wrong type is passed:/)
       })
     })
@@ -571,7 +571,7 @@ describe('Check built-in types', function () {
 
   describe('Process Array', function () {
     it('should serialize valid array of Hash type and return array of 8-bit integers', function () {
-      let buffer = scheme.getType('type15-2').serialize(typesMock.type15.data)
+      let buffer = schema.getType('type15-2').serialize(typesMock.type15.data)
       expect(buffer).to.deep.equal(typesMock.type15.serialized)
     })
 
@@ -991,41 +991,41 @@ describe('Check built-in types', function () {
 
   describe('Process Uuid', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid hexadecimal string', function () {
-      const buffer = scheme.getType('type18').serialize(typesMock['type18-1'].data)
+      const buffer = schema.getType('type18').serialize(typesMock['type18-1'].data)
       expect(buffer).to.deep.equal(typesMock['type18-1'].serialized)
     })
 
     it('should serialize data and return array of 8-bit integers when the value is valid hexadecimal string with dashes', function () {
-      const buffer = scheme.getType('type18').serialize(typesMock['type18-2'].data)
+      const buffer = schema.getType('type18').serialize(typesMock['type18-2'].data)
       expect(buffer).to.deep.equal(typesMock['type18-2'].serialized)
     })
 
     it('should throw error when the value is too short string', function () {
-      expect(() => scheme.getType('type18').serialize(invalidTypesMock['type18-1'].data))
+      expect(() => schema.getType('type18').serialize(invalidTypesMock['type18-1'].data))
         .to.throw(TypeError, 'Uuid of wrong type is passed: f5864ab6a5a219')
     })
 
     it('should throw error when the value is too long string', function () {
-      expect(() => scheme.getType('type18').serialize(invalidTypesMock['type18-2'].data))
+      expect(() => schema.getType('type18').serialize(invalidTypesMock['type18-2'].data))
         .to.throw(TypeError, 'Uuid of wrong type is passed: f5864ab6a5a2190666b47c676bcf15a1f2f07')
     })
 
     it('should throw error when the value is invalid string', function () {
-      expect(() => scheme.getType('type18').serialize(invalidTypesMock['type18-3'].data))
+      expect(() => schema.getType('type18').serialize(invalidTypesMock['type18-3'].data))
         .to.throw(TypeError, 'Uuid of wrong type is passed: OIf5864ab6a5a2190666b47c676bcf1')
     })
 
     it('should throw error when the value has wrong delimiters', function () {
-      expect(() => scheme.getType('type18').serialize(invalidTypesMock['type18-4'].data))
+      expect(() => schema.getType('type18').serialize(invalidTypesMock['type18-4'].data))
         .to.throw(TypeError, 'Uuid of wrong type is passed: f5864ab6+a5a2+1906+66b4+7c676bcf15a')
     })
 
     it('should throw error when the value of invalid type', function () {
-      expect(() => scheme.getType('type18').serialize({ uuid: undefined }))
+      expect(() => schema.getType('type18').serialize({ uuid: undefined }))
         .to.throw(TypeError, 'Field uuid is not defined.');
 
       [true, null, 57, [], {}, new Date()].forEach(function (uuid) {
-        expect(() => scheme.getType('type18').serialize({ uuid: uuid }))
+        expect(() => schema.getType('type18').serialize({ uuid: uuid }))
           .to.throw(TypeError, /Uuid of wrong type is passed:/)
       })
     })
@@ -1033,59 +1033,59 @@ describe('Check built-in types', function () {
 
   describe('Process Decimal', function () {
     it('should serialize data and return array of 16-bit integers when the value is valid', function () {
-      const buffer = scheme.getType('type19').serialize(typesMock['type19-1'].data)
+      const buffer = schema.getType('type19').serialize(typesMock['type19-1'].data)
 
       expect(buffer).to.deep.equal(typesMock['type19-1'].serialized)
     })
 
     it('should serialize data and return array of 16-bit integers when the value is valid', function () {
-      const buffer = scheme.getType('type19').serialize(typesMock['type19-2'].data)
+      const buffer = schema.getType('type19').serialize(typesMock['type19-2'].data)
 
       expect(buffer).to.deep.equal(typesMock['type19-2'].serialized)
     })
 
     it('should serialize data and return array of 16-bit integers when the value is valid', function () {
-      const buffer = scheme.getType('type19').serialize(typesMock['type19-3'].data)
+      const buffer = schema.getType('type19').serialize(typesMock['type19-3'].data)
 
       expect(buffer).to.deep.equal(typesMock['type19-3'].serialized)
     })
 
     it('should serialize data and return array of 16-bit integers when the value is valid', function () {
-      const buffer = scheme.getType('type19').serialize(typesMock['type19-4'].data)
+      const buffer = schema.getType('type19').serialize(typesMock['type19-4'].data)
 
       expect(buffer).to.deep.equal(typesMock['type19-4'].serialized)
     })
 
     it('should serialize data and return array of 16-bit integers when the value is valid', function () {
-      const buffer = scheme.getType('type19').serialize(typesMock['type19-5'].data)
+      const buffer = schema.getType('type19').serialize(typesMock['type19-5'].data)
 
       expect(buffer).to.deep.equal(typesMock['type19-5'].serialized)
     })
 
     it('should serialize data and return array of 16-bit integers when the value is valid', function () {
-      const buffer = scheme.getType('type19').serialize(typesMock['type19-6'].data)
+      const buffer = schema.getType('type19').serialize(typesMock['type19-6'].data)
 
       expect(buffer).to.deep.equal(typesMock['type19-6'].serialized)
     })
 
     it('should serialize data and return array of 16-bit integers when the value is valid', function () {
-      const buffer = scheme.getType('type19').serialize(typesMock['type19-7'].data)
+      const buffer = schema.getType('type19').serialize(typesMock['type19-7'].data)
 
       expect(buffer).to.deep.equal(typesMock['type19-7'].serialized)
     })
 
     it('should throw error when the value of invalid type', function () {
-      expect(() => scheme.getType('type19').serialize({ balance: undefined }))
+      expect(() => schema.getType('type19').serialize({ balance: undefined }))
         .to.throw(TypeError, 'Field balance is not defined.');
 
       [true, null, [], {}, new Date()].forEach(function (balance) {
-        expect(() => scheme.getType('type19').serialize({ balance: balance }))
+        expect(() => schema.getType('type19').serialize({ balance: balance }))
           .to.throw(TypeError, /Wrong data type is passed as String. String is required/)
       })
     })
 
     it('should throw error when the value more than max', function () {
-      expect(() => scheme.getType('type19').serialize(typesMock['type19-8'].data)).to.throw(TypeError, 'Decimal value is out of range')
+      expect(() => schema.getType('type19').serialize(typesMock['type19-8'].data)).to.throw(TypeError, 'Decimal value is out of range')
     })
   })
 })
