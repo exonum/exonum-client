@@ -26,6 +26,13 @@ describe('Serialize data into array of 8-bit integers', function () {
     expect(buffer).to.deep.equal(serializationMock.userArray.serialized)
   })
 
+  it('should serialize data of simple array and return array of 8-bit integers', function () {
+    // console.log(schema.getType('addSimpleArray').fields[0].type.type.fields)
+    const buffer = schema.getType('addSimpleArray').serialize(serializationMock.simpleArray2.data)
+    // console.log(buffer)
+    expect(buffer).to.deep.equal(serializationMock.simpleArray2.serialized)
+  })
+
   it('should serialize data of complicated non-fixed newType type and return array of 8-bit integers', function () {
     const buffer = schema.getType('transaction').serialize(serializationMock.transactionData.data)
 
