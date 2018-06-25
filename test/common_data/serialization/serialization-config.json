@@ -180,6 +180,40 @@
       }
     ]
   },
+  "listItem": {
+    "fields": [
+      {
+        "name": "value",
+        "type": "String"
+      }
+    ]
+  },
+  "simpleListArray3": {
+    "as": "array",
+    "type": "listItem"
+  },
+  "simpleListArray2": {
+    "as": "type",
+    "fields": [
+      {
+        "name": "list",
+        "type": "simpleListArray3"
+      }
+    ]
+  },
+  "simpleListArray1": {
+    "as": "array",
+    "type": "simpleListArray2"
+  },
+  "addSimpleArray": {
+    "as": "type",
+    "fields": [
+      {
+        "name": "list",
+        "type": "simpleListArray1"
+      }
+    ]
+  },
   "addUser": {
     "as": "message",
     "protocol_version": 0,
