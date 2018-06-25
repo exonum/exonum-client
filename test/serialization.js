@@ -28,7 +28,7 @@ describe('Serialize data into array of 8-bit integers', function () {
 
   it('should serialize data of simple array and return array of 8-bit integers', function () {
     const buffer = schema.getType('addSimpleArray').serialize(serializationMock.simpleArray2.data)
-    
+
     expect(buffer).to.deep.equal(serializationMock.simpleArray2.serialized)
   })
 
