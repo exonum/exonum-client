@@ -79,7 +79,7 @@ export function serialize (buffer, shift, data, type, isTransactionBody) {
       throw new TypeError('Array of String types is not supported.')
     }
 
-    Uint32.serialize(buffer.length, buffer, from) // start index
+    Uint32.serialize(buffer.length - shift, buffer, from) // start index
     Uint32.serialize(data.length, buffer, from + 4) // array length
 
     if (isInstanceofOfNewType(type.type)) {
@@ -123,8 +123,7 @@ export function serialize (buffer, shift, data, type, isTransactionBody) {
     }
 
     const from = shift + localShift
-
-    const nestedShift = (isTransactionBody === true) ? 0 : shift
+    let nestedShift = (isTransactionBody === true) ? 0 : shift
 
     if (isInstanceofOfNewType(field.type)) {
       buffer = serializeInstanceofOfNewType(buffer, nestedShift, from, value, field.type)
