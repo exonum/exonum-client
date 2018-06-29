@@ -62,7 +62,7 @@
     "preintegration:unix": "npm run integration:build && npm run postintegration:unix && cargo run --manifest-path integration-tests/Cargo.toml & sleep 10",
     "integration:unix": "mocha -r babel-register integration-tests/test.js",
     "postintegration:unix": "lsof -iTCP -sTCP:LISTEN -n -P 2>/dev/null | awk '{ if ($9 ~ /:8000$/) { print $2 } }' | xargs -r kill -KILL",
-    "coveralls": "cross-env NODE_ENV=test/source nyc mocha && cat ./coverage/lcov.info | coveralls",
+    "coveralls": "cross-env NODE_ENV=test/sources nyc mocha && cat ./coverage/lcov.info | coveralls",
     "prepare": "grunt compile",
     "lint": "eslint ./src ./test",
     "lint:fix": "npm run lint -- --fix"
