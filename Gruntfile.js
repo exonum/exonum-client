@@ -1,4 +1,4 @@
-module.exports = function (grunt) {
+omodule.exports = function (grunt) {
   require('load-grunt-tasks')(grunt)
 
   grunt.initConfig({
@@ -59,25 +59,15 @@ module.exports = function (grunt) {
       }
     },
     mochaTest: {
-      test: {
-        options: {
-          reporter: 'spec',
-          require: ['babel-register']
-        },
-        src: ['./test/**/*.js']
+      options: {
+        reporter: 'spec',
+        require: ['babel-register']
       },
-      source: {
-        options: {
-          reporter: 'spec',
-          require: ['babel-register']
-        },
-        src: ['./test/source/**/*.js']
-      }
+      src: ['./test/sources/**/*.js']
     }
   })
 
   grunt.registerTask('compile', ['eslint', 'clean', 'babel', 'replace', 'browserify', 'uglify'])
   grunt.registerTask('test', ['eslint:tests', 'mochaTest:test'])
-  grunt.registerTask('test-source', ['eslint:tests', 'mochaTest:source'])
   grunt.registerTask('default', ['compile', 'test'])
 }
