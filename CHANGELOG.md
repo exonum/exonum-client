@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.10.2 (Jun 29, 2018)
+
+* Rework version import to fix library babelify using webpack. #112
+
 ## 0.10.1 (Jun 25, 2018)
 
 * Fix serialization of custom data types of 2 and more nesting level. #110
