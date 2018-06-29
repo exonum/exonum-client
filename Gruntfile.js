@@ -68,6 +68,6 @@ module.exports = function (grunt) {
   })
 
   grunt.registerTask('compile', ['eslint', 'clean', 'babel', 'replace', 'browserify', 'uglify'])
-  grunt.registerTask('test', ['eslint:tests', 'mochaTest:test'])
+  grunt.registerTask('test', ['eslint:tests', 'mochaTest'])
   grunt.registerTask('default', ['compile', 'test'])
 }
