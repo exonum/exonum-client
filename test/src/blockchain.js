@@ -4,7 +4,7 @@
 const expect = require('chai').expect
 const MockAdapter = require('axios-mock-adapter')
 const axios = require('axios')
-const Exonum = require('../src')
+const Exonum = require('../../src')
 
 const mock = new MockAdapter(axios)
 

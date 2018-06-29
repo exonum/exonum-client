@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-expressions */
 
 const expect = require('chai').expect
-const Exonum = require('../src')
+const Exonum = require('../../src')
 
 describe('Examples from README.md', function () {
   describe('Custom type section', function () {

@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-expressions */
 
 const expect = require('chai').expect
-const Exonum = require('../src')
+const Exonum = require('../../src')
 const DataSchema = require('./data_schema/dataSchema').default
 const cryptographyMock = require('./common_data/serialization/cryptography.json')
 const invalidCryptographyMock = require('./common_data/serialization/cryptography-invalid.json')
