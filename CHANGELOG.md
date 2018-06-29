@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.10.1 (Jun 25, 2018)
+
+* Fix serialization of custom data types of 2 and more nesting level. #110
+
 ## 0.10.0 (Jun 20, 2018)
 
 * Add serialization support of decimal type (`Decimal`). #108
