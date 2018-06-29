@@ -56,7 +56,7 @@
     "nyc": "^11.7.1"
   },
   "scripts": {
-    "test": "grunt test-src",
+    "test": "grunt test-sorce",
     "integration:build": "cargo build --manifest-path integration-tests/Cargo.toml",
     "integration": "mocha -r babel-register integration-tests/test.js",
     "preintegration:unix": "npm run integration:build && npm run postintegration:unix && cargo run --manifest-path integration-tests/Cargo.toml & sleep 10",

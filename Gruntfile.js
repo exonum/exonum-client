@@ -9,9 +9,6 @@ module.exports = function (grunt) {
       },
       tests: {
         src: ['./test/**/*.js']
-      },
-      testsSrc: {
-        src: ['./test/src/**/*.js']
       }
     },
     clean: {
@@ -69,18 +66,18 @@ module.exports = function (grunt) {
         },
         src: ['./test/**/*.js']
       },
-      src: {
+      source: {
         options: {
           reporter: 'spec',
           require: ['babel-register']
         },
-        src: ['./test/src/**/*.js']
+        src: ['./test/source/**/*.js']
       }
     }
   })
 
   grunt.registerTask('compile', ['eslint', 'clean', 'babel', 'replace', 'browserify', 'uglify'])
   grunt.registerTask('test', ['eslint:tests', 'mochaTest:test'])
-  grunt.registerTask('test-src', ['eslint:testsSrc', 'mochaTest:src'])
+  grunt.registerTask('test-sorce', ['eslint:tests', 'mochaTest:source'])
   grunt.registerTask('default', ['compile', 'test'])
 }
