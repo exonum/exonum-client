@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-expressions */
 
 const expect = require('chai').expect
-const Exonum = require('../src')
+const Exonum = require('../../src')
 
 describe('Check proof of Merkle tree', function () {
   it('should return array of children of valid tree', function () {

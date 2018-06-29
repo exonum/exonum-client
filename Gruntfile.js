@@ -37,6 +37,21 @@ module.exports = function (grunt) {
         dest: './dist/<%= pkg.name %>.js'
       }
     },
+    replace: {
+      dist: {
+        options: {
+          patterns: [
+            {
+              match: 'version',
+              replacement: '<%= pkg.version %>'
+            }
+          ]
+        },
+        files: [
+          { src: ['./lib/index.js'], dest: './lib/index.js' }
+        ]
+      }
+    },
     uglify: {
       dist: {
         src: './dist/<%= pkg.name %>.js',
@@ -44,15 +59,24 @@ module.exports = function (grunt) {
       }
     },
     mochaTest: {
-      options: {
-        reporter: 'spec',
-        require: ['babel-register']
+      dist: {
+        options: {
+          reporter: 'spec',
+          require: ['babel-register']
+        },
+        src: ['./test/sources/**/*.js']
       },
-      src: ['./test/**/*.js']
+      all: {
+        options: {
+          reporter: 'spec',
+          require: ['babel-register']
+        },
+        src: ['./test/**/*.js']
+      }
     }
   })
 
-  grunt.registerTask('compile', ['eslint', 'clean', 'babel', 'browserify', 'uglify'])
+  grunt.registerTask('compile', ['eslint', 'clean', 'babel', 'replace', 'browserify', 'uglify'])
   grunt.registerTask('test', ['eslint:tests', 'mochaTest'])
-  grunt.registerTask('default', ['compile', 'test'])
+  grunt.registerTask('default', ['compile', 'eslint:tests', 'mochaTest:all'])
 }

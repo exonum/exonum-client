@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-expressions */
 
 const expect = require('chai').expect
-const Exonum = require('../src')
+const Exonum = require('../../src')
 
 describe('Convert data from one type to another', function () {
   describe('Check Exonum.hexadecimalToUint8Array', function () {
