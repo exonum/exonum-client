@@ -8,7 +8,6 @@ const data = {
     height: '4',
     prev_hash: '2e933eba2887a1d9bb38c396577be23db58ea5f414761f6dda939d660b323140',
     proposer_id: 0,
-    schema_version: 0,
     state_hash: 'da5ae8362137d3e4acae0917e30388959b6d2a91760d25bb5eca832b449550ce',
     tx_count: 1,
     tx_hash: '759de4b2df16488e1c13c20cb9a356487204abcedd97177f2fe773c187beb29e'

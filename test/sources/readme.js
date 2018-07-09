@@ -161,73 +161,72 @@ describe('Examples from README.md', function () {
     it('should verify a block', function () {
       const data = {
         block: {
-          height: '4',
-          prev_hash: '2e933eba2887a1d9bb38c396577be23db58ea5f414761f6dda939d660b323140',
+          height: '171',
+          prev_hash: '7312470bbfed9a5df2cdd5a4dfca5e26cbc14fbde1a22ca9de14b56d653309be',
           proposer_id: 0,
-          schema_version: 0,
-          state_hash: 'da5ae8362137d3e4acae0917e30388959b6d2a91760d25bb5eca832b449550ce',
-          tx_count: 1,
-          tx_hash: '759de4b2df16488e1c13c20cb9a356487204abcedd97177f2fe773c187beb29e'
+          state_hash: '5fb7f245684709df9163dbe0d5b9cbfadadbda0c1133147356e355c8e46eceb4',
+          tx_count: 4,
+          tx_hash: 'a54d5ee4ee1a382e2d124e4d2f393226528b08368af5e2264eef991dee4ab379'
         },
         precommits: [
           {
             body: {
-              block_hash: '1a1b6bf4c9f7543809e1011b1d5e4ad0b76eab14924d8ff00ba1a79f0466ce6b',
-              height: '4',
-              propose_hash: '878165361bb6b207ca75cac83e2817b34564a9b5115128b21f4f89f729d60769',
-              round: 4,
+              block_hash: '08ca6f2da642e26c883010d12ef64df0638974863201e213af3d73a9f3c4733d',
+              height: '171',
+              propose_hash: '84da70e66af5c4e8eb7f4b76e7f10b637feffeb0b71ef0906eed4c969e38254c',
+              round: 1,
               time: {
-                nanos: 804000000,
-                secs: '1486720350'
+                nanos: 160188000,
+                secs: '1531146090'
               },
               validator: 0
             },
             message_id: 4,
             protocol_version: 0,
             service_id: 0,
-            signature: 'f69f1cd9bd8dfd822a923f427556842b2cb194b75fc437248a6260f218e0d188911c1ef4616db3edcda78176d8d56273417439a1824a90e5df16775edb8dd608'
+            signature: '672d9e1b3fb5e39f27a9c4d51b073f9e77a9ece054374ef63160e7b892d74c5b92b03241399b0e7284de87bf43c0a9fa2d37cd1606eef3ad5065ec563a814a02'
           },
           {
             body: {
-              block_hash: '1a1b6bf4c9f7543809e1011b1d5e4ad0b76eab14924d8ff00ba1a79f0466ce6b',
-              height: '4',
-              propose_hash: '878165361bb6b207ca75cac83e2817b34564a9b5115128b21f4f89f729d60769',
-              round: 4,
+              block_hash: '08ca6f2da642e26c883010d12ef64df0638974863201e213af3d73a9f3c4733d',
+              height: '171',
+              propose_hash: '84da70e66af5c4e8eb7f4b76e7f10b637feffeb0b71ef0906eed4c969e38254c',
+              round: 1,
               time: {
-                nanos: 804000000,
-                secs: '1486720350'
-              },
-              validator: 1
-            },
-            message_id: 4,
-            protocol_version: 0,
-            service_id: 0,
-            signature: '0660b18a35e6e9ee2a9f9447a2362a1e498314843aa8ddb838a81112dd2b290ff54cdd089a1877a82c3505b7376dc91e7e0d0f9a1150064ce1199a12845d560b'
-          },
-          {
-            body: {
-              block_hash: '1a1b6bf4c9f7543809e1011b1d5e4ad0b76eab14924d8ff00ba1a79f0466ce6b',
-              height: '4',
-              propose_hash: '878165361bb6b207ca75cac83e2817b34564a9b5115128b21f4f89f729d60769',
-              round: 4,
-              time: {
-                nanos: 804000000,
-                secs: '1486720350'
+                nanos: 160165000,
+                secs: '1531146090'
               },
               validator: 2
             },
             message_id: 4,
             protocol_version: 0,
             service_id: 0,
-            signature: '02e26fac66f7e6fd9013f34832d53f7bbf928bd5824900594f8a247d4f4ec5f84c77420dd2bb98ebbf0910e48539d3abd9b57be70f15ca5ceccb85a92d41270a'
+            signature: 'd4ae174c6d64a3e689e2b99507688e7cbef3f6d0a6076ff0e613a913a642e282ec1dc4bde6f43bc0463b3425a559a7454c1d7f76709569b77dbb3f1f93b95805'
+          },
+          {
+            body: {
+              block_hash: '08ca6f2da642e26c883010d12ef64df0638974863201e213af3d73a9f3c4733d',
+              height: '171',
+              propose_hash: '84da70e66af5c4e8eb7f4b76e7f10b637feffeb0b71ef0906eed4c969e38254c',
+              round: 1,
+              time: {
+                nanos: 160267000,
+                secs: '1531146090'
+              },
+              validator: 3
+            },
+            message_id: 4,
+            protocol_version: 0,
+            service_id: 0,
+            signature: '466836a761c7b08cd01f867153328054f0aea8e417bb8acd554ec74d0364e99677959bfdeb519ab4c7e25dbb87d7fb933411c8894d59a40b80e992101d02370a'
           }
         ]
       }
       const validators = [
-        '0b513ad9b4924015ca0902ed079044d3ac5dbec2306f06948c10da8eb6e39f2d',
-        '91a28a0b74381593a4d9469579208926afc8ad82c8839b7644359b9eba9a4b3a',
-        '5c9c6df261c9cb840475776aaefcd944b405328fab28f9b3a95ef40490d3de84',
-        '66cd608b928b88e50e0efeaa33faf1c43cefe07294b0b87e9fe0aba6a3cf7633'
+        '3af676455d2f6ae08c21c61d48523be3e293b4b2c062b1754ae1fe63b066687d',
+        '5831dfb1ed7546fd64ab33a53d78478722ee4a66bb8323fd45eaabe2c50703aa',
+        '8b2d61a718a75e432fa581cc9781e24c82073994549e7f7126cb0ac9d55d554a',
+        'ccf74bf9423b0253e223a17ecfdc852d46665b74ab36b05d4f4fe9c651c57e6d'
       ]
       const networkId = 0
 
