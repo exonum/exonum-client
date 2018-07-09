@@ -1,9 +1,14 @@
 # Changelog
 
+## 0.11.1 (Jul 10, 2018)
+
+* Updated examples of explorer API. #114
+New web API based on `actix-web` implemented in Exonum core [Unreleased](https://github.com/exonum/exonum/blob/master/CHANGELOG.md#unreleased).
+
 ## 0.11.0 (Jul 9, 2018)
 
 * Remove field `schema_version` from `Block` structure. #115
-Field is removed in Exonum core at #90.
+Field is removed in Exonum core [Unreleased](https://github.com/exonum/exonum/blob/master/CHANGELOG.md#unreleased).
 
 ## 0.10.2 (Jun 29, 2018)
 

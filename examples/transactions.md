@@ -172,7 +172,7 @@ let sendFunds = Exonum.newMessage({
 const transactionEndpoint = 'http://127.0.0.1:8200/api/services/cryptocurrency/v1/wallets'
 
 // Define transaction explorer address
-const explorerBasePath = 'http://127.0.0.1:8200/api/explorer/v1/transactions/'
+const explorerBasePath = 'http://127.0.0.1:8200/api/explorer/v1/transactions?hash='
 
 // Data
 const data = {
@@ -216,7 +216,7 @@ let sendFunds = Exonum.newMessage({
 const transactionEndpoint = 'http://127.0.0.1:8200/api/services/cryptocurrency/v1/wallets'
 
 // Define transaction explorer address
-const explorerBasePath = 'http://127.0.0.1:8200/api/explorer/v1/transactions/'
+const explorerBasePath = 'http://127.0.0.1:8200/api/explorer/v1/transactions?hash='
 
 // Data
 const transactions = [
