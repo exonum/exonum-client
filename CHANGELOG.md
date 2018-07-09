@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.11.0 (Jul 9, 2018)
+
+* Remove field `schema_version` from `Block` structure. #115
+Field is removed in Exonum core at #90.
+
 ## 0.10.2 (Jun 29, 2018)
 
 * Rework version import to fix library babelify using webpack. #112

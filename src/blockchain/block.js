@@ -11,7 +11,6 @@ const CORE_SERVICE_ID = 0
 const PRECOMMIT_MESSAGE_ID = 4
 const Block = newType({
   fields: [
-    { name: 'schema_version', type: primitive.Uint16 },
     { name: 'proposer_id', type: primitive.Uint16 },
     { name: 'height', type: primitive.Uint64 },
     { name: 'tx_count', type: primitive.Uint32 },
