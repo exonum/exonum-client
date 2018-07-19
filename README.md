@@ -55,6 +55,7 @@ Contains numerous helper functions.
   * [Coding standards](#coding-standards)
   * [Test coverage](#test-coverage)
 * [Changelog](#changelog)
+* [Compatibility with core](#compatibility-with-core)
 * [License](#license)
 
 ## Getting started
@@ -784,6 +785,19 @@ This applies to both of adding new features and fixing existed bugs.
 
 Detailed changes for each release are documented in the [CHANGELOG](CHANGELOG.md) file.
 Use it to check compatibility with Exonum core.
+
+## Compatibility with core
+
+| JavaScript Light client | Exonum core |
+|---|---|
+| 0.11.1 | 0.8.* |
+| 0.9.0 | 0.7.* |
+| 0.6.1 | 0.6.* |
+| 0.6.1 | 0.5.* |
+| 0.3.0 | 0.4.0 |
+| 0.3.0 | 0.3.0 |
+| 0.2.0 | 0.2.0 |
+| 0.1.1 | 0.1.* |
 
 ## License
 
