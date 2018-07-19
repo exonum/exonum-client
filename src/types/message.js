@@ -113,10 +113,12 @@ class NewMessage {
    * @param {string} explorerBasePath
    * @param {Object} data
    * @param {string} signature
+   * @param {number} timeout
+   * @param {number} attempts
    * @returns {Promise}
    */
-  send (transactionEndpoint, explorerBasePath, data, signature) {
-    return send(transactionEndpoint, explorerBasePath, data, signature, this)
+  send (transactionEndpoint, explorerBasePath, data, signature, timeout, attempts) {
+    return send(transactionEndpoint, explorerBasePath, data, signature, this, timeout, attempts)
   }
 }
 

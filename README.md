@@ -536,9 +536,9 @@ To submit transaction to the blockchain `send` function can be used.
 There are two possible signatures of the `send` function:
 
 ```javascript
-Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds)
+Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds, timeout, attempts)
 
-sendFunds.send(transactionEndpoint, explorerBasePath, data, signature)
+sendFunds.send(transactionEndpoint, explorerBasePath, data, signature, timeout, attempts)
 ```
 
 | Property | Description | Type |
@@ -548,6 +548,8 @@ sendFunds.send(transactionEndpoint, explorerBasePath, data, signature)
 | **data** | Data that has been signed. | `Object` |
 | **signature** | Signature as hexadecimal string. | `String` |
 | **type** | Definition of the transaction. | [Transaction](#define-transaction). |
+| **timeout** | Timeout between attempts to check transaction status. *Optional. Default value is `500`.* | `Number` |
+| **attempts** | Number of attempts to check transaction status. *Optional. Default value is `10`.* | `Number` |
 
 The `send` function returns value of `Promise` type.
 Fulfilled state means that transaction is accepted to the block.
@@ -572,7 +574,7 @@ Transactions will be stored in the appropriate order.
 Each transaction from the queue will be sent to the blockchain only after the previous transaction is accepted to the block.
 
 ```javascript
-Exonum.sendQueue(transactionEndpoint, explorerBasePath, transactions)
+Exonum.sendQueue(transactionEndpoint, explorerBasePath, transactions, timeout, attempts)
 ```
 
 | Property | Description | Type |
@@ -580,6 +582,8 @@ Exonum.sendQueue(transactionEndpoint, explorerBasePath, transactions)
 | **transactionEndpoint** | API address of transaction handler on a blockchain node. | `String` |
 | **explorerBasePath** | API address of transaction explorer on a blockchain node. | `String` |
 | **transactions** | List of transactions. | `Array` |
+| **timeout** | Timeout between attempts to check each transaction status. *Optional. Default value is `500`.* | `Number` |
+| **attempts** | Number of attempts to check each transaction status. *Optional. Default value is `10`.* | `Number` |
 
 Transaction structure:
 

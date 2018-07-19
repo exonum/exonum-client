@@ -412,7 +412,7 @@ describe('Send transaction to the blockchain', function () {
     before(function () {
       mock
         .onPost(transactionEndpoint)
-        .reply(200, '383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380')
+        .replyOnce(200, '383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380')
 
       mock
         .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
@@ -431,6 +431,56 @@ describe('Send transaction to the blockchain', function () {
 
     it('should return fulfilled Promise state when transaction has accepted to the blockchain', function () {
       return Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds).then(response => {
+        expect(response).to.deep.equal({
+          type: 'committed'
+        })
+      })
+    })
+  })
+
+  describe('Valid transaction has been sent', function () {
+    before(function () {
+      mock
+        .onPost(transactionEndpoint)
+        .replyOnce(200, '383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380')
+
+      mock
+        .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
+        .replyOnce(200, {
+          type: 'in-pool'
+        })
+        .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
+        .replyOnce(200, {
+          type: 'in-pool'
+        })
+        .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
+        .replyOnce(200, {
+          type: 'in-pool'
+        })
+        .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
+        .replyOnce(200, {
+          type: 'in-pool'
+        })
+        .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
+        .replyOnce(200, {
+          type: 'in-pool'
+        })
+        .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
+        .replyOnce(200, {
+          type: 'in-pool'
+        })
+        .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
+        .replyOnce(200, {
+          type: 'committed'
+        })
+    })
+
+    after(function () {
+      mock.reset()
+    })
+
+    it('should return fulfilled Promise state when transaction has accepted to the blockchain with custom attempts and timeout number', function () {
+      return Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds, 100, 7).then(response => {
         expect(response).to.deep.equal({
           type: 'committed'
         })
@@ -481,6 +531,24 @@ describe('Send transaction to the blockchain', function () {
       types.forEach(function (value) {
         expect(() => Exonum.send(transactionEndpoint, explorerBasePath, data, signature, value))
           .to.throw(Error, 'Transaction of wrong type is passed.')
+      })
+    })
+
+    it('should throw error when wrong transaction timeout is passed', function () {
+      const timeouts = [null, false, new Date(), '', {}, []]
+
+      timeouts.forEach(function (value) {
+        expect(() => Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds, value))
+          .to.throw(Error, 'Timeout of wrong type is passed.')
+      })
+    })
+
+    it('should throw error when wrong transaction attempts number is passed', function () {
+      const types = [null, false, new Date(), '', {}, []]
+
+      types.forEach(function (value) {
+        expect(() => Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds, 500, value))
+          .to.throw(Error, 'Attempts of wrong type is passed.')
       })
     })
   })
