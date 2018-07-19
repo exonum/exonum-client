@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.12.0 (Jul 19, 2018)
+
+* Add `timeout` and `attempts` parameters to the `send` method. #116
+
 ## 0.11.1 (Jul 10, 2018)
 
 * Updated examples of explorer API. #114
