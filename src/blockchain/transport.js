@@ -13,9 +13,11 @@ const ATTEMPT_TIMEOUT = 500
  * @param {Object} data
  * @param {string} signature
  * @param {NewMessage} type
+ * @param {number} timeout
+ * @param {number} attempts
  * @return {Promise}
  */
-export function send (transactionEndpoint, explorerBasePath, data, signature, type) {
+export function send (transactionEndpoint, explorerBasePath, data, signature, type, timeout, attempts) {
   if (typeof transactionEndpoint !== 'string') {
     throw new TypeError('Transaction endpoint of wrong data type is passed. String is required.')
   }
@@ -31,6 +33,20 @@ export function send (transactionEndpoint, explorerBasePath, data, signature, ty
   if (!isInstanceofOfNewMessage(type)) {
     throw new TypeError('Transaction of wrong type is passed.')
   }
+  if (typeof timeout !== 'undefined') {
+    if (isNaN(parseInt(timeout)) || timeout <= 0) {
+      throw new TypeError('Timeout of wrong type is passed.')
+    }
+  } else {
+    timeout = ATTEMPT_TIMEOUT
+  }
+  if (typeof attempts !== 'undefined') {
+    if (isNaN(parseInt(attempts)) || attempts <= 0) {
+      throw new TypeError('Attempts of wrong type is passed.')
+    }
+  } else {
+    attempts = ATTEMPTS
+  }
 
   type.signature = signature
   const hash = type.hash(data)
@@ -42,7 +58,7 @@ export function send (transactionEndpoint, explorerBasePath, data, signature, ty
     body: data,
     signature: signature
   }).then(() => {
-    let count = ATTEMPTS
+    let count = attempts
 
     return (function attempt () {
       return axios.get(`${explorerBasePath}${hash}`).then(response => {
@@ -52,7 +68,7 @@ export function send (transactionEndpoint, explorerBasePath, data, signature, ty
         if (response.data.type === 'in-pool') {
           if (--count > 0) {
             return new Promise((resolve) => {
-              setTimeout(resolve, ATTEMPT_TIMEOUT)
+              setTimeout(resolve, timeout)
             }).then(attempt)
           }
           throw new Error('Transaction has not been accepted to the blockchain.')
@@ -72,16 +88,18 @@ export function send (transactionEndpoint, explorerBasePath, data, signature, ty
  * @param {string} transactionEndpoint
  * @param {string} explorerBasePath
  * @param {Array} transactions
+ * @param {number} timeout
+ * @param {number} attempts
  * @return {Promise}
  */
-export function sendQueue (transactionEndpoint, explorerBasePath, transactions) {
+export function sendQueue (transactionEndpoint, explorerBasePath, transactions, timeout, attempts) {
   let index = 0
   let responses = []
 
   return (function shift () {
     let transaction = transactions[index++]
 
-    return send(transactionEndpoint, explorerBasePath, transaction.data, transaction.signature, transaction.type).then(response => {
+    return send(transactionEndpoint, explorerBasePath, transaction.data, transaction.signature, transaction.type, timeout, attempts).then(response => {
       responses.push(response)
       if (index < transactions.length) {
         return shift()
