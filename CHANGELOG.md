@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.12.0 (Jul 19, 2018)
+## 0.12.1 (Jul 20, 2018)
 
 * Add `timeout` and `attempts` parameters to the `send` method. #116
 

@@ -1,8 +1,8 @@
 language: node_js
 node_js:
-- '4'
 - '6'
 - '8'
+- '10'
 env:
   matrix:
   - FEATURE=test
@@ -36,8 +36,10 @@ deploy:
   provider: npm
   email: exonum.bitfury@gmail.com
   api_key:
-    secure: VxkJ9MOhWfpudp1LWnsOEmYe9rFZjDIP9cjtvtEcUT8TY5nhioYtmQc5udDtddiWrvTF1Zp7wBUjAs/MokR3ud7Bx8vyX3EvHhiG7mnLid0ZkqK/yR0X3ogmNEfCMSJPx9LbHamJwY6+iJ4Uiok1Lots6uD0Mx0XCYQWAAWY/oWDtXOxvIcQqBr+LTdkYk/nIPWo/AVUNRO/2Z7S1qmzaQKA7hwOwOakkjATjGBchgtK98Euy6p/m7FDR1jWwWxFP8A8ZpBP3xkq8GyeNENmiGQ62OJbmL/cXUoJf40B1ZTDEj6xEjt5NxjQAAm5BGXWtd3OHt9FZrNW6Cx+bvwvhPnPTIVSXTWuYe4TGcsNEbvYwOrGsbtqe+wnNc1qiK5N0iyhjHaG+AJs7f/m6OkIUIkXk3tcK38Bc0wnSlAiOM4AorkDQKPQH3G/Ir2wlVPpBAGTHsP8eq486mgLoRMvhRQAHL65nnsU1vEitkliEiDtRp14tQLfNYiY9i0cqy8ViZVDfPKMblOx9g8D2M26slrMAEa7DUcqzK3xS5MMLhymka4/5qz7FnPpUws8V9TR/E4QLpIPafBzg1NrFCHK+2lxABBRUdM+ZitcCbPJzJMXqZfifFwyt+BTlszMxOUqqd+bOZZC7nYKFcam+YioF19c24UEzoA8gl0tPLNCJmQ=
+    secure: KQihlRK+otmBcmKWA3w/HKPQxT19KnNVyP+nxaZp/lVrcUqszN1Qr0FAegz8Yaai6y2LVHA7ZKpGIMj9VZ1jEzcp59+jjYDj+gef8/kgPTgUjbmGnOs3p82ljZj4efQSuVwSRiEp4M9hyz2OlIbcPzu9bufLRx8DTmLKbFRWQ/7kaPVEzyJ1Me9kAPwFBVOptMkNR7mFFCNna0jJemi3hBwy59I0tTMAZNh/UUIu5kzG8JJ1kDxEuFLMNq65b6btjcd3gVs/nb3QjTtfx67BcMUCmdOvdgrXdZ1NtcN2SthDG+Ldott1wfL3vpPjCdILB5FrNQz//LSM7REGiNL7x/X51hhkMkD8oZq+SsdTMzODd6N+hoo+z/peKAqGskhsui671isdrwFwW/7u8PLz/kwfT6UEcHSrctwMl4ICICYpF81L/fSpysHMt83+1XqqECEu7pXwAsbgu37GO2vPg3QU3+HtFHdFaIQuGedXw+pbskMn/pbj4Ekh+//nVkhcDM6eJAR5WMXPnznEl9QEY7uSYepPRNLPG4LcBPIHARhSddq07ksWwD2uT2GogQr//Z2lRHjvy4eY+mEwVH4vna/FmQ2mRA9sgrX7E9TvptmamBMcCRZYol3VIDo1Eee3BuR9E5wxjHEyzkfEMrLIr0Oqe3K4L+rrNjfE8wnxBvw=
   on:
+    branch: master
     tags: true
     repo: exonum/exonum-client
     node: '8'
+  skip_cleanup: true
