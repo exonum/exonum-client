@@ -16,13 +16,14 @@
 
 A JavaScript library to work with Exonum blockchain from browser and Node.js.
 Used to sign transactions before sending to blockchain and verify blockchain responses using cryptographic proofs.
-Contains numerous helper functions.
+Contains numerous helper functions. Find out more information about the [architecture and tasks][docs:clients] of light clients in Exonum.
 
 Library compatibility with Exonum core:
 
 | JavaScript light client | Exonum core |
 |---|---|
-| 0.11.1 | 0.8.* |
+| 0.12.1 | 0.9.* |
+| 0.10.2 | 0.8.* |
 | 0.9.0 | 0.7.* |
 | 0.6.1 | 0.6.* |
 | 0.6.1 | 0.5.* |
@@ -30,8 +31,6 @@ Library compatibility with Exonum core:
 | 0.3.0 | 0.3.0 |
 | 0.2.0 | 0.2.0 |
 | 0.1.1 | 0.1.* |
-
-*Find out more information about the [architecture and tasks][docs:clients] of light clients in Exonum.*
 
 * [Getting started](#getting-started)
 * [Data types](#data-types)

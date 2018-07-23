@@ -6,13 +6,13 @@
 
 ## 0.11.1 (Jul 10, 2018)
 
-* Updated examples of explorer API. #114
-New web API based on `actix-web` implemented in Exonum core [Unreleased](https://github.com/exonum/exonum/blob/master/CHANGELOG.md#unreleased).
+* Updated explorer API. #114
+New web API based on `actix-web` implemented in Exonum core [0.9][release-0.9].
 
 ## 0.11.0 (Jul 9, 2018)
 
 * Remove field `schema_version` from `Block` structure. #115
-Field is removed in Exonum core [Unreleased](https://github.com/exonum/exonum/blob/master/CHANGELOG.md#unreleased).
+Field is removed in Exonum core [0.9][release-0.9].
 
 ## 0.10.2 (Jun 29, 2018)
 
@@ -25,7 +25,7 @@ Field is removed in Exonum core [Unreleased](https://github.com/exonum/exonum/bl
 ## 0.10.0 (Jun 20, 2018)
 
 * Add serialization support of decimal type (`Decimal`). #108
-Decimal type is added into Exonum core in [0.8](https://github.com/exonum/exonum/blob/master/CHANGELOG.md#08---2018-05-31). #671
+Decimal type is added into Exonum core in [0.8][release-0.8].
 
 ## 0.9.0 (Jun 18, 2018)
 
@@ -59,10 +59,10 @@ Decimal type is added into Exonum core in [0.8](https://github.com/exonum/exonum
 
 ## 0.7.0 (Apr 11, 2018)
 
-* Proofs of existence in Merkle Patricia tree have been replaced with Map proof.
-Method is replaced in Exonum core in [0.7](https://github.com/exonum/exonum/blob/master/CHANGELOG.md#07---2018-04-11). #85
-* `network_id` attribute has been removed from custom data types, transactions and proofs.
-Attribute is removed in Exonum core in [0.7](https://github.com/exonum/exonum/blob/master/CHANGELOG.md#07---2018-04-11). #90
+* Proofs of existence in Merkle Patricia tree have been replaced with Map proof. #85
+Method is replaced in Exonum core in [0.7][release-0.7].
+* `network_id` attribute has been removed from custom data types, transactions and proofs. #90
+Attribute is removed in Exonum core in [0.7][release-0.7].
 
 ## 0.6.1 (Apr 4, 2018)
 
@@ -71,12 +71,12 @@ Attribute is removed in Exonum core in [0.7](https://github.com/exonum/exonum/bl
 ## 0.6.0 (Mar 24, 2018)
 
 * Custom data type and transaction no longer require manual `size`, `from` and `to` specification.
-This feature is added into Exonum core in [0.5](https://github.com/exonum/exonum/blob/master/CHANGELOG.md#05---2018-01-30). #84
+This feature is added into Exonum core in [0.5][release-0.5]. #84
 
 ## 0.5.0 (Mar 6, 2018)
 
-* Add serialization support of floating point types (`Float32` and `Float64`).
-Floating point types are added into Exonum core in [0.5](https://github.com/exonum/exonum/blob/master/CHANGELOG.md#05---2018-01-30). #83
+* Add serialization support of floating point types (`Float32` and `Float64`). #83
+Floating point types are added into Exonum core in [0.5][release-0.5].
 * Add [package-lock.json](package-lock.json). #81
 
 ## 0.4.1 (Feb 23, 2018)
@@ -86,10 +86,8 @@ This problem also affected the validation of the Merkle Patricia tree. #80
 
 ## 0.4.0 (Feb 9, 2018)
 
-**Light client become compatible with Exonum core starting with version [0.5](https://github.com/exonum/exonum/blob/master/CHANGELOG.md#05---2018-01-30)**.
-
-* Change order of bytes and bits in the `DBKey` keys of Merkle Patricia.
-Order is changed in Exonum core in [0.5](https://github.com/exonum/exonum/blob/master/CHANGELOG.md#05---2018-01-30). #78
+* Change order of bytes and bits in the `DBKey` keys of Merkle Patricia. #78
+Order is changed in Exonum core in [0.5][release-0.5].
 * Extend usage examples and move them into separate files. #77
 * Improve tests readability. #75 #76
 
@@ -122,4 +120,10 @@ Order is changed in Exonum core in [0.5](https://github.com/exonum/exonum/blob/m
 ## 0.1.0 (Jul 18, 2017)
 
 The first release of JavaScript client for Exonum blockchain,
-matching [release 0.1](https://github.com/exonum/exonum/releases/tag/v0.1) of the Exonum core repository.
+matching [release 0.1][release-0.1] of the Exonum core repository.
+
+[release-0.9]: https://github.com/exonum/exonum/blob/master/CHANGELOG.md#090---2018-07-19
+[release-0.8]: https://github.com/exonum/exonum/blob/master/CHANGELOG.md#08---2018-05-31
+[release-0.7]: https://github.com/exonum/exonum/blob/master/CHANGELOG.md#07---2018-04-11
+[release-0.5]: https://github.com/exonum/exonum/blob/master/CHANGELOG.md#05---2018-01-30
+[release-0.1]: https://github.com/exonum/exonum/releases/tag/v0.1
