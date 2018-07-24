@@ -106,6 +106,7 @@ export function verifySignature (signature, publicKey, data, type) {
     buffer = new Uint8Array(type.serialize(data))
   } else if (isInstanceofOfNewMessage(type)) {
     buffer = new Uint8Array(type.serialize(data, true))
+    console.log('3aaa', signature, convert.uint8ArrayToHexadecimal(buffer).toString())
   } else if (type === undefined) {
     if (data instanceof Uint8Array) {
       buffer = data
@@ -115,6 +116,7 @@ export function verifySignature (signature, publicKey, data, type) {
   } else {
     throw new TypeError('Wrong type of data.')
   }
+  // console.log('aaa', buffer.toString(), 'bbb', signatureUint8Array.toString(), 'ccc', publicKeyUint8Array.toString())
 
   return nacl.sign.detached.verify(buffer, signatureUint8Array, publicKeyUint8Array)
 }

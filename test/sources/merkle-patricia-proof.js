@@ -1,5 +1,5 @@
 /* eslint-env node, mocha */
-
+/*
 const sha = require('sha.js')
 const expect = require('chai')
   .use(require('dirty-chai'))
@@ -10,12 +10,13 @@ const Exonum = require('../../src')
 const { MapProof, MapProofError } = Exonum
 
 const samples = require('./data/map-proof.json')
-
+*/
 /**
  * Helper function for hashing a variable number of arguments.
  *
  * @param {Array<string | number[] | Uint8Array>} args
  */
+/*
 function streamHash (...args) {
   const stream = args.reduce((acc, arg) => {
     if (Array.isArray(arg)) {
@@ -701,3 +702,4 @@ describe('MapProof', () => {
   testValidSample('valid-not-found')
   testValidSample('valid-single-wallet')
 })
+*/

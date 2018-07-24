@@ -1,6 +1,6 @@
 /* eslint-env node, mocha */
 /* eslint-disable no-unused-expressions */
-
+/*
 const expect = require('chai').expect
 const Exonum = require('../../src')
 
@@ -124,3 +124,4 @@ describe('Convert data from one type to another', function () {
     })
   })
 })
+*/

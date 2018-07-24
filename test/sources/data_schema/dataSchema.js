@@ -17,7 +17,9 @@ export default class DataSchema {
           field.type = this.getTypeOrArray(field.type)
         })
         if (!item.as || item.as === 'type') this.types[key] = Exonum.newType(item)
-        if (item.as === 'message') this.messages[key] = Exonum.newMessage(item)
+        if (item.as === 'message') {
+          this.messages[key] = Exonum.newMessage(item)
+        }
       } else {
         if (item.as === 'array') {
           item.type = this.getTypeOrArray(item.type)

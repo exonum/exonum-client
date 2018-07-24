@@ -1,4 +1,35 @@
 {
+  "userMessage": {
+    "as": "message",
+    "message_type": "message",
+    "public_key": "41e8fde132ad670e534cd8b275d2cd7eec77733c66f8db48a1cada7fabfc4555",
+    "protocol_version": 0,
+    "service_id": 198,
+    "message_id": 0,
+    "signature": "d67501ab6f2d84312844379dbf7fd5e990d24b5abbc519c45fc594157920e640ce778e61b03c8c2a428fb4fd473e5734407679e959c71cf83db34fca0b182707",
+    "fields": [
+      {
+        "name": "public_key",
+        "type": "PublicKey"
+      },
+      {
+        "name": "login",
+        "type": "String"
+      },
+      {
+        "name": "name",
+        "type": "String"
+      },
+      {
+        "name": "url",
+        "type": "String"
+      },
+      {
+        "name": "avatar_url",
+        "type": "String"
+      }
+    ]
+  },
   "wallet": {
     "fields": [
       {
@@ -165,6 +196,8 @@
   },
   "addUserArray": {
     "as": "message",
+    "message_type": "message",
+    "public_key": "41e8fde132ad670e534cd8b275d2cd7eec77733c66f8db48a1cada7fabfc4555",
     "protocol_version": 0,
     "service_id": 198,
     "message_id": 0,
@@ -214,8 +247,28 @@
       }
     ]
   },
+  "precommit": {
+    "as": "message",
+    "message_type": "precommit",
+    "public_key": "41e8fde132ad670e534cd8b275d2cd7eec77733c66f8db48a1cada7fabfc4555",
+    "protocol_version": 1,
+    "precommit_tag": 0,
+    "consensus_tag": 0,
+    "signature": "d67501ab6f2d84312844379dbf7fd5e990d24b5abbc519c45fc594157920e640ce778e61b03c8c2a428fb4fd473e5734407679e959c71cf83db34fca0b182707",
+    "fields": [
+      { "name": "validator", "type": "Uint16" },
+      { "name": "height", "type": "Uint64" },
+      { "name": "round", "type": "Uint32" },
+      { "name": "propose_hash", "type": "Hash" },
+      { "name": "block_hash", "type": "Hash" },
+      { "name": "date_timems", "type": "Uint64" },
+      { "name": "date_timens", "type": "Uint32" }
+    ]
+  },
   "addUser": {
     "as": "message",
+    "message_type": "message",
+    "public_key": "41e8fde132ad670e534cd8b275d2cd7eec77733c66f8db48a1cada7fabfc4555",
     "protocol_version": 0,
     "service_id": 198,
     "message_id": 0,

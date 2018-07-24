@@ -15,12 +15,21 @@ describe('Serialize data into array of 8-bit integers', function () {
   })
 
   it('should serialize data of newMessage type and return array of 8-bit integers', function () {
-    const buffer = schema.getMessage('addUser').serialize(serializationMock.user.data)
+    const buffer = schema.getMessage('userMessage').serialize(serializationMock.user.data.content)
 
     expect(buffer).to.deep.equal(serializationMock.user.serialized)
   })
 
+  it('should serialize data of newPrecommit type and return array of 8-bit integers', function () {
+    console.log(schema.getMessage('precommit'), serializationMock.precommit.data)
+    const buffer = schema.getMessage('precommit').serialize(serializationMock.precommit.data)
+    // const buffer2 = schema.getMessage('precommit').sign(serializationMock.precommit2.data)
+    // console.log('buffer2', buffer2)
+    expect(buffer).to.deep.equal(serializationMock.precommit.serialized)
+  })
+
   it('should serialize data of newMessage type with nester array and return array of 8-bit integers', function () {
+    console.log('addUserArray')
     const buffer = schema.getMessage('addUserArray').serialize(serializationMock.userArray.data)
 
     expect(buffer).to.deep.equal(serializationMock.userArray.serialized)
