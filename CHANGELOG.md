@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.12.2 (Jul 25, 2018)
+
+* Rework `send` method to ignore wrong and error responses from blockchain node.
+Swap `timeout` and `attempts` parameters int the `send` method.
+Allow `attempts` to be `0`. #122
+
 ## 0.12.1 (Jul 20, 2018)
 
 * Add `timeout` and `attempts` parameters to the `send` method. #116

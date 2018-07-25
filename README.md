@@ -22,7 +22,7 @@ Library compatibility with Exonum core:
 
 | JavaScript light client | Exonum core |
 |---|---|
-| 0.12.1 | 0.9.* |
+| 0.12.2 | 0.9.* |
 | 0.10.2 | 0.8.* |
 | 0.9.0 | 0.7.* |
 | 0.6.1 | 0.6.* |
@@ -548,9 +548,9 @@ To submit transaction to the blockchain `send` function can be used.
 There are two possible signatures of the `send` function:
 
 ```javascript
-Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds, timeout, attempts)
+Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds, attempts, timeout)
 
-sendFunds.send(transactionEndpoint, explorerBasePath, data, signature, timeout, attempts)
+sendFunds.send(transactionEndpoint, explorerBasePath, data, signature, attempts, timeout)
 ```
 
 | Property | Description | Type |
@@ -560,8 +560,8 @@ sendFunds.send(transactionEndpoint, explorerBasePath, data, signature, timeout, 
 | **data** | Data that has been signed. | `Object` |
 | **signature** | Signature as hexadecimal string. | `String` |
 | **type** | Definition of the transaction. | [Transaction](#define-transaction). |
+| **attempts** | Number of attempts to check transaction status. Pass `0` in case you do not need to verify if the transaction accepted to the block. *Optional. Default value is `10`.* | `Number` |
 | **timeout** | Timeout between attempts to check transaction status. *Optional. Default value is `500`.* | `Number` |
-| **attempts** | Number of attempts to check transaction status. *Optional. Default value is `10`.* | `Number` |
 
 The `send` function returns value of `Promise` type.
 Fulfilled state means that transaction is accepted to the block.
@@ -586,7 +586,7 @@ Transactions will be stored in the appropriate order.
 Each transaction from the queue will be sent to the blockchain only after the previous transaction is accepted to the block.
 
 ```javascript
-Exonum.sendQueue(transactionEndpoint, explorerBasePath, transactions, timeout, attempts)
+Exonum.sendQueue(transactionEndpoint, explorerBasePath, transactions, attempts, timeout)
 ```
 
 | Property | Description | Type |
@@ -594,8 +594,8 @@ Exonum.sendQueue(transactionEndpoint, explorerBasePath, transactions, timeout, a
 | **transactionEndpoint** | API address of transaction handler on a blockchain node. | `String` |
 | **explorerBasePath** | API address of transaction explorer on a blockchain node. | `String` |
 | **transactions** | List of transactions. | `Array` |
+| **attempts** | Number of attempts to check each transaction status. Pass `0` in case you do not need to verify if the transactions are accepted to the block. *Optional. Default value is `10`.* | `Number` |
 | **timeout** | Timeout between attempts to check each transaction status. *Optional. Default value is `500`.* | `Number` |
-| **attempts** | Number of attempts to check each transaction status. *Optional. Default value is `10`.* | `Number` |
 
 Transaction structure:
 
