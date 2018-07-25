@@ -438,7 +438,43 @@ describe('Send transaction to the blockchain', function () {
     })
   })
 
-  describe('Valid transaction has been sent', function () {
+  describe('Valid transaction has been sent but node processes it very slow', function () {
+    before(function () {
+      mock
+        .onPost(transactionEndpoint)
+        .replyOnce(200, '383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380')
+
+      mock
+        .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
+        .replyOnce(404)
+        .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
+        .replyOnce(404)
+        .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
+        .replyOnce(404)
+        .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
+        .replyOnce(200, {
+          type: 'in-pool'
+        })
+        .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
+        .replyOnce(200, {
+          type: 'committed'
+        })
+    })
+
+    after(function () {
+      mock.reset()
+    })
+
+    it('should return fulfilled Promise state when transaction has accepted to the blockchain', function () {
+      return Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds).then(response => {
+        expect(response).to.deep.equal({
+          type: 'committed'
+        })
+      })
+    })
+  })
+
+  describe('Valid transaction has been sent with custom attempts and timeout number', function () {
     before(function () {
       mock
         .onPost(transactionEndpoint)
@@ -479,12 +515,28 @@ describe('Send transaction to the blockchain', function () {
       mock.reset()
     })
 
-    it('should return fulfilled Promise state when transaction has accepted to the blockchain with custom attempts and timeout number', function () {
+    it('should return fulfilled Promise state when transaction has accepted to the blockchain', function () {
       return Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds, 100, 7).then(response => {
         expect(response).to.deep.equal({
           type: 'committed'
         })
       })
+    })
+  })
+
+  describe('Valid transaction has been sent with zero attempts', function () {
+    before(function () {
+      mock
+        .onPost(transactionEndpoint)
+        .replyOnce(200, '383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380')
+    })
+
+    after(function () {
+      mock.reset()
+    })
+
+    it('should return fulfilled Promise state when transaction has accepted to the blockchain', function () {
+      return expect(Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds, 0)).to.be.fulfilled
     })
   })
 
@@ -534,21 +586,21 @@ describe('Send transaction to the blockchain', function () {
       })
     })
 
-    it('should throw error when wrong transaction timeout is passed', function () {
-      const timeouts = [null, false, new Date(), '', {}, []]
-
-      timeouts.forEach(function (value) {
-        expect(() => Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds, value))
-          .to.throw(Error, 'Timeout of wrong type is passed.')
-      })
-    })
-
     it('should throw error when wrong transaction attempts number is passed', function () {
       const types = [null, false, new Date(), '', {}, []]
 
       types.forEach(function (value) {
-        expect(() => Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds, 500, value))
+        expect(() => Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds, value))
           .to.throw(Error, 'Attempts of wrong type is passed.')
+      })
+    })
+
+    it('should throw error when wrong transaction timeout is passed', function () {
+      const timeouts = [null, false, new Date(), '', {}, []]
+
+      timeouts.forEach(function (value) {
+        expect(() => Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds, 500, value))
+          .to.throw(Error, 'Timeout of wrong type is passed.')
       })
     })
   })
@@ -572,16 +624,15 @@ describe('Send transaction to the blockchain', function () {
       })
 
       it('should return rejected Promise state', function () {
-        this.timeout(10000)
-        return Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds).catch(error => {
+        return Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds, 3, 100).catch(error => {
           expect(() => {
             throw new Error(error)
-          }).to.throw(Error, 'Transaction has not been accepted to the blockchain.')
+          }).to.throw(Error, 'Unable to verify transaction in the blockchain.')
         })
       })
     })
 
-    describe('Node reported unknown transaction', function () {
+    describe('Node responded in unknown format', function () {
       before(function () {
         mock
           .onPost(transactionEndpoint)
@@ -589,9 +640,7 @@ describe('Send transaction to the blockchain', function () {
 
         mock
           .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
-          .reply(200, {
-            type: 'unknown'
-          })
+          .reply(200, {})
       })
 
       after(function () {
@@ -599,10 +648,34 @@ describe('Send transaction to the blockchain', function () {
       })
 
       it('should return rejected Promise state', function () {
-        return Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds).catch(error => {
+        return Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds, 3, 100).catch(error => {
           expect(() => {
             throw new Error(error)
-          }).to.throw(Error, 'Unknown transaction has been passed.')
+          }).to.throw(Error, 'Unable to verify transaction in the blockchain.')
+        })
+      })
+    })
+
+    describe('Node responded with error', function () {
+      before(function () {
+        mock
+          .onPost(transactionEndpoint)
+          .reply(200, '383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380')
+
+        mock
+          .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
+          .reply(404)
+      })
+
+      after(function () {
+        mock.reset()
+      })
+
+      it('should return rejected Promise state', function () {
+        return Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds, 3, 100).catch(error => {
+          expect(() => {
+            throw new Error(error)
+          }).to.throw(Error, 'Unable to verify transaction in the blockchain.')
         })
       })
     })
