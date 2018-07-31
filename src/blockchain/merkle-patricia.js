@@ -103,7 +103,7 @@ function parseEntries (entries, keyType, valueType) {
         `${ProofPath.BYTE_LENGTH}-byte buffers`)
     }
 
-    return new ProofPath(Uint8Array.from(bytes))
+    return new ProofPath(new Uint8Array(bytes))
   }
 
   if (!Array.isArray(entries)) {
