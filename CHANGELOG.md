@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.12.3 (Jul 31, 2018)
+
+* Fix broken `MapProof` in Internet Explorer. #126
+
 ## 0.12.2 (Jul 25, 2018)
 
 * Rework `send` method to ignore wrong and error responses from blockchain node.
