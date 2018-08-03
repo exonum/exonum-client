@@ -18,6 +18,9 @@ A JavaScript library to work with Exonum blockchain from browser and Node.js.
 Used to sign transactions before sending to blockchain and verify blockchain responses using cryptographic proofs.
 Contains numerous helper functions. Find out more information about the [architecture and tasks][docs:clients] of light clients in Exonum.
 
+If you are using Exonum in your project and want to be listed on our website & GitHub list — write
+us a line to <exonum@bitfury.com>.
+
 Library compatibility with Exonum core:
 
 | JavaScript light client | Exonum core |
