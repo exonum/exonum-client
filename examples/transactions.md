@@ -251,7 +251,7 @@ transactions.forEach(transaction => {
 })
 
 // Send transactions queue
-sendFunds.sendQueue(transactionEndpoint, explorerBasePath, transactions).then(response => {
+Exonum.sendQueue(transactionEndpoint, explorerBasePath, transactions).then(response => {
   // ...
 })
 ```
