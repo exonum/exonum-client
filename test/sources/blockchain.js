@@ -535,7 +535,7 @@ describe('Send transaction to the blockchain', function () {
       mock.reset()
     })
 
-    it('should return fulfilled Promise state when transaction has accepted to the blockchain', function () {
+    it('should return fulfilled Promise state when transaction has been sent to the blockchain', function () {
       return expect(Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds, 0)).to.be.fulfilled
     })
   })
@@ -722,46 +722,51 @@ describe('Send multiple transactions to the blockchain', function () {
     transaction.signature = transaction.type.sign(keyPair.secretKey, transaction.data)
   })
 
-  before(function () {
-    mock
-      .onPost(transactionEndpoint)
-      .replyOnce(200, '83224bad1283ab98aee8ffbd070988f37fa2e799a3b50ffbad5e54191d0ec7b5')
-      .onPost(transactionEndpoint)
-      .reply(200, '8297bda142673d33fa23cbe7a8de10de86407d6891bf21803ee1b67332d634ce')
+  describe('Queue of valid transactions has been sent', function () {
+    before(function () {
+      mock
+        .onPost(transactionEndpoint)
+        .replyOnce(200, '83224bad1283ab98aee8ffbd070988f37fa2e799a3b50ffbad5e54191d0ec7b5')
+        .onPost(transactionEndpoint)
+        .reply(200, '8297bda142673d33fa23cbe7a8de10de86407d6891bf21803ee1b67332d634ce')
 
-    mock
-      .onGet(`${explorerBasePath}83224bad1283ab98aee8ffbd070988f37fa2e799a3b50ffbad5e54191d0ec7b5`)
-      .replyOnce(200, {
-        type: 'in-pool'
+      mock
+        .onGet(`${explorerBasePath}83224bad1283ab98aee8ffbd070988f37fa2e799a3b50ffbad5e54191d0ec7b5`)
+        .replyOnce(200, { type: 'in-pool' })
+        .onGet(`${explorerBasePath}83224bad1283ab98aee8ffbd070988f37fa2e799a3b50ffbad5e54191d0ec7b5`)
+        .replyOnce(200, { type: 'committed' })
+        .onGet(`${explorerBasePath}8297bda142673d33fa23cbe7a8de10de86407d6891bf21803ee1b67332d634ce`)
+        .replyOnce(200, { type: 'in-pool' })
+        .onGet(`${explorerBasePath}8297bda142673d33fa23cbe7a8de10de86407d6891bf21803ee1b67332d634ce`)
+        .replyOnce(200, { type: 'committed' })
+    })
+
+    after(function () {
+      mock.reset()
+    })
+
+    it('should return fulfilled Promise state when queue of valid transactions has been accepted to the blockchain', function () {
+      return Exonum.sendQueue(transactionEndpoint, explorerBasePath, transactions).then(response => {
+        expect(response).to.deep.equal([{ type: 'committed' }, { type: 'committed' }])
       })
-      .onGet(`${explorerBasePath}83224bad1283ab98aee8ffbd070988f37fa2e799a3b50ffbad5e54191d0ec7b5`)
-      .replyOnce(200, {
-        type: 'committed'
-      })
-      .onGet(`${explorerBasePath}8297bda142673d33fa23cbe7a8de10de86407d6891bf21803ee1b67332d634ce`)
-      .replyOnce(200, {
-        type: 'in-pool'
-      })
-      .onGet(`${explorerBasePath}8297bda142673d33fa23cbe7a8de10de86407d6891bf21803ee1b67332d634ce`)
-      .replyOnce(200, {
-        type: 'committed'
-      })
+    })
   })
 
-  after(function () {
-    mock.reset()
-  })
+  describe('Queue of valid transactions has been sent with zero attempts', function () {
+    before(function () {
+      mock
+        .onPost(transactionEndpoint)
+        .replyOnce(200, '83224bad1283ab98aee8ffbd070988f37fa2e799a3b50ffbad5e54191d0ec7b5')
+        .onPost(transactionEndpoint)
+        .reply(200, '8297bda142673d33fa23cbe7a8de10de86407d6891bf21803ee1b67332d634ce')
+    })
 
-  it('should return fulfilled Promise state when queue of valid transactions has accepted to the blockchain', function () {
-    return Exonum.sendQueue(transactionEndpoint, explorerBasePath, transactions).then(response => {
-      expect(response).to.deep.equal([
-        {
-          type: 'committed'
-        },
-        {
-          type: 'committed'
-        }
-      ])
+    after(function () {
+      mock.reset()
+    })
+
+    it('should return fulfilled Promise state when queue of valid transactions has been sent to the blockchain', function () {
+      return expect(Exonum.sendQueue(transactionEndpoint, explorerBasePath, transactions, 0)).to.be.fulfilled
     })
   })
 })
