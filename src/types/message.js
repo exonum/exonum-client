@@ -1,11 +1,11 @@
-import * as primitive from './primitive'
-import { Digest } from './hexadecimal'
+import { Uint8, Uint16, Uint32 } from './primitive'
+import { Digest, PublicKey } from './hexadecimal'
 import { fieldIsFixed, newType } from './generic'
 import * as serialization from './serialization'
 import * as crypto from '../crypto'
 import { send } from '../blockchain/transport'
 
-const SIGNATURE_LENGTH = 64
+export const SIGNATURE_LENGTH = 64
 
 /**
  * @constructor
@@ -22,8 +22,9 @@ class NewMessage {
       }
     })
 
-    this.protocol_version = type.protocol_version
-    this.message_id = type.message_id
+    this.public_key = type.public_key
+    this.cls = 0
+    this.tag = 0
     this.service_id = type.service_id
     this.signature = type.signature
     this.fields = type.fields
@@ -34,7 +35,7 @@ class NewMessage {
       if (fieldIsFixed(field)) {
         return accumulator + field.type.size()
       }
-      return accumulator + 8
+      return accumulator + 40
     }, 0)
   }
 
@@ -47,27 +48,27 @@ class NewMessage {
   serialize (data, cutSignature) {
     const MessageHead = newType({
       fields: [
-        { name: 'network_id', type: primitive.Uint8 },
-        { name: 'protocol_version', type: primitive.Uint8 },
-        { name: 'message_id', type: primitive.Uint16 },
-        { name: 'service_id', type: primitive.Uint16 },
-        { name: 'payload', type: primitive.Uint32 }
+        { name: 'public_key', type: PublicKey },
+        { name: 'cls', type: Uint8 },
+        { name: 'tag', type: Uint8 },
+        { name: 'service_id', type: Uint16 },
+        { name: 'payload_size', type: Uint32 }
       ]
     })
 
     let buffer = MessageHead.serialize({
-      network_id: 0,
-      protocol_version: this.protocol_version,
-      message_id: this.message_id,
+      public_key: this.public_key,
+      cls: this.cls,
+      tag: this.tag,
       service_id: this.service_id,
-      payload: 0 // placeholder, real value will be inserted later
+      payload_size: 0
     })
 
     // serialize and append message body
-    buffer = serialization.serialize(buffer, 10, data, this, true)
+    buffer = serialization.serialize(buffer, 40, data, this, true)
 
     // calculate payload and insert it into buffer
-    primitive.Uint32.serialize(buffer.length + SIGNATURE_LENGTH, buffer, 6)
+    Uint32.serialize(buffer.length + SIGNATURE_LENGTH, buffer, 34)
 
     if (cutSignature !== true) {
       // append signature
@@ -138,4 +139,25 @@ export function newMessage (type) {
  */
 export function isInstanceofOfNewMessage (type) {
   return type instanceof NewMessage
+}
+
+/**
+ * @constructor
+ * @param {Object} type
+ */
+class NewPrecommit extends NewMessage {
+  constructor (type) {
+    super(type)
+    this.cls = 1
+    this.tag = 1
+  }
+}
+
+/**
+ * Create element of NewPrecommit class
+ * @param {Object} type
+ * @returns {NewPrecommit}
+ */
+export function newPrecommit (type) {
+  return new NewPrecommit(type)
 }

@@ -1,14 +1,12 @@
-import { isObject } from '../helpers'
 import * as primitive from '../types/primitive'
-import { Hash } from '../types/hexadecimal'
+import { SIGNATURE_LENGTH } from '../types/message'
+import { Hash, PUBLIC_KEY_LENGTH } from '../types/hexadecimal'
 import { newType } from '../types/generic'
-import { newMessage } from '../types/message'
-import { validateHexadecimal } from '../types/validate'
+import { hexadecimalToUint8Array, uint8ArrayToHexadecimal } from '../types/convert'
 import { hash, verifySignature } from '../crypto'
+import { compareUint8Arrays } from '../helpers'
 
-const PROTOCOL_VERSION = 0
-const CORE_SERVICE_ID = 0
-const PRECOMMIT_MESSAGE_ID = 4
+const SERVICE_ID_LENGTH = 2
 const Block = newType({
   fields: [
     { name: 'proposer_id', type: primitive.Uint16 },
@@ -25,6 +23,16 @@ const SystemTime = newType({
     { name: 'nanos', type: primitive.Uint32 }
   ]
 })
+const PrecommitBody = newType({
+  fields: [
+    { name: 'validator', type: primitive.Uint16 },
+    { name: 'height', type: primitive.Uint64 },
+    { name: 'round', type: primitive.Uint32 },
+    { name: 'propose_hash', type: Hash },
+    { name: 'block_hash', type: Hash },
+    { name: 'time', type: SystemTime }
+  ]
+})
 
 /**
  * Validate block and each precommit in block
@@ -33,24 +41,6 @@ const SystemTime = newType({
  * @return {boolean}
  */
 export function verifyBlock (data, validators) {
-  if (!isObject(data)) {
-    return false
-  }
-  if (!isObject(data.block)) {
-    return false
-  }
-  if (!Array.isArray(data.precommits)) {
-    return false
-  }
-  if (!Array.isArray(validators)) {
-    return false
-  }
-
-  for (let i = 0; i < validators.length; i++) {
-    if (!validateHexadecimal(validators[i])) {
-      return false
-    }
-  }
   let blockHash
   try {
     blockHash = hash(data.block, Block)
@@ -58,70 +48,41 @@ export function verifyBlock (data, validators) {
     return false
   }
 
-  const Precommit = newMessage({
-    protocol_version: PROTOCOL_VERSION,
-    message_id: PRECOMMIT_MESSAGE_ID,
-    service_id: CORE_SERVICE_ID,
-    fields: [
-      { name: 'validator', type: primitive.Uint16 },
-      { name: 'height', type: primitive.Uint64 },
-      { name: 'round', type: primitive.Uint32 },
-      { name: 'propose_hash', type: Hash },
-      { name: 'block_hash', type: Hash },
-      { name: 'time', type: SystemTime }
-    ]
-  })
-
-  const validatorsTotalNumber = validators.length
-  const uniqueValidators = []
-  let round
-
   for (let i = 0; i < data.precommits.length; i++) {
     const precommit = data.precommits[i]
-    if (!isObject(precommit.body)) {
-      return false
-    }
-    if (!validateHexadecimal(precommit.signature, 64)) {
-      return false
-    }
-    if (precommit.body.validator >= validatorsTotalNumber) {
-      // validator does not exist
+    const buffer = hexadecimalToUint8Array(precommit.message)
+    const publicKey = uint8ArrayToHexadecimal(buffer.slice(0, PUBLIC_KEY_LENGTH))
+    const signature = uint8ArrayToHexadecimal(buffer.slice(buffer.length - SIGNATURE_LENGTH, buffer.length))
+
+    if (precommit.payload.height !== data.block.height) {
+      // height of block is not match
       return false
     }
 
-    if (uniqueValidators.indexOf(precommit.body.validator) === -1) {
-      uniqueValidators.push(precommit.body.validator)
-    }
-
-    if (precommit.protocol_version !== PROTOCOL_VERSION ||
-      precommit.service_id !== CORE_SERVICE_ID ||
-      precommit.message_id !== PRECOMMIT_MESSAGE_ID) {
+    if (precommit.payload.block_hash !== blockHash) {
+      // hash of block is not match
       return false
     }
 
-    if (precommit.body.height !== data.block.height) {
-      // wrong height of block in precommit
-      return false
-    }
-    if (precommit.body.block_hash !== blockHash) {
-      // wrong hash of block in precommit
+    if (validators[precommit.payload.validator] !== publicKey) {
+      // public key is not match
       return false
     }
 
-    if (round === undefined) {
-      round = precommit.body.round
-    }
-    if (precommit.body.round !== round) {
-      // wrong round in precommit
+    if (!compareUint8Arrays(PrecommitBody.serialize(precommit.payload), buffer.slice(PUBLIC_KEY_LENGTH + SERVICE_ID_LENGTH, buffer.length - SIGNATURE_LENGTH))) {
+      // payload is not match
       return false
     }
 
-    const publicKey = validators[precommit.body.validator]
-
-    if (!verifySignature(precommit.signature, publicKey, precommit.body, Precommit)) {
+    try {
+      if (!verifySignature(signature, publicKey, buffer.slice(0, buffer.length - SIGNATURE_LENGTH))) {
+        // signature is not match
+        return false
+      }
+    } catch (error) {
       return false
     }
   }
 
-  return uniqueValidators.length > validatorsTotalNumber * 2 / 3
+  return true
 }

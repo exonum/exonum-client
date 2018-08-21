@@ -52,9 +52,8 @@ export function send (transactionEndpoint, explorerBasePath, data, signature, ty
   const hash = type.hash(data)
 
   return axios.post(transactionEndpoint, {
-    protocol_version: type.protocol_version,
+    public_key: type.public_key,
     service_id: type.service_id,
-    message_id: type.message_id,
     body: data,
     signature: signature
   }).then(() => {
