@@ -1,5 +1,8 @@
 import * as validate from './validate'
 
+export const PUBLIC_KEY_LENGTH = 32
+const HASH_LENGTH = 32
+
 /**
  * Encoder
  *
@@ -105,7 +108,7 @@ function Uuid (validator, serializer, factory) {
  * @private
  */
 function Hash (validator, serializer, factory) {
-  const size = 32
+  const size = HASH_LENGTH
   const name = 'Hash'
 
   validator = validator.bind(null, name, size)
@@ -151,7 +154,7 @@ function Digest (validator, serializer, factory) {
  * @private
  */
 function PublicKey (validator, serializer, factory) {
-  const size = 32
+  const size = PUBLIC_KEY_LENGTH
   const name = 'PublicKey'
 
   validator = validator.bind(null, name, size)

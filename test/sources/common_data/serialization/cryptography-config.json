@@ -41,9 +41,8 @@
   },
   "type3": {
     "as": "message",
-    "protocol_version": 0,
+    "public_key": "f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36",
     "service_id": 1,
-    "message_id": 2,
     "fields": [
       {
         "name": "name",
@@ -66,9 +65,8 @@
   },
   "type4": {
     "as": "message",
-    "protocol_version": 0,
+    "public_key": "f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36",
     "service_id": 1,
-    "message_id": 2,
     "fields": [
       {
         "name": "name",
@@ -123,9 +121,8 @@
   },
   "type7": {
     "as": "message",
-    "protocol_version": 0,
+    "public_key": "f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36",
     "service_id": 1,
-    "message_id": 2,
     "fields": [
       {
         "name": "name",
@@ -147,9 +144,8 @@
   },
   "type8": {
     "as": "message",
-    "protocol_version": 0,
+    "public_key": "f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36",
     "service_id": 1,
-    "message_id": 2,
     "fields": [
       {
         "name": "name",

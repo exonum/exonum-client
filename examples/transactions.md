@@ -7,9 +7,8 @@ An example of serialization into a byte array:
 ```javascript
 // Define a transaction
 let sendFunds = Exonum.newMessage({
-  protocol_version: 0,
+  public_key: 'f5602a686807fbf54b47eb4c96b5bac3352a44e7500f6e507b8b4e341302c799',
   service_id: 130,
-  message_id: 128,
   fields: [
     { name: 'from', type: Exonum.Hash },
     { name: 'to', type: Exonum.Hash },
@@ -37,9 +36,8 @@ An example of transaction signing:
 ```javascript
 // Define a transaction
 let sendFunds = Exonum.newMessage({
-  protocol_version: 0,
+  public_key: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
   service_id: 130,
-  message_id: 128,
   fields: [
     { name: 'from', type: Exonum.Hash },
     { name: 'to', type: Exonum.Hash },
@@ -74,9 +72,8 @@ An example of signature verification:
 ```javascript
 // Define a transaction
 let sendFunds = Exonum.newMessage({
-  protocol_version: 0,
+  public_key: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
   service_id: 130,
-  message_id: 128,
   fields: [
     { name: 'from', type: Exonum.Hash },
     { name: 'to', type: Exonum.Hash },
@@ -117,9 +114,8 @@ Example of calculation of a transaction hash:
 ```javascript
 // Define a transaction
 let sendFunds = Exonum.newMessage({
-  protocol_version: 0,
+  public_key: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
   service_id: 130,
-  message_id: 128,
   fields: [
     { name: 'from', type: Exonum.Hash },
     { name: 'to', type: Exonum.Hash },
@@ -158,9 +154,8 @@ Read more about [hashes](../README.md#hash).
 ```javascript
 // Define a transaction
 let sendFunds = Exonum.newMessage({
-  protocol_version: 0,
+  public_key: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
   service_id: 130,
-  message_id: 128,
   fields: [
     { name: 'from', type: Exonum.Hash },
     { name: 'to', type: Exonum.Hash },
@@ -202,9 +197,8 @@ sendFunds.send(transactionEndpoint, explorerBasePath, data, signature).then(resp
 ```javascript
 // Define a transaction
 let sendFunds = Exonum.newMessage({
-  protocol_version: 0,
+  public_key: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
   service_id: 130,
-  message_id: 128,
   fields: [
     { name: 'from', type: Exonum.Hash },
     { name: 'to', type: Exonum.Hash },

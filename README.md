@@ -499,9 +499,8 @@ An example of a transaction definition:
 
 ```javascript
 let sendFunds = Exonum.newMessage({
-  protocol_version: 0,
+  public_key: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
   service_id: 130,
-  message_id: 128,
   fields: [
     { name: 'from', type: Exonum.Hash },
     { name: 'to', type: Exonum.Hash },
@@ -514,9 +513,8 @@ let sendFunds = Exonum.newMessage({
 
 | Property | Description | Type |
 |---|---|---|
-| **protocol_version** | [Protocol version][docs:architecture:serialization:protocol-version]. | `Number` |
+| **public_key** | Public key as hexadecimal string. | `String` |
 | **service_id** | [Service ID][docs:architecture:serialization:service-id]. | `Number` |
-| **message_id** | [Message ID][docs:architecture:serialization:message-id]. | `Number` |
 | **signature** | Signature as hexadecimal string. *Optional.* | `String` |
 | **fields** | List of fields. | `Array` |
 
