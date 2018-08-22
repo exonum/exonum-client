@@ -58,26 +58,30 @@ export function send (transactionEndpoint, explorerBasePath, data, signature, ty
     body: data,
     signature: signature
   }).then(() => {
-    let count = attempts
-
-    return (function attempt () {
-      return axios.get(`${explorerBasePath}${hash}`).then(response => {
-        if (response.data.type === 'committed') {
-          return response.data
+    if (attempts > 0) {
+      let count = attempts
+      return (function attempt () {
+        if (count-- > 0) {
+          return axios.get(`${explorerBasePath}${hash}`).then(response => {
+            if (response.data.type === 'committed') {
+              return hash
+            }
+            return new Promise((resolve) => {
+              setTimeout(resolve, timeout)
+            }).then(attempt)
+          }).catch(() => {
+            if (count > 0) {
+              return new Promise((resolve) => {
+                setTimeout(resolve, timeout)
+              }).then(attempt)
+            }
+            throw new Error('The request failed or the blockchain did not respond.')
+          })
+        } else {
+          throw new Error('Transaction is not accepted to the block.')
         }
-        if (--count > 0) {
-          return new Promise((resolve) => {
-            setTimeout(resolve, timeout)
-          }).then(attempt)
-        }
-        throw new Error('Unable to verify transaction in the blockchain.')
-      }).catch(error => {
-        if (--count > 0) {
-          return attempt(error)
-        }
-        throw new Error('Unable to verify transaction in the blockchain.')
-      })
-    })()
+      })()
+    }
   })
 }
 
