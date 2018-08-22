@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.12.4 (Aug 22, 2018)
+
+* Fix `send` method when `attempts` to be `0`. ([#133][pr-133])
+
 ## 0.12.3 (Jul 31, 2018)
 
 * Fix broken `MapProof` in Internet Explorer. ([#126][pr-126])
@@ -137,6 +141,7 @@ matching [release 0.1][release-0.1] of the Exonum core repository.
 [release-0.7]: https://github.com/exonum/exonum/blob/master/CHANGELOG.md#07---2018-04-11
 [release-0.5]: https://github.com/exonum/exonum/blob/master/CHANGELOG.md#05---2018-01-30
 [release-0.1]: https://github.com/exonum/exonum/releases/tag/v0.1
+[pr-133]: https://github.com/exonum/exonum-client/pull/133
 [pr-126]: https://github.com/exonum/exonum-client/pull/126
 [pr-122]: https://github.com/exonum/exonum-client/pull/122
 [pr-116]: https://github.com/exonum/exonum-client/pull/116

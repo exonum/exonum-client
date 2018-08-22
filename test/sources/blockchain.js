@@ -407,19 +407,20 @@ describe('Send transaction to the blockchain', function () {
     amount: 1000
   }
   const signature = sendFunds.sign(keyPair.secretKey, data)
+  const txHash = '383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380'
 
   describe('Valid transaction has been sent', function () {
     before(function () {
       mock
         .onPost(transactionEndpoint)
-        .replyOnce(200, '383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380')
+        .replyOnce(200)
 
       mock
-        .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
+        .onGet(`${explorerBasePath}${txHash}`)
         .replyOnce(200, {
           type: 'in-pool'
         })
-        .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
+        .onGet(`${explorerBasePath}${txHash}`)
         .replyOnce(200, {
           type: 'committed'
         })
@@ -431,9 +432,7 @@ describe('Send transaction to the blockchain', function () {
 
     it('should return fulfilled Promise state when transaction has accepted to the blockchain', function () {
       return Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds).then(response => {
-        expect(response).to.deep.equal({
-          type: 'committed'
-        })
+        expect(response).to.deep.equal(txHash)
       })
     })
   })
@@ -442,20 +441,20 @@ describe('Send transaction to the blockchain', function () {
     before(function () {
       mock
         .onPost(transactionEndpoint)
-        .replyOnce(200, '383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380')
+        .replyOnce(200)
 
       mock
-        .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
+        .onGet(`${explorerBasePath}${txHash}`)
         .replyOnce(404)
-        .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
+        .onGet(`${explorerBasePath}${txHash}`)
         .replyOnce(404)
-        .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
+        .onGet(`${explorerBasePath}${txHash}`)
         .replyOnce(404)
-        .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
+        .onGet(`${explorerBasePath}${txHash}`)
         .replyOnce(200, {
           type: 'in-pool'
         })
-        .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
+        .onGet(`${explorerBasePath}${txHash}`)
         .replyOnce(200, {
           type: 'committed'
         })
@@ -466,10 +465,9 @@ describe('Send transaction to the blockchain', function () {
     })
 
     it('should return fulfilled Promise state when transaction has accepted to the blockchain', function () {
+      this.timeout(5000)
       return Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds).then(response => {
-        expect(response).to.deep.equal({
-          type: 'committed'
-        })
+        expect(response).to.deep.equal(txHash)
       })
     })
   })
@@ -478,34 +476,34 @@ describe('Send transaction to the blockchain', function () {
     before(function () {
       mock
         .onPost(transactionEndpoint)
-        .replyOnce(200, '383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380')
+        .replyOnce(200)
 
       mock
-        .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
+        .onGet(`${explorerBasePath}${txHash}`)
         .replyOnce(200, {
           type: 'in-pool'
         })
-        .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
+        .onGet(`${explorerBasePath}${txHash}`)
         .replyOnce(200, {
           type: 'in-pool'
         })
-        .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
+        .onGet(`${explorerBasePath}${txHash}`)
         .replyOnce(200, {
           type: 'in-pool'
         })
-        .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
+        .onGet(`${explorerBasePath}${txHash}`)
         .replyOnce(200, {
           type: 'in-pool'
         })
-        .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
+        .onGet(`${explorerBasePath}${txHash}`)
         .replyOnce(200, {
           type: 'in-pool'
         })
-        .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
+        .onGet(`${explorerBasePath}${txHash}`)
         .replyOnce(200, {
           type: 'in-pool'
         })
-        .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
+        .onGet(`${explorerBasePath}${txHash}`)
         .replyOnce(200, {
           type: 'committed'
         })
@@ -517,9 +515,7 @@ describe('Send transaction to the blockchain', function () {
 
     it('should return fulfilled Promise state when transaction has accepted to the blockchain', function () {
       return Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds, 100, 7).then(response => {
-        expect(response).to.deep.equal({
-          type: 'committed'
-        })
+        expect(response).to.deep.equal(txHash)
       })
     })
   })
@@ -528,7 +524,7 @@ describe('Send transaction to the blockchain', function () {
     before(function () {
       mock
         .onPost(transactionEndpoint)
-        .replyOnce(200, '383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380')
+        .replyOnce(200)
     })
 
     after(function () {
@@ -610,10 +606,10 @@ describe('Send transaction to the blockchain', function () {
       before(function () {
         mock
           .onPost(transactionEndpoint)
-          .reply(200, '383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380')
+          .reply(200)
 
         mock
-          .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
+          .onGet(`${explorerBasePath}${txHash}`)
           .reply(200, {
             type: 'in-pool'
           })
@@ -627,7 +623,7 @@ describe('Send transaction to the blockchain', function () {
         return Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds, 3, 100).catch(error => {
           expect(() => {
             throw new Error(error)
-          }).to.throw(Error, 'Unable to verify transaction in the blockchain.')
+          }).to.throw(Error, 'The transaction was not accepted to the block for the expected period.')
         })
       })
     })
@@ -636,11 +632,11 @@ describe('Send transaction to the blockchain', function () {
       before(function () {
         mock
           .onPost(transactionEndpoint)
-          .reply(200, '383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380')
+          .reply(200)
 
         mock
-          .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
-          .reply(200, {})
+          .onGet(`${explorerBasePath}${txHash}`)
+          .reply(200)
       })
 
       after(function () {
@@ -651,7 +647,7 @@ describe('Send transaction to the blockchain', function () {
         return Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds, 3, 100).catch(error => {
           expect(() => {
             throw new Error(error)
-          }).to.throw(Error, 'Unable to verify transaction in the blockchain.')
+          }).to.throw(Error, 'The transaction was not accepted to the block for the expected period.')
         })
       })
     })
@@ -660,10 +656,10 @@ describe('Send transaction to the blockchain', function () {
       before(function () {
         mock
           .onPost(transactionEndpoint)
-          .reply(200, '383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380')
+          .reply(200)
 
         mock
-          .onGet(`${explorerBasePath}383900f7721acc9b7b45dd2495b28072d203b4e60137a95a94d98289970d5380`)
+          .onGet(`${explorerBasePath}${txHash}`)
           .reply(404)
       })
 
@@ -675,7 +671,7 @@ describe('Send transaction to the blockchain', function () {
         return Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds, 3, 100).catch(error => {
           expect(() => {
             throw new Error(error)
-          }).to.throw(Error, 'Unable to verify transaction in the blockchain.')
+          }).to.throw(Error, 'The request failed or the blockchain node did not respond.')
         })
       })
     })
@@ -747,7 +743,10 @@ describe('Send multiple transactions to the blockchain', function () {
 
     it('should return fulfilled Promise state when queue of valid transactions has been accepted to the blockchain', function () {
       return Exonum.sendQueue(transactionEndpoint, explorerBasePath, transactions).then(response => {
-        expect(response).to.deep.equal([{ type: 'committed' }, { type: 'committed' }])
+        expect(response).to.deep.equal([
+          '83224bad1283ab98aee8ffbd070988f37fa2e799a3b50ffbad5e54191d0ec7b5',
+          '8297bda142673d33fa23cbe7a8de10de86407d6891bf21803ee1b67332d634ce'
+        ])
       })
     })
   })

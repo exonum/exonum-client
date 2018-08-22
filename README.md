@@ -563,10 +563,10 @@ sendFunds.send(transactionEndpoint, explorerBasePath, data, signature, attempts,
 | **data** | Data that has been signed. | `Object` |
 | **signature** | Signature as hexadecimal string. | `String` |
 | **type** | Definition of the transaction. | [Transaction](#define-transaction). |
-| **attempts** | Number of attempts to check transaction status. Pass `0` in case you do not need to verify if the transaction accepted to the block. *Optional. Default value is `10`.* | `Number` |
+| **attempts** | Number of attempts to check transaction status. Pass `0` in case you do not need to verify if the transaction is accepted to the block. *Optional. Default value is `10`.* | `Number` |
 | **timeout** | Timeout between attempts to check transaction status. *Optional. Default value is `500`.* | `Number` |
 
-The `send` function returns value of `Promise` type.
+The `send` function returns value of `Promise` type with transaction hash as a fulfilled value.
 Fulfilled state means that transaction is accepted to the block.
 Fulfilled value contained transaction with its proof.
 
@@ -579,7 +579,7 @@ const transactionEndpoint = 'http://127.0.0.1:8200/api/services/cryptocurrency/v
 // Define transaction explorer address
 const explorerBasePath = 'http://127.0.0.1:8200/api/explorer/v1/transactions?hash='
 
-sendFunds.send(transactionEndpoint, explorerBasePath, data, signature)
+sendFunds.send(transactionEndpoint, explorerBasePath, data, signature).then(txHash => {})
 ```
 
 ### Send multiple transactions
@@ -608,7 +608,7 @@ Transaction structure:
 | **signature** | Signature as hexadecimal string. | `String` |
 | **type** | Definition of the transaction. | [Transaction](#define-transaction). |
 
-The `sendQueue` function returns value of `Promise` type.
+The `sendQueue` function returns value of `Promise` type with an array of transaction hashes as a fulfilled value.
 Fulfilled state means that all transactions are accepted to the block.
 Fulfilled value contained an array of transactions with its proofs.
 
