@@ -4,7 +4,7 @@ import { Hash } from '../types/hexadecimal'
 import { newType } from '../types/generic'
 import { newMessage } from '../types/message'
 import { validateHexadecimal } from '../types/validate'
-import { hash, verifySignature } from '../crypto'
+import { hash, verifySignature } from '../crypto/cryptography'
 
 const PROTOCOL_VERSION = 0
 const CORE_SERVICE_ID = 0

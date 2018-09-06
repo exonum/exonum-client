@@ -64,14 +64,24 @@ module.exports = function (grunt) {
           reporter: 'spec',
           require: ['babel-register']
         },
-        src: ['./test/sources/**/*.js']
+        // src: ['./test/sources/**/*.js']
+        src: [
+          './test/sources/converters.js',
+          './test/sources/serialization.js',
+          './test/sources/cryptography.js'
+        ]
       },
       all: {
         options: {
           reporter: 'spec',
           require: ['babel-register']
         },
-        src: ['./test/**/*.js']
+        // src: ['./test/**/*.js']
+        src: [
+          './test/sources/converters.js',
+          './test/sources/serialization.js',
+          './test/sources/cryptography.js'
+        ]
       }
     }
   })

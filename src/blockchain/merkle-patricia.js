@@ -1,9 +1,9 @@
 import binarySearch from 'binary-search'
 
-import { hash } from '../crypto'
+import { hash } from '../crypto/cryptography'
 import { newType } from '../types/generic'
 import { Hash } from '../types/hexadecimal'
-import ProofPath from './ProofPath'
+import ProofPath from './proof-path'
 
 /**
  * Proof of existence and/or absence of certain elements from a Merkelized

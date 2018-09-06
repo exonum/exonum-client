@@ -5,7 +5,7 @@ const expect = require('chai')
   .use(require('dirty-chai'))
   .expect
 
-const ProofPath = require('../../src/blockchain/ProofPath').default
+const ProofPath = require('../../src/blockchain/proof-path').default
 const Exonum = require('../../src')
 const { MapProof, MapProofError } = Exonum
 

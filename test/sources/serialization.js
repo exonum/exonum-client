@@ -2,57 +2,27 @@
 /* eslint-disable no-unused-expressions */
 
 const expect = require('chai').expect
-const DataSchema = require('./data_schema/dataSchema').default
-const serializationMock = require('./data/serialization/serialization.json')
-const serialization = require('./data/serialization/serialization-config.json')
-const schema = new DataSchema(serialization)
+const protobuf = require('protobufjs')
+const Type = protobuf.Type
+const Field = protobuf.Field
 
-describe('Serialize data into array of 8-bit integers', function () {
-  it('should serialize data of newType type and return array of 8-bit integers', function () {
-    const buffer = schema.getType('wallet').serialize(serializationMock.wallet.data)
+describe('Serialize data', function () {
+  const data = { name: 'John Doe', age: 29 }
+  const buffer = new Uint8Array([10, 8, 74, 111, 104, 110, 32, 68, 111, 101, 16, 29])
 
-    expect(buffer).to.deep.equal(serializationMock.wallet.serialized)
+  it('should serialize data', function () {
+    let User = new Type('User').add(new Field('name', 1, 'string')).add(new Field('age', 2, 'int32'))
+    let Message = User.create(data)
+
+    expect(User.encode(Message).finish()).to.deep.equal(buffer)
   })
 
-  it('should serialize data of newMessage type and return array of 8-bit integers', function () {
-    const buffer = schema.getMessage('addUser').serialize(serializationMock.user.data)
-
-    expect(buffer).to.deep.equal(serializationMock.user.serialized)
-  })
-
-  it('should serialize data of newMessage type with nester array and return array of 8-bit integers', function () {
-    const buffer = schema.getMessage('addUserArray').serialize(serializationMock.userArray.data)
-
-    expect(buffer).to.deep.equal(serializationMock.userArray.serialized)
-  })
-
-  it('should serialize data of simple array and return array of 8-bit integers', function () {
-    const buffer = schema.getType('addSimpleArray').serialize(serializationMock.simpleArray2.data)
-
-    expect(buffer).to.deep.equal(serializationMock.simpleArray2.serialized)
-  })
-
-  it('should serialize data of complicated non-fixed newType type and return array of 8-bit integers', function () {
-    const buffer = schema.getType('transaction').serialize(serializationMock.transactionData.data)
-
-    expect(buffer).to.deep.equal(serializationMock.transactionData.serialized)
-  })
-
-  it('should serialize data of complicated non-fixed newType type and return array of 8-bit integers', function () {
-    const buffer = schema.getType('transaction2').serialize(serializationMock.transactionData2.data)
-
-    expect(buffer).to.deep.equal(serializationMock.transactionData2.serialized)
-  })
-
-  it('should serialize data of complicated fixed newType type and return array of 8-bit integers', function () {
-    const buffer = schema.getType('transaction3').serialize(serializationMock.transactionData3.data)
-
-    expect(buffer).to.deep.equal(serializationMock.transactionData3.serialized)
-  })
-
-  it('should throw error when some data parameters are missed', function () {
-    const walletData = { fake: 123 }
-
-    expect(() => schema.getType('wallet4').serialize(walletData)).to.throw(TypeError)
+  it('should serialize data using scheme defined in .proto file', function () {
+    return protobuf.load('./test/sources/schemas/user.proto')
+      .then(root => {
+        let User = root.lookupType('User')
+        let Message = User.create(data)
+        expect(User.encode(Message).finish()).to.deep.equal(buffer)
+      })
   })
 })

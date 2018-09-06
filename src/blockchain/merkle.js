@@ -3,7 +3,7 @@ import { isObject } from '../helpers'
 import { isInstanceofOfNewType } from '../types/generic'
 import { validateHexadecimal, validateBytesArray } from '../types/validate'
 import { hexadecimalToUint8Array } from '../types/convert'
-import { hash } from '../crypto'
+import { hash } from '../crypto/cryptography'
 
 /**
  * Calculate height of merkle tree
