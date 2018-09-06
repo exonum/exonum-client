@@ -4,9 +4,9 @@
 const expect = require('chai').expect
 const Exonum = require('../../src')
 const DataSchema = require('./data_schema/dataSchema').default
-const cryptographyMock = require('./common_data/serialization/cryptography.json')
-const invalidCryptographyMock = require('./common_data/serialization/cryptography-invalid.json')
-const cryptography = require('./common_data/serialization/cryptography-config.json')
+const cryptographyMock = require('./data/serialization/cryptography.json')
+const invalidCryptographyMock = require('./data/serialization/cryptography-invalid.json')
+const cryptography = require('./data/serialization/cryptography-config.json')
 const schema = new DataSchema(cryptography)
 
 describe('Check cryptography', function () {

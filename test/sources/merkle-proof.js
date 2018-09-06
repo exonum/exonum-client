@@ -6,7 +6,7 @@ const Exonum = require('../../src')
 
 describe('Check proof of Merkle tree', function () {
   it('should return array of children of valid tree', function () {
-    const data = require('./common_data/merkle-tree/valid-merkle-tree.json')
+    const data = require('./data/merkle-tree/valid-merkle-tree.json')
     const elements = Exonum.merkleProof(
       data.root_hash,
       data.list_length,
@@ -24,7 +24,7 @@ describe('Check proof of Merkle tree', function () {
   })
 
   it('should return array of children of valid tree with range end placed out of possible range', function () {
-    const data = require('./common_data/merkle-tree/valid-merkle-tree-with-single-node.json')
+    const data = require('./data/merkle-tree/valid-merkle-tree-with-single-node.json')
     const elements = Exonum.merkleProof(
       data.root_hash,
       data.list_length,
@@ -35,7 +35,7 @@ describe('Check proof of Merkle tree', function () {
   })
 
   it('should return array of children of fully balanced valid tree contained all its values', function () {
-    const data = require('./common_data/merkle-tree/valid-merkle-tree-fully-balanced-with-all-values.json')
+    const data = require('./data/merkle-tree/valid-merkle-tree-fully-balanced-with-all-values.json')
     const elements = Exonum.merkleProof(
       data.root_hash,
       data.list_length,
@@ -55,7 +55,7 @@ describe('Check proof of Merkle tree', function () {
   })
 
   it('should return array of children of valid tree with byte arrays as values', function () {
-    const data = require('./common_data/merkle-tree/valid-merkle-tree-with-byte-arrays-as-values.json')
+    const data = require('./data/merkle-tree/valid-merkle-tree-with-byte-arrays-as-values.json')
     const elements = Exonum.merkleProof(
       data.root_hash,
       data.list_length,
@@ -138,7 +138,7 @@ describe('Check proof of Merkle tree', function () {
   })
 
   it('should return array of children of valid tree with hashes as values', function () {
-    const data = require('./common_data/merkle-tree/valid-merkle-tree-with-hashes-as-values.json')
+    const data = require('./data/merkle-tree/valid-merkle-tree-with-hashes-as-values.json')
     const elements = Exonum.merkleProof(
       data.root_hash,
       data.list_length,
@@ -263,7 +263,7 @@ describe('Check proof of Merkle tree', function () {
   })
 
   it('should throw error when the tree with leaf on wrong height', function () {
-    const data = require('./common_data/merkle-tree/invalid-merkle-tree-with-leaf-on-wrong-height.json')
+    const data = require('./data/merkle-tree/invalid-merkle-tree-with-leaf-on-wrong-height.json')
     const rootHash = data.root_hash
     const count = data.list_length
     const proofNode = data.proof
@@ -430,7 +430,7 @@ describe('Check proof of Merkle tree', function () {
   })
 
   it('should throw error when the tree with missed right leaf inside right tree branch', function () {
-    const data = require('./common_data/merkle-tree/invalid-merkle-tree-missed-right-leaf-on-left-branch.json')
+    const data = require('./data/merkle-tree/invalid-merkle-tree-missed-right-leaf-on-left-branch.json')
     const rootHash = data.root_hash
     const count = data.list_length
     const proofNode = data.proof

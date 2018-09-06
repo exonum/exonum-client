@@ -18,7 +18,7 @@ describe('Verify block of precommits', function () {
   const networkId = 0
 
   it('should return true when valid block with precommits', function () {
-    const data = require('./common_data/block-with-precommits/valid-block-with-precommits.json')
+    const data = require('./data/block/valid-block-with-precommits.json')
     expect(Exonum.verifyBlock(data, validators, networkId)).to.be.true
   })
 

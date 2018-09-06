@@ -3,8 +3,8 @@
 
 const expect = require('chai').expect
 const DataSchema = require('./data_schema/dataSchema').default
-const serializationMock = require('./common_data/serialization/serialization.json')
-const serialization = require('./common_data/serialization/serialization-config.json')
+const serializationMock = require('./data/serialization/serialization.json')
+const serialization = require('./data/serialization/serialization-config.json')
 const schema = new DataSchema(serialization)
 
 describe('Serialize data into array of 8-bit integers', function () {

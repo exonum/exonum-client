@@ -4,9 +4,9 @@
 const expect = require('chai').expect
 const Exonum = require('../../src')
 const DataSchema = require('./data_schema/dataSchema').default
-const typesMock = require('./common_data/serialization/types.json')
-const invalidTypesMock = require('./common_data/serialization/types-invalid.json')
-const types = require('./common_data/serialization/types-config.json')
+const typesMock = require('./data/serialization/types.json')
+const invalidTypesMock = require('./data/serialization/types-invalid.json')
+const types = require('./data/serialization/types-config.json')
 const schema = new DataSchema(types)
 
 describe('Check built-in types', function () {
