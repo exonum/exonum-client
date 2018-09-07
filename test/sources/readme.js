@@ -1,6 +1,6 @@
 /* eslint-env node, mocha */
 /* eslint-disable no-unused-expressions */
-
+/*
 const expect = require('chai').expect
 const Exonum = require('../../src')
 
@@ -234,3 +234,4 @@ describe('Examples from README.md', function () {
     })
   })
 })
+*/

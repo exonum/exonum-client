@@ -1,6 +1,7 @@
 /* eslint-env node, mocha */
 /* eslint-disable no-unused-expressions */
 
+/*
 const expect = require('chai').expect
 const Exonum = require('../../src')
 const DataSchema = require('./data_schema/dataSchema').default
@@ -450,3 +451,4 @@ describe('Check cryptography', function () {
     })
   })
 })
+*/

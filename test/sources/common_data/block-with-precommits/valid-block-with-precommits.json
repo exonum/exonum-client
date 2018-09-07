@@ -10,16 +10,15 @@
     "precommits": [
         {
             "body": {
-                "block_hash": "1a1b6bf4c9f7543809e1011b1d5e4ad0b76eab14924d8ff00ba1a79f0466ce6b",
+                "block_hash": "1b7bc3276c2eba4d43a117402b9fbf4c700c20d90a8e75f3c5dbd40d91ef2d4d",
                 "height": "4",
                 "propose_hash": "878165361bb6b207ca75cac83e2817b34564a9b5115128b21f4f89f729d60769",
                 "round": 4,
-                "time": {
-                    "nanos": 804000000,
-                    "secs": "1486720350"
-                },
+                "date_timems": "1486720350",
+                "date_timens": 804000000,
                 "validator": 0
             },
+            "message_type": "precommit",
             "message_id": 4,
             "protocol_version": 0,
             "service_id": 0,
@@ -27,16 +26,15 @@
         },
         {
             "body": {
-                "block_hash": "1a1b6bf4c9f7543809e1011b1d5e4ad0b76eab14924d8ff00ba1a79f0466ce6b",
+                "block_hash": "1b7bc3276c2eba4d43a117402b9fbf4c700c20d90a8e75f3c5dbd40d91ef2d4d",
                 "height": "4",
                 "propose_hash": "878165361bb6b207ca75cac83e2817b34564a9b5115128b21f4f89f729d60769",
                 "round": 4,
-                "time": {
-                    "nanos": 804000000,
-                    "secs": "1486720350"
-                },
+                "date_timems": "1486720350",
+                "date_timens": 804000000,
                 "validator": 1
             },
+            "message_type": "precommit",
             "message_id": 4,
             "protocol_version": 0,
             "service_id": 0,
@@ -44,16 +42,15 @@
         },
         {
             "body": {
-                "block_hash": "1a1b6bf4c9f7543809e1011b1d5e4ad0b76eab14924d8ff00ba1a79f0466ce6b",
+                "block_hash": "1b7bc3276c2eba4d43a117402b9fbf4c700c20d90a8e75f3c5dbd40d91ef2d4d",
                 "height": "4",
                 "propose_hash": "878165361bb6b207ca75cac83e2817b34564a9b5115128b21f4f89f729d60769",
                 "round": 4,
-                "time": {
-                    "nanos": 804000000,
-                    "secs": "1486720350"
-                },
+                "date_timems": "1486720350",
+                "date_timens": 804000000,
                 "validator": 2
             },
+            "message_type": "precommit",
             "message_id": 4,
             "protocol_version": 0,
             "service_id": 0,

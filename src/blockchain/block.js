@@ -9,6 +9,9 @@ import { hash, verifySignature } from '../crypto'
 const PROTOCOL_VERSION = 0
 const CORE_SERVICE_ID = 0
 const PRECOMMIT_MESSAGE_ID = 4
+const PRECOMMIT_TAG = 0
+const CONSENSUS_TAG = 0
+const MESSAGE_TYPE_PRECOMMIT = 'precommit'
 const Block = newType({
   fields: [
     { name: 'proposer_id', type: primitive.Uint16 },
@@ -17,12 +20,6 @@ const Block = newType({
     { name: 'prev_hash', type: Hash },
     { name: 'tx_hash', type: Hash },
     { name: 'state_hash', type: Hash }
-  ]
-})
-const SystemTime = newType({
-  fields: [
-    { name: 'secs', type: primitive.Uint64 },
-    { name: 'nanos', type: primitive.Uint32 }
   ]
 })
 
@@ -61,14 +58,18 @@ export function verifyBlock (data, validators) {
   const Precommit = newMessage({
     protocol_version: PROTOCOL_VERSION,
     message_id: PRECOMMIT_MESSAGE_ID,
+    message_type: MESSAGE_TYPE_PRECOMMIT,
     service_id: CORE_SERVICE_ID,
+    precommit_tag: PRECOMMIT_TAG,
+    consensus_tag: CONSENSUS_TAG,
     fields: [
       { name: 'validator', type: primitive.Uint16 },
       { name: 'height', type: primitive.Uint64 },
       { name: 'round', type: primitive.Uint32 },
       { name: 'propose_hash', type: Hash },
       { name: 'block_hash', type: Hash },
-      { name: 'time', type: SystemTime }
+      { name: 'date_timems', type: primitive.Uint64 },
+      { name: 'date_timens', type: primitive.Uint32 }
     ]
   })
 
@@ -117,6 +118,8 @@ export function verifyBlock (data, validators) {
     }
 
     const publicKey = validators[precommit.body.validator]
+
+    Precommit.public_key = publicKey
 
     if (!verifySignature(precommit.signature, publicKey, precommit.body, Precommit)) {
       return false

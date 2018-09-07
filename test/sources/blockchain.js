@@ -16,7 +16,6 @@ describe('Verify block of precommits', function () {
     '66cd608b928b88e50e0efeaa33faf1c43cefe07294b0b87e9fe0aba6a3cf7633'
   ]
   const networkId = 0
-
   it('should return true when valid block with precommits', function () {
     const data = require('./common_data/block-with-precommits/valid-block-with-precommits.json')
     expect(Exonum.verifyBlock(data, validators, networkId)).to.be.true
@@ -389,6 +388,7 @@ describe('Send transaction to the blockchain', function () {
     protocol_version: 0,
     service_id: 130,
     message_id: 128,
+    public_key: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
     fields: [
       { name: 'from', type: Exonum.Hash },
       { name: 'to', type: Exonum.Hash },
@@ -683,6 +683,7 @@ describe('Send multiple transactions to the blockchain', function () {
     protocol_version: 0,
     service_id: 130,
     message_id: 128,
+    public_key: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
     fields: [
       { name: 'from', type: Exonum.Hash },
       { name: 'to', type: Exonum.Hash },

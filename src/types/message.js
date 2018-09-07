@@ -1,5 +1,5 @@
 import * as primitive from './primitive'
-import { Digest } from './hexadecimal'
+import { Digest, Hash } from './hexadecimal'
 import { fieldIsFixed, newType } from './generic'
 import * as serialization from './serialization'
 import * as crypto from '../crypto'
@@ -26,7 +26,57 @@ class NewMessage {
     this.message_id = type.message_id
     this.service_id = type.service_id
     this.signature = type.signature
+    this.public_key = type.public_key
+    this.consensus_tag = type.consensus_tag
+    this.precommit_tag = type.precommit_tag
+    this.message_type = type.message_type
     this.fields = type.fields
+  }
+
+  transactionHeaderSerialization () {
+    const MessageHead = newType({
+      fields: [
+        { name: 'protocol_version', type: primitive.Uint16 },
+        { name: 'pk_size', type: primitive.Uint64 },
+        { name: 'pk_data', type: Hash },
+        { name: 'tx_tag', type: primitive.Uint32 },
+        { name: 'service_id', type: primitive.Uint16 },
+        { name: 'full_tx_len', type: primitive.Uint64 }
+      ]
+    })
+    const header = {
+      protocol_version: this.protocol_version,
+      pk_size: this.public_key.length / 2,
+      pk_data: this.public_key,
+      tx_tag: 0,
+      service_id: this.service_id,
+      full_tx_len: 0
+    }
+
+    return MessageHead.serialize(header)
+  }
+
+  precommitHeaderSerialization () {
+    const MessageHead = newType({
+      fields: [
+        { name: 'protocol_version', type: primitive.Uint16 },
+        { name: 'pk_size', type: primitive.Uint64 },
+        { name: 'pk_data', type: Hash },
+        { name: 'consensus_tag', type: primitive.Uint32 },
+        { name: 'precommit_tag', type: primitive.Uint32 },
+        { name: 'precommit_len', type: primitive.Uint64 }
+      ]
+    })
+    const header = {
+      protocol_version: this.protocol_version,
+      pk_size: this.public_key.length / 2,
+      pk_data: this.public_key,
+      consensus_tag: this.consensus_tag,
+      precommit_tag: this.precommit_tag,
+      precommit_len: 0
+    }
+
+    return MessageHead.serialize(header)
   }
 
   size () {
@@ -45,35 +95,27 @@ class NewMessage {
    * @returns {Array}
    */
   serialize (data, cutSignature) {
-    const MessageHead = newType({
-      fields: [
-        { name: 'network_id', type: primitive.Uint8 },
-        { name: 'protocol_version', type: primitive.Uint8 },
-        { name: 'message_id', type: primitive.Uint16 },
-        { name: 'service_id', type: primitive.Uint16 },
-        { name: 'payload', type: primitive.Uint32 }
-      ]
-    })
 
-    let buffer = MessageHead.serialize({
-      network_id: 0,
-      protocol_version: this.protocol_version,
-      message_id: this.message_id,
-      service_id: this.service_id,
-      payload: 0 // placeholder, real value will be inserted later
-    })
+    let buffer = this.message_type === 'precommit' ? this.precommitHeaderSerialization() : this.transactionHeaderSerialization()
 
     // serialize and append message body
-    buffer = serialization.serialize(buffer, 10, data, this, true)
+    let body = []
+    body = serialization.serialize(body, 0, data, this, true)
 
     // calculate payload and insert it into buffer
-    primitive.Uint32.serialize(buffer.length + SIGNATURE_LENGTH, buffer, 6)
+    this.message_type === 'precommit' ? primitive.Uint64.serialize(body.length, buffer, 50) : primitive.Uint64.serialize(body.length, buffer, 48)
+
+    body.forEach(element => {
+      buffer.push(element)
+    })
 
     if (cutSignature !== true) {
+      // calculate SIGNATURE_LENGTH and insert it into buffer
+      primitive.Uint64.serialize(SIGNATURE_LENGTH, buffer, buffer.length)
       // append signature
       Digest.serialize(this.signature, buffer, buffer.length)
     }
-
+    console.log(buffer.toString())
     return buffer
   }
 
