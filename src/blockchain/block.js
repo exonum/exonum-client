@@ -1,12 +1,11 @@
 import * as primitive from '../types/primitive'
-import { SIGNATURE_LENGTH } from '../types/message'
+import { newPrecommit, SIGNATURE_LENGTH } from '../types/message'
 import { Hash, PUBLIC_KEY_LENGTH } from '../types/hexadecimal'
 import { newType } from '../types/generic'
 import { hexadecimalToUint8Array, uint8ArrayToHexadecimal } from '../types/convert'
 import { hash, verifySignature } from '../crypto'
 import { compareUint8Arrays } from '../helpers'
 
-const SERVICE_ID_LENGTH = 2
 const Block = newType({
   fields: [
     { name: 'proposer_id', type: primitive.Uint16 },
@@ -21,16 +20,6 @@ const SystemTime = newType({
   fields: [
     { name: 'secs', type: primitive.Uint64 },
     { name: 'nanos', type: primitive.Uint32 }
-  ]
-})
-const PrecommitBody = newType({
-  fields: [
-    { name: 'validator', type: primitive.Uint16 },
-    { name: 'height', type: primitive.Uint64 },
-    { name: 'round', type: primitive.Uint32 },
-    { name: 'propose_hash', type: Hash },
-    { name: 'block_hash', type: Hash },
-    { name: 'time', type: SystemTime }
   ]
 })
 
@@ -51,8 +40,6 @@ export function verifyBlock (data, validators) {
   for (let i = 0; i < data.precommits.length; i++) {
     const precommit = data.precommits[i]
     const buffer = hexadecimalToUint8Array(precommit.message)
-    const publicKey = uint8ArrayToHexadecimal(buffer.slice(0, PUBLIC_KEY_LENGTH))
-    const signature = uint8ArrayToHexadecimal(buffer.slice(buffer.length - SIGNATURE_LENGTH, buffer.length))
 
     if (precommit.payload.height !== data.block.height) {
       // height of block is not match
@@ -64,18 +51,35 @@ export function verifyBlock (data, validators) {
       return false
     }
 
-    if (validators[precommit.payload.validator] !== publicKey) {
+    const publicKey = validators[precommit.payload.validator]
+    if (uint8ArrayToHexadecimal(buffer.slice(0, PUBLIC_KEY_LENGTH)) !== publicKey) {
       // public key is not match
       return false
     }
 
-    if (!compareUint8Arrays(PrecommitBody.serialize(precommit.payload), buffer.slice(PUBLIC_KEY_LENGTH + SERVICE_ID_LENGTH, buffer.length - SIGNATURE_LENGTH))) {
+    const Precommit = newPrecommit({
+      public_key: publicKey,
+      fields: [
+        { name: 'validator', type: primitive.Uint16 },
+        { name: 'height', type: primitive.Uint64 },
+        { name: 'round', type: primitive.Uint32 },
+        { name: 'propose_hash', type: Hash },
+        { name: 'block_hash', type: Hash },
+        { name: 'time', type: SystemTime }
+      ]
+    })
+
+    const precommitBody = buffer.slice(0, buffer.length - SIGNATURE_LENGTH)
+
+    if (!compareUint8Arrays(Precommit.serialize(precommit.payload), precommitBody)) {
       // payload is not match
       return false
     }
 
+    const signature = uint8ArrayToHexadecimal(buffer.slice(buffer.length - SIGNATURE_LENGTH, buffer.length))
+
     try {
-      if (!verifySignature(signature, publicKey, buffer.slice(0, buffer.length - SIGNATURE_LENGTH))) {
+      if (!verifySignature(signature, publicKey, precommitBody)) {
         // signature is not match
         return false
       }

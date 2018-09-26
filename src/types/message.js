@@ -149,7 +149,33 @@ class NewPrecommit extends NewMessage {
   constructor (type) {
     super(type)
     this.cls = 1
-    this.tag = 1
+    this.tag = 0
+  }
+
+  /**
+   * Serialize data of NewPrecommit type into array of 8-bit integers
+   * @param {Object} data
+   * @returns {Array}
+   */
+  serialize (data) {
+    const PrecommitHead = newType({
+      fields: [
+        { name: 'public_key', type: PublicKey },
+        { name: 'cls', type: Uint8 },
+        { name: 'tag', type: Uint8 }
+      ]
+    })
+
+    let buffer = PrecommitHead.serialize({
+      public_key: this.public_key,
+      cls: this.cls,
+      tag: this.tag
+    })
+
+    // serialize and append message body
+    buffer = serialization.serialize(buffer, 34, data, this, true)
+
+    return buffer
   }
 }
 
