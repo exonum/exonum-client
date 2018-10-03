@@ -11,8 +11,8 @@ const ATTEMPT_TIMEOUT = 500
 /**
  * Send transaction to the blockchain
  * @param {string} explorerBasePath
- * @param {Object} data
  * @param {NewMessage} message
+ * @param {Object} data
  * @param {string} secretKey
  * @param {number} attempts
  * @param {number} timeout
@@ -91,18 +91,19 @@ export function send (explorerBasePath, message, data, secretKey, attempts, time
  * Send transaction to the blockchain
  * @param {string} explorerBasePath
  * @param {Array} transactions
+ * @param {string} secretKey
  * @param {number} attempts
  * @param {number} timeout
  * @return {Promise}
  */
-export function sendQueue (explorerBasePath, transactions, attempts, timeout) {
+export function sendQueue (explorerBasePath, transactions, secretKey, attempts, timeout) {
   let index = 0
   let responses = []
 
   return (function shift () {
     let transaction = transactions[index++]
 
-    return send(explorerBasePath, transaction.type, transaction.data, transaction.secretKey, attempts, timeout).then(response => {
+    return send(explorerBasePath, transaction.type, transaction.data, secretKey, attempts, timeout).then(response => {
       responses.push(response)
       if (index < transactions.length) {
         return shift()
