@@ -58,7 +58,7 @@ export function verifyBlock (data, validators) {
     }
 
     const Precommit = newPrecommit({
-      public_key: publicKey,
+      author: publicKey,
       fields: [
         { name: 'validator', type: primitive.Uint16 },
         { name: 'height', type: primitive.Uint64 },
