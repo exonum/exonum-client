@@ -5,74 +5,64 @@ An example of block verification:
 ```javascript
 const data = {
   block: {
-    height: '4',
-    prev_hash: '2e933eba2887a1d9bb38c396577be23db58ea5f414761f6dda939d660b323140',
-    proposer_id: 0,
-    state_hash: 'da5ae8362137d3e4acae0917e30388959b6d2a91760d25bb5eca832b449550ce',
-    tx_count: 1,
-    tx_hash: '759de4b2df16488e1c13c20cb9a356487204abcedd97177f2fe773c187beb29e'
+    height: '2',
+    prev_hash: '5107fe929f173a8fbe609ef907797daab959c6838eb26e074d80534c772e879a',
+    proposer_id: 3,
+    state_hash: '5f59a6b7810f2cde8a90a4b281c5722d0718cda07f1f321e531c5305ed3baf0e',
+    tx_count: 3,
+    tx_hash: '09224d3618942784363789a34e016f6f8e683f2ec96a5b9c51c23a02bca2ae1d'
   },
   precommits: [
     {
-      body: {
-        block_hash: '1a1b6bf4c9f7543809e1011b1d5e4ad0b76eab14924d8ff00ba1a79f0466ce6b',
-        height: '4',
-        propose_hash: '878165361bb6b207ca75cac83e2817b34564a9b5115128b21f4f89f729d60769',
-        round: 4,
+      payload: {
+        block_hash: '7de0d426f0f287849f89e5758015aca00f2e85eda28d2c38581519e0f1de8105',
+        height: '2',
+        propose_hash: 'e000ec445f25b61d2ac9d38882cffcd59aa02c08a30b2173c5526b89dccd1fcd',
+        round: 1,
         time: {
-          nanos: 804000000,
-          secs: '1486720350'
+          nanos: 336073000,
+          secs: '1537799426'
+        },
+        validator: 3
+      },
+      message: 'e6264b7f37f1fc2b4719d89a1360c25ad8b98e9723b485080382761ede1f318201000300020000000000000001000000e000ec445f25b61d2ac9d38882cffcd59aa02c08a30b2173c5526b89dccd1fcd7de0d426f0f287849f89e5758015aca00f2e85eda28d2c38581519e0f1de810502f5a85b00000000281108142da1ea5a2eb4b058a37a69ffb721b7f16c319a4fa1fd34c29efc9bedec454382f9c606a6574349d65be17154465eeb68c4558ca5a1e68a5cc8537aaf81ed780e'
+    },
+    {
+      payload: {
+        block_hash: '7de0d426f0f287849f89e5758015aca00f2e85eda28d2c38581519e0f1de8105',
+        height: '2',
+        propose_hash: 'e000ec445f25b61d2ac9d38882cffcd59aa02c08a30b2173c5526b89dccd1fcd',
+        round: 1,
+        time: {
+          nanos: 336482000,
+          secs: '1537799426'
         },
         validator: 0
       },
-      message_id: 4,
-      protocol_version: 0,
-      service_id: 0,
-      signature: 'f69f1cd9bd8dfd822a923f427556842b2cb194b75fc437248a6260f218e0d188911c1ef4616db3edcda78176d8d56273417439a1824a90e5df16775edb8dd608'
+      message: '2bcd527a39ed80e7da4b767f402b6959cd74ce6980ce0a28c8b2e8a11c99b1f101000000020000000000000001000000e000ec445f25b61d2ac9d38882cffcd59aa02c08a30b2173c5526b89dccd1fcd7de0d426f0f287849f89e5758015aca00f2e85eda28d2c38581519e0f1de810502f5a85b00000000d04e0e14b7235d000fe404a4b9695c0a08c4fc763c9012685b0b37abb0e5b24425e98813c7f1b3a3c8c5cf31e97ada34d63830669ddb072bfc637e16c8d5922538121901'
     },
     {
-      body: {
-        block_hash: '1a1b6bf4c9f7543809e1011b1d5e4ad0b76eab14924d8ff00ba1a79f0466ce6b',
-        height: '4',
-        propose_hash: '878165361bb6b207ca75cac83e2817b34564a9b5115128b21f4f89f729d60769',
-        round: 4,
+      payload: {
+        block_hash: '7de0d426f0f287849f89e5758015aca00f2e85eda28d2c38581519e0f1de8105',
+        height: '2',
+        propose_hash: 'e000ec445f25b61d2ac9d38882cffcd59aa02c08a30b2173c5526b89dccd1fcd',
+        round: 1,
         time: {
-          nanos: 804000000,
-          secs: '1486720350'
-        },
-        validator: 1
-      },
-      message_id: 4,
-      protocol_version: 0,
-      service_id: 0,
-      signature: '0660b18a35e6e9ee2a9f9447a2362a1e498314843aa8ddb838a81112dd2b290ff54cdd089a1877a82c3505b7376dc91e7e0d0f9a1150064ce1199a12845d560b'
-    },
-    {
-      body: {
-        block_hash: '1a1b6bf4c9f7543809e1011b1d5e4ad0b76eab14924d8ff00ba1a79f0466ce6b',
-        height: '4',
-        propose_hash: '878165361bb6b207ca75cac83e2817b34564a9b5115128b21f4f89f729d60769',
-        round: 4,
-        time: {
-          nanos: 804000000,
-          secs: '1486720350'
+          nanos: 338473000,
+          secs: '1537799426'
         },
         validator: 2
       },
-      message_id: 4,
-      protocol_version: 0,
-      service_id: 0,
-      signature: '02e26fac66f7e6fd9013f34832d53f7bbf928bd5824900594f8a247d4f4ec5f84c77420dd2bb98ebbf0910e48539d3abd9b57be70f15ca5ceccb85a92d41270a'
+      message: 'c9decf2e0d150eec438242c37e628cc2eb5c45d6b18fb8b75c3f9be6529825a401000200020000000000000001000000e000ec445f25b61d2ac9d38882cffcd59aa02c08a30b2173c5526b89dccd1fcd7de0d426f0f287849f89e5758015aca00f2e85eda28d2c38581519e0f1de810502f5a85b0000000028b02c1426a2f9e45be72e3cc986eaa8b3a351d6bc8742653c11ba9fc37e1739addfc535bec2a203ebe345a1bbe637fdb3ce4d63974b20e721928b26a471cc6399d73809'
     }
   ]
 }
 const validators = [
-  '0b513ad9b4924015ca0902ed079044d3ac5dbec2306f06948c10da8eb6e39f2d',
-  '91a28a0b74381593a4d9469579208926afc8ad82c8839b7644359b9eba9a4b3a',
-  '5c9c6df261c9cb840475776aaefcd944b405328fab28f9b3a95ef40490d3de84',
-  '66cd608b928b88e50e0efeaa33faf1c43cefe07294b0b87e9fe0aba6a3cf7633'
+  '2bcd527a39ed80e7da4b767f402b6959cd74ce6980ce0a28c8b2e8a11c99b1f1',
+  '48dbd790d25e0705f2077b1406b4eb64ccf0dd33a8a2215bb840f26f05c6bc1e',
+  'c9decf2e0d150eec438242c37e628cc2eb5c45d6b18fb8b75c3f9be6529825a4',
+  'e6264b7f37f1fc2b4719d89a1360c25ad8b98e9723b485080382761ede1f3182'
 ]
-const networkId = 0
 
-Exonum.verifyBlock(data, validators, networkId) // true
+Exonum.verifyBlock(data, validators) // true
 ```
