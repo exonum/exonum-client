@@ -37,8 +37,9 @@ describe('Examples from README.md', function () {
       secretKey: '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2bfa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
     }
     const SendFunds = Exonum.newMessage({
-      public_key: keyPair.publicKey,
-      service_id: 0,
+      author: keyPair.publicKey,
+      service_id: 130,
+      message_id: 0,
       fields: [
         { name: 'from', type: Exonum.Hash },
         { name: 'to', type: Exonum.Hash },
@@ -50,19 +51,10 @@ describe('Examples from README.md', function () {
       to: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36',
       amount: 50
     }
-    const signature = '1f40d43c0cb152d20df85568edeafc0d16883c81cacd38667a8082956e8e670ac694dccbc1ca173ffe81e1daf30c3c45082548b327b9d7b54300db1d3f483a06'
-    const buffer = [250, 127, 158, 228, 58, 255, 112, 200, 121, 248, 15, 167, 253, 21, 149, 92, 24, 185, 140, 114, 49, 11, 9, 231, 129, 131, 16, 50, 80, 80, 207, 122, 0, 0, 176, 0, 0, 0, 0, 0, 103, 82, 190, 136, 35, 20, 245, 187, 188, 154, 106, 242, 174, 99, 79, 192, 112, 56, 88, 74, 74, 119, 81, 14, 165, 236, 237, 69, 245, 77, 192, 48, 245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161, 242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54, 50, 0, 0, 0, 0, 0, 0, 0]
+    const buffer = [250, 127, 158, 228, 58, 255, 112, 200, 121, 248, 15, 167, 253, 21, 149, 92, 24, 185, 140, 114, 49, 11, 9, 231, 129, 131, 16, 50, 80, 80, 207, 122, 0, 0, 130, 0, 0, 0, 103, 82, 190, 136, 35, 20, 245, 187, 188, 154, 106, 242, 174, 99, 79, 192, 112, 56, 88, 74, 74, 119, 81, 14, 165, 236, 237, 69, 245, 77, 192, 48, 245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161, 242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54, 50, 0, 0, 0, 0, 0, 0, 0]
 
     it('should serialize transaction', function () {
       expect(SendFunds.serialize(data, true)).to.deep.equal(buffer)
-    })
-
-    it('should sign transaction', function () {
-      expect(SendFunds.sign(keyPair.secretKey, data)).to.equal(signature)
-    })
-
-    it('should verify transaction signature', function () {
-      expect(SendFunds.verifySignature(signature, keyPair.publicKey, data)).to.be.true
     })
   })
 

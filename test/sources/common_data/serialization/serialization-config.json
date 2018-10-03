@@ -165,8 +165,9 @@
   },
   "addUserArray": {
     "as": "message",
-    "public_key": "bfa0558f3768a9d06019aa13f8ebe227a160a3c31fc2f9201d2c72dc7f77da98",
+    "author": "bfa0558f3768a9d06019aa13f8ebe227a160a3c31fc2f9201d2c72dc7f77da98",
     "service_id": 198,
+    "message_id": 0,
     "signature": "a8f09060198192799b3bdc1634878369bb2a72fdb6c0c5dd92636605723be24e57feebe705116287604f1f93df8953d2abab9ce2ddad7e6a1d83a7651376640c",
     "fields": [
       {
@@ -215,8 +216,9 @@
   },
   "addUser": {
     "as": "message",
-    "public_key": "bfa0558f3768a9d06019aa13f8ebe227a160a3c31fc2f9201d2c72dc7f77da98",
+    "author": "bfa0558f3768a9d06019aa13f8ebe227a160a3c31fc2f9201d2c72dc7f77da98",
     "service_id": 198,
+    "message_id": 0,
     "signature": "a8f09060198192799b3bdc1634878369bb2a72fdb6c0c5dd92636605723be24e57feebe705116287604f1f93df8953d2abab9ce2ddad7e6a1d83a7651376640c",
     "fields": [
       {

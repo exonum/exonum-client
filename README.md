@@ -574,7 +574,7 @@ An example of a transaction sending:
 
 ```javascript
 // Define transaction explorer address
-const explorerBasePath = 'http://127.0.0.1:8200/api/explorer/v1/transactions?hash='
+const explorerBasePath = 'http://127.0.0.1:8200/api/explorer/v1/transactions'
 
 sendFunds.send(explorerBasePath, data, keyPair.secretKey).then(txHash => {})
 ```

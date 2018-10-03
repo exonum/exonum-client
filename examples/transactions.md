@@ -169,7 +169,7 @@ let sendFunds = Exonum.newMessage({
 })
 
 // Define transaction explorer address
-const explorerBasePath = 'http://127.0.0.1:8200/api/explorer/v1/transactions?hash='
+const explorerBasePath = 'http://127.0.0.1:8200/api/explorer/v1/transactions'
 
 // Data
 const data = {
@@ -207,7 +207,7 @@ let sendFunds = Exonum.newMessage({
 })
 
 // Define transaction explorer address
-const explorerBasePath = 'http://127.0.0.1:8200/api/explorer/v1/transactions?hash='
+const explorerBasePath = 'http://127.0.0.1:8200/api/explorer/v1/transactions'
 
 // Data
 const transactions = [

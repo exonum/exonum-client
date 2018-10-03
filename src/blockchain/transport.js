@@ -11,18 +11,18 @@ const ATTEMPT_TIMEOUT = 500
 /**
  * Send transaction to the blockchain
  * @param {string} explorerBasePath
- * @param {NewMessage} message
+ * @param {NewMessage} type
  * @param {Object} data
  * @param {string} secretKey
  * @param {number} attempts
  * @param {number} timeout
  * @return {Promise}
  */
-export function send (explorerBasePath, message, data, secretKey, attempts, timeout) {
+export function send (explorerBasePath, type, data, secretKey, attempts, timeout) {
   if (typeof explorerBasePath !== 'string') {
     throw new TypeError('Explorer base path endpoint of wrong data type is passed. String is required.')
   }
-  if (!isInstanceofOfNewMessage(message)) {
+  if (!isInstanceofOfNewMessage(type)) {
     throw new TypeError('Transaction of wrong type is passed.')
   }
   if (!isObject(data)) {
@@ -46,13 +46,13 @@ export function send (explorerBasePath, message, data, secretKey, attempts, time
     timeout = ATTEMPT_TIMEOUT
   }
 
-  message.signature = message.sign(secretKey, data)
+  type.signature = type.sign(secretKey, data)
 
-  const buffer = new Uint8Array(message.serialize(data))
+  const buffer = new Uint8Array(type.serialize(data))
   const txBody = uint8ArrayToHexadecimal(buffer)
   const txHash = hash(buffer)
 
-  return axios.post(`${explorerBasePath}v1/transactions`, {
+  return axios.post(`${explorerBasePath}`, {
     tx_body: txBody
   }).then(() => {
     if (attempts === 0) {
@@ -66,7 +66,7 @@ export function send (explorerBasePath, message, data, secretKey, attempts, time
         return new Error('The transaction was not accepted to the block for the expected period.')
       }
 
-      return axios.get(`${explorerBasePath}v1/transactions?hash=${txHash}`).then(response => {
+      return axios.get(`${explorerBasePath}?hash=${txHash}`).then(response => {
         if (response.data.type === 'committed') {
           return txHash
         }

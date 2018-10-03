@@ -172,10 +172,11 @@ describe('Check cryptography', function () {
 
     it('should verify signature of the data of NewMessage type and return true', function () {
       const publicKey = 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'
-      const signature = '5c4d52f31499c774d5aae0318cbd468a449556da1b147620b483bef02455bde50de5a46b0f2c8976903453b294a6754e629fb9ad248e3a7c809bd145e5482f0b'
+      const signature = '856c7f680dd59fd0259c15add9e4cd558ec8ce375edb5efc7bbd646426d81f2b5cfa6eda76ea074646df27e4a2baf6831c5cddeb0ceb35c8c559392bf4427b04'
       const CustomMessage = Exonum.newMessage({
-        public_key: publicKey,
+        author: publicKey,
         service_id: 1,
+        message_id: 0,
         fields: [
           { name: 'name', type: Exonum.String },
           { name: 'age', type: Exonum.Uint8 },
@@ -195,10 +196,11 @@ describe('Check cryptography', function () {
 
     it('should verify signature of the data of NewMessage type using built-in method and return true', function () {
       const publicKey = 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'
-      const signature = '5c4d52f31499c774d5aae0318cbd468a449556da1b147620b483bef02455bde50de5a46b0f2c8976903453b294a6754e629fb9ad248e3a7c809bd145e5482f0b'
+      const signature = '856c7f680dd59fd0259c15add9e4cd558ec8ce375edb5efc7bbd646426d81f2b5cfa6eda76ea074646df27e4a2baf6831c5cddeb0ceb35c8c559392bf4427b04'
       const CustomMessage = Exonum.newMessage({
-        public_key: publicKey,
+        author: publicKey,
         service_id: 1,
+        message_id: 0,
         fields: [
           { name: 'name', type: Exonum.String },
           { name: 'age', type: Exonum.Uint8 },
@@ -268,8 +270,9 @@ describe('Check cryptography', function () {
       const publicKey = 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'
       const signature = '24a5224702d670c95a78ef1f753c9e6e698da5b2a2c52dcc51b5bf9e556e717fb763b1a5e78bd39e5369a139ab68ae50dd19a129038e8da3af30985f09549500'
       const CustomMessage = Exonum.newMessage({
-        public_key: publicKey,
+        author: publicKey,
         service_id: 1,
+        message_id: 0,
         fields: [
           { name: 'name', type: Exonum.String },
           { name: 'age', type: Exonum.Uint8 },

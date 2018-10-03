@@ -246,36 +246,36 @@ describe('Send transaction to the blockchain', function () {
     secretKey: '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2bfa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
   }
   const sendFunds = Exonum.newMessage({
-    public_key: keyPair.publicKey,
+    author: keyPair.publicKey,
     service_id: 130,
+    message_id: 0,
     fields: [
       { name: 'from', type: Exonum.Hash },
       { name: 'to', type: Exonum.Hash },
       { name: 'amount', type: Exonum.Uint64 }
     ]
   })
-  const transactionEndpoint = 'http://127.0.0.1:8200/api/services/cryptocurrency/v1/wallets'
-  const explorerBasePath = 'http://127.0.0.1:8200/api/explorer/v1/transactions?hash='
   const data = {
     from: keyPair.publicKey,
     to: 'f7ea8fd02cb41cc2cd45fd5adc89ca1bf605b2e31f796a3417ddbcd4a3634647',
     amount: 1000
   }
-  const signature = sendFunds.sign(keyPair.secretKey, data)
-  const txHash = '9c413a522301a73af322b8a5869630c6f4af4390bce23cf22a592d85f0470ecf'
+  const txHash = 'b8a086ecda9973132ef6b2038c52c20e047f4a20950ed895f2652a4b500fe6bb'
+  const explorerBasePath = 'http://127.0.0.1:8200/api/explorer/v1/transactions'
+  const transactionPath = `${explorerBasePath}?hash=${txHash}`
 
   describe('Valid transaction has been sent', function () {
     before(function () {
       mock
-        .onPost(transactionEndpoint)
+        .onPost(explorerBasePath)
         .replyOnce(200)
 
       mock
-        .onGet(`${explorerBasePath}${txHash}`)
+        .onGet(transactionPath)
         .replyOnce(200, {
           type: 'in-pool'
         })
-        .onGet(`${explorerBasePath}${txHash}`)
+        .onGet(transactionPath)
         .replyOnce(200, {
           type: 'committed'
         })
@@ -286,7 +286,7 @@ describe('Send transaction to the blockchain', function () {
     })
 
     it('should return fulfilled Promise state when transaction has accepted to the blockchain', function () {
-      return Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds).then(response => {
+      return Exonum.send(explorerBasePath, sendFunds, data, keyPair.secretKey).then(response => {
         expect(response).to.deep.equal(txHash)
       })
     })
@@ -295,21 +295,21 @@ describe('Send transaction to the blockchain', function () {
   describe('Valid transaction has been sent but node processes it very slow', function () {
     before(function () {
       mock
-        .onPost(transactionEndpoint)
+        .onPost(explorerBasePath)
         .replyOnce(200)
 
       mock
-        .onGet(`${explorerBasePath}${txHash}`)
+        .onGet(transactionPath)
         .replyOnce(404)
-        .onGet(`${explorerBasePath}${txHash}`)
+        .onGet(transactionPath)
         .replyOnce(404)
-        .onGet(`${explorerBasePath}${txHash}`)
+        .onGet(transactionPath)
         .replyOnce(404)
-        .onGet(`${explorerBasePath}${txHash}`)
+        .onGet(transactionPath)
         .replyOnce(200, {
           type: 'in-pool'
         })
-        .onGet(`${explorerBasePath}${txHash}`)
+        .onGet(transactionPath)
         .replyOnce(200, {
           type: 'committed'
         })
@@ -321,7 +321,7 @@ describe('Send transaction to the blockchain', function () {
 
     it('should return fulfilled Promise state when transaction has accepted to the blockchain', function () {
       this.timeout(5000)
-      return Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds).then(response => {
+      return Exonum.send(explorerBasePath, sendFunds, data, keyPair.secretKey).then(response => {
         expect(response).to.deep.equal(txHash)
       })
     })
@@ -330,35 +330,35 @@ describe('Send transaction to the blockchain', function () {
   describe('Valid transaction has been sent with custom attempts and timeout number', function () {
     before(function () {
       mock
-        .onPost(transactionEndpoint)
+        .onPost(explorerBasePath)
         .replyOnce(200)
 
       mock
-        .onGet(`${explorerBasePath}${txHash}`)
+        .onGet(transactionPath)
         .replyOnce(200, {
           type: 'in-pool'
         })
-        .onGet(`${explorerBasePath}${txHash}`)
+        .onGet(transactionPath)
         .replyOnce(200, {
           type: 'in-pool'
         })
-        .onGet(`${explorerBasePath}${txHash}`)
+        .onGet(transactionPath)
         .replyOnce(200, {
           type: 'in-pool'
         })
-        .onGet(`${explorerBasePath}${txHash}`)
+        .onGet(transactionPath)
         .replyOnce(200, {
           type: 'in-pool'
         })
-        .onGet(`${explorerBasePath}${txHash}`)
+        .onGet(transactionPath)
         .replyOnce(200, {
           type: 'in-pool'
         })
-        .onGet(`${explorerBasePath}${txHash}`)
+        .onGet(transactionPath)
         .replyOnce(200, {
           type: 'in-pool'
         })
-        .onGet(`${explorerBasePath}${txHash}`)
+        .onGet(transactionPath)
         .replyOnce(200, {
           type: 'committed'
         })
@@ -369,7 +369,7 @@ describe('Send transaction to the blockchain', function () {
     })
 
     it('should return fulfilled Promise state when transaction has accepted to the blockchain', function () {
-      return Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds, 100, 7).then(response => {
+      return Exonum.send(explorerBasePath, sendFunds, data, keyPair.secretKey, 100, 7).then(response => {
         expect(response).to.deep.equal(txHash)
       })
     })
@@ -378,7 +378,7 @@ describe('Send transaction to the blockchain', function () {
   describe('Valid transaction has been sent with zero attempts', function () {
     before(function () {
       mock
-        .onPost(transactionEndpoint)
+        .onPost(explorerBasePath)
         .replyOnce(200)
     })
 
@@ -387,46 +387,19 @@ describe('Send transaction to the blockchain', function () {
     })
 
     it('should return fulfilled Promise state when transaction has been sent to the blockchain', function () {
-      return Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds, 0).then(response => {
+      return Exonum.send(explorerBasePath, sendFunds, data, keyPair.secretKey, 0).then(response => {
         expect(response).to.deep.equal(txHash)
       })
     })
   })
 
   describe('Invalid data has been passed', function () {
-    it('should throw error when wrong transaction endpoint is passed', function () {
-      const endpoints = [null, false, 42, new Date(), {}, []]
-
-      endpoints.forEach(function (value) {
-        expect(() => Exonum.send(value))
-          .to.throw(Error, 'Transaction endpoint of wrong data type is passed. String is required.')
-      })
-    })
-
     it('should throw error when wrong explorer base path is passed', function () {
       const paths = [null, false, 42, new Date(), {}, []]
 
       paths.forEach(function (value) {
-        expect(() => Exonum.send(transactionEndpoint, value))
+        expect(() => Exonum.send(value))
           .to.throw(Error, 'Explorer base path endpoint of wrong data type is passed. String is required.')
-      })
-    })
-
-    it('should throw error when wrong data is passed', function () {
-      const data = [null, false, 42, new Date(), '', []]
-
-      data.forEach(function (value) {
-        expect(() => Exonum.send(transactionEndpoint, explorerBasePath, value))
-          .to.throw(Error, 'Data of wrong data type is passed. Object is required.')
-      })
-    })
-
-    it('should throw error when wrong signature is passed', function () {
-      const signatures = [null, false, 42, new Date(), '', {}, []]
-
-      signatures.forEach(function (value) {
-        expect(() => Exonum.send(transactionEndpoint, explorerBasePath, data, value))
-          .to.throw(Error, 'Signature of wrong type is passed. Hexadecimal expected.')
       })
     })
 
@@ -434,8 +407,26 @@ describe('Send transaction to the blockchain', function () {
       const types = [null, false, 42, new Date(), '', []]
 
       types.forEach(function (value) {
-        expect(() => Exonum.send(transactionEndpoint, explorerBasePath, data, signature, value))
+        expect(() => Exonum.send(explorerBasePath, value))
           .to.throw(Error, 'Transaction of wrong type is passed.')
+      })
+    })
+
+    it('should throw error when wrong data is passed', function () {
+      const data = [null, false, 42, new Date(), '', []]
+
+      data.forEach(function (value) {
+        expect(() => Exonum.send(explorerBasePath, sendFunds, value))
+          .to.throw(Error, 'Data of wrong data type is passed. Object is required.')
+      })
+    })
+
+    it('should throw error when wrong secret key is passed', function () {
+      const keys = [null, false, 42, new Date(), '', {}, []]
+
+      keys.forEach(function (value) {
+        expect(() => Exonum.send(explorerBasePath, sendFunds, data, value))
+          .to.throw(Error, 'secretKey of wrong type is passed. Hexadecimal expected.')
       })
     })
 
@@ -443,7 +434,7 @@ describe('Send transaction to the blockchain', function () {
       const types = [null, false, new Date(), '', {}, []]
 
       types.forEach(function (value) {
-        expect(() => Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds, value))
+        expect(() => Exonum.send(explorerBasePath, sendFunds, data, keyPair.secretKey, value))
           .to.throw(Error, 'Attempts of wrong type is passed.')
       })
     })
@@ -452,7 +443,7 @@ describe('Send transaction to the blockchain', function () {
       const timeouts = [null, false, new Date(), '', {}, []]
 
       timeouts.forEach(function (value) {
-        expect(() => Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds, 500, value))
+        expect(() => Exonum.send(explorerBasePath, sendFunds, data, keyPair.secretKey, 500, value))
           .to.throw(Error, 'Timeout of wrong type is passed.')
       })
     })
@@ -462,11 +453,11 @@ describe('Send transaction to the blockchain', function () {
     describe('Stay suspended in pool', function () {
       before(function () {
         mock
-          .onPost(transactionEndpoint)
+          .onPost(explorerBasePath)
           .reply(200)
 
         mock
-          .onGet(`${explorerBasePath}${txHash}`)
+          .onGet(transactionPath)
           .reply(200, {
             type: 'in-pool'
           })
@@ -477,7 +468,7 @@ describe('Send transaction to the blockchain', function () {
       })
 
       it('should return rejected Promise state', function () {
-        return Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds, 3, 100).catch(error => {
+        return Exonum.send(explorerBasePath, sendFunds, data, keyPair.secretKey, 3, 100).catch(error => {
           expect(() => {
             throw new Error(error)
           }).to.throw(Error, 'The transaction was not accepted to the block for the expected period.')
@@ -488,11 +479,11 @@ describe('Send transaction to the blockchain', function () {
     describe('Node responded in unknown format', function () {
       before(function () {
         mock
-          .onPost(transactionEndpoint)
+          .onPost(explorerBasePath)
           .reply(200)
 
         mock
-          .onGet(`${explorerBasePath}${txHash}`)
+          .onGet(transactionPath)
           .reply(200)
       })
 
@@ -501,7 +492,7 @@ describe('Send transaction to the blockchain', function () {
       })
 
       it('should return rejected Promise state', function () {
-        return Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds, 3, 100).catch(error => {
+        return Exonum.send(explorerBasePath, sendFunds, data, keyPair.secretKey, 3, 100).catch(error => {
           expect(() => {
             throw new Error(error)
           }).to.throw(Error, 'The transaction was not accepted to the block for the expected period.')
@@ -512,11 +503,11 @@ describe('Send transaction to the blockchain', function () {
     describe('Node responded with error', function () {
       before(function () {
         mock
-          .onPost(transactionEndpoint)
+          .onPost(explorerBasePath)
           .reply(200)
 
         mock
-          .onGet(`${explorerBasePath}${txHash}`)
+          .onGet(transactionPath)
           .reply(404)
       })
 
@@ -525,7 +516,7 @@ describe('Send transaction to the blockchain', function () {
       })
 
       it('should return rejected Promise state', function () {
-        return Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds, 3, 100).catch(error => {
+        return Exonum.send(explorerBasePath, sendFunds, data, keyPair.secretKey, 3, 100).catch(error => {
           expect(() => {
             throw new Error(error)
           }).to.throw(Error, 'The request failed or the blockchain node did not respond.')
@@ -541,16 +532,16 @@ describe('Send multiple transactions to the blockchain', function () {
     secretKey: '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2bfa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
   }
   let sendFunds = Exonum.newMessage({
-    public_key: keyPair.publicKey,
+    author: keyPair.publicKey,
     service_id: 130,
+    message_id: 0,
     fields: [
       { name: 'from', type: Exonum.Hash },
       { name: 'to', type: Exonum.Hash },
       { name: 'amount', type: Exonum.Uint64 }
     ]
   })
-  const transactionEndpoint = 'http://127.0.0.1:8200/api/services/cryptocurrency/v1/wallets'
-  const explorerBasePath = 'http://127.0.0.1:8200/api/explorer/v1/transactions?hash='
+  const explorerBasePath = 'http://127.0.0.1:8200/api/explorer/v1/transactions'
   const transactions = [
     {
       data: {
@@ -570,8 +561,8 @@ describe('Send multiple transactions to the blockchain', function () {
     }
   ]
   const transactionHashes = [
-    'eb73443d9243922698b52b5e288765ad2af70b15d45a4656815331e97c74062a',
-    '330d0f6ceb0037a46ea9654b6143faac1c5eb53b24e82264631c70d171be1a3b'
+    'c570e68ea656b7c898f0a01385861798ade2d553650a69dbd7981c2709bae007',
+    'b4c52b190bd896abd9648924ce41877655b0b17a13a68d5b2a2d75790f06c30f'
   ]
 
   transactions.forEach(transaction => {
@@ -581,17 +572,17 @@ describe('Send multiple transactions to the blockchain', function () {
   describe('Queue of valid transactions has been sent', function () {
     before(function () {
       mock
-        .onPost(transactionEndpoint)
+        .onPost(explorerBasePath)
         .reply(200)
 
       mock
-        .onGet(`${explorerBasePath}${transactionHashes[0]}`)
+        .onGet(`${explorerBasePath}?hash=${transactionHashes[0]}`)
         .replyOnce(200, { type: 'in-pool' })
-        .onGet(`${explorerBasePath}${transactionHashes[0]}`)
+        .onGet(`${explorerBasePath}?hash=${transactionHashes[0]}`)
         .replyOnce(200, { type: 'committed' })
-        .onGet(`${explorerBasePath}${transactionHashes[1]}`)
+        .onGet(`${explorerBasePath}?hash=${transactionHashes[1]}`)
         .replyOnce(200, { type: 'in-pool' })
-        .onGet(`${explorerBasePath}${transactionHashes[1]}`)
+        .onGet(`${explorerBasePath}?hash=${transactionHashes[1]}`)
         .replyOnce(200, { type: 'committed' })
     })
 
@@ -600,7 +591,7 @@ describe('Send multiple transactions to the blockchain', function () {
     })
 
     it('should return fulfilled Promise state when queue of valid transactions has been accepted to the blockchain', function () {
-      return Exonum.sendQueue(transactionEndpoint, explorerBasePath, transactions).then(response => {
+      return Exonum.sendQueue(explorerBasePath, transactions, keyPair.secretKey).then(response => {
         expect(response).to.deep.equal(transactionHashes)
       })
     })
@@ -609,7 +600,7 @@ describe('Send multiple transactions to the blockchain', function () {
   describe('Queue of valid transactions has been sent with zero attempts', function () {
     before(function () {
       mock
-        .onPost(transactionEndpoint)
+        .onPost(explorerBasePath)
         .reply(200)
     })
 
@@ -618,7 +609,7 @@ describe('Send multiple transactions to the blockchain', function () {
     })
 
     it('should return fulfilled Promise state when queue of valid transactions has been sent to the blockchain', function () {
-      return Exonum.sendQueue(transactionEndpoint, explorerBasePath, transactions, 0).then(response => {
+      return Exonum.sendQueue(explorerBasePath, transactions, keyPair.secretKey, 0).then(response => {
         expect(response).to.deep.equal(transactionHashes)
       })
     })
