@@ -1,4 +1,4 @@
-import { Uint8, Uint16, Uint32 } from './primitive'
+import { Uint8, Uint16 } from './primitive'
 import { Digest, PublicKey } from './hexadecimal'
 import { fieldIsFixed, newType } from './generic'
 import * as serialization from './serialization'
@@ -6,6 +6,10 @@ import * as crypto from '../crypto'
 import { send } from '../blockchain/transport'
 
 export const SIGNATURE_LENGTH = 64
+const MESSAGE_CLASS = 0
+const MESSAGE_TYPE = 0
+const PRECOMMIT_CLASS = 1
+const PRECOMMIT_TYPE = 0
 
 /**
  * @constructor
@@ -22,12 +26,13 @@ class NewMessage {
       }
     })
 
-    this.public_key = type.public_key
-    this.cls = 0
-    this.tag = 0
+    this.author = type.author
+    this.cls = MESSAGE_CLASS
+    this.type = MESSAGE_TYPE
     this.service_id = type.service_id
-    this.signature = type.signature
+    this.message_id = type.message_id
     this.fields = type.fields
+    this.signature = type.signature
   }
 
   size () {
@@ -35,7 +40,7 @@ class NewMessage {
       if (fieldIsFixed(field)) {
         return accumulator + field.type.size()
       }
-      return accumulator + 40
+      return accumulator + serialization.POINTER_LENGTH
     }, 0)
   }
 
@@ -48,34 +53,29 @@ class NewMessage {
   serialize (data, cutSignature) {
     const MessageHead = newType({
       fields: [
-        { name: 'public_key', type: PublicKey },
+        { name: 'author', type: PublicKey },
         { name: 'cls', type: Uint8 },
-        { name: 'tag', type: Uint8 },
+        { name: 'type', type: Uint8 },
         { name: 'service_id', type: Uint16 },
-        { name: 'payload_size', type: Uint32 }
+        { name: 'message_id', type: Uint16 }
       ]
     })
 
-    let buffer = MessageHead.serialize({
-      public_key: this.public_key,
+    let messageHead = MessageHead.serialize({
+      author: this.author,
       cls: this.cls,
-      tag: this.tag,
+      type: this.type,
       service_id: this.service_id,
-      payload_size: 0
+      message_id: this.message_id
     })
 
-    // serialize and append message body
-    buffer = serialization.serialize(buffer, 40, data, this, true)
-
-    // calculate payload and insert it into buffer
-    Uint32.serialize(buffer.length + SIGNATURE_LENGTH, buffer, 34)
+    let messageBody = serialization.serialize([], 0, data, this)
 
     if (cutSignature !== true) {
-      // append signature
-      Digest.serialize(this.signature, buffer, buffer.length)
+      Digest.serialize(this.signature, messageBody, messageBody.length)
     }
 
-    return buffer
+    return messageHead.concat(messageBody)
   }
 
   /**
@@ -110,16 +110,15 @@ class NewMessage {
 
   /**
    * Get ED25519 signature
-   * @param {string} transactionEndpoint
    * @param {string} explorerBasePath
    * @param {Object} data
-   * @param {string} signature
-   * @param {number} timeout
+   * @param {string} secretKey
    * @param {number} attempts
+   * @param {number} timeout
    * @returns {Promise}
    */
-  send (transactionEndpoint, explorerBasePath, data, signature, timeout, attempts) {
-    return send(transactionEndpoint, explorerBasePath, data, signature, this, timeout, attempts)
+  send (explorerBasePath, data, secretKey, attempts, timeout) {
+    return send(explorerBasePath, this, data, secretKey, attempts, timeout)
   }
 }
 
@@ -148,8 +147,8 @@ export function isInstanceofOfNewMessage (type) {
 class NewPrecommit extends NewMessage {
   constructor (type) {
     super(type)
-    this.cls = 1
-    this.tag = 0
+    this.cls = PRECOMMIT_CLASS
+    this.type = PRECOMMIT_TYPE
   }
 
   /**
@@ -160,22 +159,21 @@ class NewPrecommit extends NewMessage {
   serialize (data) {
     const PrecommitHead = newType({
       fields: [
-        { name: 'public_key', type: PublicKey },
+        { name: 'author', type: PublicKey },
         { name: 'cls', type: Uint8 },
-        { name: 'tag', type: Uint8 }
+        { name: 'type', type: Uint8 }
       ]
     })
 
-    let buffer = PrecommitHead.serialize({
-      public_key: this.public_key,
+    let precommitHead = PrecommitHead.serialize({
+      author: this.author,
       cls: this.cls,
-      tag: this.tag
+      type: this.type
     })
 
-    // serialize and append message body
-    buffer = serialization.serialize(buffer, 34, data, this, true)
+    let precommitBody = serialization.serialize([], 0, data, this, true)
 
-    return buffer
+    return precommitHead.concat(precommitBody)
   }
 }
 

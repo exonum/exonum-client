@@ -2,6 +2,8 @@ import { isInstanceofOfNewType, newTypeIsFixed, fieldIsFixed } from './generic'
 import { isInstanceofOfNewArray } from './array'
 import { Uint32, String } from './primitive'
 
+export const POINTER_LENGTH = 8
+
 /**
  * Serialize data into array of 8-bit integers and insert into buffer
  * @param {Array} buffer
@@ -46,12 +48,12 @@ export function serialize (buffer, shift, data, type, isTransactionBody) {
     const start = buffer.length
 
     // reserve segment for pointers
-    for (let i = start; i < start + data.length * 8; i++) {
+    for (let i = start; i < start + data.length * POINTER_LENGTH; i++) {
       buffer[i] = 0
     }
 
     for (let i = 0; i < data.length; i++) {
-      const index = start + i * 8
+      const index = start + i * POINTER_LENGTH
       const end = buffer.length
 
       Uint32.serialize(end - shift, buffer, index) // start index
@@ -90,12 +92,12 @@ export function serialize (buffer, shift, data, type, isTransactionBody) {
       const start = buffer.length
 
       // reserve segment for pointers
-      for (let i = start; i < start + data.length * 8; i++) {
+      for (let i = start; i < start + data.length * POINTER_LENGTH; i++) {
         buffer[i] = 0
       }
 
       for (let i = 0; i < data.length; i++) {
-        const index = start + i * 8
+        const index = start + i * POINTER_LENGTH
 
         buffer = serializeInstanceofOfNewArray(buffer, shift, index, data[i], type.type)
       }
@@ -130,7 +132,7 @@ export function serialize (buffer, shift, data, type, isTransactionBody) {
       if (fieldIsFixed(field)) {
         localShift += field.type.size()
       } else {
-        localShift += 8
+        localShift += POINTER_LENGTH
       }
     } else if (isInstanceofOfNewArray(field.type)) {
       buffer = serializeInstanceofOfNewArray(buffer, nestedShift, from, value, field.type)
