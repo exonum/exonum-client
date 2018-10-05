@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.13.0 (Oct 5, 2018)
+
+* Add a new `verifyTable` method to verify table existence in the root tree. ([#138][pr-138])
+
 ## 0.12.5 (Oct 5, 2018)
 
 * Change package used to replace library version via Grunt. ([#137][pr-137])
@@ -145,6 +149,7 @@ matching [release 0.1][release-0.1] of the Exonum core repository.
 [release-0.7]: https://github.com/exonum/exonum/blob/master/CHANGELOG.md#07---2018-04-11
 [release-0.5]: https://github.com/exonum/exonum/blob/master/CHANGELOG.md#05---2018-01-30
 [release-0.1]: https://github.com/exonum/exonum/releases/tag/v0.1
+[pr-138]: https://github.com/exonum/exonum-client/pull/138
 [pr-137]: https://github.com/exonum/exonum-client/pull/137
 [pr-133]: https://github.com/exonum/exonum-client/pull/133
 [pr-126]: https://github.com/exonum/exonum-client/pull/126
