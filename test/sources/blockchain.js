@@ -384,6 +384,69 @@ describe('Verify block of precommits', function () {
   })
 })
 
+describe('Verify table existence', function () {
+  const proof = {
+    entries: [
+      {
+        key: '775be457774803ff0221f0d18f407c9718a2f4c635445a691f6061bd5d651581',
+        value: '540c35c61837aa819986e137b6ae0091faa781419e8234802094ef77a2cdc293'
+      }
+    ],
+    proof: [
+      {
+        path: '0000101010101110110000001010110110011000000001100011001110110111000101011001101100100100000010011111001000011101110010101110111001111111101111101110100011111110000111011111101111110011011010100100110101110010101000101110101000100110011100100010101101100001',
+        hash: '0000000000000000000000000000000000000000000000000000000000000000'
+      },
+      {
+        path: '1101',
+        hash: '9d57d84328c5fce997b0dd0cf806c114a37ebf32bd1b966154244548206acd27'
+      },
+      {
+        path: '1110011011010101101110110100111000001000001001000000111111111111011100101101000011111100001100101111010010000011110111001010001101011101001010111011010011010000000111101000101000101011011010100001101110110001000001001011110010101000010101010010010100001010',
+        hash: '0000000000000000000000000000000000000000000000000000000000000000'
+      },
+      {
+        path: '1111101111111100100001100001100100100000100101011111010011011011000000101110101010011000101101000010001110111100111010110001001001010111111011100101000100111011010010100011110110010010001100010001011110100000001001000000001100101000000111011000100010011000',
+        hash: '15ca2aa05d8f054125ee327ac35805c5a20d9305aae10880dc56373219126a47'
+      }
+    ]
+  }
+  const serviceId = 130
+  const tableIndex = 0
+  const stateHash = 'dd09c5ec10fe7eb5d82aeabf362772440880394dfabb0a4c4cfbfdecc2d6bad7'
+  const rootHash = '540c35c61837aa819986e137b6ae0091faa781419e8234802094ef77a2cdc293'
+
+  it('should return root hash when valid proof', function () {
+    expect(Exonum.verifyTable(proof, stateHash, serviceId, tableIndex)).to.equals(rootHash)
+  })
+
+  it('should throw error when wrong service ID is passed', function () {
+    const endpoints = [null, false, 'Hello world', new Date(), {}, []]
+
+    endpoints.forEach(function (value) {
+      expect(() => Exonum.verifyTable(proof, stateHash, value, tableIndex))
+        .to.throw(Error, `Uint16 of wrong type is passed: ${value}`)
+    })
+  })
+
+  it('should throw error when wrong table index is passed', function () {
+    const endpoints = [null, false, 'Hello world', new Date(), {}, []]
+
+    endpoints.forEach(function (value) {
+      expect(() => Exonum.verifyTable(proof, stateHash, serviceId, value))
+        .to.throw(Error, `Uint16 of wrong type is passed: ${value}`)
+    })
+  })
+
+  it('should throw error when wrong proof is passed', function () {
+    const endpoints = [null, false, 42, 'Hello world', new Date(), {}, []]
+
+    endpoints.forEach(function (value) {
+      expect(() => Exonum.verifyTable(value, stateHash, serviceId, tableIndex)).to.throw(Error)
+    })
+  })
+})
+
 describe('Send transaction to the blockchain', function () {
   let sendFunds = Exonum.newMessage({
     protocol_version: 0,

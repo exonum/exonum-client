@@ -25,7 +25,7 @@ Library compatibility with Exonum core:
 
 | JavaScript light client | Exonum core |
 |---|---|
-| 0.12.4 (latest) | 0.9.* |
+| 0.13.0 | 0.9.* |
 | 0.10.2 | 0.8.* |
 | 0.9.0 | 0.7.* |
 | 0.6.1 | 0.6.* |
@@ -56,6 +56,7 @@ Library compatibility with Exonum core:
   * [Map proof](#map-proof)
 * [Integrity checks](#integrity-checks)
   * [Verify block](#verify-block)
+  * [Verify table](#verify-table)
 * [Helpers](#helpers)
   * [Generate key pair](#generate-key-pair)
   * [Get random number](#get-random-number)
@@ -696,6 +697,23 @@ Returns `true` if verification is succeeded or `false` if it is failed.
 | **validators** | An array of validators public keys as a hexadecimal strings. | `Array` |
 
 An example of [block verification](examples/block.md).
+
+### Verify table
+
+```javascript
+Exonum.verifyTable(proof, stateHash, serviceId, tableIndex)
+```
+
+Verify table existence in the root tree.
+
+Returns root hash for the table as hexadecimal `String`.
+
+| Argument | Description | Type |
+|---|---|---|
+| **proof** | The JSON presentation of the proof obtained from a full node. | `Object` |
+| **stateHash** | Hash of current blockchain state stored in each block. | `String` |
+| **serviceId** | [Service ID][docs:architecture:serialization:service-id]. | `Number` |
+| **tableIndex** | Table index. | `Number` |
 
 ## Helpers
 
