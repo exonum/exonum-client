@@ -14,13 +14,13 @@ describe('Serialize data into array of 8-bit integers', function () {
     expect(buffer).to.deep.equal(serializationMock.wallet.serialized)
   })
 
-  it('should serialize data of newMessage type and return array of 8-bit integers', function () {
+  it('should serialize data of Transaction type and return array of 8-bit integers', function () {
     const buffer = schema.getMessage('addUser').serialize(serializationMock.user.data)
 
     expect(buffer).to.deep.equal(serializationMock.user.serialized)
   })
 
-  it('should serialize data of newMessage type with nester array and return array of 8-bit integers', function () {
+  it('should serialize data of Transaction type with nester array and return array of 8-bit integers', function () {
     const buffer = schema.getMessage('addUserArray').serialize(serializationMock.userArray.data)
 
     expect(buffer).to.deep.equal(serializationMock.userArray.serialized)

@@ -4,6 +4,8 @@
 
 * Remove `cutSignature` field from `serialize` method. ([#139][pr-139])
 * Rename `newMessage` method into `newTransaction`. ([#139][pr-139])
+* Rename `isInstanceofOfNewMessage` method into `isTransaction`. ([#139][pr-139])
+* Rename `isInstanceofOfNewArray` method into `isNewArray`. ([#139][pr-139])
 
 ## 0.14.0 (Oct 9, 2018)
 

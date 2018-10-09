@@ -36,7 +36,7 @@ describe('Examples from README.md', function () {
       publicKey: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
       secretKey: '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2bfa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
     }
-    const SendFunds = Exonum.newMessage({
+    const SendFunds = Exonum.newTransaction({
       author: keyPair.publicKey,
       service_id: 130,
       message_id: 0,

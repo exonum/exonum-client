@@ -6,7 +6,7 @@ An example of serialization into a byte array:
 
 ```javascript
 // Define a transaction
-let sendFunds = Exonum.newMessage({
+let sendFunds = Exonum.newTransaction({
   author: 'f5602a686807fbf54b47eb4c96b5bac3352a44e7500f6e507b8b4e341302c799',
   service_id: 130,
   message_id: 0,
@@ -36,7 +36,7 @@ An example of transaction signing:
 
 ```javascript
 // Define a transaction
-let sendFunds = Exonum.newMessage({
+let sendFunds = Exonum.newTransaction({
   author: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
   service_id: 130,
   message_id: 0,
@@ -73,7 +73,7 @@ An example of signature verification:
 
 ```javascript
 // Define a transaction
-let sendFunds = Exonum.newMessage({
+let sendFunds = Exonum.newTransaction({
   author: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
   service_id: 130,
   message_id: 0,
@@ -116,7 +116,7 @@ Example of calculation of a transaction hash:
 
 ```javascript
 // Define a transaction
-let sendFunds = Exonum.newMessage({
+let sendFunds = Exonum.newTransaction({
   author: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
   service_id: 130,
   message_id: 0,
@@ -157,7 +157,7 @@ Read more about [hashes](../README.md#hash).
 
 ```javascript
 // Define a transaction
-let sendFunds = Exonum.newMessage({
+let sendFunds = Exonum.newTransaction({
   author: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
   service_id: 130,
   message_id: 0,
@@ -195,7 +195,7 @@ sendFunds.send(explorerBasePath, data, keyPair.secretKey).then(response => {
 
 ```javascript
 // Define a transaction
-let sendFunds = Exonum.newMessage({
+let sendFunds = Exonum.newTransaction({
   author: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
   service_id: 130,
   message_id: 0,

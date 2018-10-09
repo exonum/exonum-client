@@ -498,7 +498,7 @@ Read more about [transactions][docs:architecture:transactions] in Exonum.
 An example of a transaction definition:
 
 ```javascript
-let sendFunds = Exonum.newMessage({
+let sendFunds = Exonum.newTransaction({
   author: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
   service_id: 130,
   message_id: 0,
@@ -510,7 +510,7 @@ let sendFunds = Exonum.newMessage({
 })
 ```
 
-**Exonum.newMessage** function requires a single argument of `Object` type with next structure:
+**Exonum.newTransaction** function requires a single argument of `Object` type with next structure:
 
 | Property | Description | Type |
 |---|---|---|

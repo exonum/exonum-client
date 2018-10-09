@@ -37,6 +37,6 @@ export function newArray (arr) {
  * @param {Object} arr
  * @returns {boolean}
  */
-export function isInstanceofOfNewArray (arr) {
+export function isNewArray (arr) {
   return arr instanceof NewArray
 }

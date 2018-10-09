@@ -3,7 +3,7 @@ import { isObject } from '../helpers'
 import { hash } from '../crypto'
 import * as validate from '../types/validate'
 import { uint8ArrayToHexadecimal } from '../types/convert'
-import { newMessage, isInstanceofOfNewMessage } from '../types/message'
+import { newTransaction, isTransaction } from '../types/message'
 
 const ATTEMPTS = 10
 const ATTEMPT_TIMEOUT = 500
@@ -11,7 +11,7 @@ const ATTEMPT_TIMEOUT = 500
 /**
  * Send transaction to the blockchain
  * @param {string} explorerBasePath
- * @param {NewMessage} type
+ * @param {Transaction} type
  * @param {Object} data
  * @param {string} secretKey
  * @param {number} attempts
@@ -22,7 +22,7 @@ export function send (explorerBasePath, type, data, secretKey, attempts, timeout
   if (typeof explorerBasePath !== 'string') {
     throw new TypeError('Explorer base path endpoint of wrong data type is passed. String is required.')
   }
-  if (!isInstanceofOfNewMessage(type)) {
+  if (!isTransaction(type)) {
     throw new TypeError('Transaction of wrong type is passed.')
   }
   if (!isObject(data)) {
@@ -47,7 +47,7 @@ export function send (explorerBasePath, type, data, secretKey, attempts, timeout
   }
 
   // clone type
-  const typeCopy = newMessage(type)
+  const typeCopy = newTransaction(type)
 
   // sign transaction
   typeCopy.signature = typeCopy.sign(secretKey, data)

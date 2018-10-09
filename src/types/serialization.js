@@ -1,8 +1,8 @@
-import { isInstanceofOfNewType, newTypeIsFixed, fieldIsFixed } from './generic'
-import { isInstanceofOfNewArray } from './array'
+import { isType, newTypeIsFixed, fieldIsFixed } from './generic'
+import { isNewArray } from './array'
 import { Uint32, String } from './primitive'
 
-export const POINTER_LENGTH = 8
+export const POINTER_SIZE = 8
 
 /**
  * Serialize data into array of 8-bit integers and insert into buffer
@@ -48,12 +48,12 @@ export function serialize (buffer, shift, data, type, isTransactionBody) {
     const start = buffer.length
 
     // reserve segment for pointers
-    for (let i = start; i < start + data.length * POINTER_LENGTH; i++) {
+    for (let i = start; i < start + data.length * POINTER_SIZE; i++) {
       buffer[i] = 0
     }
 
     for (let i = 0; i < data.length; i++) {
-      const index = start + i * POINTER_LENGTH
+      const index = start + i * POINTER_SIZE
       const end = buffer.length
 
       Uint32.serialize(end - shift, buffer, index) // start index
@@ -84,20 +84,20 @@ export function serialize (buffer, shift, data, type, isTransactionBody) {
     Uint32.serialize(buffer.length - shift, buffer, from) // start index
     Uint32.serialize(data.length, buffer, from + 4) // array length
 
-    if (isInstanceofOfNewType(type.type)) {
+    if (isType(type.type)) {
       return serializeInstanceofOfNewArrayForNewType(buffer, shift, data, type)
     }
 
-    if (isInstanceofOfNewArray(type.type)) {
+    if (isNewArray(type.type)) {
       const start = buffer.length
 
       // reserve segment for pointers
-      for (let i = start; i < start + data.length * POINTER_LENGTH; i++) {
+      for (let i = start; i < start + data.length * POINTER_SIZE; i++) {
         buffer[i] = 0
       }
 
       for (let i = 0; i < data.length; i++) {
-        const index = start + i * POINTER_LENGTH
+        const index = start + i * POINTER_SIZE
 
         buffer = serializeInstanceofOfNewArray(buffer, shift, index, data[i], type.type)
       }
@@ -127,14 +127,14 @@ export function serialize (buffer, shift, data, type, isTransactionBody) {
     const from = shift + localShift
     let nestedShift = (isTransactionBody === true) ? 0 : shift
 
-    if (isInstanceofOfNewType(field.type)) {
+    if (isType(field.type)) {
       buffer = serializeInstanceofOfNewType(buffer, nestedShift, from, value, field.type)
       if (fieldIsFixed(field)) {
         localShift += field.type.size()
       } else {
-        localShift += POINTER_LENGTH
+        localShift += POINTER_SIZE
       }
-    } else if (isInstanceofOfNewArray(field.type)) {
+    } else if (isNewArray(field.type)) {
       buffer = serializeInstanceofOfNewArray(buffer, nestedShift, from, value, field.type)
       localShift += field.type.size()
     } else {
