@@ -32,9 +32,13 @@ describe('Examples from README.md', function () {
   })
 
   describe('Transaction section', function () {
+    const keyPair = {
+      publicKey: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
+      secretKey: '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2bfa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
+    }
     const SendFunds = Exonum.newMessage({
-      protocol_version: 0,
-      service_id: 0,
+      author: keyPair.publicKey,
+      service_id: 130,
       message_id: 0,
       fields: [
         { name: 'from', type: Exonum.Hash },
@@ -47,23 +51,10 @@ describe('Examples from README.md', function () {
       to: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36',
       amount: 50
     }
-    const keyPair = {
-      publicKey: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
-      secretKey: '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2bfa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
-    }
-    const signature = '8ff692b47d17f7738ec2d19f5296d3810909a62fe1480eb752b531f8e17056f6578985090db822612f88c3bcad4f0539401836e5ad58913c489784ff3e415a0b'
-    const buffer = [0, 0, 0, 0, 0, 0, 146, 0, 0, 0, 103, 82, 190, 136, 35, 20, 245, 187, 188, 154, 106, 242, 174, 99, 79, 192, 112, 56, 88, 74, 74, 119, 81, 14, 165, 236, 237, 69, 245, 77, 192, 48, 245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161, 242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54, 50, 0, 0, 0, 0, 0, 0, 0]
+    const buffer = [250, 127, 158, 228, 58, 255, 112, 200, 121, 248, 15, 167, 253, 21, 149, 92, 24, 185, 140, 114, 49, 11, 9, 231, 129, 131, 16, 50, 80, 80, 207, 122, 0, 0, 130, 0, 0, 0, 103, 82, 190, 136, 35, 20, 245, 187, 188, 154, 106, 242, 174, 99, 79, 192, 112, 56, 88, 74, 74, 119, 81, 14, 165, 236, 237, 69, 245, 77, 192, 48, 245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161, 242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54, 50, 0, 0, 0, 0, 0, 0, 0]
 
     it('should serialize transaction', function () {
       expect(SendFunds.serialize(data, true)).to.deep.equal(buffer)
-    })
-
-    it('should sign transaction', function () {
-      expect(SendFunds.sign(keyPair.secretKey, data)).to.equal(signature)
-    })
-
-    it('should verify transaction signature', function () {
-      expect(SendFunds.verifySignature(signature, keyPair.publicKey, data)).to.be.true
     })
   })
 
@@ -161,76 +152,66 @@ describe('Examples from README.md', function () {
     it('should verify a block', function () {
       const data = {
         block: {
-          height: '171',
-          prev_hash: '7312470bbfed9a5df2cdd5a4dfca5e26cbc14fbde1a22ca9de14b56d653309be',
-          proposer_id: 0,
-          state_hash: '5fb7f245684709df9163dbe0d5b9cbfadadbda0c1133147356e355c8e46eceb4',
-          tx_count: 4,
-          tx_hash: 'a54d5ee4ee1a382e2d124e4d2f393226528b08368af5e2264eef991dee4ab379'
+          height: '2',
+          prev_hash: '5107fe929f173a8fbe609ef907797daab959c6838eb26e074d80534c772e879a',
+          proposer_id: 3,
+          state_hash: '5f59a6b7810f2cde8a90a4b281c5722d0718cda07f1f321e531c5305ed3baf0e',
+          tx_count: 3,
+          tx_hash: '09224d3618942784363789a34e016f6f8e683f2ec96a5b9c51c23a02bca2ae1d'
         },
         precommits: [
           {
-            body: {
-              block_hash: '08ca6f2da642e26c883010d12ef64df0638974863201e213af3d73a9f3c4733d',
-              height: '171',
-              propose_hash: '84da70e66af5c4e8eb7f4b76e7f10b637feffeb0b71ef0906eed4c969e38254c',
+            payload: {
+              block_hash: '7de0d426f0f287849f89e5758015aca00f2e85eda28d2c38581519e0f1de8105',
+              height: '2',
+              propose_hash: 'e000ec445f25b61d2ac9d38882cffcd59aa02c08a30b2173c5526b89dccd1fcd',
               round: 1,
               time: {
-                nanos: 160188000,
-                secs: '1531146090'
-              },
-              validator: 0
-            },
-            message_id: 4,
-            protocol_version: 0,
-            service_id: 0,
-            signature: '672d9e1b3fb5e39f27a9c4d51b073f9e77a9ece054374ef63160e7b892d74c5b92b03241399b0e7284de87bf43c0a9fa2d37cd1606eef3ad5065ec563a814a02'
-          },
-          {
-            body: {
-              block_hash: '08ca6f2da642e26c883010d12ef64df0638974863201e213af3d73a9f3c4733d',
-              height: '171',
-              propose_hash: '84da70e66af5c4e8eb7f4b76e7f10b637feffeb0b71ef0906eed4c969e38254c',
-              round: 1,
-              time: {
-                nanos: 160165000,
-                secs: '1531146090'
-              },
-              validator: 2
-            },
-            message_id: 4,
-            protocol_version: 0,
-            service_id: 0,
-            signature: 'd4ae174c6d64a3e689e2b99507688e7cbef3f6d0a6076ff0e613a913a642e282ec1dc4bde6f43bc0463b3425a559a7454c1d7f76709569b77dbb3f1f93b95805'
-          },
-          {
-            body: {
-              block_hash: '08ca6f2da642e26c883010d12ef64df0638974863201e213af3d73a9f3c4733d',
-              height: '171',
-              propose_hash: '84da70e66af5c4e8eb7f4b76e7f10b637feffeb0b71ef0906eed4c969e38254c',
-              round: 1,
-              time: {
-                nanos: 160267000,
-                secs: '1531146090'
+                nanos: 336073000,
+                secs: '1537799426'
               },
               validator: 3
             },
-            message_id: 4,
-            protocol_version: 0,
-            service_id: 0,
-            signature: '466836a761c7b08cd01f867153328054f0aea8e417bb8acd554ec74d0364e99677959bfdeb519ab4c7e25dbb87d7fb933411c8894d59a40b80e992101d02370a'
+            message: 'e6264b7f37f1fc2b4719d89a1360c25ad8b98e9723b485080382761ede1f318201000300020000000000000001000000e000ec445f25b61d2ac9d38882cffcd59aa02c08a30b2173c5526b89dccd1fcd7de0d426f0f287849f89e5758015aca00f2e85eda28d2c38581519e0f1de810502f5a85b00000000281108142da1ea5a2eb4b058a37a69ffb721b7f16c319a4fa1fd34c29efc9bedec454382f9c606a6574349d65be17154465eeb68c4558ca5a1e68a5cc8537aaf81ed780e'
+          },
+          {
+            payload: {
+              block_hash: '7de0d426f0f287849f89e5758015aca00f2e85eda28d2c38581519e0f1de8105',
+              height: '2',
+              propose_hash: 'e000ec445f25b61d2ac9d38882cffcd59aa02c08a30b2173c5526b89dccd1fcd',
+              round: 1,
+              time: {
+                nanos: 336482000,
+                secs: '1537799426'
+              },
+              validator: 0
+            },
+            message: '2bcd527a39ed80e7da4b767f402b6959cd74ce6980ce0a28c8b2e8a11c99b1f101000000020000000000000001000000e000ec445f25b61d2ac9d38882cffcd59aa02c08a30b2173c5526b89dccd1fcd7de0d426f0f287849f89e5758015aca00f2e85eda28d2c38581519e0f1de810502f5a85b00000000d04e0e14b7235d000fe404a4b9695c0a08c4fc763c9012685b0b37abb0e5b24425e98813c7f1b3a3c8c5cf31e97ada34d63830669ddb072bfc637e16c8d5922538121901'
+          },
+          {
+            payload: {
+              block_hash: '7de0d426f0f287849f89e5758015aca00f2e85eda28d2c38581519e0f1de8105',
+              height: '2',
+              propose_hash: 'e000ec445f25b61d2ac9d38882cffcd59aa02c08a30b2173c5526b89dccd1fcd',
+              round: 1,
+              time: {
+                nanos: 338473000,
+                secs: '1537799426'
+              },
+              validator: 2
+            },
+            message: 'c9decf2e0d150eec438242c37e628cc2eb5c45d6b18fb8b75c3f9be6529825a401000200020000000000000001000000e000ec445f25b61d2ac9d38882cffcd59aa02c08a30b2173c5526b89dccd1fcd7de0d426f0f287849f89e5758015aca00f2e85eda28d2c38581519e0f1de810502f5a85b0000000028b02c1426a2f9e45be72e3cc986eaa8b3a351d6bc8742653c11ba9fc37e1739addfc535bec2a203ebe345a1bbe637fdb3ce4d63974b20e721928b26a471cc6399d73809'
           }
         ]
       }
       const validators = [
-        '3af676455d2f6ae08c21c61d48523be3e293b4b2c062b1754ae1fe63b066687d',
-        '5831dfb1ed7546fd64ab33a53d78478722ee4a66bb8323fd45eaabe2c50703aa',
-        '8b2d61a718a75e432fa581cc9781e24c82073994549e7f7126cb0ac9d55d554a',
-        'ccf74bf9423b0253e223a17ecfdc852d46665b74ab36b05d4f4fe9c651c57e6d'
+        '2bcd527a39ed80e7da4b767f402b6959cd74ce6980ce0a28c8b2e8a11c99b1f1',
+        '48dbd790d25e0705f2077b1406b4eb64ccf0dd33a8a2215bb840f26f05c6bc1e',
+        'c9decf2e0d150eec438242c37e628cc2eb5c45d6b18fb8b75c3f9be6529825a4',
+        'e6264b7f37f1fc2b4719d89a1360c25ad8b98e9723b485080382761ede1f3182'
       ]
-      const networkId = 0
 
-      expect(Exonum.verifyBlock(data, validators, networkId)).to.equal(true)
+      expect(Exonum.verifyBlock(data, validators)).to.equal(true)
     })
   })
 })

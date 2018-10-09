@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.14.0 (Oct 9, 2018)
+
+* Update `Message` and `Precommit` serialization format. Change `newMessage` function syntax. ([#136][pr-136])
+Serialization format is changed in next release of the Exonum core.
+* Change `send` and `sendQueue` methods syntax. ([#136][pr-136])
+
 ## 0.13.0 (Oct 5, 2018)
 
 * Add a new `verifyTable` method to verify table existence in the root tree. ([#138][pr-138])
@@ -151,6 +157,7 @@ matching [release 0.1][release-0.1] of the Exonum core repository.
 [release-0.1]: https://github.com/exonum/exonum/releases/tag/v0.1
 [pr-138]: https://github.com/exonum/exonum-client/pull/138
 [pr-137]: https://github.com/exonum/exonum-client/pull/137
+[pr-136]: https://github.com/exonum/exonum-client/pull/136
 [pr-133]: https://github.com/exonum/exonum-client/pull/133
 [pr-126]: https://github.com/exonum/exonum-client/pull/126
 [pr-122]: https://github.com/exonum/exonum-client/pull/122

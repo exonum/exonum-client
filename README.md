@@ -25,6 +25,7 @@ Library compatibility with Exonum core:
 
 | JavaScript light client | Exonum core |
 |---|---|
+| 0.14.0 | unreleased |
 | 0.13.0 | 0.9.* |
 | 0.10.2 | 0.8.* |
 | 0.9.0 | 0.7.* |
@@ -499,9 +500,9 @@ An example of a transaction definition:
 
 ```javascript
 let sendFunds = Exonum.newMessage({
-  protocol_version: 0,
+  author: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
   service_id: 130,
-  message_id: 128,
+  message_id: 0,
   fields: [
     { name: 'from', type: Exonum.Hash },
     { name: 'to', type: Exonum.Hash },
@@ -514,7 +515,7 @@ let sendFunds = Exonum.newMessage({
 
 | Property | Description | Type |
 |---|---|---|
-| **protocol_version** | [Protocol version][docs:architecture:serialization:protocol-version]. | `Number` |
+| **author** | Author's public key as hexadecimal string. | `String` |
 | **service_id** | [Service ID][docs:architecture:serialization:service-id]. | `Number` |
 | **message_id** | [Message ID][docs:architecture:serialization:message-id]. | `Number` |
 | **signature** | Signature as hexadecimal string. *Optional.* | `String` |
@@ -552,18 +553,17 @@ To submit transaction to the blockchain `send` function can be used.
 There are two possible signatures of the `send` function:
 
 ```javascript
-Exonum.send(transactionEndpoint, explorerBasePath, data, signature, sendFunds, attempts, timeout)
+Exonum.send(explorerBasePath, type, data, secretKey, attempts, timeout)
 
-sendFunds.send(transactionEndpoint, explorerBasePath, data, signature, attempts, timeout)
+sendFunds.send(explorerBasePath, data, secretKey, attempts, timeout)
 ```
 
 | Property | Description | Type |
 |---|---|---|
-| **transactionEndpoint** | API address of transaction handler on a blockchain node. | `String` |
 | **explorerBasePath** | API address of transaction explorer on a blockchain node. | `String` |
-| **data** | Data that has been signed. | `Object` |
-| **signature** | Signature as hexadecimal string. | `String` |
 | **type** | Definition of the transaction. | [Transaction](#define-transaction). |
+| **data** | Data that has been signed. | `Object` |
+| **secretKey** | Secret key as hexadecimal string. | `String` |
 | **attempts** | Number of attempts to check transaction status. Pass `0` in case you do not need to verify if the transaction is accepted to the block. *Optional. Default value is `10`.* | `Number` |
 | **timeout** | Timeout between attempts to check transaction status. *Optional. Default value is `500`.* | `Number` |
 
@@ -574,13 +574,10 @@ Fulfilled value contained transaction with its proof.
 An example of a transaction sending:
 
 ```javascript
-// Define transaction handler address
-const transactionEndpoint = 'http://127.0.0.1:8200/api/services/cryptocurrency/v1/wallets'
-
 // Define transaction explorer address
-const explorerBasePath = 'http://127.0.0.1:8200/api/explorer/v1/transactions?hash='
+const explorerBasePath = 'http://127.0.0.1:8200/api/explorer/v1/transactions'
 
-sendFunds.send(transactionEndpoint, explorerBasePath, data, signature).then(txHash => {})
+sendFunds.send(explorerBasePath, data, keyPair.secretKey).then(txHash => {})
 ```
 
 ### Send multiple transactions
@@ -590,14 +587,14 @@ Transactions will be stored in the appropriate order.
 Each transaction from the queue will be sent to the blockchain only after the previous transaction is accepted to the block.
 
 ```javascript
-Exonum.sendQueue(transactionEndpoint, explorerBasePath, transactions, attempts, timeout)
+Exonum.sendQueue(explorerBasePath, transactions, secretKey, attempts, timeout)
 ```
 
 | Property | Description | Type |
 |---|---|---|
-| **transactionEndpoint** | API address of transaction handler on a blockchain node. | `String` |
 | **explorerBasePath** | API address of transaction explorer on a blockchain node. | `String` |
 | **transactions** | List of transactions. | `Array` |
+| **secretKey** | Secret key as hexadecimal string. | `String` |
 | **attempts** | Number of attempts to check each transaction status. Pass `0` in case you do not need to verify if the transactions are accepted to the block. *Optional. Default value is `10`.* | `Number` |
 | **timeout** | Timeout between attempts to check each transaction status. *Optional. Default value is `500`.* | `Number` |
 
@@ -605,9 +602,8 @@ Transaction structure:
 
 | Field | Description | Type |
 |---|---|---|
-| **data** | Transaction data that has been signed. | `Object` |
-| **signature** | Signature as hexadecimal string. | `String` |
 | **type** | Definition of the transaction. | [Transaction](#define-transaction). |
+| **data** | Transaction data that has been signed. | `Object` |
 
 The `sendQueue` function returns value of `Promise` type with an array of transaction hashes as a fulfilled value.
 Fulfilled state means that all transactions are accepted to the block.

@@ -7,9 +7,9 @@ An example of serialization into a byte array:
 ```javascript
 // Define a transaction
 let sendFunds = Exonum.newMessage({
-  protocol_version: 0,
+  author: 'f5602a686807fbf54b47eb4c96b5bac3352a44e7500f6e507b8b4e341302c799',
   service_id: 130,
-  message_id: 128,
+  message_id: 0,
   fields: [
     { name: 'from', type: Exonum.Hash },
     { name: 'to', type: Exonum.Hash },
@@ -37,9 +37,9 @@ An example of transaction signing:
 ```javascript
 // Define a transaction
 let sendFunds = Exonum.newMessage({
-  protocol_version: 0,
+  author: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
   service_id: 130,
-  message_id: 128,
+  message_id: 0,
   fields: [
     { name: 'from', type: Exonum.Hash },
     { name: 'to', type: Exonum.Hash },
@@ -74,9 +74,9 @@ An example of signature verification:
 ```javascript
 // Define a transaction
 let sendFunds = Exonum.newMessage({
-  protocol_version: 0,
+  author: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
   service_id: 130,
-  message_id: 128,
+  message_id: 0,
   fields: [
     { name: 'from', type: Exonum.Hash },
     { name: 'to', type: Exonum.Hash },
@@ -117,9 +117,9 @@ Example of calculation of a transaction hash:
 ```javascript
 // Define a transaction
 let sendFunds = Exonum.newMessage({
-  protocol_version: 0,
+  author: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
   service_id: 130,
-  message_id: 128,
+  message_id: 0,
   fields: [
     { name: 'from', type: Exonum.Hash },
     { name: 'to', type: Exonum.Hash },
@@ -158,9 +158,9 @@ Read more about [hashes](../README.md#hash).
 ```javascript
 // Define a transaction
 let sendFunds = Exonum.newMessage({
-  protocol_version: 0,
+  author: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
   service_id: 130,
-  message_id: 128,
+  message_id: 0,
   fields: [
     { name: 'from', type: Exonum.Hash },
     { name: 'to', type: Exonum.Hash },
@@ -168,11 +168,8 @@ let sendFunds = Exonum.newMessage({
   ]
 })
 
-// Define transaction handler address
-const transactionEndpoint = 'http://127.0.0.1:8200/api/services/cryptocurrency/v1/wallets'
-
 // Define transaction explorer address
-const explorerBasePath = 'http://127.0.0.1:8200/api/explorer/v1/transactions?hash='
+const explorerBasePath = 'http://127.0.0.1:8200/api/explorer/v1/transactions'
 
 // Data
 const data = {
@@ -188,11 +185,8 @@ const keyPair = {
   'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
 }
 
-// Sign the data
-const signature = sendFunds.sign(keyPair.secretKey, data)
-
 // Send transaction
-sendFunds.send(transactionEndpoint, explorerBasePath, data, signature).then(response => {
+sendFunds.send(explorerBasePath, data, keyPair.secretKey).then(response => {
   // ...
 })
 ```
@@ -202,9 +196,9 @@ sendFunds.send(transactionEndpoint, explorerBasePath, data, signature).then(resp
 ```javascript
 // Define a transaction
 let sendFunds = Exonum.newMessage({
-  protocol_version: 0,
+  author: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
   service_id: 130,
-  message_id: 128,
+  message_id: 0,
   fields: [
     { name: 'from', type: Exonum.Hash },
     { name: 'to', type: Exonum.Hash },
@@ -212,11 +206,8 @@ let sendFunds = Exonum.newMessage({
   ]
 })
 
-// Define transaction handler address
-const transactionEndpoint = 'http://127.0.0.1:8200/api/services/cryptocurrency/v1/wallets'
-
 // Define transaction explorer address
-const explorerBasePath = 'http://127.0.0.1:8200/api/explorer/v1/transactions?hash='
+const explorerBasePath = 'http://127.0.0.1:8200/api/explorer/v1/transactions'
 
 // Data
 const transactions = [
@@ -245,13 +236,8 @@ const keyPair = {
   'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
 }
 
-// Sign the data
-transactions.forEach(transaction => {
-  transaction.signature = transaction.type.sign(keyPair.secretKey, transaction.data)
-})
-
 // Send transactions queue
-Exonum.sendQueue(transactionEndpoint, explorerBasePath, transactions).then(response => {
+Exonum.sendQueue(explorerBasePath, transactions, keyPair.secretKey).then(response => {
   // ...
 })
 ```

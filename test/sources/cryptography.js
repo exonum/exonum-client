@@ -96,7 +96,7 @@ describe('Check cryptography', function () {
     })
 
     it('should throw error when the type parameter of invalid type', function () {
-      const secretKey = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
+      const secretKey = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'
       const User = {
         alpha: 5
       }
@@ -137,7 +137,7 @@ describe('Check cryptography', function () {
 
   describe('Verify signature', function () {
     it('should verify signature of the data of NewType type and return true', function () {
-      const publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
+      const publicKey = 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'
       const signature = '7ccad21d76359c8c3ed1161eb8231edd44a91d53ea468d23f8528e2985e5547f72f98ccc61d96ecad173bdc29627abbf6d46908807f6dd0a0d767ae3887d040e'
       const User = Exonum.newType({
         fields: [
@@ -154,7 +154,7 @@ describe('Check cryptography', function () {
     })
 
     it('should verify signature of the data of NewType type using built-in method and return true', function () {
-      const publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
+      const publicKey = 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'
       const signature = '7ccad21d76359c8c3ed1161eb8231edd44a91d53ea468d23f8528e2985e5547f72f98ccc61d96ecad173bdc29627abbf6d46908807f6dd0a0d767ae3887d040e'
       const User = Exonum.newType({
         fields: [
@@ -171,12 +171,12 @@ describe('Check cryptography', function () {
     })
 
     it('should verify signature of the data of NewMessage type and return true', function () {
-      const publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
-      const signature = '4006cef1884941850a6b97a64ed7f12d1e1053188618ef71b8c9f87438b943b1969e08011e45db8299bb738fec60c9dcd1936ab9ba44392cacc7f0385f18dd09'
+      const publicKey = 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'
+      const signature = '856c7f680dd59fd0259c15add9e4cd558ec8ce375edb5efc7bbd646426d81f2b5cfa6eda76ea074646df27e4a2baf6831c5cddeb0ceb35c8c559392bf4427b04'
       const CustomMessage = Exonum.newMessage({
-        protocol_version: 0,
+        author: publicKey,
         service_id: 1,
-        message_id: 2,
+        message_id: 0,
         fields: [
           { name: 'name', type: Exonum.String },
           { name: 'age', type: Exonum.Uint8 },
@@ -195,12 +195,12 @@ describe('Check cryptography', function () {
     })
 
     it('should verify signature of the data of NewMessage type using built-in method and return true', function () {
-      const publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
-      const signature = '4006cef1884941850a6b97a64ed7f12d1e1053188618ef71b8c9f87438b943b1969e08011e45db8299bb738fec60c9dcd1936ab9ba44392cacc7f0385f18dd09'
+      const publicKey = 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'
+      const signature = '856c7f680dd59fd0259c15add9e4cd558ec8ce375edb5efc7bbd646426d81f2b5cfa6eda76ea074646df27e4a2baf6831c5cddeb0ceb35c8c559392bf4427b04'
       const CustomMessage = Exonum.newMessage({
-        protocol_version: 0,
+        author: publicKey,
         service_id: 1,
-        message_id: 2,
+        message_id: 0,
         fields: [
           { name: 'name', type: Exonum.String },
           { name: 'age', type: Exonum.Uint8 },
@@ -219,7 +219,7 @@ describe('Check cryptography', function () {
     })
 
     it('should verify signature of the array of 8-bit integers', function () {
-      const publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
+      const publicKey = 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'
       const signature = '7ccad21d76359c8c3ed1161eb8231edd44a91d53ea468d23f8528e2985e5547f72f98ccc61d96ecad173bdc29627abbf6d46908807f6dd0a0d767ae3887d040e'
       const User = Exonum.newType({
         fields: [
@@ -237,7 +237,7 @@ describe('Check cryptography', function () {
     })
 
     it('should verify signature of the array of 8-bit integers', function () {
-      const publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
+      const publicKey = 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'
       const signature = '7ccad21d76359c8c3ed1161eb8231edd44a91d53ea468d23f8528e2985e5547f72f98ccc61d96ecad173bdc29627abbf6d46908807f6dd0a0d767ae3887d040b'
       const User = Exonum.newType({
         fields: [
@@ -255,7 +255,7 @@ describe('Check cryptography', function () {
     })
 
     it('should throw error when the data parameter is of wrong NewType type', function () {
-      const publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
+      const publicKey = 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'
       const signature = '9e0f0122c2963b76ba10842951cd1b67c8197b3f964c34f8b667aa655a7b4a8d844d567698d99de30590fc5002ddb4b9b5927ec05cd73572b972cb6b034cd40b'
       const userData = {
         sum: 500,
@@ -267,12 +267,12 @@ describe('Check cryptography', function () {
     })
 
     it('should throw error when the data parameter is of wrong NewMessage type', function () {
-      const publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
+      const publicKey = 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'
       const signature = '24a5224702d670c95a78ef1f753c9e6e698da5b2a2c52dcc51b5bf9e556e717fb763b1a5e78bd39e5369a139ab68ae50dd19a129038e8da3af30985f09549500'
       const CustomMessage = Exonum.newMessage({
-        protocol_version: 0,
+        author: publicKey,
         service_id: 1,
-        message_id: 2,
+        message_id: 0,
         fields: [
           { name: 'name', type: Exonum.String },
           { name: 'age', type: Exonum.Uint8 },
@@ -290,7 +290,7 @@ describe('Check cryptography', function () {
     })
 
     it('should throw error when the type parameter is of wrong type', function () {
-      const publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
+      const publicKey = 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'
       const signature = '9e0f0122c2963b76ba10842951cd1b67c8197b3f964c34f8b667aa655a7b4a8d844d567698d99de30590fc5002ddb4b9b5927ec05cd73572b972cb6b034cd40b'
       const User = {
         alpha: 3
@@ -305,8 +305,8 @@ describe('Check cryptography', function () {
     })
 
     it('should throw error when the signature parameter is of wrong length', function () {
-      const publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
-      const signature = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
+      const publicKey = 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'
+      const signature = 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'
       const User = Exonum.newType({
         fields: [
           { name: 'firstName', type: Exonum.String },
@@ -324,8 +324,8 @@ describe('Check cryptography', function () {
     })
 
     it('should throw error when the signature parameter is invalid', function () {
-      const publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
-      const signature = '6752BE882314F5BBBC9A6AF2AE634FC07038584A4A77510EA5ECED45F54DC030F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7Z'
+      const publicKey = 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'
+      const signature = '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7z'
       const User = Exonum.newType({
         fields: [
           { name: 'firstName', type: Exonum.String },
@@ -343,7 +343,7 @@ describe('Check cryptography', function () {
     })
 
     it('should throw error when the signature parameter is of wrong type', function () {
-      const publicKey = 'F5864AB6A5A2190666B47C676BCF15A1F2F07703C5BCAFB5749AA735CE8B7C36'
+      const publicKey = 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'
       const User = Exonum.newType({
         fields: [
           { name: 'firstName', type: Exonum.String },
