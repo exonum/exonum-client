@@ -1,21 +1,21 @@
 import bigInt from 'big-integer'
 import sha from 'sha.js'
 import nacl from 'tweetnacl'
-import { isInstanceofOfNewType } from '../types/generic'
-import { isInstanceofOfNewMessage } from '../types/message'
+import { isType } from '../types/generic'
+import { isTransaction } from '../types/message'
 import * as validate from '../types/validate'
 import * as convert from '../types/convert'
 
 /**
  * Get SHA256 hash
  * @param {Object|Array|Uint8Array} data - object of NewType type or array of 8-bit integers
- * @param {NewType|NewMessage} [type] - optional, used only if data of {Object} type is passed
+ * @param {Type|Transaction} [type] - optional, used only if data of {Object} type is passed
  * @return {string}
  */
 export function hash (data, type) {
   let buffer
 
-  if (isInstanceofOfNewType(type) || isInstanceofOfNewMessage(type)) {
+  if (isType(type) || isTransaction(type)) {
     buffer = type.serialize(data)
   } else {
     if (type !== undefined) {
@@ -39,7 +39,7 @@ export function hash (data, type) {
  * Get ED25519 signature
  * @param {string} secretKey
  * @param {Object|Array} data - object of NewType type or array of 8-bit integers
- * @param {NewType|NewMessage} [type] - optional, used only if data of {Object} type is passed
+ * @param {Type|Transaction} [type] - optional, used only if data of {Object} type is passed
  * @return {string}
  */
 export function sign (secretKey, data, type) {
@@ -53,23 +53,20 @@ export function sign (secretKey, data, type) {
 
   secretKeyUint8Array = convert.hexadecimalToUint8Array(secretKey)
 
-  if (isInstanceofOfNewType(type)) {
+  if (isType(type) || isTransaction(type)) {
     buffer = new Uint8Array(type.serialize(data))
   } else {
-    if (isInstanceofOfNewMessage(type)) {
-      buffer = new Uint8Array(type.serialize(data, true))
+    if (type !== undefined) {
+      throw new TypeError('Wrong type of data.')
+    }
+
+    if (data instanceof Uint8Array) {
+      buffer = data
     } else {
-      if (type !== undefined) {
-        throw new TypeError('Wrong type of data.')
+      if (!Array.isArray(data)) {
+        throw new TypeError('Invalid data parameter.')
       }
-      if (data instanceof Uint8Array) {
-        buffer = data
-      } else {
-        if (!Array.isArray(data)) {
-          throw new TypeError('Invalid data parameter.')
-        }
-        buffer = new Uint8Array(data)
-      }
+      buffer = new Uint8Array(data)
     }
   }
   signature = nacl.sign.detached(buffer, secretKeyUint8Array)
@@ -82,7 +79,7 @@ export function sign (secretKey, data, type) {
  * @param {string} signature
  * @param {string} publicKey
  * @param {Object|Array} data - object of NewType type or array of 8-bit integers
- * @param {NewType|NewMessage} [type] - optional, used only if data of {Object} type is passed
+ * @param {Type|Transaction} [type] - optional, used only if data of {Object} type is passed
  * @return {boolean}
  */
 export function verifySignature (signature, publicKey, data, type) {
@@ -102,10 +99,8 @@ export function verifySignature (signature, publicKey, data, type) {
 
   publicKeyUint8Array = convert.hexadecimalToUint8Array(publicKey)
 
-  if (isInstanceofOfNewType(type)) {
+  if (isType(type) || isTransaction(type)) {
     buffer = new Uint8Array(type.serialize(data))
-  } else if (isInstanceofOfNewMessage(type)) {
-    buffer = new Uint8Array(type.serialize(data, true))
   } else if (type === undefined) {
     if (data instanceof Uint8Array) {
       buffer = data

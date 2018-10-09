@@ -6,7 +6,7 @@ import { String } from './primitive'
  * @constructor
  * @param {Object} type
  */
-class NewType {
+class Type {
   constructor (type) {
     type.fields.forEach(field => {
       if (field.name === undefined) {
@@ -31,7 +31,7 @@ class NewType {
   }
 
   /**
-   * Serialize data of NewType type into array of 8-bit integers
+   * Serialize data into array of 8-bit integers
    * @param {Object} data
    * @returns {Array}
    */
@@ -71,21 +71,21 @@ class NewType {
 }
 
 /**
- * Create element of NewType class
+ * Create element of Type class
  * @param {Object} type
- * @returns {NewType}
+ * @returns {Type}
  */
 export function newType (type) {
-  return new NewType(type)
+  return new Type(type)
 }
 
 /**
- * Check if passed object is of type NewType
+ * Check if passed object is of type Type
  * @param {Object} type
  * @returns {boolean}
  */
-export function isInstanceofOfNewType (type) {
-  return type instanceof NewType
+export function isType (type) {
+  return type instanceof Type
 }
 
 /**
@@ -94,7 +94,7 @@ export function isInstanceofOfNewType (type) {
  * @returns {boolean}
  */
 export function fieldIsFixed (field) {
-  if (isInstanceofOfNewType(field.type)) {
+  if (isType(field.type)) {
     return newTypeIsFixed(field.type)
   }
 

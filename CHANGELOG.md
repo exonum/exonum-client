@@ -1,8 +1,15 @@
 # Changelog
 
+## 0.15.0 (Oct 9, 2018)
+
+* Remove `cutSignature` field from `serialize` method. ([#139][pr-139])
+* Rename `newMessage` method into `newTransaction`. ([#139][pr-139])
+* Rename `isInstanceofOfNewMessage` method into `isTransaction`. ([#139][pr-139])
+* Rename `isInstanceofOfNewArray` method into `isNewArray`. ([#139][pr-139])
+
 ## 0.14.0 (Oct 9, 2018)
 
-* Update `Message` and `Precommit` serialization format. Change `newMessage` function syntax. ([#136][pr-136])
+* Update `Message` and `Precommit` serialization format. Change `newMessage` method syntax. ([#136][pr-136])
 Serialization format is changed in next release of the Exonum core.
 * Change `send` and `sendQueue` methods syntax. ([#136][pr-136])
 
@@ -155,6 +162,7 @@ matching [release 0.1][release-0.1] of the Exonum core repository.
 [release-0.7]: https://github.com/exonum/exonum/blob/master/CHANGELOG.md#07---2018-04-11
 [release-0.5]: https://github.com/exonum/exonum/blob/master/CHANGELOG.md#05---2018-01-30
 [release-0.1]: https://github.com/exonum/exonum/releases/tag/v0.1
+[pr-139]: https://github.com/exonum/exonum-client/pull/139
 [pr-138]: https://github.com/exonum/exonum-client/pull/138
 [pr-137]: https://github.com/exonum/exonum-client/pull/137
 [pr-136]: https://github.com/exonum/exonum-client/pull/136

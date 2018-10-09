@@ -21,12 +21,12 @@ describe('Check cryptography', function () {
       expect(hash).to.equal(cryptographyMock.type2.hash)
     })
 
-    it('should return hash of data of newMessage type', function () {
+    it('should return hash of data of Transaction type', function () {
       const hash = Exonum.hash(cryptographyMock.type3.data, schema.getMessage('type3'))
       expect(hash).to.equal(cryptographyMock.type3.hash)
     })
 
-    it('should return hash of data of newMessage type using built-in method', function () {
+    it('should return hash of data of Transaction type using built-in method', function () {
       const hash = schema.getMessage('type4').hash(cryptographyMock.type4.data)
       expect(hash).to.equal(cryptographyMock.type4.hash)
     })
@@ -47,7 +47,7 @@ describe('Check cryptography', function () {
       })
     })
 
-    it('should throw error when data of invalid NewMessage type', function () {
+    it('should throw error when data of invalid Transaction type', function () {
       expect(() => Exonum.hash(undefined, schema.getMessage('type3')))
         .to.throw(TypeError, 'Cannot read property \'name\' of undefined');
 
@@ -69,12 +69,12 @@ describe('Check cryptography', function () {
       expect(signature).to.equal(cryptographyMock.type6.signed)
     })
 
-    it('should return signature of the data of NewMessage type', function () {
+    it('should return signature of the data of Transaction type', function () {
       const signature = Exonum.sign(cryptographyMock.type7.secretKey, cryptographyMock.type7.data, schema.getMessage('type7'))
       expect(signature).to.equal(cryptographyMock.type7.signed)
     })
 
-    it('should return signature of the data of NewMessage type using built-in method', function () {
+    it('should return signature of the data of Transaction type using built-in method', function () {
       const signature = schema.getMessage('type8').sign(cryptographyMock.type8.secretKey, cryptographyMock.type8.data)
       expect(signature).to.equal(cryptographyMock.type8.signed)
     })
@@ -90,7 +90,7 @@ describe('Check cryptography', function () {
         .to.throw(TypeError, 'Field firstName is not defined.')
     })
 
-    it('should throw error when the data parameter of wrong NewMessage type', function () {
+    it('should throw error when the data parameter of wrong Transaction type', function () {
       expect(() => Exonum.sign(invalidCryptographyMock.type7.secretKey, invalidCryptographyMock.type7.data, schema.getMessage('type7')))
         .to.throw(TypeError, 'Field name is not defined.')
     })
@@ -170,10 +170,10 @@ describe('Check cryptography', function () {
       expect(User.verifySignature(signature, publicKey, userData)).to.be.true
     })
 
-    it('should verify signature of the data of NewMessage type and return true', function () {
+    it('should verify signature of the data of Transaction type and return true', function () {
       const publicKey = 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'
       const signature = '856c7f680dd59fd0259c15add9e4cd558ec8ce375edb5efc7bbd646426d81f2b5cfa6eda76ea074646df27e4a2baf6831c5cddeb0ceb35c8c559392bf4427b04'
-      const CustomMessage = Exonum.newMessage({
+      const CustomMessage = Exonum.newTransaction({
         author: publicKey,
         service_id: 1,
         message_id: 0,
@@ -194,10 +194,10 @@ describe('Check cryptography', function () {
       expect(Exonum.verifySignature(signature, publicKey, messageData, CustomMessage)).to.be.true
     })
 
-    it('should verify signature of the data of NewMessage type using built-in method and return true', function () {
+    it('should verify signature of the data of Transaction type using built-in method and return true', function () {
       const publicKey = 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'
       const signature = '856c7f680dd59fd0259c15add9e4cd558ec8ce375edb5efc7bbd646426d81f2b5cfa6eda76ea074646df27e4a2baf6831c5cddeb0ceb35c8c559392bf4427b04'
-      const CustomMessage = Exonum.newMessage({
+      const CustomMessage = Exonum.newTransaction({
         author: publicKey,
         service_id: 1,
         message_id: 0,
@@ -266,10 +266,10 @@ describe('Check cryptography', function () {
         .to.throw(TypeError, 'Field firstName is not defined.')
     })
 
-    it('should throw error when the data parameter is of wrong NewMessage type', function () {
+    it('should throw error when the data parameter is of wrong Transaction type', function () {
       const publicKey = 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'
       const signature = '24a5224702d670c95a78ef1f753c9e6e698da5b2a2c52dcc51b5bf9e556e717fb763b1a5e78bd39e5369a139ab68ae50dd19a129038e8da3af30985f09549500'
-      const CustomMessage = Exonum.newMessage({
+      const CustomMessage = Exonum.newTransaction({
         author: publicKey,
         service_id: 1,
         message_id: 0,

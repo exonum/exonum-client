@@ -1,6 +1,6 @@
 import bigInt from 'big-integer'
 import { isObject } from '../helpers'
-import { isInstanceofOfNewType } from '../types/generic'
+import { isType } from '../types/generic'
 import { validateHexadecimal, validateBytesArray } from '../types/validate'
 import { hexadecimalToUint8Array } from '../types/convert'
 import { hash } from '../crypto'
@@ -71,7 +71,7 @@ export function merkleProof (rootHash, count, proofNode, range, type) {
         if (!isObject(data)) {
           throw new TypeError('Invalid value of data parameter.')
         }
-        if (!isInstanceofOfNewType(type)) {
+        if (!isType(type)) {
           throw new TypeError('Invalid type of type parameter.')
         }
         element = data

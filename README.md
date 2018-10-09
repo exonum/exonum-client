@@ -25,7 +25,7 @@ Library compatibility with Exonum core:
 
 | JavaScript light client | Exonum core |
 |---|---|
-| 0.14.0 | unreleased |
+| 0.15.0 | unreleased |
 | 0.13.0 | 0.9.* |
 | 0.10.2 | 0.8.* |
 | 0.9.0 | 0.7.* |
@@ -252,14 +252,13 @@ Check [serialization guide][docs:architecture:serialization] for details.
 Signature of `serialize` function:
 
 ```javascript
-type.serialize(data, cutSignature)
+type.serialize(data)
 ```
 
 | Argument | Description | Type |
 |---|---|---|
 | **data** | Data to serialize. | `Object` |
 | **type** | Definition of the field type. | [Custom data type](#define-data-type) or [transaction](#define-transaction). |
-| **cutSignature** | This flag is relevant only for **transaction** type. Specifies whether to not include a signature into the resulting byte array. *Optional.* | `Boolean` |
 
 An example of serialization into a byte array:
 
@@ -439,7 +438,7 @@ type.verifySignature(signature, publicKey, data)
 | Argument | Description | Type |
 |---|---|---|
 | **signature** | Signature as hexadecimal string. | `String` |
-| **publicKey** | Public key as hexadecimal string. | `String` |
+| **publicKey** | Author's public key as hexadecimal string. | `String` |
 | **data** | Data that has been signed. | `Object` |
 | **type** | Definition of the data type. | [Custom data type](#define-data-type) or [transaction](#define-transaction). |
 
@@ -499,7 +498,7 @@ Read more about [transactions][docs:architecture:transactions] in Exonum.
 An example of a transaction definition:
 
 ```javascript
-let sendFunds = Exonum.newMessage({
+let sendFunds = Exonum.newTransaction({
   author: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
   service_id: 130,
   message_id: 0,
@@ -511,15 +510,15 @@ let sendFunds = Exonum.newMessage({
 })
 ```
 
-**Exonum.newMessage** function requires a single argument of `Object` type with next structure:
+**Exonum.newTransaction** function requires a single argument of `Object` type with next structure:
 
 | Property | Description | Type |
 |---|---|---|
 | **author** | Author's public key as hexadecimal string. | `String` |
 | **service_id** | [Service ID][docs:architecture:serialization:service-id]. | `Number` |
 | **message_id** | [Message ID][docs:architecture:serialization:message-id]. | `Number` |
-| **signature** | Signature as hexadecimal string. *Optional.* | `String` |
 | **fields** | List of fields. | `Array` |
+| **signature** | Signature as hexadecimal string. *Optional.* | `String` |
 
 Field structure is identical to field structure of [custom data type](#define-data-type).
 
