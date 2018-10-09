@@ -1,9 +1,9 @@
 # Changelog
 
-## 0.14.0 (???, 2018)
+## 0.14.0 (Oct 9, 2018)
 
 * Update `Message` and `Precommit` serialization format. Change `newMessage` function syntax. ([#136][pr-136])
-Serialization format is changed in Exonum core [0.10][release-0.10].
+Serialization format is changed in next release of the Exonum core.
 * Change `send` and `sendQueue` methods syntax. ([#136][pr-136])
 
 ## 0.13.0 (Oct 5, 2018)
@@ -150,7 +150,6 @@ Order is changed in Exonum core in [0.5][release-0.5].
 The first release of JavaScript client for Exonum blockchain,
 matching [release 0.1][release-0.1] of the Exonum core repository.
 
-[release-0.10]: ???
 [release-0.9]: https://github.com/exonum/exonum/blob/master/CHANGELOG.md#090---2018-07-19
 [release-0.8]: https://github.com/exonum/exonum/blob/master/CHANGELOG.md#08---2018-05-31
 [release-0.7]: https://github.com/exonum/exonum/blob/master/CHANGELOG.md#07---2018-04-11
