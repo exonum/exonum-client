@@ -70,7 +70,7 @@ class Transaction extends Message {
       ]
     })
 
-    let head = Head.serialize({
+    const head = Head.serialize({
       author: this.author,
       cls: this.cls,
       type: this.type,
@@ -78,7 +78,7 @@ class Transaction extends Message {
       message_id: this.message_id
     })
 
-    let body = serialization.serialize([], 0, data, this)
+    const body = serialization.serialize([], 0, data, this)
 
     if (this.signature) {
       Digest.serialize(this.signature, body, body.length)
@@ -175,13 +175,13 @@ class Precommit extends Message {
       ]
     })
 
-    let head = Head.serialize({
+    const head = Head.serialize({
       author: this.author,
       cls: this.cls,
       type: this.type
     })
 
-    let body = serialization.serialize([], 0, data, this, true)
+    const body = serialization.serialize([], 0, data, this, true)
 
     return head.concat(body)
   }

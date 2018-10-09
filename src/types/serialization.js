@@ -129,11 +129,7 @@ export function serialize (buffer, shift, data, type, isTransactionBody) {
 
     if (isType(field.type)) {
       buffer = serializeInstanceofOfNewType(buffer, nestedShift, from, value, field.type)
-      if (fieldIsFixed(field)) {
-        localShift += field.type.size()
-      } else {
-        localShift += POINTER_SIZE
-      }
+      localShift += fieldIsFixed(field) ? field.type.size() : POINTER_SIZE
     } else if (isNewArray(field.type)) {
       buffer = serializeInstanceofOfNewArray(buffer, nestedShift, from, value, field.type)
       localShift += field.type.size()
