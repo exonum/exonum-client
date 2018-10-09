@@ -3,7 +3,7 @@ import { isObject } from '../helpers'
 import { hash } from '../crypto'
 import * as validate from '../types/validate'
 import { uint8ArrayToHexadecimal } from '../types/convert'
-import { isInstanceofOfNewMessage } from '../types/message'
+import { newMessage, isInstanceofOfNewMessage } from '../types/message'
 
 const ATTEMPTS = 10
 const ATTEMPT_TIMEOUT = 500
@@ -46,10 +46,19 @@ export function send (explorerBasePath, type, data, secretKey, attempts, timeout
     timeout = ATTEMPT_TIMEOUT
   }
 
-  type.signature = type.sign(secretKey, data)
+  // clone type
+  const typeCopy = newMessage(type)
 
-  const buffer = new Uint8Array(type.serialize(data))
-  const txBody = uint8ArrayToHexadecimal(buffer)
+  // sign transaction
+  typeCopy.signature = typeCopy.sign(secretKey, data)
+
+  // serialize transaction header and body
+  const buffer = typeCopy.serialize(data)
+
+  // convert buffer into hexadecimal string
+  const txBody = uint8ArrayToHexadecimal(new Uint8Array(buffer))
+
+  // get transaction hash
   const txHash = hash(buffer)
 
   return axios.post(`${explorerBasePath}`, {

@@ -47,10 +47,9 @@ class NewMessage {
   /**
    * Serialize data of NewMessage type into array of 8-bit integers
    * @param {Object} data
-   * @param {boolean} [cutSignature] - optional parameter used flag that signature should not be appended to serialized data
    * @returns {Array}
    */
-  serialize (data, cutSignature) {
+  serialize (data) {
     const MessageHead = newType({
       fields: [
         { name: 'author', type: PublicKey },
@@ -71,7 +70,7 @@ class NewMessage {
 
     let messageBody = serialization.serialize([], 0, data, this)
 
-    if (cutSignature !== true) {
+    if (this.signature) {
       Digest.serialize(this.signature, messageBody, messageBody.length)
     }
 

@@ -52,9 +52,24 @@ describe('Examples from README.md', function () {
       amount: 50
     }
     const buffer = [250, 127, 158, 228, 58, 255, 112, 200, 121, 248, 15, 167, 253, 21, 149, 92, 24, 185, 140, 114, 49, 11, 9, 231, 129, 131, 16, 50, 80, 80, 207, 122, 0, 0, 130, 0, 0, 0, 103, 82, 190, 136, 35, 20, 245, 187, 188, 154, 106, 242, 174, 99, 79, 192, 112, 56, 88, 74, 74, 119, 81, 14, 165, 236, 237, 69, 245, 77, 192, 48, 245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161, 242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54, 50, 0, 0, 0, 0, 0, 0, 0]
+    const signature = '9c7d0e518eb547292b6326faf191dcdb2d97a48a0d0570dec955d3cc3f3bd1e6f6ca4a306675fecc2c144c2b636dfb2254c958b77cd27ea2d17fa1462f67080c'
+    const hash = 'a0bd9da74d8329abe6ab7131a4a941e0bf6e5e2dded1197c6f75bbca42c81544'
 
     it('should serialize transaction', function () {
-      expect(SendFunds.serialize(data, true)).to.deep.equal(buffer)
+      expect(SendFunds.serialize(data)).to.deep.equal(buffer)
+    })
+
+    it('should sign transaction', function () {
+      expect(SendFunds.sign(keyPair.secretKey, data)).to.equal(signature)
+    })
+
+    it('should verify transaction signature', function () {
+      expect(SendFunds.verifySignature(signature, keyPair.publicKey, data)).to.be.true
+    })
+
+    it('should get transaction hash', function () {
+      SendFunds.signature = signature
+      expect(SendFunds.hash(data)).to.equal(hash)
     })
   })
 

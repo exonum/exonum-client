@@ -53,23 +53,20 @@ export function sign (secretKey, data, type) {
 
   secretKeyUint8Array = convert.hexadecimalToUint8Array(secretKey)
 
-  if (isInstanceofOfNewType(type)) {
+  if (isInstanceofOfNewType(type) || isInstanceofOfNewMessage(type)) {
     buffer = new Uint8Array(type.serialize(data))
   } else {
-    if (isInstanceofOfNewMessage(type)) {
-      buffer = new Uint8Array(type.serialize(data, true))
+    if (type !== undefined) {
+      throw new TypeError('Wrong type of data.')
+    }
+
+    if (data instanceof Uint8Array) {
+      buffer = data
     } else {
-      if (type !== undefined) {
-        throw new TypeError('Wrong type of data.')
+      if (!Array.isArray(data)) {
+        throw new TypeError('Invalid data parameter.')
       }
-      if (data instanceof Uint8Array) {
-        buffer = data
-      } else {
-        if (!Array.isArray(data)) {
-          throw new TypeError('Invalid data parameter.')
-        }
-        buffer = new Uint8Array(data)
-      }
+      buffer = new Uint8Array(data)
     }
   }
   signature = nacl.sign.detached(buffer, secretKeyUint8Array)
@@ -102,10 +99,8 @@ export function verifySignature (signature, publicKey, data, type) {
 
   publicKeyUint8Array = convert.hexadecimalToUint8Array(publicKey)
 
-  if (isInstanceofOfNewType(type)) {
+  if (isInstanceofOfNewType(type) || isInstanceofOfNewMessage(type)) {
     buffer = new Uint8Array(type.serialize(data))
-  } else if (isInstanceofOfNewMessage(type)) {
-    buffer = new Uint8Array(type.serialize(data, true))
   } else if (type === undefined) {
     if (data instanceof Uint8Array) {
       buffer = data
