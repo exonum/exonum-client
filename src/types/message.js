@@ -4,6 +4,13 @@ import { fieldIsFixed, newType } from './generic'
 import * as serialization from './serialization'
 import * as crypto from '../crypto'
 import { send } from '../blockchain/transport'
+import * as Protobuf from 'protobufjs/light'
+
+const Root = Protobuf.Root
+const Type = Protobuf.Type
+const Field = Protobuf.Field
+
+let root = new Root()
 
 export const SIGNATURE_LENGTH = 64
 const TRANSACTION_CLASS = 0
@@ -13,20 +20,10 @@ const PRECOMMIT_TYPE = 0
 
 class Message {
   constructor (type) {
+    this.schema = type.fields
     this.author = type.author
     this.cls = type.cls
     this.type = type.type
-
-    type.fields.forEach(field => {
-      if (field.name === undefined) {
-        throw new TypeError('Name prop is missed.')
-      }
-      if (field.type === undefined) {
-        throw new TypeError('Type prop is missed.')
-      }
-    })
-
-    this.fields = type.fields
   }
 
   size () {
@@ -55,6 +52,26 @@ class Transaction extends Message {
   }
 
   /**
+   * Create Header // todo
+   * @returns {Array}
+   */
+  createHeader () {
+    let HeaderProtobuf = new Type('Header').add(new Field('author', 1, 'bytes'))
+    HeaderProtobuf.add(new Field('cls', 2, 'bytes'))
+    HeaderProtobuf.add(new Field('type', 3, 'bytes'))
+    HeaderProtobuf.add(new Field('service_id', 4, 'bytes'))
+    HeaderProtobuf.add(new Field('message_id', 5, 'bytes'))
+    root.define('HeaderProtobuf').add(HeaderProtobuf)
+    return HeaderProtobuf.encode({
+      author: this.author,
+      cls: this.cls,
+      type: this.type,
+      service_id: Uint16.serialize(this.service_id),
+      message_id: Uint16.serialize(this.message_id)
+    }).finish()
+  }
+
+  /**
    * Serialize into array of 8-bit integers
    * @param {Object} data
    * @returns {Array}
@@ -70,7 +87,7 @@ class Transaction extends Message {
       ]
     })
 
-    const head = Head.serialize({
+    const buffer = Head.serialize({
       author: this.author,
       cls: this.cls,
       type: this.type,
@@ -78,13 +95,18 @@ class Transaction extends Message {
       message_id: this.message_id
     })
 
-    const body = serialization.serialize([], 0, data, this)
+    console.log(this.schema)
+    let body = this.schema.encode(data).finish()
 
     if (this.signature) {
       Digest.serialize(this.signature, body, body.length)
     }
 
-    return head.concat(body)
+    body.forEach(element => {
+      buffer.push(element)
+    })
+
+    return buffer
   }
 
   /**
@@ -175,15 +197,19 @@ class Precommit extends Message {
       ]
     })
 
-    const head = Head.serialize({
+    let buffer = Head.serialize({
       author: this.author,
       cls: this.cls,
       type: this.type
     })
 
-    const body = serialization.serialize([], 0, data, this, true)
+    const body = this.schema.encode(data).finish()
 
-    return head.concat(body)
+    body.forEach(element => {
+      buffer.push(element)
+    })
+
+    return buffer
   }
 }
 
