@@ -99,9 +99,7 @@ describe('Protobuf serialization', function () {
     CreateTypeProtobuf.add(new Field('balance', 3, 'int64'))
     root.define('CreateTypeProtobuf').add(CreateTypeProtobuf)
 
-    const CreateType = Exonum.newType({
-      fields: CreateTypeProtobuf
-    })
+    const CreateType = Exonum.newType(CreateTypeProtobuf)
 
     const data = {
       data: {
@@ -110,8 +108,7 @@ describe('Protobuf serialization', function () {
         'balance': 359120
       },
       serialized: [
-        132, 224, 212, 174, 23, 206, 239, 212, 87, 218, 17, 135, 41, 83, 157, 18, 28, 159, 85, 134, 248, 35, 56, 216, 149,
-        209, 116, 70, 82, 206, 68, 85, 0, 0, 130, 0, 0, 0, 10, 48, 127, 159, 58, 225, 166, 250, 107, 150, 182, 215, 221, 58,
+        10, 48, 127, 159, 58, 225, 166, 250, 107, 150, 182, 215, 221, 58,
         235, 166, 248, 237, 206, 187, 233, 183, 31, 215, 150, 181, 127, 103, 244, 239, 189, 55, 115, 150, 220,
         105, 246, 249, 239, 143, 90, 107, 189, 249, 113, 239, 27, 237, 205, 250, 18, 12, 83, 109, 97, 114, 116,
         32, 119, 97, 108, 108, 101, 116, 24, 208, 245, 21

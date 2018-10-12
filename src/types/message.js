@@ -52,23 +52,17 @@ class Transaction extends Message {
   }
 
   /**
-   * Create Header // todo
+   * Serialization header
    * @returns {Array}
    */
   createHeader () {
-    let HeaderProtobuf = new Type('Header').add(new Field('author', 1, 'bytes'))
-    HeaderProtobuf.add(new Field('cls', 2, 'bytes'))
-    HeaderProtobuf.add(new Field('type', 3, 'bytes'))
-    HeaderProtobuf.add(new Field('service_id', 4, 'bytes'))
-    HeaderProtobuf.add(new Field('message_id', 5, 'bytes'))
-    root.define('HeaderProtobuf').add(HeaderProtobuf)
-    return HeaderProtobuf.encode({
-      author: this.author,
-      cls: this.cls,
-      type: this.type,
-      service_id: Uint16.serialize(this.service_id),
-      message_id: Uint16.serialize(this.message_id)
-    }).finish()
+    let buffer = []
+    PublicKey.serialize(this.author, buffer, buffer.length)
+    Uint8.serialize(this.cls, buffer, buffer.length)
+    Uint8.serialize(this.type, buffer, buffer.length)
+    Uint16.serialize(this.service_id, buffer, buffer.length)
+    Uint16.serialize(this.message_id, buffer, buffer.length)
+    return buffer
   }
 
   /**
@@ -77,26 +71,8 @@ class Transaction extends Message {
    * @returns {Array}
    */
   serialize (data) {
-    const Head = newType({
-      fields: [
-        { name: 'author', type: PublicKey },
-        { name: 'cls', type: Uint8 },
-        { name: 'type', type: Uint8 },
-        { name: 'service_id', type: Uint16 },
-        { name: 'message_id', type: Uint16 }
-      ]
-    })
-
-    const buffer = Head.serialize({
-      author: this.author,
-      cls: this.cls,
-      type: this.type,
-      service_id: this.service_id,
-      message_id: this.message_id
-    })
-
-    console.log(this.schema)
-    let body = this.schema.encode(data).finish()
+    const buffer = this.createHeader()
+    const body = this.schema.encode(data).finish()
 
     if (this.signature) {
       Digest.serialize(this.signature, body, body.length)
@@ -184,25 +160,24 @@ class Precommit extends Message {
   }
 
   /**
+   * Serialization header
+   * @returns {Array}
+   */
+  createHeader () {
+    let buffer = []
+    PublicKey.serialize(this.author, buffer, buffer.length)
+    Uint8.serialize(this.cls, buffer, buffer.length)
+    Uint8.serialize(this.type, buffer, buffer.length)
+    return buffer
+  }
+
+  /**
    * Serialize data into array of 8-bit integers
    * @param {Object} data
    * @returns {Array}
    */
   serialize (data) {
-    const Head = newType({
-      fields: [
-        { name: 'author', type: PublicKey },
-        { name: 'cls', type: Uint8 },
-        { name: 'type', type: Uint8 }
-      ]
-    })
-
-    let buffer = Head.serialize({
-      author: this.author,
-      cls: this.cls,
-      type: this.type
-    })
-
+    const buffer = this.createHeader()
     const body = this.schema.encode(data).finish()
 
     body.forEach(element => {

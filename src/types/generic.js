@@ -1,4 +1,4 @@
-import * as serialization from './serialization'
+
 import * as crypto from '../crypto'
 import { String } from './primitive'
 
@@ -8,16 +8,7 @@ import { String } from './primitive'
  */
 class Type {
   constructor (type) {
-    type.fields.forEach(field => {
-      if (field.name === undefined) {
-        throw new TypeError('Name prop is missed.')
-      }
-      if (field.type === undefined) {
-        throw new TypeError('Type prop is missed.')
-      }
-    })
-
-    this.fields = type.fields
+    this.schema = type
   }
 
   size () {
@@ -36,7 +27,7 @@ class Type {
    * @returns {Array}
    */
   serialize (data) {
-    return serialization.serialize([], 0, data, this)
+    return Array.prototype.slice.call(this.schema.encode(data).finish(), 0)
   }
 
   /**
