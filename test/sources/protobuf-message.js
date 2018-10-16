@@ -1,6 +1,5 @@
 /* eslint-env node, mocha */
 /* eslint-disable no-unused-expressions */
-
 import * as Protobuf from 'protobufjs/light'
 
 const expect = require('chai').expect

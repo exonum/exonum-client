@@ -1,16 +1,7 @@
 import { Uint8, Uint16 } from './primitive'
 import { Digest, PublicKey } from './hexadecimal'
-import { fieldIsFixed, newType } from './generic'
-import * as serialization from './serialization'
 import * as crypto from '../crypto'
 import { send } from '../blockchain/transport'
-import * as Protobuf from 'protobufjs/light'
-
-const Root = Protobuf.Root
-const Type = Protobuf.Type
-const Field = Protobuf.Field
-
-let root = new Root()
 
 export const SIGNATURE_LENGTH = 64
 const TRANSACTION_CLASS = 0
@@ -24,15 +15,6 @@ class Message {
     this.author = type.author
     this.cls = type.cls
     this.type = type.type
-  }
-
-  size () {
-    return this.fields.reduce((accumulator, field) => {
-      if (fieldIsFixed(field)) {
-        return accumulator + field.type.size()
-      }
-      return accumulator + serialization.POINTER_SIZE
-    }, 0)
   }
 }
 
