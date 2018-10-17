@@ -88,11 +88,6 @@ describe('Protobuf serialization', function () {
   })
 
   it('should serialize data for new type', function () {
-    const keyPair = {
-      publicKey: '84e0d4ae17ceefd457da118729539d121c9f5586f82338d895d1744652ce4455',
-      secretKey: '9aaa377f0880ae2aa6697ea45e6c26f164e923e73b31f52e6da0cf40798ca4c184e0d4ae17ceefd457da118729539d121c9f5586f82338d895d1744652ce4455'
-    }
-
     let CreateTypeProtobuf = new Type('CreateType').add(new Field('pub_key', 1, 'bytes'))
     CreateTypeProtobuf.add(new Field('name', 2, 'string'))
     CreateTypeProtobuf.add(new Field('balance', 3, 'int64'))
