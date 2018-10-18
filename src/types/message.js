@@ -11,7 +11,7 @@ const PRECOMMIT_TYPE = 0
 
 class Message {
   constructor (type) {
-    this.schema = type.fields
+    this.schema = type.schema
     this.author = type.author
     this.cls = type.cls
     this.type = type.type
@@ -37,7 +37,7 @@ class Transaction extends Message {
    * Serialization header
    * @returns {Array}
    */
-  createHeader () {
+  serializeHeader () {
     let buffer = []
     PublicKey.serialize(this.author, buffer, buffer.length)
     Uint8.serialize(this.cls, buffer, buffer.length)
@@ -53,7 +53,7 @@ class Transaction extends Message {
    * @returns {Array}
    */
   serialize (data) {
-    const buffer = this.createHeader()
+    const buffer = this.serializeHeader()
     const body = this.schema.encode(data).finish()
 
     if (this.signature) {
@@ -145,7 +145,7 @@ class Precommit extends Message {
    * Serialization header
    * @returns {Array}
    */
-  createHeader () {
+  serializeHeader () {
     let buffer = []
     PublicKey.serialize(this.author, buffer, buffer.length)
     Uint8.serialize(this.cls, buffer, buffer.length)
@@ -159,7 +159,7 @@ class Precommit extends Message {
    * @returns {Array}
    */
   serialize (data) {
-    const buffer = this.createHeader()
+    const buffer = this.serializeHeader()
     const body = this.schema.encode(data).finish()
 
     body.forEach(element => {

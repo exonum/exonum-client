@@ -3,11 +3,11 @@ import * as crypto from '../crypto'
 
 /**
  * @constructor
- * @param {Object} type
+ * @param {Object} schema
  */
 class Type {
-  constructor (type) {
-    this.schema = type
+  constructor (schema) {
+    this.schema = schema
   }
 
   /**

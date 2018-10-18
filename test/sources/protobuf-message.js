@@ -26,7 +26,7 @@ describe('Protobuf serialization', function () {
       author: keyPair.publicKey,
       service_id: 130,
       message_id: 0,
-      fields: CreateTransactionProtobuf
+      schema: CreateTransactionProtobuf
     })
 
     const data = {
@@ -64,7 +64,7 @@ describe('Protobuf serialization', function () {
       author: keyPair.publicKey,
       service_id: 130,
       message_id: 0,
-      fields: CreatePrecommitProtobuf
+      schema: CreatePrecommitProtobuf
     })
 
     const data = {

@@ -44,7 +44,7 @@ const CreateTransaction = Exonum.newTransaction({
   author: keyPair.publicKey,
   service_id: 130,
   message_id: 0,
-  fields: CreateTransactionProtobuf
+  schema: CreateTransactionProtobuf
 })
 const CreateTransactionData = {
   data: {
