@@ -5,11 +5,6 @@ import * as Protobuf from 'protobufjs/light'
 
 const expect = require('chai').expect
 const Exonum = require('../../src')
-const DataSchema = require('./data_schema/dataSchema').default
-const cryptographyMock = require('./common_data/serialization/cryptography.json')
-const invalidCryptographyMock = require('./common_data/serialization/cryptography-invalid.json')
-const cryptography = require('./common_data/serialization/cryptography-config.json')
-const schema = new DataSchema(cryptography)
 
 const Root = Protobuf.Root
 const Type = Protobuf.Type
@@ -55,7 +50,6 @@ const CreateTransactionData = {
   hash: '8f239bebc50e1a16e36732cf35cf0278e4b0ad2ec3fcd0370f846d0709764b25',
   signed: '76176937694edb44e128343a7ba5cc3bdee52d821f819d54ce523765955bb5cfeafab1d4c95e3f341ef23a045406f18a9b7f84401139ef3a51a3cb4744c13900'
 }
-
 
 describe('Check cryptography', function () {
   describe('Get SHA256 hash', function () {
