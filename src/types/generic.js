@@ -16,8 +16,6 @@ class Type {
    * @returns {Array}
    */
   serialize (data) {
-    // const buffer =
-    // buffer.forEach(element => console.log(element))
     return Array.from(this.schema.encode(data).finish())
   }
 
