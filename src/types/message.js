@@ -56,13 +56,13 @@ class Transaction extends Message {
     const buffer = this.serializeHeader()
     const body = this.schema.encode(data).finish()
 
-    if (this.signature) {
-      Digest.serialize(this.signature, body, body.length)
-    }
-
     body.forEach(element => {
       buffer.push(element)
     })
+
+    if (this.signature) {
+      Digest.serialize(this.signature, buffer, buffer.length)
+    }
 
     return buffer
   }
