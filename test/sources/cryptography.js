@@ -54,7 +54,6 @@ const CreateTransactionData = {
 describe('Check cryptography', function () {
   describe('Get SHA256 hash', function () {
     it('should return hash of data of newType type', function () {
-
       const hash = Exonum.hash(CreateTypeData.data, CreateType)
       expect(hash).to.equal(CreateTypeData.hash)
     })

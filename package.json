@@ -19,9 +19,10 @@
     "big-integer": "^1.6.32",
     "binary-search": "^1.3.4",
     "ieee754": "^1.1.12",
+    "nano-seconds": "^1.2.2",
+    "protobufjs": "6.8.8",
     "sha.js": "^2.4.11",
-    "tweetnacl": "^0.14.5",
-    "protobufjs": "6.8.8"
+    "tweetnacl": "^0.14.5"
   },
   "devDependencies": {
     "axios-mock-adapter": "^1.15.0",
@@ -31,6 +32,7 @@
     "babel-register": "^6.26.0",
     "babelify": "^8.0.0",
     "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
     "coveralls": "^3.0.2",
     "cross-env": "^5.2.0",
     "dirty-chai": "^2.0.1",
