@@ -19,7 +19,6 @@
     "big-integer": "^1.6.32",
     "binary-search": "^1.3.4",
     "ieee754": "^1.1.12",
-    "nano-seconds": "^1.2.2",
     "protobufjs": "6.8.8",
     "sha.js": "^2.4.11",
     "tweetnacl": "^0.14.5"
@@ -60,13 +59,14 @@
   },
   "scripts": {
     "test": "grunt test",
+    "proto": "pbjs -t static ./proto/protocol.proto -o ./proto/protocol.js",
     "integration:build": "cargo build --manifest-path integration-tests/Cargo.toml",
     "integration": "mocha -r babel-register integration-tests/test.js",
     "preintegration:unix": "npm run integration:build && npm run postintegration:unix && cargo run --manifest-path integration-tests/Cargo.toml & sleep 10",
     "integration:unix": "mocha -r babel-register integration-tests/test.js",
     "postintegration:unix": "lsof -iTCP -sTCP:LISTEN -n -P 2>/dev/null | awk '{ if ($9 ~ /:8000$/) { print $2 } }' | xargs -r kill -KILL",
     "coveralls": "cross-env NODE_ENV=test nyc mocha ./test/sources/*.js && cat ./coverage/lcov.info | coveralls",
-    "prepare": "grunt compile",
+    "prepare": "npm run proto && grunt compile",
     "lint": "eslint ./src ./test",
     "lint:fix": "npm run lint -- --fix"
   },
