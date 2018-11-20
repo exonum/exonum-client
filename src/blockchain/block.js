@@ -1,4 +1,4 @@
-import { Block, Precommit } from '../../proto/protocol.js'
+import { Block, Precommit } from '../../stubs/protocol_pb.js'
 import { newPrecommit, SIGNATURE_LENGTH } from '../types/message'
 import { hexadecimalToUint8Array, uint8ArrayToHexadecimal } from '../types/convert'
 import { PUBLIC_KEY_LENGTH } from '../types/hexadecimal'

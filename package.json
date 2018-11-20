@@ -19,7 +19,8 @@
     "big-integer": "^1.6.32",
     "binary-search": "^1.3.4",
     "ieee754": "^1.1.12",
-    "protobufjs": "6.8.8",
+    "protoc": "1.0.3",
+    "google-protobuf": "^3.6.1",
     "sha.js": "^2.4.11",
     "tweetnacl": "^0.14.5"
   },
@@ -58,8 +59,8 @@
     "nyc": "^11.9.0"
   },
   "scripts": {
+    "proto": "protoc --js_out='import_style=commonjs:./stubs'  --proto_path='./proto' helpers.proto blockchain.proto protocol.proto",
     "test": "grunt test",
-    "proto": "pbjs -t static ./proto/protocol.proto -o ./proto/protocol.js",
     "integration:build": "cargo build --manifest-path integration-tests/Cargo.toml",
     "integration": "mocha -r babel-register integration-tests/test.js",
     "preintegration:unix": "npm run integration:build && npm run postintegration:unix && cargo run --manifest-path integration-tests/Cargo.toml & sleep 10",
