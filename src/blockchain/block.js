@@ -29,24 +29,11 @@ export function verifyBlock (data, validators) {
       txHash: { data: hexadecimalToUint8Array(data.block.tx_hash) },
       stateHash: { data: hexadecimalToUint8Array(data.block.state_hash) }
     }
-    let blockHash
-
-    if (data.block.proposer_id !== 0) {
-      block.proposerId = data.block.proposer_id
-    }
-
-    if (data.block.height !== 0) {
-      block.height = data.block.height
-    }
-
-    if (data.block.tx_count !== 0) {
-      block.txCount = data.block.tx_count
-    }
 
     const message = Block.create(block)
     const buffer = Block.encode(message).finish()
 
-    blockHash = hash(buffer)
+    const blockHash = hash(buffer)
 
     for (let i = 0; i < data.precommits.length; i++) {
       const precommit = data.precommits[i]
@@ -75,18 +62,6 @@ export function verifyBlock (data, validators) {
       const payload = {
         proposeHash: { data: hexadecimalToUint8Array(precommit.payload.propose_hash) },
         blockHash: { data: hexadecimalToUint8Array(precommit.payload.block_hash) }
-      }
-
-      if (precommit.payload.validator !== 0) {
-        payload.validator = precommit.payload.validator
-      }
-
-      if (precommit.payload.height !== 0) {
-        payload.height = precommit.payload.height
-      }
-
-      if (precommit.payload.round !== 0) {
-        payload.round = precommit.payload.round
       }
 
       const time = fromISOString(precommit.payload.time)
