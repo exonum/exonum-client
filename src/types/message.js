@@ -49,12 +49,11 @@ class Transaction extends Message {
 
   /**
    * Serialize into array of 8-bit integers
-   * @param {Object} data
    * @returns {Array}
    */
-  serialize (data) {
+  serialize () {
     const buffer = this.serializeHeader()
-    const body = this.schema.encode(data).finish()
+    const body = this.schema.serializeBinary()
 
     body.forEach(element => {
       buffer.push(element)
@@ -160,12 +159,13 @@ class Precommit extends Message {
    */
   serialize (data) {
     const buffer = this.serializeHeader()
-    const body = this.schema.encode(data).finish()
+    const body = this.schema.serializeBinary()
 
     body.forEach(element => {
       buffer.push(element)
     })
 
+    console.log(buffer.toString())
     return buffer
   }
 }

@@ -14,16 +14,7 @@
 
 syntax = "proto3";
 
-message Hash {
-  bytes data = 1;
-}
-
-message PublicKey {
-  bytes data = 1;
-}
-
 message Type1Protobuf {
-  PublicKey pub_key = 1;
   string name = 2;
   uint64 balance = 3;
 }

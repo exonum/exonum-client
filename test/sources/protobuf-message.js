@@ -1,14 +1,10 @@
 /* eslint-env node, mocha */
 /* eslint-disable no-unused-expressions */
-import * as Protobuf from 'protobufjs/light'
 
 const expect = require('chai').expect
 const Exonum = require('../../src')
-const Root = Protobuf.Root
-const Type = Protobuf.Type
-const Field = Protobuf.Field
 
-let root = new Root()
+let messages = require('../stubs/test_data_pb.js')
 
 describe('Protobuf serialization', function () {
   it('should serialize data for transaction', function () {
@@ -16,35 +12,28 @@ describe('Protobuf serialization', function () {
       publicKey: '84e0d4ae17ceefd457da118729539d121c9f5586f82338d895d1744652ce4455',
       secretKey: '9aaa377f0880ae2aa6697ea45e6c26f164e923e73b31f52e6da0cf40798ca4c184e0d4ae17ceefd457da118729539d121c9f5586f82338d895d1744652ce4455'
     }
+    const data = {
+      data: {
+        'name': 'my name',
+        'balance': 359120
+      },
+      serialized: [
+        132, 224, 212, 174, 23, 206, 239, 212, 87, 218, 17, 135, 41, 83, 157, 18, 28, 159, 85, 134, 248, 35, 56, 216, 149, 209, 116, 70, 82, 206, 68, 85, 0, 0, 130, 0, 0, 0, 18, 7, 109, 121, 32, 110, 97, 109, 101, 24, 208, 245, 21
+      ]
+    }
 
-    let CreateTransactionProtobuf = new Type('CreateTransaction').add(new Field('pub_key', 1, 'bytes'))
-    CreateTransactionProtobuf.add(new Field('name', 2, 'string'))
-    CreateTransactionProtobuf.add(new Field('balance', 3, 'int64'))
-    root.define('CreateTransactionProtobuf').add(CreateTransactionProtobuf)
+    let message = new messages.Type1Protobuf()
+    message.setName(data.data.name)
+    message.setBalance(data.data.balance)
 
     const CreateTransaction = Exonum.newTransaction({
       author: keyPair.publicKey,
       service_id: 130,
       message_id: 0,
-      schema: CreateTransactionProtobuf
+      schema: message
     })
 
-    const data = {
-      data: {
-        'pub_key': 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36',
-        'name': 'Smart wallet',
-        'balance': 359120
-      },
-      serialized: [
-        132, 224, 212, 174, 23, 206, 239, 212, 87, 218, 17, 135, 41, 83, 157, 18, 28, 159, 85, 134, 248, 35, 56, 216, 149,
-        209, 116, 70, 82, 206, 68, 85, 0, 0, 130, 0, 0, 0, 10, 48, 127, 159, 58, 225, 166, 250, 107, 150, 182, 215, 221, 58,
-        235, 166, 248, 237, 206, 187, 233, 183, 31, 215, 150, 181, 127, 103, 244, 239, 189, 55, 115, 150, 220,
-        105, 246, 249, 239, 143, 90, 107, 189, 249, 113, 239, 27, 237, 205, 250, 18, 12, 83, 109, 97, 114, 116,
-        32, 119, 97, 108, 108, 101, 116, 24, 208, 245, 21
-      ]
-    }
-
-    const buffer = CreateTransaction.serialize(data.data)
+    const buffer = CreateTransaction.serialize()
 
     expect(buffer).to.deep.equal(data.serialized)
   })
@@ -55,61 +44,48 @@ describe('Protobuf serialization', function () {
       secretKey: '9aaa377f0880ae2aa6697ea45e6c26f164e923e73b31f52e6da0cf40798ca4c184e0d4ae17ceefd457da118729539d121c9f5586f82338d895d1744652ce4455'
     }
 
-    let CreatePrecommitProtobuf = new Type('CreatePrecommit').add(new Field('pub_key', 1, 'bytes'))
-    CreatePrecommitProtobuf.add(new Field('name', 2, 'string'))
-    CreatePrecommitProtobuf.add(new Field('balance', 3, 'int64'))
-    root.define('CreatePrecommitProtobuf').add(CreatePrecommitProtobuf)
+    const data = {
+      data: {
+        'name': 'Smart wallet',
+        'balance': 359120
+      },
+      serialized: [
+        132, 224, 212, 174, 23, 206, 239, 212, 87, 218, 17, 135, 41, 83, 157, 18, 28, 159, 85, 134, 248, 35, 56, 216, 149, 209, 116, 70, 82, 206, 68, 85, 1, 0, 18, 12, 83, 109, 97, 114, 116, 32, 119, 97, 108, 108, 101, 116, 24, 208, 245, 21
+      ]
+    }
+
+    let message = new messages.Type1Protobuf()
+    message.setName(data.data.name)
+    message.setBalance(data.data.balance)
 
     const CreatePrecommit = Exonum.newPrecommit({
       author: keyPair.publicKey,
       service_id: 130,
       message_id: 0,
-      schema: CreatePrecommitProtobuf
+      schema: message
     })
 
-    const data = {
-      data: {
-        'pub_key': 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36',
-        'name': 'Smart wallet',
-        'balance': 359120
-      },
-      serialized: [
-        132, 224, 212, 174, 23, 206, 239, 212, 87, 218, 17, 135, 41, 83, 157, 18, 28, 159, 85, 134, 248, 35, 56, 216, 149,
-        209, 116, 70, 82, 206, 68, 85, 1, 0, 10, 48, 127, 159, 58, 225, 166, 250, 107, 150, 182, 215, 221, 58,
-        235, 166, 248, 237, 206, 187, 233, 183, 31, 215, 150, 181, 127, 103, 244, 239, 189, 55, 115, 150, 220,
-        105, 246, 249, 239, 143, 90, 107, 189, 249, 113, 239, 27, 237, 205, 250, 18, 12, 83, 109, 97, 114, 116,
-        32, 119, 97, 108, 108, 101, 116, 24, 208, 245, 21
-      ]
-    }
-
-    const buffer = CreatePrecommit.serialize(data.data)
+    const buffer = CreatePrecommit.serialize()
 
     expect(buffer).to.deep.equal(data.serialized)
   })
 
   it('should serialize data for new type', function () {
-    let CreateTypeProtobuf = new Type('CreateType').add(new Field('pub_key', 1, 'bytes'))
-    CreateTypeProtobuf.add(new Field('name', 2, 'string'))
-    CreateTypeProtobuf.add(new Field('balance', 3, 'int64'))
-    root.define('CreateTypeProtobuf').add(CreateTypeProtobuf)
-
-    const CreateType = Exonum.newType(CreateTypeProtobuf)
-
     const data = {
       data: {
-        'pub_key': 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36',
         'name': 'Smart wallet',
         'balance': 359120
       },
       serialized: [
-        10, 48, 127, 159, 58, 225, 166, 250, 107, 150, 182, 215, 221, 58,
-        235, 166, 248, 237, 206, 187, 233, 183, 31, 215, 150, 181, 127, 103, 244, 239, 189, 55, 115, 150, 220,
-        105, 246, 249, 239, 143, 90, 107, 189, 249, 113, 239, 27, 237, 205, 250, 18, 12, 83, 109, 97, 114, 116,
-        32, 119, 97, 108, 108, 101, 116, 24, 208, 245, 21
+        18, 12, 83, 109, 97, 114, 116, 32, 119, 97, 108, 108, 101, 116, 24, 208, 245, 21
       ]
     }
+    let message = new messages.Type1Protobuf()
+    message.setName(data.data.name)
+    message.setBalance(data.data.balance)
+    const CreateType = Exonum.newType(message)
 
-    const buffer = CreateType.serialize(data.data)
+    const buffer = CreateType.serialize()
 
     expect(buffer).to.deep.equal(data.serialized)
   })

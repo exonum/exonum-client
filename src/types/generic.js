@@ -11,11 +11,10 @@ class Type {
 
   /**
    * Serialize data into array of 8-bit integers
-   * @param {Object} data
    * @returns {Array}
    */
-  serialize (data) {
-    return Array.from(this.schema.encode(data).finish())
+  serialize () {
+    return Array.from(this.schema.serializeBinary())
   }
 
   /**
