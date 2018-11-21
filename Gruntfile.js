@@ -8,7 +8,7 @@ module.exports = function (grunt) {
         src: ['./src/**/*.js']
       },
       tests: {
-        src: ['./test/**/*.js']
+        src: ['./test/sources/*.js', './test/library/*.js', './test/proto/*.js']
       }
     },
     clean: {

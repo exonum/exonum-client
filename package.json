@@ -59,6 +59,7 @@
     "nyc": "^11.9.0"
   },
   "scripts": {
+    "proto_test": "protoc --js_out='import_style=commonjs:./test/stubs'  --proto_path='./test/proto' test_data.proto",
     "proto": "protoc --js_out='import_style=commonjs:./stubs'  --proto_path='./proto' helpers.proto blockchain.proto protocol.proto",
     "test": "grunt test",
     "integration:build": "cargo build --manifest-path integration-tests/Cargo.toml",
@@ -67,8 +68,8 @@
     "integration:unix": "mocha -r babel-register integration-tests/test.js",
     "postintegration:unix": "lsof -iTCP -sTCP:LISTEN -n -P 2>/dev/null | awk '{ if ($9 ~ /:8000$/) { print $2 } }' | xargs -r kill -KILL",
     "coveralls": "cross-env NODE_ENV=test nyc mocha ./test/sources/*.js && cat ./coverage/lcov.info | coveralls",
-    "prepare": "npm run proto && grunt compile",
-    "lint": "eslint ./src ./test",
+    "prepare": "npm run proto && npm run proto_test && grunt compile",
+    "lint": "eslint ./src ./test/sources ./test/library ./test/proto",
     "lint:fix": "npm run lint -- --fix"
   },
   "repository": {
