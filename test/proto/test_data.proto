@@ -15,6 +15,15 @@
 syntax = "proto3";
 
 message Type1Protobuf {
-  string name = 2;
-  uint64 balance = 3;
+  string name = 1;
+  uint64 balance = 2;
+}
+
+message Type2Protobuf {
+  bytes name = 1;
+  string type = 2;
+}
+
+message TypeIntProtobuf {
+  uint64 amount = 1;
 }
