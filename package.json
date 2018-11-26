@@ -59,7 +59,7 @@
   },
   "scripts": {
     "test": "grunt test",
-    "proto": "pbjs -t static ./proto/protocol.proto -o ./proto/protocol.js",
+    "proto": "pbjs -t static-module ./proto/protocol.proto -o ./proto/protocol.js",
     "integration:build": "cargo build --manifest-path integration-tests/Cargo.toml",
     "integration": "mocha -r babel-register integration-tests/test.js",
     "preintegration:unix": "npm run integration:build && npm run postintegration:unix && cargo run --manifest-path integration-tests/Cargo.toml & sleep 10",
