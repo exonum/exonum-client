@@ -19,32 +19,29 @@ class Type {
 
   /**
    * Get SHA256 hash
-   * @param {Object} data
    * @returns {string}
    */
-  hash (data) {
-    return crypto.hash(data, this)
+  hash () {
+    return crypto.hash(this)
   }
 
   /**
    * Get ED25519 signature
    * @param {string} secretKey
-   * @param {Object} data
    * @returns {string}
    */
-  sign (secretKey, data) {
-    return crypto.sign(secretKey, data, this)
+  sign (secretKey) {
+    return crypto.sign(secretKey, this)
   }
 
   /**
    * Verifies ED25519 signature
    * @param {string} signature
    * @param {string} publicKey
-   * @param {Object} data
    * @returns {boolean}
    */
-  verifySignature (signature, publicKey, data) {
-    return crypto.verifySignature(signature, publicKey, data, this)
+  verifySignature (signature, publicKey) {
+    return crypto.verifySignature(signature, publicKey, this)
   }
 }
 

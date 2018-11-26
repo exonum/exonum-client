@@ -68,45 +68,41 @@ class Transaction extends Message {
 
   /**
    * Get SHA256 hash
-   * @param {Object} data
    * @returns {string}
    */
-  hash (data) {
-    return crypto.hash(data, this)
+  hash () {
+    return crypto.hash(this)
   }
 
   /**
    * Get ED25519 signature
    * @param {string} secretKey
-   * @param {Object} data
    * @returns {string}
    */
-  sign (secretKey, data) {
-    return crypto.sign(secretKey, data, this)
+  sign (secretKey) {
+    return crypto.sign(secretKey, this)
   }
 
   /**
    * Verifies ED25519 signature
    * @param {string} signature
    * @param {string} publicKey
-   * @param {Object} data
    * @returns {boolean}
    */
-  verifySignature (signature, publicKey, data) {
-    return crypto.verifySignature(signature, publicKey, data, this)
+  verifySignature (signature, publicKey) {
+    return crypto.verifySignature(signature, publicKey, this)
   }
 
   /**
    * Send transaction to the blockchain
    * @param {string} explorerBasePath
-   * @param {Object} data
    * @param {string} secretKey
    * @param {number} attempts
    * @param {number} timeout
    * @returns {Promise}
    */
-  send (explorerBasePath, data, secretKey, attempts, timeout) {
-    return send(explorerBasePath, this, data, secretKey, attempts, timeout)
+  send (explorerBasePath, secretKey, attempts, timeout) {
+    return send(explorerBasePath, this, secretKey, attempts, timeout)
   }
 }
 
@@ -154,10 +150,9 @@ class Precommit extends Message {
 
   /**
    * Serialize data into array of 8-bit integers
-   * @param {Object} data
    * @returns {Array}
    */
-  serialize (data) {
+  serialize () {
     const buffer = this.serializeHeader()
     const body = this.schema.serializeBinary()
 
