@@ -1,14 +1,14 @@
 /* eslint-env node, mocha */
 /* eslint-disable no-unused-expressions */
 
-import * as Protobuf from 'protobufjs/light'
+var $protobuf = require('protobufjs/light')
 
 const expect = require('chai').expect
 const Exonum = require('../../src')
 
-const Root = Protobuf.Root
-const Type = Protobuf.Type
-const Field = Protobuf.Field
+const Root = $protobuf.Root
+const Type = $protobuf.Type
+const Field = $protobuf.Field
 
 const keyPair = {
   publicKey: '84e0d4ae17ceefd457da118729539d121c9f5586f82338d895d1744652ce4455',

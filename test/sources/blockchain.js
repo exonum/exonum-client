@@ -3,15 +3,10 @@
 
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
-// const expect = chai.expect
 const assert = chai.assert
-// const MockAdapter = require('axios-mock-adapter')
-// const axios = require('axios')
 const Exonum = require('../../src')
 
 chai.use(chaiAsPromised)
-
-// const mock = new MockAdapter(axios)
 
 describe('Verify block of precommits', function () {
   const validators = [

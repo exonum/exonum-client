@@ -1,12 +1,12 @@
 /* eslint-env node, mocha */
 /* eslint-disable no-unused-expressions */
-import * as Protobuf from 'protobufjs/light'
+import * as $protobuf from 'protobufjs/light'
 
 const expect = require('chai').expect
 const Exonum = require('../../src')
-const Root = Protobuf.Root
-const Type = Protobuf.Type
-const Field = Protobuf.Field
+const Root = $protobuf.Root
+const Type = $protobuf.Type
+const Field = $protobuf.Field
 
 let root = new Root()
 
