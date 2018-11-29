@@ -114,21 +114,48 @@ describe('Protobuf serialization', function () {
     expect(buffer).to.deep.equal(data.serialized)
   })
 
+  it('should serialize data for new type with zero int', function () {
+    let CreateTypeProtobuf = new Type('CreateType').add(new Field('pub_key', 1, 'bytes'))
+    CreateTypeProtobuf.add(new Field('name', 2, 'string'))
+    CreateTypeProtobuf.add(new Field('balance', 3, 'int64'))
+    root.define('CreateTypeProtobuf1').add(CreateTypeProtobuf)
+
+    const CreateType = Exonum.newType(CreateTypeProtobuf)
+
+    const data = {
+      data: {
+        'pub_key': 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36',
+        'name': 'Smart wallet',
+        'balance': 0
+      },
+      serialized: [
+        10, 48, 127, 159, 58, 225, 166, 250, 107, 150, 182, 215, 221, 58,
+        235, 166, 248, 237, 206, 187, 233, 183, 31, 215, 150, 181, 127, 103, 244, 239, 189, 55, 115, 150, 220,
+        105, 246, 249, 239, 143, 90, 107, 189, 249, 113, 239, 27, 237, 205, 250, 18, 12, 83, 109, 97, 114, 116,
+        32, 119, 97, 108, 108, 101, 116, 24, 0
+      ]
+    }
+
+    const buffer = CreateType.serialize(data.data)
+
+    expect(buffer).to.deep.equal(data.serialized)
+  })
+
   it('should serialize data for new transaction with zero int', function () {
     const keyPair = {
       publicKey: '84e0d4ae17ceefd457da118729539d121c9f5586f82338d895d1744652ce4455',
       secretKey: '9aaa377f0880ae2aa6697ea45e6c26f164e923e73b31f52e6da0cf40798ca4c184e0d4ae17ceefd457da118729539d121c9f5586f82338d895d1744652ce4455'
     }
-    let CreateTypeProtobuf1 = new Type('CreateType1').add(new Field('pub_key', 1, 'bytes'))
-    CreateTypeProtobuf1.add(new Field('name', 2, 'string'))
-    CreateTypeProtobuf1.add(new Field('balance', 3, 'int64'))
-    root.define('CreateTypeProtobuf1').add(CreateTypeProtobuf1)
+    let CreateTransactionProtobuf1 = new Type('CreateType1').add(new Field('pub_key', 1, 'bytes'))
+    CreateTransactionProtobuf1.add(new Field('name', 2, 'string'))
+    CreateTransactionProtobuf1.add(new Field('balance', 3, 'int64'))
+    root.define('CreateTransactionProtobuf1').add(CreateTransactionProtobuf1)
 
     const CreateTransaction = Exonum.newTransaction({
       author: keyPair.publicKey,
       service_id: 130,
       message_id: 0,
-      schema: CreateTypeProtobuf1
+      schema: CreateTransactionProtobuf1
     })
 
     const data = {

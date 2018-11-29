@@ -19,7 +19,7 @@ class Message {
   }
 
   /**
-   * @param { Type | Transaction } schema
+   * @param {Precommit | Transaction } schema
    * @param {Object} data
    * @param {Object} object
    * @returns {Object}
