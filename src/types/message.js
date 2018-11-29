@@ -8,7 +8,7 @@ const TRANSACTION_CLASS = 0
 const TRANSACTION_TYPE = 0
 const PRECOMMIT_CLASS = 1
 const PRECOMMIT_TYPE = 0
-const intTypes = ['sint32', 'uint32', 'int32', 'sfixed32', 'fixed32', 'sint64', 'uint64', 'sfixed64', 'fixed64']
+const intTypes = ['sint32', 'uint32', 'int32', 'sfixed32', 'fixed32', 'sint64', 'uint64', 'int64', 'sfixed64', 'fixed64']
 
 class Message {
   constructor (type) {
@@ -28,11 +28,10 @@ class Message {
     const keys = Object.keys(data)
     keys.forEach(element => {
       if (schema.fields[element] && schema.fields[element].name) {
-        console.log(schema.fields[element].name)
-        if (schema.fields[element].name === 'message') {
+        if (schema.fields[element].type === 'message') {
           object[element] = this.fixZeroIntFields(schema.fields[element], data[element], object)
         }
-        if (!(intTypes.find((value) => { return value === schema.fields[element].name }) && data[element] === 0)) {
+        if (!(intTypes.find((value) => { return value === schema.fields[element].type }) && data[element] === 0)) {
           object[element] = data[element]
         }
       }
@@ -184,8 +183,9 @@ class Precommit extends Message {
    * @returns {Array}
    */
   serialize (data) {
+    const object = this.fixZeroIntFields(this.schema, data, {})
     const buffer = this.serializeHeader()
-    const body = this.schema.encode(data).finish()
+    const body = this.schema.encode(object).finish()
 
     body.forEach(element => {
       buffer.push(element)
