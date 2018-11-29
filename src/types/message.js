@@ -30,10 +30,11 @@ class Message {
       if (schema.fields[element] && schema.fields[element].name) {
         console.log(schema.fields[element].name)
         if (schema.fields[element].name === 'message') {
-          this.fixZeroIntFields(schema.fields[element], data[element], object)
+          object[element] = this.fixZeroIntFields(schema.fields[element], data[element], object)
         }
-        // if (schema.fields[element].find(callback[, thisArg]))
-        object[element] = data[element]
+        if (!(intTypes.find((value) => { return value === schema.fields[element].name }) && data[element] === 0)) {
+          object[element] = data[element]
+        }
       }
     })
 
