@@ -13,165 +13,145 @@ describe('Verify block of precommits', function () {
     '95528e581b8e1fe7de5cd3ee838f4ff09417353420feb25d55fa998531f627b7'
   ]
 
-  it('should return true when valid block with precommits', function () {
+  it('should return fulfilled promise result when block with precommits is valid', function () {
     const data = require('./common_data/block-with-precommits/valid-block-with-precommits.json')
     return assert.isFulfilled(Exonum.verifyBlock(data, validators))
   })
 
-  // it('should return false when height of block is not match', function () {
-  //   const data = {
-  //     block: {
-  //       height: '2',
-  //       prev_hash: '5107fe929f173a8fbe609ef907797daab959c6838eb26e074d80534c772e879a',
-  //       proposer_id: 3,
-  //       state_hash: '5f59a6b7810f2cde8a90a4b281c5722d0718cda07f1f321e531c5305ed3baf0e',
-  //       tx_count: 3,
-  //       tx_hash: '09224d3618942784363789a34e016f6f8e683f2ec96a5b9c51c23a02bca2ae1d'
-  //     },
-  //     precommits: [
-  //       {
-  //         payload: {
-  //           block_hash: '7de0d426f0f287849f89e5758015aca00f2e85eda28d2c38581519e0f1de8105',
-  //           height: '4',
-  //           propose_hash: 'e000ec445f25b61d2ac9d38882cffcd59aa02c08a30b2173c5526b89dccd1fcd',
-  //           round: 1,
-  //           time: {
-  //             nanos: 336073000,
-  //             secs: '1537799426'
-  //           },
-  //           validator: 3
-  //         },
-  //         message: 'e6264b7f37f1fc2b4719d89a1360c25ad8b98e9723b485080382761ede1f318201000300020000000000000001000000e000ec445f25b61d2ac9d38882cffcd59aa02c08a30b2173c5526b89dccd1fcd7de0d426f0f287849f89e5758015aca00f2e85eda28d2c38581519e0f1de810502f5a85b00000000281108142da1ea5a2eb4b058a37a69ffb721b7f16c319a4fa1fd34c29efc9bedec454382f9c606a6574349d65be17154465eeb68c4558ca5a1e68a5cc8537aaf81ed780e'
-  //       }
-  //     ]
-  //   }
-  //
-  //   expect(Exonum.verifyBlock(data, validators)).to.be.false
-  // })
-  //
-  // it('should return false when hash of block is not match', function () {
-  //   const data = {
-  //     block: {
-  //       height: '2',
-  //       prev_hash: '5107fe929f173a8fbe609ef907797daab959c6838eb26e074d80534c772e879a',
-  //       proposer_id: 3,
-  //       state_hash: '5f59a6b7810f2cde8a90a4b281c5722d0718cda07f1f321e531c5305ed3baf0e',
-  //       tx_count: 3,
-  //       tx_hash: '09224d3618942784363789a34e016f6f8e683f2ec96a5b9c51c23a02bca2ae1d'
-  //     },
-  //     precommits: [
-  //       {
-  //         payload: {
-  //           block_hash: '8de0d426f0f287849f89e5758015aca00f2e85eda28d2c38581519e0f1de8105',
-  //           height: '2',
-  //           propose_hash: 'e000ec445f25b61d2ac9d38882cffcd59aa02c08a30b2173c5526b89dccd1fcd',
-  //           round: 1,
-  //           time: {
-  //             nanos: 336073000,
-  //             secs: '1537799426'
-  //           },
-  //           validator: 3
-  //         },
-  //         message: 'e6264b7f37f1fc2b4719d89a1360c25ad8b98e9723b485080382761ede1f318201000300020000000000000001000000e000ec445f25b61d2ac9d38882cffcd59aa02c08a30b2173c5526b89dccd1fcd7de0d426f0f287849f89e5758015aca00f2e85eda28d2c38581519e0f1de810502f5a85b00000000281108142da1ea5a2eb4b058a37a69ffb721b7f16c319a4fa1fd34c29efc9bedec454382f9c606a6574349d65be17154465eeb68c4558ca5a1e68a5cc8537aaf81ed780e'
-  //       }
-  //     ]
-  //   }
-  //
-  //   expect(Exonum.verifyBlock(data, validators)).to.be.false
-  // })
-  //
-  // it('should return false when public key of validator is not match', function () {
-  //   const data = {
-  //     block: {
-  //       height: '2',
-  //       prev_hash: '5107fe929f173a8fbe609ef907797daab959c6838eb26e074d80534c772e879a',
-  //       proposer_id: 3,
-  //       state_hash: '5f59a6b7810f2cde8a90a4b281c5722d0718cda07f1f321e531c5305ed3baf0e',
-  //       tx_count: 3,
-  //       tx_hash: '09224d3618942784363789a34e016f6f8e683f2ec96a5b9c51c23a02bca2ae1d'
-  //     },
-  //     precommits: [
-  //       {
-  //         payload: {
-  //           block_hash: '7de0d426f0f287849f89e5758015aca00f2e85eda28d2c38581519e0f1de8105',
-  //           height: '2',
-  //           propose_hash: 'e000ec445f25b61d2ac9d38882cffcd59aa02c08a30b2173c5526b89dccd1fcd',
-  //           round: 1,
-  //           time: {
-  //             nanos: 336073000,
-  //             secs: '1537799426'
-  //           },
-  //           validator: 2
-  //         },
-  //         message: 'e6264b7f37f1fc2b4719d89a1360c25ad8b98e9723b485080382761ede1f318201000300020000000000000001000000e000ec445f25b61d2ac9d38882cffcd59aa02c08a30b2173c5526b89dccd1fcd7de0d426f0f287849f89e5758015aca00f2e85eda28d2c38581519e0f1de810502f5a85b00000000281108142da1ea5a2eb4b058a37a69ffb721b7f16c319a4fa1fd34c29efc9bedec454382f9c606a6574349d65be17154465eeb68c4558ca5a1e68a5cc8537aaf81ed780e'
-  //       }
-  //     ]
-  //   }
-  //
-  //   expect(Exonum.verifyBlock(data, validators)).to.be.false
-  // })
-  //
-  // it('should return false when payload is not match', function () {
-  //   const data = {
-  //     block: {
-  //       height: '2',
-  //       prev_hash: '5107fe929f173a8fbe609ef907797daab959c6838eb26e074d80534c772e879a',
-  //       proposer_id: 3,
-  //       state_hash: '5f59a6b7810f2cde8a90a4b281c5722d0718cda07f1f321e531c5305ed3baf0e',
-  //       tx_count: 3,
-  //       tx_hash: '09224d3618942784363789a34e016f6f8e683f2ec96a5b9c51c23a02bca2ae1d'
-  //     },
-  //     precommits: [
-  //       {
-  //         payload: {
-  //           block_hash: '7de0d426f0f287849f89e5758015aca00f2e85eda28d2c38581519e0f1de8105',
-  //           height: '2',
-  //           propose_hash: 'e000ec445f25b61d2ac9d38882cffcd59aa02c08a30b2173c5526b89dccd1fcd',
-  //           round: 2,
-  //           time: {
-  //             nanos: 336073000,
-  //             secs: '1537799426'
-  //           },
-  //           validator: 3
-  //         },
-  //         message: 'e6264b7f37f1fc2b4719d89a1360c25ad8b98e9723b485080382761ede1f318201000300020000000000000001000000e000ec445f25b61d2ac9d38882cffcd59aa02c08a30b2173c5526b89dccd1fcd7de0d426f0f287849f89e5758015aca00f2e85eda28d2c38581519e0f1de810502f5a85b00000000281108142da1ea5a2eb4b058a37a69ffb721b7f16c319a4fa1fd34c29efc9bedec454382f9c606a6574349d65be17154465eeb68c4558ca5a1e68a5cc8537aaf81ed780e'
-  //       }
-  //     ]
-  //   }
-  //
-  //   expect(Exonum.verifyBlock(data, validators)).to.be.false
-  // })
-  //
-  // it('should return false when signature is not match', function () {
-  //   const data = {
-  //     block: {
-  //       height: '2',
-  //       prev_hash: '5107fe929f173a8fbe609ef907797daab959c6838eb26e074d80534c772e879a',
-  //       proposer_id: 3,
-  //       state_hash: '5f59a6b7810f2cde8a90a4b281c5722d0718cda07f1f321e531c5305ed3baf0e',
-  //       tx_count: 3,
-  //       tx_hash: '09224d3618942784363789a34e016f6f8e683f2ec96a5b9c51c23a02bca2ae1d'
-  //     },
-  //     precommits: [
-  //       {
-  //         payload: {
-  //           block_hash: '7de0d426f0f287849f89e5758015aca00f2e85eda28d2c38581519e0f1de8105',
-  //           height: '2',
-  //           propose_hash: 'e000ec445f25b61d2ac9d38882cffcd59aa02c08a30b2173c5526b89dccd1fcd',
-  //           round: 1,
-  //           time: {
-  //             nanos: 336073000,
-  //             secs: '1537799426'
-  //           },
-  //           validator: 3
-  //         },
-  //         message: 'e6264b7f37f1fc2b4719d89a1360c25ad8b98e9723b485080382761ede1f318201000300020000000000000001000000e000ec445f25b61d2ac9d38882cffcd59aa02c08a30b2173c5526b89dccd1fcd7de0d426f0f287849f89e5758015aca00f2e85eda28d2c38581519e0f1de810502f5a85b00000000281108142da1ea5a2eb4b058a37a69ffb721b7f16c319a4fa1fd34c29efc9bedec454382f9c606a6574349d65be17154465eeb68c4558ca5a1e68a5cc8537aaf81ed780d'
-  //       }
-  //     ]
-  //   }
-  //
-  //   expect(Exonum.verifyBlock(data, validators)).to.be.false
-  // })
+  it('should throw error when precommit height is unexpected', function () {
+    const data = {
+      'block': {
+        'proposer_id': 0,
+        'height': 94,
+        'tx_count': 1,
+        'prev_hash': 'da04831c87a2b73a0b0f57003f2d6c45a891168544bce13309021f3e4edac9db',
+        'tx_hash': 'b514e456d82cdf275eebc006bd048b4a7dcf1b976451040ce6078b5f785cb31f',
+        'state_hash': 'a08f6d645fd30abfd0f88b6af67c2396838c3b7c01130b15acdd8510b3b8d8d0'
+      },
+      'precommits': [
+        {
+          'payload': {
+            'validator': 0,
+            'height': 95,
+            'round': 1,
+            'propose_hash': '12442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c35',
+            'block_hash': '7dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559',
+            'time': '2018-11-09T12:39:54.343444Z'
+          },
+          'message': '95528e581b8e1fe7de5cd3ee838f4ff09417353420feb25d55fa998531f627b70100105e180122220a2012442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c352a220a207dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559320c089a8096df0510a094e2a301acbb0a1a8e4443d6368d9a141c11a8ef5b451df7075fc46e46d587b963e5a85a89b196c4d9441334379e51320bbc0058260072f6f97c733a436e5e4d0bfb6405'
+        }
+      ]
+    }
+    return assert.isRejected(Exonum.verifyBlock(data, validators), Error, 'Precommit height is not match with block height')
+  })
+
+  it('should throw error when block hash is unexpected', function () {
+    const data = {
+      'block': {
+        'proposer_id': 0,
+        'height': 94,
+        'tx_count': 1,
+        'prev_hash': 'da04831c87a2b73a0b0f57003f2d6c45a891168544bce13309021f3e4edac9db',
+        'tx_hash': 'b514e456d82cdf275eebc006bd048b4a7dcf1b976451040ce6078b5f785cb31f',
+        'state_hash': 'a08f6d645fd30abfd0f88b6af67c2396838c3b7c01130b15acdd8510b3b8d8d0'
+      },
+      'precommits': [
+        {
+          'payload': {
+            'validator': 0,
+            'height': 94,
+            'round': 1,
+            'propose_hash': '12442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c35',
+            'block_hash': '8dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559',
+            'time': '2018-11-09T12:39:54.343444Z'
+          },
+          'message': '95528e581b8e1fe7de5cd3ee838f4ff09417353420feb25d55fa998531f627b70100105e180122220a2012442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c352a220a207dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559320c089a8096df0510a094e2a301acbb0a1a8e4443d6368d9a141c11a8ef5b451df7075fc46e46d587b963e5a85a89b196c4d9441334379e51320bbc0058260072f6f97c733a436e5e4d0bfb6405'
+        }
+      ]
+    }
+    return assert.isRejected(Exonum.verifyBlock(data, validators), Error, 'Precommit block hash is not match with calculated block hash')
+  })
+
+  it('should throw error when public key is unexpected', function () {
+    const data = {
+      'block': {
+        'proposer_id': 0,
+        'height': 94,
+        'tx_count': 1,
+        'prev_hash': 'da04831c87a2b73a0b0f57003f2d6c45a891168544bce13309021f3e4edac9db',
+        'tx_hash': 'b514e456d82cdf275eebc006bd048b4a7dcf1b976451040ce6078b5f785cb31f',
+        'state_hash': 'a08f6d645fd30abfd0f88b6af67c2396838c3b7c01130b15acdd8510b3b8d8d0'
+      },
+      'precommits': [
+        {
+          'payload': {
+            'validator': 0,
+            'height': 94,
+            'round': 1,
+            'propose_hash': '12442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c35',
+            'block_hash': '7dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559',
+            'time': '2018-11-09T12:39:54.343444Z'
+          },
+          'message': '05528e581b8e1fe7de5cd3ee838f4ff09417353420feb25d55fa998531f627b70100105e180122220a2012442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c352a220a207dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559320c089a8096df0510a094e2a301acbb0a1a8e4443d6368d9a141c11a8ef5b451df7075fc46e46d587b963e5a85a89b196c4d9441334379e51320bbc0058260072f6f97c733a436e5e4d0bfb6405'
+        }
+      ]
+    }
+    return assert.isRejected(Exonum.verifyBlock(data, validators), Error, 'Precommit public key is not match with buffer')
+  })
+
+  it('should throw error when serialized precommit body is unexpected', function () {
+    const data = {
+      'block': {
+        'proposer_id': 0,
+        'height': 94,
+        'tx_count': 1,
+        'prev_hash': 'da04831c87a2b73a0b0f57003f2d6c45a891168544bce13309021f3e4edac9db',
+        'tx_hash': 'b514e456d82cdf275eebc006bd048b4a7dcf1b976451040ce6078b5f785cb31f',
+        'state_hash': 'a08f6d645fd30abfd0f88b6af67c2396838c3b7c01130b15acdd8510b3b8d8d0'
+      },
+      'precommits': [
+        {
+          'payload': {
+            'validator': 0,
+            'height': 94,
+            'round': 1,
+            'propose_hash': '12442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c35',
+            'block_hash': '7dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559',
+            'time': '2018-11-09T12:39:54.343444Z'
+          },
+          'message': '95528e581b8e1fe7de5cd3ee838f4ff09417353420feb25d55fa998531f627b70100105e180122220a2012442a0746b0aaad01dbdf1e36149c883fa66ce33f49934fd656a3780ad35c352a220a207dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559320c089a8096df0510a094e2a301acbb0a1a8e4443d6368d9a141c11a8ef5b451df7075fc46e46d587b963e5a85a89b196c4d9441334379e51320bbc0058260072f6f97c733a436e5e4d0bfb6405'
+        }
+      ]
+    }
+    return assert.isRejected(Exonum.verifyBlock(data, validators), Error, 'Calculated precommit body is not match with buffer')
+  })
+
+  it('should throw error when signature is unexpected', function () {
+    const data = {
+      'block': {
+        'proposer_id': 0,
+        'height': 94,
+        'tx_count': 1,
+        'prev_hash': 'da04831c87a2b73a0b0f57003f2d6c45a891168544bce13309021f3e4edac9db',
+        'tx_hash': 'b514e456d82cdf275eebc006bd048b4a7dcf1b976451040ce6078b5f785cb31f',
+        'state_hash': 'a08f6d645fd30abfd0f88b6af67c2396838c3b7c01130b15acdd8510b3b8d8d0'
+      },
+      'precommits': [
+        {
+          'payload': {
+            'validator': 0,
+            'height': 94,
+            'round': 1,
+            'propose_hash': '12442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c35',
+            'block_hash': '7dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559',
+            'time': '2018-11-09T12:39:54.343444Z'
+          },
+          'message': '95528e581b8e1fe7de5cd3ee838f4ff09417353420feb25d55fa998531f627b70100105e180122220a2012442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c352a220a207dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559320c089a8096df0510a094e2a301acbb0a1a8e4443d6368d9a141c11a8ef5b451df7075fc46e46d587b963e5a85a89b196c4d9441334379e51320bbc0058260072f6f97c733a436e5e4d0bfb6495'
+        }
+      ]
+    }
+    return assert.isRejected(Exonum.verifyBlock(data, validators), Error, 'Precommit signature is wrong')
+  })
 })
 
 // describe('Verify table existence', function () {
