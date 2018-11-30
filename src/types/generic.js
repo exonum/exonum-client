@@ -19,7 +19,7 @@ class Type {
   fixZeroIntFields (schema, data, object) {
     const keys = Object.keys(data)
     keys.forEach(element => {
-      if (schema.fields[element] && schema.fields[element].name) {
+      if (schema.fields && schema.fields[element] && schema.fields[element].name && schema.fields[element].type) {
         if (schema.fields[element].type === 'message') {
           object[element] = this.fixZeroIntFields(schema.fields[element], data[element], object)
         }
