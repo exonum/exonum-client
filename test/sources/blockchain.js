@@ -4,6 +4,7 @@
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 const assert = chai.assert
+const expect = chai.expect
 const Exonum = require('../../src')
 
 chai.use(chaiAsPromised)
@@ -28,19 +29,17 @@ describe('Verify block of precommits', function () {
         'tx_hash': 'b514e456d82cdf275eebc006bd048b4a7dcf1b976451040ce6078b5f785cb31f',
         'state_hash': 'a08f6d645fd30abfd0f88b6af67c2396838c3b7c01130b15acdd8510b3b8d8d0'
       },
-      'precommits': [
-        {
-          'payload': {
-            'validator': 0,
-            'height': 95,
-            'round': 1,
-            'propose_hash': '12442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c35',
-            'block_hash': '7dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559',
-            'time': '2018-11-09T12:39:54.343444Z'
-          },
-          'message': '95528e581b8e1fe7de5cd3ee838f4ff09417353420feb25d55fa998531f627b70100105e180122220a2012442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c352a220a207dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559320c089a8096df0510a094e2a301acbb0a1a8e4443d6368d9a141c11a8ef5b451df7075fc46e46d587b963e5a85a89b196c4d9441334379e51320bbc0058260072f6f97c733a436e5e4d0bfb6405'
-        }
-      ]
+      'precommits': [{
+        'payload': {
+          'validator': 0,
+          'height': 95,
+          'round': 1,
+          'propose_hash': '12442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c35',
+          'block_hash': '7dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559',
+          'time': '2018-11-09T12:39:54.343444Z'
+        },
+        'message': '95528e581b8e1fe7de5cd3ee838f4ff09417353420feb25d55fa998531f627b70100105e180122220a2012442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c352a220a207dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559320c089a8096df0510a094e2a301acbb0a1a8e4443d6368d9a141c11a8ef5b451df7075fc46e46d587b963e5a85a89b196c4d9441334379e51320bbc0058260072f6f97c733a436e5e4d0bfb6405'
+      }]
     }
     return assert.isRejected(Exonum.verifyBlock(data, validators), Error, 'Precommit height is not match with block height')
   })
@@ -55,19 +54,17 @@ describe('Verify block of precommits', function () {
         'tx_hash': 'b514e456d82cdf275eebc006bd048b4a7dcf1b976451040ce6078b5f785cb31f',
         'state_hash': 'a08f6d645fd30abfd0f88b6af67c2396838c3b7c01130b15acdd8510b3b8d8d0'
       },
-      'precommits': [
-        {
-          'payload': {
-            'validator': 0,
-            'height': 94,
-            'round': 1,
-            'propose_hash': '12442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c35',
-            'block_hash': '8dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559',
-            'time': '2018-11-09T12:39:54.343444Z'
-          },
-          'message': '95528e581b8e1fe7de5cd3ee838f4ff09417353420feb25d55fa998531f627b70100105e180122220a2012442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c352a220a207dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559320c089a8096df0510a094e2a301acbb0a1a8e4443d6368d9a141c11a8ef5b451df7075fc46e46d587b963e5a85a89b196c4d9441334379e51320bbc0058260072f6f97c733a436e5e4d0bfb6405'
-        }
-      ]
+      'precommits': [{
+        'payload': {
+          'validator': 0,
+          'height': 94,
+          'round': 1,
+          'propose_hash': '12442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c35',
+          'block_hash': '8dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559',
+          'time': '2018-11-09T12:39:54.343444Z'
+        },
+        'message': '95528e581b8e1fe7de5cd3ee838f4ff09417353420feb25d55fa998531f627b70100105e180122220a2012442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c352a220a207dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559320c089a8096df0510a094e2a301acbb0a1a8e4443d6368d9a141c11a8ef5b451df7075fc46e46d587b963e5a85a89b196c4d9441334379e51320bbc0058260072f6f97c733a436e5e4d0bfb6405'
+      }]
     }
     return assert.isRejected(Exonum.verifyBlock(data, validators), Error, 'Precommit block hash is not match with calculated block hash')
   })
@@ -82,19 +79,17 @@ describe('Verify block of precommits', function () {
         'tx_hash': 'b514e456d82cdf275eebc006bd048b4a7dcf1b976451040ce6078b5f785cb31f',
         'state_hash': 'a08f6d645fd30abfd0f88b6af67c2396838c3b7c01130b15acdd8510b3b8d8d0'
       },
-      'precommits': [
-        {
-          'payload': {
-            'validator': 0,
-            'height': 94,
-            'round': 1,
-            'propose_hash': '12442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c35',
-            'block_hash': '7dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559',
-            'time': '2018-11-09T12:39:54.343444Z'
-          },
-          'message': '05528e581b8e1fe7de5cd3ee838f4ff09417353420feb25d55fa998531f627b70100105e180122220a2012442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c352a220a207dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559320c089a8096df0510a094e2a301acbb0a1a8e4443d6368d9a141c11a8ef5b451df7075fc46e46d587b963e5a85a89b196c4d9441334379e51320bbc0058260072f6f97c733a436e5e4d0bfb6405'
-        }
-      ]
+      'precommits': [{
+        'payload': {
+          'validator': 0,
+          'height': 94,
+          'round': 1,
+          'propose_hash': '12442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c35',
+          'block_hash': '7dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559',
+          'time': '2018-11-09T12:39:54.343444Z'
+        },
+        'message': '05528e581b8e1fe7de5cd3ee838f4ff09417353420feb25d55fa998531f627b70100105e180122220a2012442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c352a220a207dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559320c089a8096df0510a094e2a301acbb0a1a8e4443d6368d9a141c11a8ef5b451df7075fc46e46d587b963e5a85a89b196c4d9441334379e51320bbc0058260072f6f97c733a436e5e4d0bfb6405'
+      }]
     }
     return assert.isRejected(Exonum.verifyBlock(data, validators), Error, 'Precommit public key is not match with buffer')
   })
@@ -109,19 +104,17 @@ describe('Verify block of precommits', function () {
         'tx_hash': 'b514e456d82cdf275eebc006bd048b4a7dcf1b976451040ce6078b5f785cb31f',
         'state_hash': 'a08f6d645fd30abfd0f88b6af67c2396838c3b7c01130b15acdd8510b3b8d8d0'
       },
-      'precommits': [
-        {
-          'payload': {
-            'validator': 0,
-            'height': 94,
-            'round': 1,
-            'propose_hash': '12442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c35',
-            'block_hash': '7dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559',
-            'time': '2018-11-09T12:39:54.343444Z'
-          },
-          'message': '95528e581b8e1fe7de5cd3ee838f4ff09417353420feb25d55fa998531f627b70100105e180122220a2012442a0746b0aaad01dbdf1e36149c883fa66ce33f49934fd656a3780ad35c352a220a207dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559320c089a8096df0510a094e2a301acbb0a1a8e4443d6368d9a141c11a8ef5b451df7075fc46e46d587b963e5a85a89b196c4d9441334379e51320bbc0058260072f6f97c733a436e5e4d0bfb6405'
-        }
-      ]
+      'precommits': [{
+        'payload': {
+          'validator': 0,
+          'height': 94,
+          'round': 1,
+          'propose_hash': '12442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c35',
+          'block_hash': '7dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559',
+          'time': '2018-11-09T12:39:54.343444Z'
+        },
+        'message': '95528e581b8e1fe7de5cd3ee838f4ff09417353420feb25d55fa998531f627b70100105e180122220a2012442a0746b0aaad01dbdf1e36149c883fa66ce33f49934fd656a3780ad35c352a220a207dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559320c089a8096df0510a094e2a301acbb0a1a8e4443d6368d9a141c11a8ef5b451df7075fc46e46d587b963e5a85a89b196c4d9441334379e51320bbc0058260072f6f97c733a436e5e4d0bfb6405'
+      }]
     }
     return assert.isRejected(Exonum.verifyBlock(data, validators), Error, 'Calculated precommit body is not match with buffer')
   })
@@ -136,87 +129,98 @@ describe('Verify block of precommits', function () {
         'tx_hash': 'b514e456d82cdf275eebc006bd048b4a7dcf1b976451040ce6078b5f785cb31f',
         'state_hash': 'a08f6d645fd30abfd0f88b6af67c2396838c3b7c01130b15acdd8510b3b8d8d0'
       },
-      'precommits': [
-        {
-          'payload': {
-            'validator': 0,
-            'height': 94,
-            'round': 1,
-            'propose_hash': '12442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c35',
-            'block_hash': '7dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559',
-            'time': '2018-11-09T12:39:54.343444Z'
-          },
-          'message': '95528e581b8e1fe7de5cd3ee838f4ff09417353420feb25d55fa998531f627b70100105e180122220a2012442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c352a220a207dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559320c089a8096df0510a094e2a301acbb0a1a8e4443d6368d9a141c11a8ef5b451df7075fc46e46d587b963e5a85a89b196c4d9441334379e51320bbc0058260072f6f97c733a436e5e4d0bfb6495'
-        }
-      ]
+      'precommits': [{
+        'payload': {
+          'validator': 0,
+          'height': 94,
+          'round': 1,
+          'propose_hash': '12442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c35',
+          'block_hash': '7dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559',
+          'time': '2018-11-09T12:39:54.343444Z'
+        },
+        'message': '95528e581b8e1fe7de5cd3ee838f4ff09417353420feb25d55fa998531f627b70100105e180122220a2012442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c352a220a207dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559320c089a8096df0510a094e2a301acbb0a1a8e4443d6368d9a141c11a8ef5b451df7075fc46e46d587b963e5a85a89b196c4d9441334379e51320bbc0058260072f6f97c733a436e5e4d0bfb6495'
+      }]
     }
     return assert.isRejected(Exonum.verifyBlock(data, validators), Error, 'Precommit signature is wrong')
   })
 })
 
-// describe('Verify table existence', function () {
-//   const proof = {
-//     entries: [
-//       {
-//         key: '775be457774803ff0221f0d18f407c9718a2f4c635445a691f6061bd5d651581',
-//         value: '540c35c61837aa819986e137b6ae0091faa781419e8234802094ef77a2cdc293'
-//       }
-//     ],
-//     proof: [
-//       {
-//         path: '0000101010101110110000001010110110011000000001100011001110110111000101011001101100100100000010011111001000011101110010101110111001111111101111101110100011111110000111011111101111110011011010100100110101110010101000101110101000100110011100100010101101100001',
-//         hash: '0000000000000000000000000000000000000000000000000000000000000000'
-//       },
-//       {
-//         path: '1101',
-//         hash: '9d57d84328c5fce997b0dd0cf806c114a37ebf32bd1b966154244548206acd27'
-//       },
-//       {
-//         path: '1110011011010101101110110100111000001000001001000000111111111111011100101101000011111100001100101111010010000011110111001010001101011101001010111011010011010000000111101000101000101011011010100001101110110001000001001011110010101000010101010010010100001010',
-//         hash: '0000000000000000000000000000000000000000000000000000000000000000'
-//       },
-//       {
-//         path: '1111101111111100100001100001100100100000100101011111010011011011000000101110101010011000101101000010001110111100111010110001001001010111111011100101000100111011010010100011110110010010001100010001011110100000001001000000001100101000000111011000100010011000',
-//         hash: '15ca2aa05d8f054125ee327ac35805c5a20d9305aae10880dc56373219126a47'
-//       }
-//     ]
-//   }
-//   const serviceId = 130
-//   const tableIndex = 0
-//   const stateHash = 'dd09c5ec10fe7eb5d82aeabf362772440880394dfabb0a4c4cfbfdecc2d6bad7'
-//   const rootHash = '540c35c61837aa819986e137b6ae0091faa781419e8234802094ef77a2cdc293'
-//
-//   it('should return root hash when valid proof', function () {
-//     expect(Exonum.verifyTable(proof, stateHash, serviceId, tableIndex)).to.equals(rootHash)
-//   })
-//
-//   it('should throw error when wrong service ID is passed', function () {
-//     const endpoints = [null, false, 'Hello world', new Date(), {}, []]
-//
-//     endpoints.forEach(function (value) {
-//       expect(() => Exonum.verifyTable(proof, stateHash, value, tableIndex))
-//         .to.throw(Error, `Uint16 of wrong type is passed: ${value}`)
-//     })
-//   })
-//
-//   it('should throw error when wrong table index is passed', function () {
-//     const endpoints = [null, false, 'Hello world', new Date(), {}, []]
-//
-//     endpoints.forEach(function (value) {
-//       expect(() => Exonum.verifyTable(proof, stateHash, serviceId, value))
-//         .to.throw(Error, `Uint16 of wrong type is passed: ${value}`)
-//     })
-//   })
-//
-//   it('should throw error when wrong proof is passed', function () {
-//     const endpoints = [null, false, 42, 'Hello world', new Date(), {}, []]
-//
-//     endpoints.forEach(function (value) {
-//       expect(() => Exonum.verifyTable(value, stateHash, serviceId, tableIndex)).to.throw(Error)
-//     })
-//   })
-// })
-//
+/*
+ *  // verify table timestamps in the root tree
+              const tableRootHash = Exonum.verifyTable(data.state_proof, data.block_info.block.state_hash, SERVICE_ID, TABLE_INDEX)
+
+              // find timestamp in the tree of all timestamps
+              const timestampProof = new Exonum.MapProof(data.timestamp_proof, Exonum.Hash, TimestampEntry)
+ */
+
+describe('Verify table existence', function () {
+  const proof = {
+    entries: [{
+      key: '775be457774803ff0221f0d18f407c9718a2f4c635445a691f6061bd5d651581',
+      value: '540c35c61837aa819986e137b6ae0091faa781419e8234802094ef77a2cdc293'
+    }],
+    proof: [{
+      path: '0000101010101110110000001010110110011000000001100011001110110111000101011001101100100100000010011111001000011101110010101110111001111111101111101110100011111110000111011111101111110011011010100100110101110010101000101110101000100110011100100010101101100001',
+      hash: '0000000000000000000000000000000000000000000000000000000000000000'
+    },
+    {
+      path: '1101',
+      hash: '9d57d84328c5fce997b0dd0cf806c114a37ebf32bd1b966154244548206acd27'
+    },
+    {
+      path: '1110011011010101101110110100111000001000001001000000111111111111011100101101000011111100001100101111010010000011110111001010001101011101001010111011010011010000000111101000101000101011011010100001101110110001000001001011110010101000010101010010010100001010',
+      hash: '0000000000000000000000000000000000000000000000000000000000000000'
+    },
+    {
+      path: '1111101111111100100001100001100100100000100101011111010011011011000000101110101010011000101101000010001110111100111010110001001001010111111011100101000100111011010010100011110110010010001100010001011110100000001001000000001100101000000111011000100010011000',
+      hash: '15ca2aa05d8f054125ee327ac35805c5a20d9305aae10880dc56373219126a47'
+    }
+    ]
+  }
+  const serviceId = 130
+  const tableIndex = 0
+  const stateHash = 'dd09c5ec10fe7eb5d82aeabf362772440880394dfabb0a4c4cfbfdecc2d6bad7'
+  const rootHash = '540c35c61837aa819986e137b6ae0091faa781419e8234802094ef77a2cdc293'
+
+  it('should return root hash when valid proof', function () {
+    expect(Exonum.verifyTable(proof, stateHash, serviceId, tableIndex)).to.equals(rootHash)
+  })
+  /*
+  it('should throw error when wrong service ID is passed', function () {
+    const endpoints = [null, false, 'Hello world', new Date(), {},
+      []
+    ]
+
+    endpoints.forEach(function (value) {
+      expect(() => Exonum.verifyTable(proof, stateHash, value, tableIndex))
+        .to.throw(Error, `Uint16 of wrong type is passed: ${value}`)
+    })
+  })
+
+  it('should throw error when wrong table index is passed', function () {
+    const endpoints = [null, false, 'Hello world', new Date(), {},
+      []
+    ]
+
+    endpoints.forEach(function (value) {
+      expect(() => Exonum.verifyTable(proof, stateHash, serviceId, value))
+        .to.throw(Error, `Uint16 of wrong type is passed: ${value}`)
+    })
+  })
+
+  it('should throw error when wrong proof is passed', function () {
+    const endpoints = [null, false, 42, 'Hello world', new Date(), {},
+      []
+    ]
+
+    endpoints.forEach(function (value) {
+      expect(() => Exonum.verifyTable(value, stateHash, serviceId, tableIndex)).to.throw(Error)
+    })
+    
+  })
+  */
+})
+
 // describe('Send transaction to the blockchain', function () {
 //   const keyPair = {
 //     publicKey: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',

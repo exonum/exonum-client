@@ -95,3 +95,8 @@ message BlockRequest {
   uint64 height = 2;
 }
 
+message TableKey {
+  uint64 service_id = 1;
+  uint64 table_index = 2;
+}
+
