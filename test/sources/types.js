@@ -56,7 +56,7 @@ describe('Check built-in types', function () {
         ]
       }
       expect(() => Type2.serialize(data.data))
-        .to.throw(TypeError, '"string" must be a string, Buffer, or ArrayBuffer')
+        .to.throw(TypeError)
     })
   })
 
