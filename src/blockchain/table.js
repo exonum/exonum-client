@@ -1,7 +1,15 @@
+import { Uint16 } from '../types/primitive'
+import { newType } from '../types/generic'
 import { Hash } from '../types/hexadecimal'
 import { MapProof } from './merkle-patricia'
-import { TableKey } from '../../proto/protocol'
-import { hash } from '../crypto'
+
+const TableKey = newType({
+  fields: [
+    { name: 'service_id', type: Uint16 },
+    { name: 'table_index', type: Uint16 }
+  ]
+})
+
 /**
  * Validate path from tree root to some table
  * @param {Object} proof
@@ -11,17 +19,11 @@ import { hash } from '../crypto'
  * @returns {string}
  */
 export function verifyTable (proof, stateHash, serviceId, tableIndex) {
-
-  const table = {
-    service_id: { data: serviceId },
-    stateHash: { data: tableIndex }
-  }
-
-  const message = TableKey.create(table)
-  const buffer = TableKey.encode(message).finish()
-
   // calculate key of table in the root tree
-  const key = hash(buffer)
+  const key = TableKey.hash({
+    service_id: serviceId,
+    table_index: tableIndex
+  })
 
   // validate proof of table existence in root tree
   const tableProof = new MapProof(proof, Hash, Hash)
