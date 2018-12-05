@@ -51,8 +51,7 @@ describe('Protobuf serialization', function () {
 
   it('should serialize data for small transactions', function () {
     const keyPair = {
-      publicKey: 'df2f4db0411c3710e570e99c436212f49a0b7a0d0e008fb50b98758831994ea0',
-      secretKey: 'e109fb51991bacad7fed6fce05abe84d061f55f220edc29954b836bcd00bd4688dbe6a4409af137ee7129ad58f08c60826d04f4095acd50982446546f9cbc704'
+      publicKey: 'df2f4db0411c3710e570e99c436212f49a0b7a0d0e008fb50b98758831994ea0'
     }
 
     let SmallTransactionProtobuf = new Type('SmallTransaction')
@@ -63,7 +62,7 @@ describe('Protobuf serialization', function () {
       author: keyPair.publicKey,
       service_id: 128,
       message_id: 2,
-      signature: keyPair.secretKey,
+      signature: 'e109fb51991bacad7fed6fce05abe84d061f55f220edc29954b836bcd00bd4688dbe6a4409af137ee7129ad58f08c60826d04f4095acd50982446546f9cbc704',
       schema: SmallTransactionProtobuf
     })
 
