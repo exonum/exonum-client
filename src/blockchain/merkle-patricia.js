@@ -3,7 +3,7 @@ import binarySearch from 'binary-search'
 import { hash } from '../crypto'
 import { Hash } from '../types/hexadecimal'
 import ProofPath from './ProofPath'
-import { Bool, Uint8, Uint32 } from '../types/primitive'
+import { Bool, Uint8 } from '../types/primitive'
 
 /**
  * Proof of existence and/or absence of certain elements from a Merkelized
@@ -180,12 +180,9 @@ function precheckProof () {
 }
 
 function serializeProofPathType (type, buffer) {
-  const end = buffer.length
-  Uint32.serialize(end, buffer, buffer.length)
   Bool.serialize(type.isTerminal, buffer, buffer.length)
   Hash.serialize(type.hexKey, buffer, buffer.length)
   Uint8.serialize(type.lengthByte, buffer, buffer.length)
-  Uint32.serialize(buffer.length - end, buffer, end + 4)
   return buffer
 }
 

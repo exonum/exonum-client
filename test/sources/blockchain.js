@@ -145,14 +145,6 @@ describe('Verify block of precommits', function () {
   })
 })
 
-/*
- *  // verify table timestamps in the root tree
-              const tableRootHash = Exonum.verifyTable(data.state_proof, data.block_info.block.state_hash, SERVICE_ID, TABLE_INDEX)
-
-              // find timestamp in the tree of all timestamps
-              const timestampProof = new Exonum.MapProof(data.timestamp_proof, Exonum.Hash, TimestampEntry)
- */
-
 describe('Verify table existence', function () {
   const proof = {
     entries: [{
@@ -185,39 +177,11 @@ describe('Verify table existence', function () {
   it('should return root hash when valid proof', function () {
     expect(Exonum.verifyTable(proof, stateHash, serviceId, tableIndex)).to.equals(rootHash)
   })
-  /*
-  it('should throw error when wrong service ID is passed', function () {
-    const endpoints = [null, false, 'Hello world', new Date(), {},
-      []
-    ]
 
-    endpoints.forEach(function (value) {
-      expect(() => Exonum.verifyTable(proof, stateHash, value, tableIndex))
-        .to.throw(Error, `Uint16 of wrong type is passed: ${value}`)
-    })
+  it('should throw error when signature is unexpected', function () {
+    expect(() => Exonum.verifyTable(proof, '', serviceId, tableIndex))
+      .to.throw(Error, 'Table proof is corrupted')
   })
-
-  it('should throw error when wrong table index is passed', function () {
-    const endpoints = [null, false, 'Hello world', new Date(), {},
-      []
-    ]
-
-    endpoints.forEach(function (value) {
-      expect(() => Exonum.verifyTable(proof, stateHash, serviceId, value))
-        .to.throw(Error, `Uint16 of wrong type is passed: ${value}`)
-    })
-  })
-
-  it('should throw error when wrong proof is passed', function () {
-    const endpoints = [null, false, 42, 'Hello world', new Date(), {},
-      []
-    ]
-
-    endpoints.forEach(function (value) {
-      expect(() => Exonum.verifyTable(value, stateHash, serviceId, tableIndex)).to.throw(Error)
-    })
-  })
-  */
 })
 
 // describe('Send transaction to the blockchain', function () {
