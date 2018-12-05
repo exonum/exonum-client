@@ -80,7 +80,6 @@ describe('Protobuf serialization', function () {
   })
 
   it('should serialize data for small type', function () {
-
     let SmallTypeProtobuf = new Type('SmallType')
     SmallTypeProtobuf.add(new Field('name', 1, 'string'))
     root.define('SmallType').add(SmallTypeProtobuf)
