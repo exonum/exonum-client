@@ -216,7 +216,6 @@ describe('Verify table existence', function () {
     endpoints.forEach(function (value) {
       expect(() => Exonum.verifyTable(value, stateHash, serviceId, tableIndex)).to.throw(Error)
     })
-    
   })
   */
 })

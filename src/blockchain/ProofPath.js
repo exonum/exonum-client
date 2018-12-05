@@ -1,11 +1,4 @@
-import * as primitive from '../types/primitive'
-import { Hash } from '../types/hexadecimal'
-import { newType } from '../types/generic'
-import {
-  binaryStringToUint8Array,
-  uint8ArrayToHexadecimal,
-  hexadecimalToBinaryString
-} from '../types/convert'
+import { binaryStringToUint8Array, uint8ArrayToHexadecimal, hexadecimalToBinaryString } from '../types/convert'
 
 const BIT_LENGTH = 256
 
@@ -152,14 +145,6 @@ export default class ProofPath {
  * Expected length of byte buffers used to create `ProofPath`s.
  */
 ProofPath.BYTE_LENGTH = BIT_LENGTH / 8
-
-ProofPath.TYPE = newType({
-  fields: [
-    { name: 'isTerminal', type: primitive.Bool },
-    { name: 'hexKey', type: Hash },
-    { name: 'lengthByte', type: primitive.Uint8 }
-  ]
-})
 
 function getBit (buffer, pos) {
   const byte = Math.floor(pos / 8)

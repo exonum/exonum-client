@@ -1,9 +1,9 @@
 import binarySearch from 'binary-search'
 
 import { hash } from '../crypto'
-import { newType } from '../types/generic'
 import { Hash } from '../types/hexadecimal'
 import ProofPath from './ProofPath'
+import { Bool, Uint8, Uint32 } from '../types/primitive'
 
 /**
  * Proof of existence and/or absence of certain elements from a Merkelized
@@ -179,36 +179,41 @@ function precheckProof () {
   })
 }
 
-const IsolatedNode = newType({
-  fields: [
-    { name: 'path', type: ProofPath.TYPE },
-    { name: 'hash', type: Hash }
-  ]
-})
+function serializeProofPathType (type, buffer) {
+  const end = buffer.length
+  Uint32.serialize(end, buffer, buffer.length)
+  Bool.serialize(type.isTerminal, buffer, buffer.length)
+  Hash.serialize(type.hexKey, buffer, buffer.length)
+  Uint8.serialize(type.lengthByte, buffer, buffer.length)
+  Uint32.serialize(buffer.length - end, buffer, end + 4)
+  return buffer
+}
 
-const BranchNode = newType({
-  fields: [
-    { name: 'left_hash', type: Hash },
-    { name: 'right_hash', type: Hash },
-    { name: 'left_path', type: ProofPath.TYPE },
-    { name: 'right_path', type: ProofPath.TYPE }
-  ]
-})
+function serializeBranchNode (leftHash, rightHash, leftPath, rightPath) {
+  let buffer = []
+  Hash.serialize(leftHash, buffer, buffer.length)
+  Hash.serialize(rightHash, buffer, buffer.length)
+  serializeProofPathType(leftPath, buffer)
+  serializeProofPathType(rightPath, buffer)
+  return buffer
+}
+
+function serializeIsolatedNode (path, hash) {
+  let buffer = []
+  serializeProofPathType(path, buffer)
+  Hash.serialize(hash, buffer, buffer.length)
+  return buffer
+}
 
 function collect (entries) {
   function hashIsolatedNode ({ path, hash: valueHash }) {
-    return hash({ hash: valueHash, path }, IsolatedNode)
+    const buffer = serializeIsolatedNode(path, valueHash)
+    return hash(buffer)
   }
 
   function hashBranch (left, right) {
-    const branch = {
-      left_hash: left.hash,
-      right_hash: right.hash,
-      left_path: left.path,
-      right_path: right.path
-    }
-
-    return hash(branch, BranchNode)
+    const buffer = serializeBranchNode(left.hash, right.hash, left.path, right.path)
+    return hash(buffer)
   }
 
   function fold (contour, lastPrefix) {
