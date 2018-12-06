@@ -11,7 +11,7 @@ chai.use(chaiAsPromised)
 
 describe('Verify block of precommits', function () {
   const validators = [
-    '95528e581b8e1fe7de5cd3ee838f4ff09417353420feb25d55fa998531f627b7'
+    '2006d14a17808b39d803087cb7c4346a692714e82cf5c4868fc2dbe736fe5e38'
   ]
 
   it('should return fulfilled promise result when block with precommits is valid', function () {
@@ -23,23 +23,15 @@ describe('Verify block of precommits', function () {
     const data = {
       'block': {
         'proposer_id': 0,
-        'height': 94,
-        'tx_count': 1,
-        'prev_hash': 'da04831c87a2b73a0b0f57003f2d6c45a891168544bce13309021f3e4edac9db',
-        'tx_hash': 'b514e456d82cdf275eebc006bd048b4a7dcf1b976451040ce6078b5f785cb31f',
-        'state_hash': 'a08f6d645fd30abfd0f88b6af67c2396838c3b7c01130b15acdd8510b3b8d8d0'
+        'height': 44128,
+        'tx_count': 0,
+        'prev_hash': '1eaa862bc8a0d17bcd0d524cdc7bb53245daa702290e794c80180e20a7e261bd',
+        'tx_hash': '0000000000000000000000000000000000000000000000000000000000000000',
+        'state_hash': '6a445788116c7c95417de326720bb1a9e56f01d2fe72315b4879b58be905bd02'
       },
-      'precommits': [{
-        'payload': {
-          'validator': 0,
-          'height': 95,
-          'round': 1,
-          'propose_hash': '12442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c35',
-          'block_hash': '7dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559',
-          'time': '2018-11-09T12:39:54.343444Z'
-        },
-        'message': '95528e581b8e1fe7de5cd3ee838f4ff09417353420feb25d55fa998531f627b70100105e180122220a2012442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c352a220a207dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559320c089a8096df0510a094e2a301acbb0a1a8e4443d6368d9a141c11a8ef5b451df7075fc46e46d587b963e5a85a89b196c4d9441334379e51320bbc0058260072f6f97c733a436e5e4d0bfb6405'
-      }]
+      'precommits': [
+        '2006d14a17808b39d803087cb7c4346a692714e82cf5c4868fc2dbe736fe5e38010010e1d802180122220a208524f6073155a6e7f18e0003eaa5cc254ab1345f7b2c51aa2a02da471640c2a52a220a20e2006e4a899f3686b8bb5b3f0274cb1fbf394f304a0bde08ee5ae2795d9f7a5f320c089aaba4e00510c897c8be026b49be4e61f47b5cd23264f63e7bf02e15bfa642aa558d0db8e9997699cb66b04721366a4c16a842c1e1733155d63c79f6b660e9cbfa10e6f939fc6cc2148104'
+      ]
     }
     return assert.isRejected(Exonum.verifyBlock(data, validators), Error, 'Precommit height is not match with block height')
   })
@@ -47,24 +39,16 @@ describe('Verify block of precommits', function () {
   it('should throw error when block hash is unexpected', function () {
     const data = {
       'block': {
-        'proposer_id': 0,
-        'height': 94,
-        'tx_count': 1,
-        'prev_hash': 'da04831c87a2b73a0b0f57003f2d6c45a891168544bce13309021f3e4edac9db',
-        'tx_hash': 'b514e456d82cdf275eebc006bd048b4a7dcf1b976451040ce6078b5f785cb31f',
-        'state_hash': 'a08f6d645fd30abfd0f88b6af67c2396838c3b7c01130b15acdd8510b3b8d8d0'
+        'proposer_id': 1,
+        'height': 44129,
+        'tx_count': 0,
+        'prev_hash': '1eaa862bc8a0d17bcd0d524cdc7bb53245daa702290e794c80180e20a7e261bd',
+        'tx_hash': '0000000000000000000000000000000000000000000000000000000000000000',
+        'state_hash': '6a445788116c7c95417de326720bb1a9e56f01d2fe72315b4879b58be905bd02'
       },
-      'precommits': [{
-        'payload': {
-          'validator': 0,
-          'height': 94,
-          'round': 1,
-          'propose_hash': '12442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c35',
-          'block_hash': '8dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559',
-          'time': '2018-11-09T12:39:54.343444Z'
-        },
-        'message': '95528e581b8e1fe7de5cd3ee838f4ff09417353420feb25d55fa998531f627b70100105e180122220a2012442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c352a220a207dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559320c089a8096df0510a094e2a301acbb0a1a8e4443d6368d9a141c11a8ef5b451df7075fc46e46d587b963e5a85a89b196c4d9441334379e51320bbc0058260072f6f97c733a436e5e4d0bfb6405'
-      }]
+      'precommits': [
+        '2006d14a17808b39d803087cb7c4346a692714e82cf5c4868fc2dbe736fe5e38010010e1d802180122220a208524f6073155a6e7f18e0003eaa5cc254ab1345f7b2c51aa2a02da471640c2a52a220a20e2006e4a899f3686b8bb5b3f0274cb1fbf394f304a0bde08ee5ae2795d9f7a5f320c089aaba4e00510c897c8be026b49be4e61f47b5cd23264f63e7bf02e15bfa642aa558d0db8e9997699cb66b04721366a4c16a842c1e1733155d63c79f6b660e9cbfa10e6f939fc6cc2148104'
+      ]
     }
     return assert.isRejected(Exonum.verifyBlock(data, validators), Error, 'Precommit block hash is not match with calculated block hash')
   })
@@ -73,73 +57,32 @@ describe('Verify block of precommits', function () {
     const data = {
       'block': {
         'proposer_id': 0,
-        'height': 94,
-        'tx_count': 1,
-        'prev_hash': 'da04831c87a2b73a0b0f57003f2d6c45a891168544bce13309021f3e4edac9db',
-        'tx_hash': 'b514e456d82cdf275eebc006bd048b4a7dcf1b976451040ce6078b5f785cb31f',
-        'state_hash': 'a08f6d645fd30abfd0f88b6af67c2396838c3b7c01130b15acdd8510b3b8d8d0'
+        'height': 44129,
+        'tx_count': 0,
+        'prev_hash': '1eaa862bc8a0d17bcd0d524cdc7bb53245daa702290e794c80180e20a7e261bd',
+        'tx_hash': '0000000000000000000000000000000000000000000000000000000000000000',
+        'state_hash': '6a445788116c7c95417de326720bb1a9e56f01d2fe72315b4879b58be905bd02'
       },
-      'precommits': [{
-        'payload': {
-          'validator': 0,
-          'height': 94,
-          'round': 1,
-          'propose_hash': '12442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c35',
-          'block_hash': '7dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559',
-          'time': '2018-11-09T12:39:54.343444Z'
-        },
-        'message': '05528e581b8e1fe7de5cd3ee838f4ff09417353420feb25d55fa998531f627b70100105e180122220a2012442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c352a220a207dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559320c089a8096df0510a094e2a301acbb0a1a8e4443d6368d9a141c11a8ef5b451df7075fc46e46d587b963e5a85a89b196c4d9441334379e51320bbc0058260072f6f97c733a436e5e4d0bfb6405'
-      }]
+      'precommits': [
+        '2106d14a17808b39d803087cb7c4346a692714e82cf5c4868fc2dbe736fe5e38010010e1d802180122220a208524f6073155a6e7f18e0003eaa5cc254ab1345f7b2c51aa2a02da471640c2a52a220a20e2006e4a899f3686b8bb5b3f0274cb1fbf394f304a0bde08ee5ae2795d9f7a5f320c089aaba4e00510c897c8be026b49be4e61f47b5cd23264f63e7bf02e15bfa642aa558d0db8e9997699cb66b04721366a4c16a842c1e1733155d63c79f6b660e9cbfa10e6f939fc6cc2148104'
+      ]
     }
     return assert.isRejected(Exonum.verifyBlock(data, validators), Error, 'Precommit public key is not match with buffer')
-  })
-
-  it('should throw error when serialized precommit body is unexpected', function () {
-    const data = {
-      'block': {
-        'proposer_id': 0,
-        'height': 94,
-        'tx_count': 1,
-        'prev_hash': 'da04831c87a2b73a0b0f57003f2d6c45a891168544bce13309021f3e4edac9db',
-        'tx_hash': 'b514e456d82cdf275eebc006bd048b4a7dcf1b976451040ce6078b5f785cb31f',
-        'state_hash': 'a08f6d645fd30abfd0f88b6af67c2396838c3b7c01130b15acdd8510b3b8d8d0'
-      },
-      'precommits': [{
-        'payload': {
-          'validator': 0,
-          'height': 94,
-          'round': 1,
-          'propose_hash': '12442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c35',
-          'block_hash': '7dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559',
-          'time': '2018-11-09T12:39:54.343444Z'
-        },
-        'message': '95528e581b8e1fe7de5cd3ee838f4ff09417353420feb25d55fa998531f627b70100105e180122220a2012442a0746b0aaad01dbdf1e36149c883fa66ce33f49934fd656a3780ad35c352a220a207dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559320c089a8096df0510a094e2a301acbb0a1a8e4443d6368d9a141c11a8ef5b451df7075fc46e46d587b963e5a85a89b196c4d9441334379e51320bbc0058260072f6f97c733a436e5e4d0bfb6405'
-      }]
-    }
-    return assert.isRejected(Exonum.verifyBlock(data, validators), Error, 'Calculated precommit body is not match with buffer')
   })
 
   it('should throw error when signature is unexpected', function () {
     const data = {
       'block': {
         'proposer_id': 0,
-        'height': 94,
-        'tx_count': 1,
-        'prev_hash': 'da04831c87a2b73a0b0f57003f2d6c45a891168544bce13309021f3e4edac9db',
-        'tx_hash': 'b514e456d82cdf275eebc006bd048b4a7dcf1b976451040ce6078b5f785cb31f',
-        'state_hash': 'a08f6d645fd30abfd0f88b6af67c2396838c3b7c01130b15acdd8510b3b8d8d0'
+        'height': 44129,
+        'tx_count': 0,
+        'prev_hash': '1eaa862bc8a0d17bcd0d524cdc7bb53245daa702290e794c80180e20a7e261bd',
+        'tx_hash': '0000000000000000000000000000000000000000000000000000000000000000',
+        'state_hash': '6a445788116c7c95417de326720bb1a9e56f01d2fe72315b4879b58be905bd02'
       },
-      'precommits': [{
-        'payload': {
-          'validator': 0,
-          'height': 94,
-          'round': 1,
-          'propose_hash': '12442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c35',
-          'block_hash': '7dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559',
-          'time': '2018-11-09T12:39:54.343444Z'
-        },
-        'message': '95528e581b8e1fe7de5cd3ee838f4ff09417353420feb25d55fa998531f627b70100105e180122220a2012442a0746b0aaad01dbdf1e35149c883fa66ce33f49934fd656a3780ad35c352a220a207dcbc9ff0a61ebe64b68c01ddbcc3970b028545b0a020a272106d50254238559320c089a8096df0510a094e2a301acbb0a1a8e4443d6368d9a141c11a8ef5b451df7075fc46e46d587b963e5a85a89b196c4d9441334379e51320bbc0058260072f6f97c733a436e5e4d0bfb6495'
-      }]
+      'precommits': [
+        '2006d14a17808b39d803087cb7c4346a692714e82cf5c4868fc2dbe736fe5e38010010e1d802180122220a208524f6073155a6e7f18e0003eaa5cc254ab1345f7b2c51aa2a02da471640c2a52a220a20e2006e4a899f3686b8bb5b3f0274cb1fbf394f304a0bde08ee5ae2795d9f7a5f320c089aaba4e00510c897c8be026b49be4e61f47b5cd23264f63e7bf02e15bfa642aa558d0db8e9997699cb66b04721366a4c16a842c1e1733155d63c79f6b660e9cbfa10e6f939fc6cc2148105'
+      ]
     }
     return assert.isRejected(Exonum.verifyBlock(data, validators), Error, 'Precommit signature is wrong')
   })

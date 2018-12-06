@@ -1,20 +1,9 @@
-import { Block, Precommit } from '../../proto/protocol.js'
-import { newPrecommit, SIGNATURE_LENGTH } from '../types/message'
+import * as Long from 'long'
+import * as protocol from '../../proto/protocol.js'
+import { SIGNATURE_LENGTH } from '../types/message'
 import { hexadecimalToUint8Array, uint8ArrayToHexadecimal } from '../types/convert'
 import { PUBLIC_KEY_LENGTH } from '../types/hexadecimal'
 import { hash, verifySignature } from '../crypto'
-import { compareUint8Arrays } from '../helpers'
-
-function fromISOString (str) {
-  const arr = str.split('.')
-  const date = new Date(`${arr[0]}.000Z`)
-  const value = arr[1].substring(0, arr[1].length - 1)
-  const ns = Number.parseInt(`${value}000000000`.substring(0, 9), 10)
-  return [
-    date.getTime() / 1000,
-    ns
-  ]
-}
 
 /**
  * Validate block and each precommit in block
@@ -43,65 +32,33 @@ export function verifyBlock (data, validators) {
       block.txCount = data.block.tx_count
     }
 
-    const message = Block.create(block)
-    const buffer = Block.encode(message).finish()
+    const message = protocol.exonum.Block.create(block)
+    const buffer = protocol.exonum.Block.encode(message).finish()
 
     blockHash = hash(buffer)
 
     for (let i = 0; i < data.precommits.length; i++) {
       const precommit = data.precommits[i]
-      const buffer = hexadecimalToUint8Array(precommit.message)
+      const buffer = hexadecimalToUint8Array(precommit)
+      const message = protocol.exonum.consensus.Precommit.decode(new Uint8Array(buffer.slice(34, buffer.length - SIGNATURE_LENGTH)))
+      const plain = protocol.exonum.consensus.Precommit.toObject(message)
 
-      if (precommit.payload.height !== data.block.height) {
+      if (plain.height.compare(Long.fromValue(data.block.height)) !== 0) {
         throw new Error('Precommit height is not match with block height')
       }
 
-      if (precommit.payload.block_hash !== blockHash) {
+      if (uint8ArrayToHexadecimal(plain.blockHash.data) !== blockHash) {
         throw new Error('Precommit block hash is not match with calculated block hash')
       }
 
-      const publicKey = validators[precommit.payload.validator]
+      const publicKey = validators[plain.validator || 0]
       if (uint8ArrayToHexadecimal(buffer.slice(0, PUBLIC_KEY_LENGTH)) !== publicKey) {
         throw new Error('Precommit public key is not match with buffer')
       }
 
-      const PrecommitMessage = newPrecommit({
-        author: publicKey,
-        schema: Precommit
-      })
-
-      const precommitBody = buffer.slice(0, buffer.length - SIGNATURE_LENGTH)
-
-      const payload = {
-        proposeHash: { data: hexadecimalToUint8Array(precommit.payload.propose_hash) },
-        blockHash: { data: hexadecimalToUint8Array(precommit.payload.block_hash) }
-      }
-
-      if (precommit.payload.validator !== 0) {
-        payload.validator = precommit.payload.validator
-      }
-
-      if (precommit.payload.height !== 0) {
-        payload.height = precommit.payload.height
-      }
-
-      if (precommit.payload.round !== 0) {
-        payload.round = precommit.payload.round
-      }
-
-      const time = fromISOString(precommit.payload.time)
-      payload.time = {
-        seconds: time[0],
-        nanos: time[1]
-      }
-
-      if (!compareUint8Arrays(PrecommitMessage.serialize(payload), precommitBody)) {
-        throw new Error('Calculated precommit body is not match with buffer')
-      }
-
       const signature = uint8ArrayToHexadecimal(buffer.slice(buffer.length - SIGNATURE_LENGTH, buffer.length))
 
-      if (!verifySignature(signature, publicKey, precommitBody)) {
+      if (!verifySignature(signature, publicKey, buffer.slice(0, buffer.length - SIGNATURE_LENGTH))) {
         throw new Error('Precommit signature is wrong')
       }
     }
