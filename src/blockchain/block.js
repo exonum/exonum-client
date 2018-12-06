@@ -43,7 +43,7 @@ export function verifyBlock (data, validators) {
       const message = protocol.exonum.consensus.Precommit.decode(new Uint8Array(buffer.slice(34, buffer.length - SIGNATURE_LENGTH)))
       const plain = protocol.exonum.consensus.Precommit.toObject(message)
 
-      if (plain.height.compare(Long.fromValue(data.block.height)) !== 0) {
+      if (Long.fromValue(plain.height).compare(Long.fromValue(data.block.height)) !== 0) {
         throw new Error('Precommit height is not match with block height')
       }
 
