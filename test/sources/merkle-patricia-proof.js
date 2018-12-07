@@ -711,10 +711,14 @@ describe('MapProof', () => {
         'key': 'e2ad49552fdf95302a725890139f9d1af69c49670d466366bd3af214da086dc4',
         'value': {
           balance: 160,
-          history_hash: 'e6a4349d4c0f2e07c44f145cf765318ce14a0c869ca458e12bdae4724df853d4',
-          history_len: 3,
+          historyHash: {
+            data: Uint8Array.from(Exonum.hexadecimalToUint8Array('e6a4349d4c0f2e07c44f145cf765318ce14a0c869ca458e12bdae4724df853d4'))
+          },
+          historyLen: 3,
           name: 'Jane Doe',
-          pub_key: 'e2ad49552fdf95302a725890139f9d1af69c49670d466366bd3af214da086dc4'
+          pubKey: {
+            data: Uint8Array.from(Exonum.hexadecimalToUint8Array('e2ad49552fdf95302a725890139f9d1af69c49670d466366bd3af214da086dc4'))
+          }
         }
       }],
       proof: []

@@ -63,11 +63,11 @@ module.exports = function (grunt) {
           require: ['babel-register']
         },
         src: [
-          // './test/sources/blockchain.js',
+          './test/sources/blockchain.js',
           // './test/sources/convertors.js',
           './test/sources/merkle-patricia-proof.js',
           // './test/sources/merkle-proof.js',
-          // './test/sources/cryptography.js',
+          './test/sources/cryptography.js',
           // './test/sources/protobuf-message.js',
           // './test/sources/readme.js',
           // './test/sources/types.js'
@@ -79,11 +79,11 @@ module.exports = function (grunt) {
           require: ['babel-register']
         },
         src: [
-          // './test/sources/blockchain.js',
+          './test/sources/blockchain.js',
           // './test/sources/convertors.js',
           './test/sources/merkle-patricia-proof.js',
           // './test/sources/merkle--proof.js',
-          // './test/sources/cryptography.js',
+          './test/sources/cryptography.js',
           // './test/sources/protobuf-message.js',
           // './test/sources/readme.js',
           // './test/sources/types.js'
