@@ -116,7 +116,7 @@ describe('Verify table existence', function () {
     expect(Exonum.verifyTable(proof, stateHash, serviceId, tableIndex)).to.equals(rootHash)
   })
 
-  it('should throw error when signature is unexpected', function () {
+  it('should throw error when merkleRoot is unexpected', function () {
     expect(() => Exonum.verifyTable(proof, '', serviceId, tableIndex))
       .to.throw(Error, 'Table proof is corrupted')
   })

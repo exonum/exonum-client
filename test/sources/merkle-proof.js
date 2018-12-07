@@ -3,6 +3,9 @@
 
 const expect = require('chai').expect
 const Exonum = require('../../src')
+const $protobuf = require('protobufjs/light')
+const Type = $protobuf.Type
+const Field = $protobuf.Field
 
 describe('Check proof of Merkle tree', function () {
   it('should return array of children of valid tree', function () {
@@ -149,6 +152,37 @@ describe('Check proof of Merkle tree', function () {
       'eeeebb395347996b3ee7aa2e91f9b74c498c84440ec98bc1dac97fa8a3aac38c',
       'fc44dbdc3cf6adbe4b75937c3cca9d632abaf53d8326fe8a8943964a25cf2e1e',
       'a90939b4eaefcaf740ca80a704efafa25230e4995eeb381e9410d7b07b1b140b'
+    ])
+  })
+
+  it('should return array of children of valid tree with hashes as values', function () {
+    const proof = {
+      left: {
+        left: {
+          val: '228ad47f29a1978a0e50b6dec64f530cd626501df07ec75ee7be8cb1e22a82bd'
+        },
+        right: {
+          val: '2e964f57ac702737a6d1d0d5ecc68a48ff64c3a32efffa4bfc476d960a7e678d'
+        }
+      },
+      right: {
+        left: {
+          val: '89f5c626f30f0e38dac16754432c6307f5593d00142e0ffd34f9d05b0539b1e7'
+        }
+      }
+    }
+    const rootHash = 'e6a4349d4c0f2e07c44f145cf765318ce14a0c869ca458e12bdae4724df853d4'
+    const elements = Exonum.merkleProof(
+      rootHash,
+      3,
+      proof,
+      [0, 3],
+      Exonum.Hash
+    )
+    expect(elements).to.deep.equal([
+      '228ad47f29a1978a0e50b6dec64f530cd626501df07ec75ee7be8cb1e22a82bd',
+      '2e964f57ac702737a6d1d0d5ecc68a48ff64c3a32efffa4bfc476d960a7e678d',
+      '89f5c626f30f0e38dac16754432c6307f5593d00142e0ffd34f9d05b0539b1e7'
     ])
   })
 
@@ -307,13 +341,12 @@ describe('Check proof of Merkle tree', function () {
   })
 
   it('should throw error when the tree with invalid value', function () {
-    const Type = Exonum.newType({
-      fields: [
-        { name: 'hash', type: Exonum.Hash }
-      ]
-    });
+    let Message = new Type('CustomMessage')
+    Message.add(new Field('name', 1, 'string'))
+    let customType = Exonum.newType(Message)
+    let values = [42, 'Hello world', [], new Date()]
 
-    [42, 'Hello world', [], new Date()].forEach(function (val) {
+    values.forEach(function (val) {
       const rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
       const count = 2
       const proofNode = {
@@ -322,25 +355,24 @@ describe('Check proof of Merkle tree', function () {
       }
       const range = [0, 2]
 
-      expect(() => Exonum.merkleProof(rootHash, count, proofNode, range, Type)).to.throw(Error)
+      expect(() => Exonum.merkleProof(rootHash, count, proofNode, range, customType)).to.throw(Error)
     })
   })
 
   it('should throw error when the tree with invalid value not corresponding to passed type', function () {
-    const Type = Exonum.newType({
-      fields: [
-        { name: 'hash', type: Exonum.Hash }
-      ]
-    })
+    let Message = new Type('CustomMessage')
+    Message.add(new Field('name', 1, 'string'))
+    let customType = Exonum.newType(Message)
+
     const rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
     const count = 2
     const proofNode = {
-      left: { val: { name: 'John' } },
+      left: { val: { name: 1 } },
       right: 'b267fa0930dede7557b805fe643a3ce8ebe4434e366924df1d622785365cf0fc'
     }
     const range = [0, 2]
 
-    expect(() => Exonum.merkleProof(rootHash, count, proofNode, range, Type)).to.throw(TypeError)
+    expect(() => Exonum.merkleProof(rootHash, count, proofNode, range, customType)).to.throw(TypeError)
   })
 
   it('should throw error when the tree with invalid array of 8-bit integers as value', function () {
