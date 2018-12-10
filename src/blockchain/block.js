@@ -14,14 +14,14 @@ import { hash, verifySignature } from '../crypto'
 export function verifyBlock (data, validators) {
   return new Promise(resolve => {
     const block = {
-      prevHash: { data: hexadecimalToUint8Array(data.block.prev_hash) },
-      txHash: { data: hexadecimalToUint8Array(data.block.tx_hash) },
-      stateHash: { data: hexadecimalToUint8Array(data.block.state_hash) }
+      prev_hash: { data: hexadecimalToUint8Array(data.block.prev_hash) },
+      tx_hash: { data: hexadecimalToUint8Array(data.block.tx_hash) },
+      state_hash: { data: hexadecimalToUint8Array(data.block.state_hash) }
     }
     let blockHash
 
     if (data.block.proposer_id !== 0) {
-      block.proposerId = data.block.proposer_id
+      block.proposer_id = data.block.proposer_id
     }
 
     if (data.block.height !== 0) {
@@ -29,7 +29,7 @@ export function verifyBlock (data, validators) {
     }
 
     if (data.block.tx_count !== 0) {
-      block.txCount = data.block.tx_count
+      block.tx_count = data.block.tx_count
     }
 
     const message = protocol.exonum.Block.create(block)
@@ -47,7 +47,7 @@ export function verifyBlock (data, validators) {
         throw new Error('Precommit height is not match with block height')
       }
 
-      if (uint8ArrayToHexadecimal(plain.blockHash.data) !== blockHash) {
+      if (uint8ArrayToHexadecimal(plain.block_hash.data) !== blockHash) {
         throw new Error('Precommit block hash is not match with calculated block hash')
       }
 

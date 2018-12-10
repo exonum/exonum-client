@@ -59,14 +59,15 @@
   },
   "scripts": {
     "test": "grunt test",
-    "proto": "pbjs -t static-module ./proto/protocol.proto -o ./proto/protocol.js",
+    "proto": "pbjs --keep-case -t static-module ./proto/protocol.proto -o ./proto/protocol.js",
+    "proto:test": "pbjs --keep-case -t static-module ./proto/protocol.proto ./test/sources/proto/cryptocurrency.proto -o ./test/sources/proto/cryptocurrency.js",
     "integration:build": "cargo build --manifest-path integration-tests/Cargo.toml",
     "integration": "mocha -r babel-register integration-tests/test.js",
     "preintegration:unix": "npm run integration:build && npm run postintegration:unix && cargo run --manifest-path integration-tests/Cargo.toml & sleep 10",
     "integration:unix": "mocha -r babel-register integration-tests/test.js",
     "postintegration:unix": "lsof -iTCP -sTCP:LISTEN -n -P 2>/dev/null | awk '{ if ($9 ~ /:8000$/) { print $2 } }' | xargs -r kill -KILL",
     "coveralls": "cross-env NODE_ENV=test nyc mocha ./test/sources/*.js && cat ./coverage/lcov.info | coveralls",
-    "prepare": "npm run proto && grunt compile",
+    "prepare": "npm run proto && npm run proto:test && grunt compile",
     "lint": "eslint ./src ./test",
     "lint:fix": "npm run lint -- --fix"
   },
