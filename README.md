@@ -339,7 +339,7 @@ let sendFunds = Exonum.newTransaction({
 | **author** | Author's public key as hexadecimal string. | `String` |
 | **service_id** | [Service ID][docs:architecture:serialization:service-id]. | `Number` |
 | **message_id** | [Message ID][docs:architecture:serialization:message-id]. | `Number` |
-| **fields** | List of fields. | `Array` |
+| **schema** | Protobuf data structure. | `Array` |
 | **signature** | Signature as hexadecimal string. *Optional.* | `String` |
 
 Field structure is identical to field structure of [custom data type](#define-data-type).
