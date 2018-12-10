@@ -319,15 +319,16 @@ Read more about [transactions][docs:architecture:transactions] in Exonum.
 An example of a transaction definition:
 
 ```javascript
+let Transaction = new Type('CustomMessage')
+Transaction.add(new Field('from', 1, 'string'))
+Transaction.add(new Field('to', 2, 'string'))
+Transaction.add(new Field('amount', 3, 'uint32'))
+
 let sendFunds = Exonum.newTransaction({
   author: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
   service_id: 130,
   message_id: 0,
-  fields: [
-    { name: 'from', type: Exonum.Hash },
-    { name: 'to', type: Exonum.Hash },
-    { name: 'amount', type: Exonum.Uint64 }
-  ]
+  schema: Transaction
 })
 ```
 
@@ -357,9 +358,9 @@ const keyPair = {
 
 // Transaction data to be signed
 const data = {
-  from: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
-  to: 'f7ea8fd02cb41cc2cd45fd5adc89ca1bf605b2e31f796a3417ddbcd4a3634647',
-  amount: 1000
+  from: 'John',
+  to: 'Adam',
+  amount: 50
 }
 
 // Sign the data

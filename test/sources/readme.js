@@ -45,47 +45,47 @@ describe('Examples from README.md', function () {
     })
   })
 
-  // describe('Transaction section', function () {
-  //   const keyPair = {
-  //     publicKey: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
-  //     secretKey: '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2bfa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
-  //   }
-  //   const SendFunds = Exonum.newTransaction({
-  //     author: keyPair.publicKey,
-  //     service_id: 130,
-  //     message_id: 0,
-  //     fields: [
-  //       { name: 'from', type: Exonum.Hash },
-  //       { name: 'to', type: Exonum.Hash },
-  //       { name: 'amount', type: Exonum.Uint64 }
-  //     ]
-  //   })
-  //   const data = {
-  //     from: '6752be882314f5bbbc9a6af2ae634fc07038584a4a77510ea5eced45f54dc030',
-  //     to: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36',
-  //     amount: 50
-  //   }
-  //   const buffer = [250, 127, 158, 228, 58, 255, 112, 200, 121, 248, 15, 167, 253, 21, 149, 92, 24, 185, 140, 114, 49, 11, 9, 231, 129, 131, 16, 50, 80, 80, 207, 122, 0, 0, 130, 0, 0, 0, 103, 82, 190, 136, 35, 20, 245, 187, 188, 154, 106, 242, 174, 99, 79, 192, 112, 56, 88, 74, 74, 119, 81, 14, 165, 236, 237, 69, 245, 77, 192, 48, 245, 134, 74, 182, 165, 162, 25, 6, 102, 180, 124, 103, 107, 207, 21, 161, 242, 240, 119, 3, 197, 188, 175, 181, 116, 154, 167, 53, 206, 139, 124, 54, 50, 0, 0, 0, 0, 0, 0, 0]
-  //   const signature = '9c7d0e518eb547292b6326faf191dcdb2d97a48a0d0570dec955d3cc3f3bd1e6f6ca4a306675fecc2c144c2b636dfb2254c958b77cd27ea2d17fa1462f67080c'
-  //   const hash = 'a0bd9da74d8329abe6ab7131a4a941e0bf6e5e2dded1197c6f75bbca42c81544'
-  //
-  //   it('should serialize transaction', function () {
-  //     expect(SendFunds.serialize(data)).to.deep.equal(buffer)
-  //   })
-  //
-  //   it('should sign transaction', function () {
-  //     expect(SendFunds.sign(keyPair.secretKey, data)).to.equal(signature)
-  //   })
-  //
-  //   it('should verify transaction signature', function () {
-  //     expect(SendFunds.verifySignature(signature, keyPair.publicKey, data)).to.be.true
-  //   })
-  //
-  //   it('should get transaction hash', function () {
-  //     SendFunds.signature = signature
-  //     expect(SendFunds.hash(data)).to.equal(hash)
-  //   })
-  // })
+  describe('Transaction section', function () {
+    let Transaction = new Type('CustomMessage')
+    Transaction.add(new Field('from', 1, 'string'))
+    Transaction.add(new Field('to', 2, 'string'))
+    Transaction.add(new Field('amount', 3, 'uint32'))
+    const keyPair = {
+      publicKey: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
+      secretKey: '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2bfa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
+    }
+    const sendFunds = Exonum.newTransaction({
+      author: keyPair.publicKey,
+      service_id: 130,
+      message_id: 0,
+      schema: Transaction
+    })
+    const data = {
+      from: 'John',
+      to: 'Adam',
+      amount: 50
+    }
+    const buffer = [250, 127, 158, 228, 58, 255, 112, 200, 121, 248, 15, 167, 253, 21, 149, 92, 24, 185, 140, 114, 49, 11, 9, 231, 129, 131, 16, 50, 80, 80, 207, 122, 0, 0, 130, 0, 0, 0, 10, 4, 74, 111, 104, 110, 18, 4, 65, 100, 97, 109, 24, 50]
+    const signature = '3dcf7891f6c2dda876758818c11d50ffcdfec47f6b7145dd0a4a12705f51f21965b192f6cec9175e5df4fd978af95e005afe5c8218e234e7552b716e64708b0f'
+    const hash = 'b4791644c07054a60bcc8c40a6b87cc26160ac0da973fbe2ceb06e8f1da68f72'
+
+    it('should serialize transaction', function () {
+      expect(sendFunds.serialize(data)).to.deep.equal(buffer)
+    })
+
+    it('should sign transaction', function () {
+      expect(sendFunds.sign(keyPair.secretKey, data)).to.equal(signature)
+    })
+
+    it('should verify transaction signature', function () {
+      expect(sendFunds.verifySignature(signature, keyPair.publicKey, data)).to.be.true
+    })
+
+    it('should get transaction hash', function () {
+      sendFunds.signature = signature
+      expect(sendFunds.hash(data)).to.equal(hash)
+    })
+  })
 
   // describe('Merkle tree verifying example', function () {
   //   it('should verify a Merkle tree', function () {
