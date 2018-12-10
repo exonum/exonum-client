@@ -38,10 +38,6 @@ Library compatibility with Exonum core:
 
 * [Getting started](#getting-started)
 * [Data types](#data-types)
-  * [Define data type](#define-data-type)
-  * [Built-in types](#built-in-types)
-  * [Nested data types](#nested-data-types)
-  * [Arrays](#arrays)
 * [Serialization](#serialization)
 * [Hash](#hash)
 * [Signature](#signature)
@@ -100,7 +96,8 @@ let Exonum = require('exonum-client')
 
 ## Data types
 
-The definition of data structures is the main part of each application based on Exonum blockchain.
+Exonum use using [protobufjs][protobufjs] library to serialize structured data under the hood into [protobuf][protobuf]
+format.
 
 On the one hand, each transaction must be [signed](#sign-data) before sending into blockchain.
 Before the transaction is signed it is converted into byte array under the hood.
@@ -108,187 +105,23 @@ Before the transaction is signed it is converted into byte array under the hood.
 On the other hand, the data received from the blockchain should be converted into byte array under the hood
 before it will be possible to [verify proof of its existence](#cryptographic-proofs) using cryptographic algorithm.
 
-Converting data into a byte array is called [serialization](#serialization).
-To get the same serialization result on the client and on the [service][docs:architecture:services] side,
-there must be a strict serialization rules. This rules are formed by the data structure definition.
+Developer can both define data stuctures on the fly or use precompiled stubs wuth data structures.
 
-### Define data type
+Define protobuf structure using [protobufjs][protobufjs] library:
 
 ```javascript
-let type = Exonum.newType({
-  fields: [
-    { name: 'balance', type: Exonum.Uint32 },
-    { name: 'name', type: Exonum.String }
-  ]
-})
+let Message = new Type('CustomMessage')
+Message.add(new Field('balance', 1, 'uint32'))
+Message.add(new Field('name', 2, 'string'))
 ```
 
-**Exonum.newType** function requires a single argument of `Object` type with next structure:
-
-| Property | Description | Type |
-|---|---|---|
-| **fields** | List of fields. | `Array` |
-
-Field structure:
-
-| Field | Description | Type |
-|---|---|---|
-| **name** | Field name. | `String` |
-| **type** | Definition of the field type. | [Built-in type](#built-in-types), [array](#arrays) or [custom data type](#nested-data-types) defined by the developer. |
-
-### Built-in types
-
-There are several primitive types are built it into the library.
-These types must be used when constructing custom data types.
-
-| Name | Description | Type |
-|---|---|---|
-| **Int8** | Number in a range from `-128` to `127`. | `Number` |
-| **Int16** | Number in a range from `-32768` to `32767`. | `Number` |
-| **Int32** | Number in a range from `-2147483648` to `2147483647`. | `Number` |
-| **Int64** | Number in a range from `-9223372036854775808` to `9223372036854775807`. | `Number` or `String`\* |
-| **Uint8** | Number in a range from `0` to `255`. | `Number` |
-| **Uint16** | Number in a range from `0` to `65535`. | `Number` |
-| **Uint32** | Number in a range from `0` to `4294967295`. | `Number` |
-| **Uint64** | Number in a range from `0` to `18446744073709551615`. | `Number` or `String`\* |
-| **Float32** | Floating point number in a range from `-3.40282347e+38f32` to `3.40282347e+38f32`. | `Number` or `String`\* |
-| **Float64** | Floating point number in a range from `-1.7976931348623157e+308f64` to `1.7976931348623157e+308f64`. | `Number` or `String`\* |
-| **Decimal** | Decimal fixed point `79228162514264337593543950336 * 10^-28` to `79228162514264337593543950336`. | `String`\* |
-| **String** | A string of variable length consisting of UTF-8 characters. | `String` |
-| **Hash** | Hexadecimal string. | `String` |
-| **PublicKey** | Hexadecimal string. | `String` |
-| **Digest** | Hexadecimal string. | `String` |
-| **Uuid** | Hexadecimal string. | `String` |
-| **Bool** | Value of boolean type. | `Boolean` |
-
-*\*JavaScript limits minimum and maximum integer number.
-Minimum safe integer in JavaScript is `-(2^53-1)` which is equal to `-9007199254740991`.
-Maximum safe integer in JavaScript is `2^53-1` which is equal to `9007199254740991`.
-For unsafe numbers out of the safe range use `String` only.
-To determine either number is safe use built-in JavaScript function
-[Number.isSafeInteger()][is-safe-integer].*
-
-### Nested data types
-
-Custom data type defined by the developer can be a field of other custom data type.
-
-An example of a nested type:
+Define Exonum data type:
 
 ```javascript
-// Define a nested data type
-let date = Exonum.newType({
-  fields: [
-    { name: 'day', type: Exonum.Uint8 },
-    { name: 'month', type: Exonum.Uint8 },
-    { name: 'year', type: Exonum.Uint16 }
-  ]
-})
-
-// Define a data type
-let payment = Exonum.newType({
-  fields: [
-    { name: 'date', type: date },
-    { name: 'amount', type: Exonum.Uint64 }
-  ]
-})
+let type = Exonum.newType(Message)
 ```
 
-There is no limitation on the depth of nested data types.
-
-### Arrays
-
-The array in the light client library corresponds to the [vector structure][vector-structure]
-in the Rust language.
-
-**Exonum.newArray** function requires a single argument of `Object` type with next structure:
-
-| Property | Description | Type |
-|---|---|---|
-| **type** | Definition of the field type. | [Built-in type](#built-in-types), array or [custom data type](#nested-data-types) defined by the developer. |
-
-An example of an array type field:
-
-```javascript
-// Define an array
-let year = Exonum.newArray({
-  type: Exonum.Uint16
-})
-
-// Define a data type
-let type = Exonum.newType({
-  fields: [
-    { name: 'years', type: year }
-  ]
-})
-```
-
-An example of an array nested in an array:
-
-```javascript
-// Define an array
-let distance = Exonum.newArray({
-  type: Exonum.Uint32
-})
-
-// Define an array with child elements of an array type
-let distances = Exonum.newArray({
-  type: distance
-})
-
-// Define a data type
-let type = Exonum.newType({
-  fields: [
-    { name: 'measurements', type: distances }
-  ]
-})
-```
-
-## Serialization
-
-Each serializable data type has its (de)serialization rules, which govern how the instances of this type are
-(de)serialized from/to a binary buffer.
-Check [serialization guide][docs:architecture:serialization] for details.
-
-Signature of `serialize` function:
-
-```javascript
-type.serialize(data)
-```
-
-| Argument | Description | Type |
-|---|---|---|
-| **data** | Data to serialize. | `Object` |
-| **type** | Definition of the field type. | [Custom data type](#define-data-type) or [transaction](#define-transaction). |
-
-An example of serialization into a byte array:
-
-```javascript
-// Define a data type
-let user = Exonum.newType({
-  fields: [
-    { name: 'firstName', type: Exonum.String },
-    { name: 'lastName', type: Exonum.String },
-    { name: 'age', type: Exonum.Uint8 },
-    { name: 'balance', type: Exonum.Uint32 }
-  ]
-})
-
-// Data to be serialized
-const data = {
-  firstName: 'John',
-  lastName: 'Doe',
-  age: 28,
-  balance: 2500
-}
-
-
-// Serialize
-let buffer = user.serialize(data) // [21, 0, 0, 0, 4, 0, 0, 0, 25, 0, 0, 0, 3, 0, 0, 0, 28, 196, 9, 0, 0, 74, 111, 104, 110, 68, 111, 101]
-```
-
-The value of the `buffer` array:
-
-![Serialization example](img/serialization.png)
+**Exonum.newType** function requires a single argument of `protobuf.Type` type with next structure.
 
 ## Hash
 
@@ -313,26 +146,22 @@ type.hash(data)
 An example of hash calculation:
 
 ```javascript
+// Define a data structure
+let Message = new Type('CustomMessage')
+Message.add(new Field('balance', 1, 'uint32'))
+Message.add(new Field('name', 2, 'string'))
+
 // Define a data type
-let user = Exonum.newType({
-  fields: [
-    { name: 'firstName', type: Exonum.String },
-    { name: 'lastName', type: Exonum.String },
-    { name: 'age', type: Exonum.Uint8 },
-    { name: 'balance', type: Exonum.Uint32 }
-  ]
-})
+const User = Exonum.newType(Message)
 
 // Data that has been hashed
 const data = {
-  firstName: 'John',
-  lastName: 'Doe',
-  age: 28,
-  balance: 2500
+  balance: 100,
+  name: 'John Doe'
 }
 
 // Get a hash
-let hash = user.hash(data) // 1e53d91704b4b6adcbea13d2f57f41cfbdee8f47225e99bb1ff25d85474185af
+let hash = User.hash(data) // 9786347be1ab7e8f3d68a49ef8a995a4decb31103c53565a108170dec4c1c2fa
 ```
 
 It is also possible to get a hash from byte array:
@@ -348,9 +177,9 @@ Exonum.hash(buffer)
 An example of byte array hash calculation:
 
 ```javascript
-const arr = [132, 0, 0, 5, 89, 64, 0, 7]
+const arr = [8, 100, 18, 8, 74, 111, 104, 110, 32, 68, 111, 101]
 
-let hash = Exonum.hash(arr) // 9518aeb60d386ae4b4ecc64e1a464affc052e4c3950c58e32478c0caa9e414db
+let hash = Exonum.hash(arr) // 9786347be1ab7e8f3d68a49ef8a995a4decb31103c53565a108170dec4c1c2fa
 ```
 
 ## Signature
@@ -392,22 +221,18 @@ The `sign` function returns value as hexadecimal `String`.
 An example of data signing:
 
 ```javascript
-// Define a data type
-let user = Exonum.newType({
-  fields: [
-    { name: 'firstName', type: Exonum.String },
-    { name: 'lastName', type: Exonum.String },
-    { name: 'age', type: Exonum.Uint8 },
-    { name: 'balance', type: Exonum.Uint32 }
-  ]
-})
+// Define a data structure
+let Message = new Type('CustomMessage')
+Message.add(new Field('balance', 1, 'uint32'))
+Message.add(new Field('name', 2, 'string'))
 
-// Data to be signed
+// Define a data type
+const User = Exonum.newType(Message)
+
+// Data that has been hashed
 const data = {
-  firstName: 'John',
-  lastName: 'Doe',
-  age: 28,
-  balance: 2500
+  balance: 100,
+  name: 'John Doe'
 }
 
 // Define a signing key pair
@@ -418,7 +243,7 @@ const keyPair = {
 }
 
 // Sign the data
-let signature = Exonum.sign(keyPair.secretKey, data, user)
+let signature = Exonum.sign(keyPair.secretKey, data, User)
 ```
 
 ### Verify signature
@@ -447,22 +272,18 @@ The `verifySignature` function returns value of `Boolean` type.
 An example of signature verification:
 
 ```javascript
-// Define a data type
-let user = Exonum.newType({
-  fields: [
-    { name: 'firstName', type: Exonum.String },
-    { name: 'lastName', type: Exonum.String },
-    { name: 'age', type: Exonum.Uint8 },
-    { name: 'balance', type: Exonum.Uint32 }
-  ]
-})
+// Define a data structure
+let Message = new Type('CustomMessage')
+Message.add(new Field('balance', 1, 'uint32'))
+Message.add(new Field('name', 2, 'string'))
 
-// Data that has been signed
+// Define a data type
+const User = Exonum.newType(Message)
+
+// Data that has been hashed
 const data = {
-  firstName: 'John',
-  lastName: 'Doe',
-  age: 28,
-  balance: 2500
+  balance: 100,
+  name: 'John Doe'
 }
 
 // Define a signing key pair
@@ -473,11 +294,11 @@ const keyPair = {
 }
 
 // Signature obtained upon signing using secret key
-const signature = '41884c5270631510357bb37e6bcbc8da61603b4bdb05a2c70fc11d6624792e07' +
- 'c99321f8cffac02bbf028398a4118801a2cf1750f5de84cc654f7bf0df71ec00'
+const signature = 'a4cf7c457e3f4d54ef0c87900e7c860d2faa17a8dccbaafa573a3a960cda3f66' +
+ '27911088138526d9d7e46feba471e6bc7b93262349a5ed18262cbc39c8a47b04'
 
 // Verify the signature
-let result = Exonum.verifySignature(signature, publicKey, data, user) // true
+let result = Exonum.verifySignature(signature, keyPair.publicKey, data, User) // true
 ```
 
 ## Transactions
@@ -844,3 +665,5 @@ Exonum Client is licensed under the Apache License (Version 2.0). See [LICENSE](
 [vector-structure]: https://doc.rust-lang.org/std/vec/struct.Vec.html
 [tweetnacl:key-pair]: https://github.com/dchest/tweetnacl-js#naclsignkeypair
 [tweetnacl:random-bytes]: https://github.com/dchest/tweetnacl-js#random-bytes-generation
+[protobuf]: https://developers.google.com/protocol-buffers/
+[protobufjs]: https://www.npmjs.com/package/protobufjs

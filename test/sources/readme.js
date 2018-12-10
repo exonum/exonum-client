@@ -1,37 +1,49 @@
 /* eslint-env node, mocha */
 /* eslint-disable no-unused-expressions */
 
+const $protobuf = require('protobufjs/light')
 const chai = require('chai')
-// const expect = chai.expect
+const expect = chai.expect
 const assert = chai.assert
 const Exonum = require('../../src')
 
+const Type = $protobuf.Type
+const Field = $protobuf.Field
+
 describe('Examples from README.md', function () {
-  // describe('Custom type section', function () {
-  //   const User = Exonum.newType({
-  //     fields: [
-  //       { name: 'name', type: Exonum.String },
-  //       { name: 'age', type: Exonum.Int8 }
-  //     ]
-  //   })
-  //   const data = {
-  //     name: 'Tom',
-  //     age: 34
-  //   }
-  //   const keyPair = {
-  //     publicKey: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
-  //     secretKey: '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2bfa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
-  //   }
-  //   const signature = 'c1db9a5f01ebdff27e02652a9aae5c9a4ac88787587dabceb9f471ae0b8e051b9632dfd26922f6abf24ff2d3275028fe286703d25ee7fe6b1711e89af4a7d307'
-  //
-  //   it('should sign custom type', function () {
-  //     expect(Exonum.sign(keyPair.secretKey, data, User)).to.equal(signature)
-  //   })
-  //
-  //   it('should verify custom type signature', function () {
-  //     expect(Exonum.verifySignature(signature, keyPair.publicKey, data, User)).to.be.true
-  //   })
-  // })
+  describe('Custom type section', function () {
+    let Message = new Type('CustomMessage')
+    Message.add(new Field('balance', 1, 'uint32'))
+    Message.add(new Field('name', 2, 'string'))
+    const User = Exonum.newType(Message)
+    const data = {
+      balance: 100,
+      name: 'John Doe'
+    }
+    const keyPair = {
+      publicKey: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
+      secretKey: '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2bfa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
+    }
+    const hash = '9786347be1ab7e8f3d68a49ef8a995a4decb31103c53565a108170dec4c1c2fa'
+    const buffer = [8, 100, 18, 8, 74, 111, 104, 110, 32, 68, 111, 101]
+    const signature = 'a4cf7c457e3f4d54ef0c87900e7c860d2faa17a8dccbaafa573a3a960cda3f6627911088138526d9d7e46feba471e6bc7b93262349a5ed18262cbc39c8a47b04'
+
+    it('should get hash of custom type', function () {
+      expect(Exonum.hash(data, User)).to.equal(hash)
+    })
+
+    it('should get hash of byte array', function () {
+      expect(Exonum.hash(buffer)).to.equal(hash)
+    })
+
+    it('should sign custom type', function () {
+      expect(Exonum.sign(keyPair.secretKey, data, User)).to.equal(signature)
+    })
+
+    it('should verify custom type signature', function () {
+      expect(Exonum.verifySignature(signature, keyPair.publicKey, data, User)).to.be.true
+    })
+  })
 
   // describe('Transaction section', function () {
   //   const keyPair = {
