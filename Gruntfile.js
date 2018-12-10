@@ -69,7 +69,7 @@ module.exports = function (grunt) {
           './test/sources/merkle-proof.js',
           './test/sources/cryptography.js',
           './test/sources/protobuf-message.js',
-          // './test/sources/readme.js',
+          './test/sources/readme.js',
           './test/sources/types.js'
         ]
       },
@@ -85,7 +85,7 @@ module.exports = function (grunt) {
           './test/sources/merkle--proof.js',
           './test/sources/cryptography.js',
           './test/sources/protobuf-message.js',
-          // './test/sources/readme.js',
+          './test/sources/readme.js',
           './test/sources/types.js'
         ]
       }

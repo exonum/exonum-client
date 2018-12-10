@@ -684,7 +684,8 @@ The signature of each validator are stored in the precommits.
 
 The `merkleProof` method is used to validate block and its precommits.
 
-Returns `true` if verification is succeeded or `false` if it is failed.
+The `verifyBlock` function returns value of `Promise` type.
+Fulfilled state means that block is valid.
 
 | Argument | Description | Type |
 |---|---|---|
