@@ -62,32 +62,14 @@ module.exports = function (grunt) {
           reporter: 'spec',
           require: ['babel-register']
         },
-        src: [
-          './test/sources/blockchain.js',
-          './test/sources/convertors.js',
-          './test/sources/merkle-patricia-proof.js',
-          './test/sources/merkle-proof.js',
-          './test/sources/cryptography.js',
-          './test/sources/protobuf-message.js',
-          './test/sources/readme.js',
-          './test/sources/types.js'
-        ]
+        src: ['./test/**/*.js']
       },
       all: {
         options: {
           reporter: 'spec',
           require: ['babel-register']
         },
-        src: [
-          './test/sources/blockchain.js',
-          './test/sources/convertors.js',
-          './test/sources/merkle-patricia-proof.js',
-          './test/sources/merkle--proof.js',
-          './test/sources/cryptography.js',
-          './test/sources/protobuf-message.js',
-          './test/sources/readme.js',
-          './test/sources/types.js'
-        ]
+        src: ['./test/**/*.js']
       }
     }
   })
