@@ -67,9 +67,10 @@
     "integration:unix": "mocha -r babel-register integration-tests/test.js",
     "postintegration:unix": "lsof -iTCP -sTCP:LISTEN -n -P 2>/dev/null | awk '{ if ($9 ~ /:8000$/) { print $2 } }' | xargs -r kill -KILL",
     "coveralls": "cross-env NODE_ENV=test nyc mocha ./test/sources/*.js && cat ./coverage/lcov.info | coveralls",
-    "prepare": "npm run proto && npm run proto:test && grunt compile",
+    "prepare": "grunt compile",
     "lint": "eslint ./src ./test",
-    "lint:fix": "npm run lint -- --fix"
+    "lint:fix": "npm run lint -- --fix",
+    "postinstall": "npm run proto && npm run proto:test"
   },
   "repository": {
     "type": "git",

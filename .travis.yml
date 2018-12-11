@@ -14,7 +14,7 @@ cache:
   - "$HOME/.cargo"
 script:
 - grunt
-- node examples/map-proof.js
+#- node examples/map-proof.js
 jobs:
   include:
   - env: FEATURE=integration
