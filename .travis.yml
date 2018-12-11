@@ -10,7 +10,7 @@ env:
 cache:
   directories:
   - node_modules
-  - integration-tests/target
+#  - integration-tests/target
   - "$HOME/.cargo"
 script:
 - grunt
@@ -26,11 +26,11 @@ jobs:
     - npm --version
     install:
     - npm install
-    - npm run integration:build
-    script:
-    - npm run integration:unix
-    after_script:
-    - npm run postintegration:unix
+#    - npm run integration:build
+#    script:
+#    - npm run integration:unix
+#    after_script:
+#    - npm run postintegration:unix
 after_success:
 - npm run coveralls
 deploy:
