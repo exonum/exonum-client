@@ -25,7 +25,7 @@ Library compatibility with Exonum core:
 
 | JavaScript light client | Exonum core |
 |---|---|
-| 0.15.0 | unreleased |
+| 0.16.0 | 0.10.* |
 | 0.13.0 | 0.9.* |
 | 0.10.2 | 0.8.* |
 | 0.9.0 | 0.7.* |
@@ -38,7 +38,6 @@ Library compatibility with Exonum core:
 
 * [Getting started](#getting-started)
 * [Data types](#data-types)
-* [Serialization](#serialization)
 * [Hash](#hash)
 * [Signature](#signature)
   * [Sign data](#sign-data)

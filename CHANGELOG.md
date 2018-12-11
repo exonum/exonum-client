@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.16.0 (Dec 11, 2018)
+
+* Use protobuf serialization format instead of Exonum serialization format. ([#141][pr-141])
+* Rework `newType` method syntax. ([#141][pr-141])
+* Rework `newTransaction` method syntax. ([#141][pr-141])
+
 ## 0.15.0 (Oct 9, 2018)
 
 * Remove `cutSignature` field from `serialize` method. ([#139][pr-139])
@@ -162,6 +168,7 @@ matching [release 0.1][release-0.1] of the Exonum core repository.
 [release-0.7]: https://github.com/exonum/exonum/blob/master/CHANGELOG.md#07---2018-04-11
 [release-0.5]: https://github.com/exonum/exonum/blob/master/CHANGELOG.md#05---2018-01-30
 [release-0.1]: https://github.com/exonum/exonum/releases/tag/v0.1
+[pr-141]: https://github.com/exonum/exonum-client/pull/141
 [pr-139]: https://github.com/exonum/exonum-client/pull/139
 [pr-138]: https://github.com/exonum/exonum-client/pull/138
 [pr-137]: https://github.com/exonum/exonum-client/pull/137
