@@ -33,7 +33,7 @@ export function verifyBlock (data, validators) {
     }
 
     const message = protocol.exonum.Block.create(block)
-    const buffer = protocol.exonum.Block.encode(message).finish()
+    const buffer = new Uint8Array(protocol.exonum.Block.encode(message).finish())
 
     blockHash = hash(buffer)
 
