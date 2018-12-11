@@ -1,5 +1,3 @@
-import bigInt from 'big-integer'
-
 /**
  * @param {number} value
  * @param {number} min
@@ -14,43 +12,6 @@ export function validateInteger (value, min, max, from, length) {
   }
 
   return true
-}
-
-/**
- * @param {number|string} value
- * @param {number} min
- * @param {number} max
- * @param {number} from
- * @param {number} length
- * @returns {*}
- */
-export function validateBigInteger (value, min, max, from, length) {
-  if (!(typeof value === 'number' || typeof value === 'string')) {
-    return false
-  }
-
-  let val
-  try {
-    val = bigInt(value)
-  } catch (error) {
-    return false
-  }
-
-  if (val.lt(min) || val.gt(max)) {
-    return false
-  }
-
-  return true
-}
-
-/**
- * @param {number} value
- * @param {number} from
- * @param {number} length
- * @returns {boolean}
- */
-export function validateFloat (value, from, length) {
-  return typeof value === 'number' || typeof value === 'string'
 }
 
 /**

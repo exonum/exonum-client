@@ -11,7 +11,7 @@ let root = new Root()
 const expect = require('chai').expect
 const Exonum = require('../../src')
 
-describe('Check built-in types', function () {
+describe('Check protobuf serialization', function () {
   describe('Process Bytes', function () {
     it('should serialize data and return array of 8-bit integers when the value is valid for bytes', function () {
       let Type1Protobuf = new Type('Type1').add(new Field('name', 1, 'bytes'))
@@ -112,6 +112,80 @@ describe('Check built-in types', function () {
         serialized: [ 8, 0 ]
       }
       expect(IntType4.serialize(data.data)).to.deep.equal(data.serialized)
+    })
+  })
+})
+
+describe('Check old Exonum serialization', function () {
+  describe('Process Uint8', function () {
+    it('should serialize data and return array of 8-bit integers when the value is valid positive number', function () {
+      expect(Exonum.Uint8.serialize(230, [], 0)).to.deep.equal([230])
+    })
+
+    it('should throw error when the value is negative number', function () {
+      expect(() => Exonum.Uint8.serialize(-1))
+        .to.throw(TypeError, 'Uint8 of wrong type is passed: -1')
+    })
+
+    it('should throw error when the value is out of range', function () {
+      expect(() => Exonum.Uint8.serialize(256))
+        .to.throw(TypeError, 'Uint8 of wrong type is passed: 256')
+    })
+
+    it('should throw error when the value of invalid type', function () {
+      expect(() => Exonum.Uint8.serialize(undefined))
+        .to.throw(TypeError, 'Uint8 of wrong type is passed: undefined')
+
+      const values = [true, null, [], {}, new Date()]
+      values.forEach(function (value) {
+        expect(() => Exonum.Uint8.serialize(value))
+          .to.throw(TypeError, /Uint8 of wrong type is passed:/)
+      })
+    })
+  })
+
+  describe('Process Uint16', function () {
+    it('should serialize data and return array of 8-bit integers when the value is valid positive number', function () {
+      expect(Exonum.Uint16.serialize(60535, [], 0)).to.deep.equal([119, 236])
+    })
+
+    it('should throw error when the value is negative number', function () {
+      expect(() => Exonum.Uint16.serialize(-1))
+        .to.throw(TypeError, 'Uint16 of wrong type is passed: -1')
+    })
+
+    it('should throw error when the value is out of range', function () {
+      expect(() => Exonum.Uint16.serialize(65536))
+        .to.throw(TypeError, 'Uint16 of wrong type is passed: 65536')
+    })
+
+    it('should throw error when the value of invalid type', function () {
+      expect(() => Exonum.Uint16.serialize(undefined))
+        .to.throw(TypeError, 'Uint16 of wrong type is passed: undefined')
+
+      const values = [true, null, [], {}, new Date()]
+      values.forEach(function (value) {
+        expect(() => Exonum.Uint16.serialize(value))
+          .to.throw(TypeError, /Uint16 of wrong type is passed:/)
+      })
+    })
+  })
+
+  describe('Process Bool', function () {
+    it('should serialize data and return array of 8-bit integers when the value is valid boolean', function () {
+      expect(Exonum.Bool.serialize(true, [], 0)).to.deep.equal([1])
+      expect(Exonum.Bool.serialize(false, [], 0)).to.deep.equal([0])
+    })
+
+    it('should throw error when the value of invalid type', function () {
+      expect(() => Exonum.Bool.serialize(undefined))
+        .to.throw(TypeError, 'Wrong data type is passed as Boolean. Boolean is required')
+
+      const values = ['Hello world', null, 57, [], {}, new Date()]
+      values.forEach(function (value) {
+        expect(() => Exonum.Bool.serialize(value))
+          .to.throw(TypeError, 'Wrong data type is passed as Boolean. Boolean is required')
+      })
     })
   })
 })
