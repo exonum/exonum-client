@@ -444,6 +444,7 @@ describe('Send multiple transactions to the blockchain', function () {
   ]
 
   transactions.forEach(transaction => {
+    console.log(transaction)
     transaction.signature = transaction.type.sign(keyPair.secretKey, transaction.data)
   })
 
