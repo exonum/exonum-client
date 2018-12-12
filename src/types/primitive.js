@@ -17,7 +17,7 @@ function insertIntegerToByteArray (number, buffer, from, size) {
 
   for (let pos = 0; pos < size; pos++) {
     const divmod = value.divmod(256)
-    buffer[from + pos] = divmod.remainder.value
+    buffer[from + pos] = divmod.remainder.toJSNumber()
     value = divmod.quotient
   }
 
