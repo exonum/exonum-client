@@ -3,7 +3,7 @@
 An example of verifying a Merkle tree:
 
 ```javascript
-const rootHash = '0b0f1916e7bba03e1e9cd8adf004072ef2ff83e41b8646b79ea3ab342c325925'
+const rootHash = '1b896884ccc3777b961b7cc3b120d96a79861f19510ace2d36ec2d52648f5821'
 const count = 3
 const proofNode = {
   left: {
@@ -20,16 +20,14 @@ const proofNode = {
   right: '3b45eedc6952cbec6a8b769c3e50f96d1d059853bbedb7c26f8621243b308e9a'
 }
 const range = [0, 0]
-let user = Exonum.newType({
-  fields: [
-    { name: 'firstName', type: Exonum.String },
-    { name: 'lastName', type: Exonum.String },
-    { name: 'age', type: Exonum.Uint8 },
-    { name: 'balance', type: Exonum.Uint32 }
-  ]
-})
+let Schema = new Type('CustomMessage')
+Schema.add(new Field('firstName', 1, 'string'))
+Schema.add(new Field('lastName', 2, 'string'))
+Schema.add(new Field('age', 3, 'uint32'))
+Schema.add(new Field('balance', 4, 'uint32'))
+let User = Exonum.newType(Schema)
 
-let elements = Exonum.merkleProof(rootHash, count, proofNode, range, user) // [{firstName: 'John', lastName: 'Doe', age: 28, balance: 2500}]
+let elements = Exonum.merkleProof(rootHash, count, proofNode, range, User) // [{firstName: 'John', lastName: 'Doe', age: 28, balance: 2500}]
 ```
 
 An example of verifying a Merkle tree with elements passed as hashes:

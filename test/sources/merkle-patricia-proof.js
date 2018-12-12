@@ -9,6 +9,8 @@ const ProofPath = require('../../src/blockchain/ProofPath').default
 const Exonum = require('../../src')
 const { MapProof, MapProofError } = Exonum
 
+const proto = require('./proto/cryptocurrency.js')
+
 const samples = require('./data/map-proof.json')
 
 /**
@@ -107,34 +109,6 @@ describe('ProofPath', () => {
       invalidBuffers.forEach(buffer => {
         expect(() => new ProofPath(buffer)).to.throw(TypeError)
       })
-    })
-  })
-
-  describe('serialization', () => {
-    it('should serialize as a 34-byte buffer', () => {
-      const path = new ProofPath('10101')
-      const buffer = ProofPath.TYPE.serialize(path)
-
-      expect(buffer).to.have.lengthOf(34)
-      expect(buffer[0]).to.equal(0) // leaf marker
-      expect(buffer[1]).to.equal(0b00010101)
-      for (let i = 2; i < 33; i++) {
-        expect(buffer[i]).to.equal(0)
-      }
-      expect(buffer[33]).to.equal(5)
-    })
-
-    it('should serialize leaf paths correctly', () => {
-      const source = Uint8Array.from({ length: 32 }, () => Math.random() * 256)
-      const path = new ProofPath(source)
-      const buffer = ProofPath.TYPE.serialize(path)
-
-      expect(buffer).to.have.lengthOf(34)
-      expect(buffer[0]).to.equal(1)
-      for (let i = 1; i < 33; i++) {
-        expect(buffer[i]).to.equal(source[i - 1])
-      }
-      expect(buffer[33]).to.equal(0)
     })
   })
 
@@ -314,14 +288,7 @@ describe('ProofPath', () => {
 describe('MapProof', () => {
   const PublicKey = Exonum.PublicKey
 
-  const Wallet = Exonum.newType({
-    fields: [
-      { name: 'pub_key', type: Exonum.PublicKey },
-      { name: 'balance', type: Exonum.Uint64 },
-      { name: 'history_len', type: Exonum.Uint64 },
-      { name: 'history_hash', type: Exonum.Hash }
-    ]
-  })
+  const Wallet = Exonum.newType(proto.exonum.examples.cryptocurrency_advanced.Wallet)
 
   describe('type checks', () => {
     it('should fail on missing key and value type', () => {
@@ -353,7 +320,7 @@ describe('MapProof', () => {
           { missing: 100 }
         ]
       }
-      expect(() => new MapProof(json, Exonum.Uint32, Wallet)).to.throw('key type')
+      expect(() => new MapProof(json, Exonum.Uint16, Wallet)).to.throw('key type')
     })
   })
 
@@ -495,18 +462,18 @@ describe('MapProof', () => {
           { path: '001', hash: '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011' }
         ]
       }
-      expect(() => new MapProof(json, PublicKey, Exonum.Uint64))
+      expect(() => new MapProof(json, PublicKey, Exonum.Uint16))
         .to.throw('path(0) is a prefix of path(001)')
 
       json = {
         entries: [
-          { key: '3434343434343434343434343434343434343434343434343434343434343434', value: '10000' }
+          { key: '3434343434343434343434343434343434343434343434343434343434343434', value: 10000 }
         ],
         proof: [
           { path: '001', hash: '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011' }
         ]
       }
-      expect(() => new MapProof(json, PublicKey, Exonum.Uint64))
+      expect(() => new MapProof(json, PublicKey, Exonum.Uint16))
         .to.throw('path(001) is a prefix of path(00101100')
 
       json = {
@@ -517,7 +484,7 @@ describe('MapProof', () => {
           { path: '001', hash: '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011' }
         ]
       }
-      expect(() => new MapProof(json, PublicKey, Exonum.Uint64))
+      expect(() => new MapProof(json, PublicKey, Exonum.Uint16))
         .to.throw('path(001) is a prefix of path(00101100')
     })
 
@@ -529,7 +496,7 @@ describe('MapProof', () => {
           { path: '001', hash: '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4012' }
         ]
       }
-      expect(() => new MapProof(json, PublicKey, Exonum.Uint64))
+      expect(() => new MapProof(json, PublicKey, Exonum.Uint16))
         .to.throw('duplicate path(001)')
 
       json = {
@@ -537,12 +504,12 @@ describe('MapProof', () => {
           { missing: '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011' },
           {
             key: '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011',
-            value: '123'
+            value: 123
           }
         ],
         proof: []
       }
-      expect(() => new MapProof(json, PublicKey, Exonum.Uint64))
+      expect(() => new MapProof(json, PublicKey, Exonum.Uint16))
         .to.throw('duplicate path(00101100')
 
       const path = Exonum.hexadecimalToBinaryString(json.entries[0].missing)
@@ -554,7 +521,7 @@ describe('MapProof', () => {
           { path, hash: '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011' }
         ]
       }
-      expect(() => new MapProof(json, PublicKey, Exonum.Uint64))
+      expect(() => new MapProof(json, PublicKey, Exonum.Uint16))
         .to.throw('duplicate path(00101100')
     })
 
@@ -566,7 +533,7 @@ describe('MapProof', () => {
           { path: '0', hash: '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011' }
         ]
       }
-      expect(() => new MapProof(json, PublicKey, Exonum.Uint64))
+      expect(() => new MapProof(json, PublicKey, Exonum.Uint16))
         .to.throw('invalid path ordering')
     })
   })
@@ -576,7 +543,7 @@ describe('MapProof', () => {
       const proof = new MapProof({
         entries: [],
         proof: []
-      }, PublicKey, Exonum.Uint64)
+      }, PublicKey, Exonum.Uint16)
 
       const expHash = '0000000000000000000000000000000000000000000000000000000000000000'
       expect(proof.merkleRoot).to.equal(expHash)
@@ -586,16 +553,16 @@ describe('MapProof', () => {
       const key = '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011'
       const proof = new MapProof({
         entries: [
-          { key, value: '100' }
+          { key, value: 100 }
         ],
         proof: []
-      }, PublicKey, Exonum.Uint64)
+      }, PublicKey, Exonum.Uint16)
 
       const expHash = streamHash(
         Exonum.Bool.serialize(true, [], 0),
         Exonum.PublicKey.serialize(key, [], 0),
         Exonum.Uint8.serialize(0, [], 0),
-        Exonum.hash(Exonum.Uint64.serialize('100', [], 0))
+        Exonum.hash(Exonum.Uint16.serialize(100, [], 0))
       )
       expect(proof.merkleRoot).to.equal(expHash)
     })
@@ -610,7 +577,7 @@ describe('MapProof', () => {
             hash: key
           }
         ]
-      }, PublicKey, Exonum.Uint64)
+      }, PublicKey, Exonum.Uint16)
 
       const expHash = streamHash(
         Exonum.Bool.serialize(true, [], 0),
@@ -634,7 +601,7 @@ describe('MapProof', () => {
             hash: '0f00000000000000000000000000000000000000000000000000000000000000'
           }
         ]
-      }, PublicKey, Exonum.Uint64)
+      }, PublicKey, Exonum.Uint16)
 
       const expHash = streamHash(
         '0000000000000000000000000000000000000000000000000000000000000000',
@@ -671,8 +638,8 @@ describe('MapProof', () => {
             hash: (value) => value
           }
           break
-        case 'Uint64':
-          valueType = Exonum.Uint64
+        case 'Uint16':
+          valueType = Exonum.Uint16
           break
         default:
           throw new TypeError(`Unknown value type: ${expected.valueType}`)
@@ -694,10 +661,8 @@ describe('MapProof', () => {
   }
 
   testValidSample('valid-hash-value-short')
-  testValidSample('valid-uint64-value-short')
   testValidSample('valid-empty')
   testValidSample('valid-hash-value')
-  testValidSample('valid-uint64-value')
   testValidSample('valid-not-found')
   testValidSample('valid-single-wallet')
 })

@@ -1,267 +1,149 @@
 /* eslint-env node, mocha */
 /* eslint-disable no-unused-expressions */
 
-const expect = require('chai').expect
 const MockAdapter = require('axios-mock-adapter')
 const axios = require('axios')
+const chai = require('chai')
+const chaiAsPromised = require('chai-as-promised')
+const assert = chai.assert
+const expect = chai.expect
 const Exonum = require('../../src')
+const proto = require('./proto/cryptocurrency.js')
 
+chai.use(chaiAsPromised)
 const mock = new MockAdapter(axios)
 
 describe('Verify block of precommits', function () {
   const validators = [
-    '2bcd527a39ed80e7da4b767f402b6959cd74ce6980ce0a28c8b2e8a11c99b1f1',
-    '48dbd790d25e0705f2077b1406b4eb64ccf0dd33a8a2215bb840f26f05c6bc1e',
-    'c9decf2e0d150eec438242c37e628cc2eb5c45d6b18fb8b75c3f9be6529825a4',
-    'e6264b7f37f1fc2b4719d89a1360c25ad8b98e9723b485080382761ede1f3182'
+    '2006d14a17808b39d803087cb7c4346a692714e82cf5c4868fc2dbe736fe5e38'
   ]
 
-  it('should return true when valid block with precommits', function () {
+  it('should return fulfilled promise result when block with precommits is valid', function () {
     const data = require('./common_data/block-with-precommits/valid-block-with-precommits.json')
-    expect(Exonum.verifyBlock(data, validators)).to.be.true
+    return assert.isFulfilled(Exonum.verifyBlock(data, validators))
   })
 
-  it('should return false when height of block is not match', function () {
+  it('should throw error when precommit height is unexpected', function () {
     const data = {
-      block: {
-        height: '2',
-        prev_hash: '5107fe929f173a8fbe609ef907797daab959c6838eb26e074d80534c772e879a',
-        proposer_id: 3,
-        state_hash: '5f59a6b7810f2cde8a90a4b281c5722d0718cda07f1f321e531c5305ed3baf0e',
-        tx_count: 3,
-        tx_hash: '09224d3618942784363789a34e016f6f8e683f2ec96a5b9c51c23a02bca2ae1d'
+      'block': {
+        'proposer_id': 0,
+        'height': 44128,
+        'tx_count': 0,
+        'prev_hash': '1eaa862bc8a0d17bcd0d524cdc7bb53245daa702290e794c80180e20a7e261bd',
+        'tx_hash': '0000000000000000000000000000000000000000000000000000000000000000',
+        'state_hash': '6a445788116c7c95417de326720bb1a9e56f01d2fe72315b4879b58be905bd02'
       },
-      precommits: [
-        {
-          payload: {
-            block_hash: '7de0d426f0f287849f89e5758015aca00f2e85eda28d2c38581519e0f1de8105',
-            height: '4',
-            propose_hash: 'e000ec445f25b61d2ac9d38882cffcd59aa02c08a30b2173c5526b89dccd1fcd',
-            round: 1,
-            time: {
-              nanos: 336073000,
-              secs: '1537799426'
-            },
-            validator: 3
-          },
-          message: 'e6264b7f37f1fc2b4719d89a1360c25ad8b98e9723b485080382761ede1f318201000300020000000000000001000000e000ec445f25b61d2ac9d38882cffcd59aa02c08a30b2173c5526b89dccd1fcd7de0d426f0f287849f89e5758015aca00f2e85eda28d2c38581519e0f1de810502f5a85b00000000281108142da1ea5a2eb4b058a37a69ffb721b7f16c319a4fa1fd34c29efc9bedec454382f9c606a6574349d65be17154465eeb68c4558ca5a1e68a5cc8537aaf81ed780e'
-        }
+      'precommits': [
+        '2006d14a17808b39d803087cb7c4346a692714e82cf5c4868fc2dbe736fe5e38010010e1d802180122220a208524f6073155a6e7f18e0003eaa5cc254ab1345f7b2c51aa2a02da471640c2a52a220a20e2006e4a899f3686b8bb5b3f0274cb1fbf394f304a0bde08ee5ae2795d9f7a5f320c089aaba4e00510c897c8be026b49be4e61f47b5cd23264f63e7bf02e15bfa642aa558d0db8e9997699cb66b04721366a4c16a842c1e1733155d63c79f6b660e9cbfa10e6f939fc6cc2148104'
       ]
     }
-
-    expect(Exonum.verifyBlock(data, validators)).to.be.false
+    return assert.isRejected(Exonum.verifyBlock(data, validators), Error, 'Precommit height is not match with block height')
   })
 
-  it('should return false when hash of block is not match', function () {
+  it('should throw error when block hash is unexpected', function () {
     const data = {
-      block: {
-        height: '2',
-        prev_hash: '5107fe929f173a8fbe609ef907797daab959c6838eb26e074d80534c772e879a',
-        proposer_id: 3,
-        state_hash: '5f59a6b7810f2cde8a90a4b281c5722d0718cda07f1f321e531c5305ed3baf0e',
-        tx_count: 3,
-        tx_hash: '09224d3618942784363789a34e016f6f8e683f2ec96a5b9c51c23a02bca2ae1d'
+      'block': {
+        'proposer_id': 1,
+        'height': 44129,
+        'tx_count': 0,
+        'prev_hash': '1eaa862bc8a0d17bcd0d524cdc7bb53245daa702290e794c80180e20a7e261bd',
+        'tx_hash': '0000000000000000000000000000000000000000000000000000000000000000',
+        'state_hash': '6a445788116c7c95417de326720bb1a9e56f01d2fe72315b4879b58be905bd02'
       },
-      precommits: [
-        {
-          payload: {
-            block_hash: '8de0d426f0f287849f89e5758015aca00f2e85eda28d2c38581519e0f1de8105',
-            height: '2',
-            propose_hash: 'e000ec445f25b61d2ac9d38882cffcd59aa02c08a30b2173c5526b89dccd1fcd',
-            round: 1,
-            time: {
-              nanos: 336073000,
-              secs: '1537799426'
-            },
-            validator: 3
-          },
-          message: 'e6264b7f37f1fc2b4719d89a1360c25ad8b98e9723b485080382761ede1f318201000300020000000000000001000000e000ec445f25b61d2ac9d38882cffcd59aa02c08a30b2173c5526b89dccd1fcd7de0d426f0f287849f89e5758015aca00f2e85eda28d2c38581519e0f1de810502f5a85b00000000281108142da1ea5a2eb4b058a37a69ffb721b7f16c319a4fa1fd34c29efc9bedec454382f9c606a6574349d65be17154465eeb68c4558ca5a1e68a5cc8537aaf81ed780e'
-        }
+      'precommits': [
+        '2006d14a17808b39d803087cb7c4346a692714e82cf5c4868fc2dbe736fe5e38010010e1d802180122220a208524f6073155a6e7f18e0003eaa5cc254ab1345f7b2c51aa2a02da471640c2a52a220a20e2006e4a899f3686b8bb5b3f0274cb1fbf394f304a0bde08ee5ae2795d9f7a5f320c089aaba4e00510c897c8be026b49be4e61f47b5cd23264f63e7bf02e15bfa642aa558d0db8e9997699cb66b04721366a4c16a842c1e1733155d63c79f6b660e9cbfa10e6f939fc6cc2148104'
       ]
     }
-
-    expect(Exonum.verifyBlock(data, validators)).to.be.false
+    return assert.isRejected(Exonum.verifyBlock(data, validators), Error, 'Precommit block hash is not match with calculated block hash')
   })
 
-  it('should return false when public key of validator is not match', function () {
+  it('should throw error when public key is unexpected', function () {
     const data = {
-      block: {
-        height: '2',
-        prev_hash: '5107fe929f173a8fbe609ef907797daab959c6838eb26e074d80534c772e879a',
-        proposer_id: 3,
-        state_hash: '5f59a6b7810f2cde8a90a4b281c5722d0718cda07f1f321e531c5305ed3baf0e',
-        tx_count: 3,
-        tx_hash: '09224d3618942784363789a34e016f6f8e683f2ec96a5b9c51c23a02bca2ae1d'
+      'block': {
+        'proposer_id': 0,
+        'height': 44129,
+        'tx_count': 0,
+        'prev_hash': '1eaa862bc8a0d17bcd0d524cdc7bb53245daa702290e794c80180e20a7e261bd',
+        'tx_hash': '0000000000000000000000000000000000000000000000000000000000000000',
+        'state_hash': '6a445788116c7c95417de326720bb1a9e56f01d2fe72315b4879b58be905bd02'
       },
-      precommits: [
-        {
-          payload: {
-            block_hash: '7de0d426f0f287849f89e5758015aca00f2e85eda28d2c38581519e0f1de8105',
-            height: '2',
-            propose_hash: 'e000ec445f25b61d2ac9d38882cffcd59aa02c08a30b2173c5526b89dccd1fcd',
-            round: 1,
-            time: {
-              nanos: 336073000,
-              secs: '1537799426'
-            },
-            validator: 2
-          },
-          message: 'e6264b7f37f1fc2b4719d89a1360c25ad8b98e9723b485080382761ede1f318201000300020000000000000001000000e000ec445f25b61d2ac9d38882cffcd59aa02c08a30b2173c5526b89dccd1fcd7de0d426f0f287849f89e5758015aca00f2e85eda28d2c38581519e0f1de810502f5a85b00000000281108142da1ea5a2eb4b058a37a69ffb721b7f16c319a4fa1fd34c29efc9bedec454382f9c606a6574349d65be17154465eeb68c4558ca5a1e68a5cc8537aaf81ed780e'
-        }
+      'precommits': [
+        '2106d14a17808b39d803087cb7c4346a692714e82cf5c4868fc2dbe736fe5e38010010e1d802180122220a208524f6073155a6e7f18e0003eaa5cc254ab1345f7b2c51aa2a02da471640c2a52a220a20e2006e4a899f3686b8bb5b3f0274cb1fbf394f304a0bde08ee5ae2795d9f7a5f320c089aaba4e00510c897c8be026b49be4e61f47b5cd23264f63e7bf02e15bfa642aa558d0db8e9997699cb66b04721366a4c16a842c1e1733155d63c79f6b660e9cbfa10e6f939fc6cc2148104'
       ]
     }
-
-    expect(Exonum.verifyBlock(data, validators)).to.be.false
+    return assert.isRejected(Exonum.verifyBlock(data, validators), Error, 'Precommit public key is not match with buffer')
   })
 
-  it('should return false when payload is not match', function () {
+  it('should throw error when signature is unexpected', function () {
     const data = {
-      block: {
-        height: '2',
-        prev_hash: '5107fe929f173a8fbe609ef907797daab959c6838eb26e074d80534c772e879a',
-        proposer_id: 3,
-        state_hash: '5f59a6b7810f2cde8a90a4b281c5722d0718cda07f1f321e531c5305ed3baf0e',
-        tx_count: 3,
-        tx_hash: '09224d3618942784363789a34e016f6f8e683f2ec96a5b9c51c23a02bca2ae1d'
+      'block': {
+        'proposer_id': 0,
+        'height': 44129,
+        'tx_count': 0,
+        'prev_hash': '1eaa862bc8a0d17bcd0d524cdc7bb53245daa702290e794c80180e20a7e261bd',
+        'tx_hash': '0000000000000000000000000000000000000000000000000000000000000000',
+        'state_hash': '6a445788116c7c95417de326720bb1a9e56f01d2fe72315b4879b58be905bd02'
       },
-      precommits: [
-        {
-          payload: {
-            block_hash: '7de0d426f0f287849f89e5758015aca00f2e85eda28d2c38581519e0f1de8105',
-            height: '2',
-            propose_hash: 'e000ec445f25b61d2ac9d38882cffcd59aa02c08a30b2173c5526b89dccd1fcd',
-            round: 2,
-            time: {
-              nanos: 336073000,
-              secs: '1537799426'
-            },
-            validator: 3
-          },
-          message: 'e6264b7f37f1fc2b4719d89a1360c25ad8b98e9723b485080382761ede1f318201000300020000000000000001000000e000ec445f25b61d2ac9d38882cffcd59aa02c08a30b2173c5526b89dccd1fcd7de0d426f0f287849f89e5758015aca00f2e85eda28d2c38581519e0f1de810502f5a85b00000000281108142da1ea5a2eb4b058a37a69ffb721b7f16c319a4fa1fd34c29efc9bedec454382f9c606a6574349d65be17154465eeb68c4558ca5a1e68a5cc8537aaf81ed780e'
-        }
+      'precommits': [
+        '2006d14a17808b39d803087cb7c4346a692714e82cf5c4868fc2dbe736fe5e38010010e1d802180122220a208524f6073155a6e7f18e0003eaa5cc254ab1345f7b2c51aa2a02da471640c2a52a220a20e2006e4a899f3686b8bb5b3f0274cb1fbf394f304a0bde08ee5ae2795d9f7a5f320c089aaba4e00510c897c8be026b49be4e61f47b5cd23264f63e7bf02e15bfa642aa558d0db8e9997699cb66b04721366a4c16a842c1e1733155d63c79f6b660e9cbfa10e6f939fc6cc2148105'
       ]
     }
-
-    expect(Exonum.verifyBlock(data, validators)).to.be.false
-  })
-
-  it('should return false when signature is not match', function () {
-    const data = {
-      block: {
-        height: '2',
-        prev_hash: '5107fe929f173a8fbe609ef907797daab959c6838eb26e074d80534c772e879a',
-        proposer_id: 3,
-        state_hash: '5f59a6b7810f2cde8a90a4b281c5722d0718cda07f1f321e531c5305ed3baf0e',
-        tx_count: 3,
-        tx_hash: '09224d3618942784363789a34e016f6f8e683f2ec96a5b9c51c23a02bca2ae1d'
-      },
-      precommits: [
-        {
-          payload: {
-            block_hash: '7de0d426f0f287849f89e5758015aca00f2e85eda28d2c38581519e0f1de8105',
-            height: '2',
-            propose_hash: 'e000ec445f25b61d2ac9d38882cffcd59aa02c08a30b2173c5526b89dccd1fcd',
-            round: 1,
-            time: {
-              nanos: 336073000,
-              secs: '1537799426'
-            },
-            validator: 3
-          },
-          message: 'e6264b7f37f1fc2b4719d89a1360c25ad8b98e9723b485080382761ede1f318201000300020000000000000001000000e000ec445f25b61d2ac9d38882cffcd59aa02c08a30b2173c5526b89dccd1fcd7de0d426f0f287849f89e5758015aca00f2e85eda28d2c38581519e0f1de810502f5a85b00000000281108142da1ea5a2eb4b058a37a69ffb721b7f16c319a4fa1fd34c29efc9bedec454382f9c606a6574349d65be17154465eeb68c4558ca5a1e68a5cc8537aaf81ed780d'
-        }
-      ]
-    }
-
-    expect(Exonum.verifyBlock(data, validators)).to.be.false
+    return assert.isRejected(Exonum.verifyBlock(data, validators), Error, 'Precommit signature is wrong')
   })
 })
 
 describe('Verify table existence', function () {
   const proof = {
-    entries: [
+    'entries': [
       {
-        key: '775be457774803ff0221f0d18f407c9718a2f4c635445a691f6061bd5d651581',
-        value: '540c35c61837aa819986e137b6ae0091faa781419e8234802094ef77a2cdc293'
+        'key': '50c8ba3a6170f0a2fb6736ece8a603576ef6309a35e810911599bc6211b554a9',
+        'value': 'b6515d670579b2932bc4295398a631f2b57bf4690f8a61893b02a470649022a2'
       }
     ],
-    proof: [
+    'proof': [
       {
-        path: '0000101010101110110000001010110110011000000001100011001110110111000101011001101100100100000010011111001000011101110010101110111001111111101111101110100011111110000111011111101111110011011010100100110101110010101000101110101000100110011100100010101101100001',
-        hash: '0000000000000000000000000000000000000000000000000000000000000000'
+        'path': '0000101010101110110000001010110110011000000001100011001110110111000101011001101100100100000010011111001000011101110010101110111001111111101111101110100011111110000111011111101111110011011010100100110101110010101000101110101000100110011100100010101101100001',
+        'hash': '0000000000000000000000000000000000000000000000000000000000000000'
       },
       {
-        path: '1101',
-        hash: '9d57d84328c5fce997b0dd0cf806c114a37ebf32bd1b966154244548206acd27'
-      },
-      {
-        path: '1110011011010101101110110100111000001000001001000000111111111111011100101101000011111100001100101111010010000011110111001010001101011101001010111011010011010000000111101000101000101011011010100001101110110001000001001011110010101000010101010010010100001010',
-        hash: '0000000000000000000000000000000000000000000000000000000000000000'
-      },
-      {
-        path: '1111101111111100100001100001100100100000100101011111010011011011000000101110101010011000101101000010001110111100111010110001001001010111111011100101000100111011010010100011110110010010001100010001011110100000001001000000001100101000000111011000100010011000',
-        hash: '15ca2aa05d8f054125ee327ac35805c5a20d9305aae10880dc56373219126a47'
+        'path': '11',
+        'hash': '9a956751533579014822f8265925f7ed591a9af654e75b129f999e549f7e8ae6'
       }
     ]
   }
-  const serviceId = 130
+  const serviceId = 128
   const tableIndex = 0
-  const stateHash = 'dd09c5ec10fe7eb5d82aeabf362772440880394dfabb0a4c4cfbfdecc2d6bad7'
-  const rootHash = '540c35c61837aa819986e137b6ae0091faa781419e8234802094ef77a2cdc293'
+  const stateHash = '6a445788116c7c95417de326720bb1a9e56f01d2fe72315b4879b58be905bd02'
+  const rootHash = 'b6515d670579b2932bc4295398a631f2b57bf4690f8a61893b02a470649022a2'
 
   it('should return root hash when valid proof', function () {
     expect(Exonum.verifyTable(proof, stateHash, serviceId, tableIndex)).to.equals(rootHash)
   })
 
-  it('should throw error when wrong service ID is passed', function () {
-    const endpoints = [null, false, 'Hello world', new Date(), {}, []]
-
-    endpoints.forEach(function (value) {
-      expect(() => Exonum.verifyTable(proof, stateHash, value, tableIndex))
-        .to.throw(Error, `Uint16 of wrong type is passed: ${value}`)
-    })
-  })
-
-  it('should throw error when wrong table index is passed', function () {
-    const endpoints = [null, false, 'Hello world', new Date(), {}, []]
-
-    endpoints.forEach(function (value) {
-      expect(() => Exonum.verifyTable(proof, stateHash, serviceId, value))
-        .to.throw(Error, `Uint16 of wrong type is passed: ${value}`)
-    })
-  })
-
-  it('should throw error when wrong proof is passed', function () {
-    const endpoints = [null, false, 42, 'Hello world', new Date(), {}, []]
-
-    endpoints.forEach(function (value) {
-      expect(() => Exonum.verifyTable(value, stateHash, serviceId, tableIndex)).to.throw(Error)
-    })
+  it('should throw error when merkleRoot is unexpected', function () {
+    expect(() => Exonum.verifyTable(proof, '', serviceId, tableIndex))
+      .to.throw(Error, 'Table proof is corrupted')
   })
 })
 
 describe('Send transaction to the blockchain', function () {
   const keyPair = {
-    publicKey: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
-    secretKey: '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2bfa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
+    publicKey: '78cf8b5e5c020696319eb32a1408e6c65e7d97733d34528fbdce08438a0243e8',
+    secretKey: 'b5b3ccf6ca4475b7ff3d910d5ab31e4723098490a3e341dd9d2896b42ebc9f8978cf8b5e5c020696319eb32a1408e6c65e7d97733d34528fbdce08438a0243e8'
   }
   const sendFunds = Exonum.newTransaction({
     author: keyPair.publicKey,
-    service_id: 130,
+    service_id: 128,
     message_id: 0,
-    fields: [
-      { name: 'from', type: Exonum.Hash },
-      { name: 'to', type: Exonum.Hash },
-      { name: 'amount', type: Exonum.Uint64 }
-    ]
+    schema: proto.exonum.examples.cryptocurrency_advanced.Transfer
   })
   const data = {
-    from: keyPair.publicKey,
-    to: 'f7ea8fd02cb41cc2cd45fd5adc89ca1bf605b2e31f796a3417ddbcd4a3634647',
-    amount: 1000
+    to: { data: Exonum.hexadecimalToUint8Array('278663010ebe1136011618ad5be1b9d6f51edc5b6c6b51b5450ffc72f54a57df') },
+    amount: '25',
+    seed: '7743941227375415562'
   }
-  const txHash = 'b8a086ecda9973132ef6b2038c52c20e047f4a20950ed895f2652a4b500fe6bb'
-  const explorerBasePath = 'http://127.0.0.1:8200/api/explorer/v1/transactions'
+  const txHash = 'b4f78eab1d9b0b04a82f77f30ac0656e3a41765a4fccb513f8f6e4571a1f4003'
+  const explorerBasePath = '/api/explorer/v1/transactions'
   const transactionPath = `${explorerBasePath}?hash=${txHash}`
 
   describe('Valid transaction has been sent', function () {
@@ -528,41 +410,37 @@ describe('Send transaction to the blockchain', function () {
 
 describe('Send multiple transactions to the blockchain', function () {
   const keyPair = {
-    publicKey: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
-    secretKey: '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2bfa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
+    publicKey: '78cf8b5e5c020696319eb32a1408e6c65e7d97733d34528fbdce08438a0243e8',
+    secretKey: 'b5b3ccf6ca4475b7ff3d910d5ab31e4723098490a3e341dd9d2896b42ebc9f8978cf8b5e5c020696319eb32a1408e6c65e7d97733d34528fbdce08438a0243e8'
   }
   let sendFunds = Exonum.newTransaction({
     author: keyPair.publicKey,
-    service_id: 130,
+    service_id: 128,
     message_id: 0,
-    fields: [
-      { name: 'from', type: Exonum.Hash },
-      { name: 'to', type: Exonum.Hash },
-      { name: 'amount', type: Exonum.Uint64 }
-    ]
+    schema: proto.exonum.examples.cryptocurrency_advanced.Transfer
   })
-  const explorerBasePath = 'http://127.0.0.1:8200/api/explorer/v1/transactions'
+  const explorerBasePath = '/api/explorer/v1/transactions'
   const transactions = [
     {
       data: {
-        from: keyPair.publicKey,
-        to: '3adc89ca14f605b2e31f79663417ddbcd4a3634641f7ea8fd02cb41cc2cd45f0',
-        amount: 1000
+        to: { data: Exonum.hexadecimalToUint8Array('278663010ebe1136011618ad5be1b9d6f51edc5b6c6b51b5450ffc72f54a57df') },
+        amount: '20',
+        seed: '8452680960415703000'
       },
       type: sendFunds
     },
     {
       data: {
-        from: keyPair.publicKey,
-        to: '5fd5adc89ca1bf605b2e31f796a3417ddbcd4a3634647f7ea8fd02cb41cc2cd4',
-        amount: 250
+        to: { data: Exonum.hexadecimalToUint8Array('278663010ebe1136011618ad5be1b9d6f51edc5b6c6b51b5450ffc72f54a57df') },
+        amount: '25',
+        seed: '7743941227375415562'
       },
       type: sendFunds
     }
   ]
   const transactionHashes = [
-    'c570e68ea656b7c898f0a01385861798ade2d553650a69dbd7981c2709bae007',
-    'b4c52b190bd896abd9648924ce41877655b0b17a13a68d5b2a2d75790f06c30f'
+    'dcea2d6b9dd46ae6f4da47f1e3d79f5fa0348b3b156be714d2d9471d7f476482',
+    'b4f78eab1d9b0b04a82f77f30ac0656e3a41765a4fccb513f8f6e4571a1f4003'
   ]
 
   transactions.forEach(transaction => {

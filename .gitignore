@@ -13,4 +13,6 @@ node_modules
 npm-debug.log
 coverage
 dist
+/proto/**/*.js
+/test/sources/proto/**/*.js
 /lib/**/*

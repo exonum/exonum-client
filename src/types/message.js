@@ -1,7 +1,5 @@
 import { Uint8, Uint16 } from './primitive'
 import { Digest, PublicKey } from './hexadecimal'
-import { fieldIsFixed, newType } from './generic'
-import * as serialization from './serialization'
 import * as crypto from '../crypto'
 import { send } from '../blockchain/transport'
 
@@ -10,32 +8,36 @@ const TRANSACTION_CLASS = 0
 const TRANSACTION_TYPE = 0
 const PRECOMMIT_CLASS = 1
 const PRECOMMIT_TYPE = 0
+const intTypes = ['sint32', 'uint32', 'int32', 'sfixed32', 'fixed32', 'sint64', 'uint64', 'int64', 'sfixed64', 'fixed64']
 
 class Message {
   constructor (type) {
+    this.schema = type.schema
     this.author = type.author
     this.cls = type.cls
     this.type = type.type
+  }
 
-    type.fields.forEach(field => {
-      if (field.name === undefined) {
-        throw new TypeError('Name prop is missed.')
-      }
-      if (field.type === undefined) {
-        throw new TypeError('Type prop is missed.')
+  /**
+   * @param {Precommit | Transaction } schema
+   * @param {Object} data
+   * @param {Object} object
+   * @returns {Object}
+   */
+  fixZeroIntFields (schema, data, object) {
+    const keys = Object.keys(data)
+    keys.forEach(element => {
+      if (schema.fields && schema.fields[element] && schema.fields[element].name && schema.fields[element].type) {
+        if (schema.fields[element].type === 'message') {
+          object[element] = this.fixZeroIntFields(schema.fields[element], data[element], object)
+        }
+        if (!(intTypes.find((value) => { return value === schema.fields[element].type }) && data[element] === 0)) {
+          object[element] = data[element]
+        }
       }
     })
 
-    this.fields = type.fields
-  }
-
-  size () {
-    return this.fields.reduce((accumulator, field) => {
-      if (fieldIsFixed(field)) {
-        return accumulator + field.type.size()
-      }
-      return accumulator + serialization.POINTER_SIZE
-    }, 0)
+    return data
   }
 }
 
@@ -55,36 +57,38 @@ class Transaction extends Message {
   }
 
   /**
+   * Serialization header
+   * @returns {Array}
+   */
+  serializeHeader () {
+    let buffer = []
+    PublicKey.serialize(this.author, buffer, buffer.length)
+    Uint8.serialize(this.cls, buffer, buffer.length)
+    Uint8.serialize(this.type, buffer, buffer.length)
+    Uint16.serialize(this.service_id, buffer, buffer.length)
+    Uint16.serialize(this.message_id, buffer, buffer.length)
+    return buffer
+  }
+
+  /**
    * Serialize into array of 8-bit integers
    * @param {Object} data
    * @returns {Array}
    */
   serialize (data) {
-    const Head = newType({
-      fields: [
-        { name: 'author', type: PublicKey },
-        { name: 'cls', type: Uint8 },
-        { name: 'type', type: Uint8 },
-        { name: 'service_id', type: Uint16 },
-        { name: 'message_id', type: Uint16 }
-      ]
-    })
+    const object = this.fixZeroIntFields(this.schema, data, {})
+    const buffer = this.serializeHeader()
+    const body = this.schema.encode(object).finish()
 
-    const head = Head.serialize({
-      author: this.author,
-      cls: this.cls,
-      type: this.type,
-      service_id: this.service_id,
-      message_id: this.message_id
+    body.forEach(element => {
+      buffer.push(element)
     })
-
-    const body = serialization.serialize([], 0, data, this)
 
     if (this.signature) {
-      Digest.serialize(this.signature, body, body.length)
+      Digest.serialize(this.signature, buffer, buffer.length)
     }
 
-    return head.concat(body)
+    return buffer
   }
 
   /**
@@ -162,28 +166,32 @@ class Precommit extends Message {
   }
 
   /**
+   * Serialization header
+   * @returns {Array}
+   */
+  serializeHeader () {
+    let buffer = []
+    PublicKey.serialize(this.author, buffer, buffer.length)
+    Uint8.serialize(this.cls, buffer, buffer.length)
+    Uint8.serialize(this.type, buffer, buffer.length)
+    return buffer
+  }
+
+  /**
    * Serialize data into array of 8-bit integers
    * @param {Object} data
    * @returns {Array}
    */
   serialize (data) {
-    const Head = newType({
-      fields: [
-        { name: 'author', type: PublicKey },
-        { name: 'cls', type: Uint8 },
-        { name: 'type', type: Uint8 }
-      ]
+    const object = this.fixZeroIntFields(this.schema, data, {})
+    const buffer = this.serializeHeader()
+    const body = this.schema.encode(object).finish()
+
+    body.forEach(element => {
+      buffer.push(element)
     })
 
-    const head = Head.serialize({
-      author: this.author,
-      cls: this.cls,
-      type: this.type
-    })
-
-    const body = serialization.serialize([], 0, data, this, true)
-
-    return head.concat(body)
+    return buffer
   }
 }
 

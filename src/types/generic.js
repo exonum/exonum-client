@@ -1,33 +1,35 @@
-import * as serialization from './serialization'
 import * as crypto from '../crypto'
-import { String } from './primitive'
 
+const intTypes = ['sint32', 'uint32', 'int32', 'sfixed32', 'fixed32', 'sint64', 'uint64', 'int64', 'sfixed64', 'fixed64']
 /**
  * @constructor
- * @param {Object} type
+ * @param {Object} schema
  */
 class Type {
-  constructor (type) {
-    type.fields.forEach(field => {
-      if (field.name === undefined) {
-        throw new TypeError('Name prop is missed.')
-      }
-      if (field.type === undefined) {
-        throw new TypeError('Type prop is missed.')
+  constructor (schema) {
+    this.schema = schema
+  }
+
+  /**
+   * @param {Type} schema
+   * @param {Object} data
+   * @param {Object} object
+   * @returns {Object}
+   */
+  fixZeroIntFields (schema, data, object) {
+    const keys = Object.keys(data)
+    keys.forEach(element => {
+      if (schema.fields && schema.fields[element] && schema.fields[element].name && schema.fields[element].type) {
+        if (schema.fields[element].type === 'message') {
+          object[element] = this.fixZeroIntFields(schema.fields[element], data[element], object)
+        }
+        if (!(intTypes.find((value) => { return value === schema.fields[element].type }) && data[element] === 0)) {
+          object[element] = data[element]
+        }
       }
     })
 
-    this.fields = type.fields
-  }
-
-  size () {
-    return this.fields.reduce((accumulator, field) => {
-      if (fieldIsFixed(field)) {
-        return accumulator + field.type.size()
-      } else {
-        return accumulator + 8
-      }
-    }, 0)
+    return data
   }
 
   /**
@@ -36,7 +38,8 @@ class Type {
    * @returns {Array}
    */
   serialize (data) {
-    return serialization.serialize([], 0, data, this)
+    const object = this.fixZeroIntFields(this.schema, data, {})
+    return Array.from(this.schema.encode(object).finish())
   }
 
   /**
@@ -86,34 +89,4 @@ export function newType (type) {
  */
 export function isType (type) {
   return type instanceof Type
-}
-
-/**
- * Check if field is of fixed-length type. Fixed-length means field serialized (inserted) directly into buffer without pointer
- * @param {Object} field
- * @returns {boolean}
- */
-export function fieldIsFixed (field) {
-  if (isType(field.type)) {
-    return newTypeIsFixed(field.type)
-  }
-
-  return field.type !== String
-}
-
-/**
- * Check if all nested fields are of fixed-length type
- * @param {Object} type
- * @returns {boolean}
- */
-export function newTypeIsFixed (type) {
-  let areFixed = true
-
-  type.fields.forEach(field => {
-    if (!fieldIsFixed(field)) {
-      areFixed = false
-    }
-  })
-
-  return areFixed
 }

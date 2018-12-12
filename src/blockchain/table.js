@@ -1,14 +1,20 @@
+import { hash } from '../crypto'
 import { Uint16 } from '../types/primitive'
-import { newType } from '../types/generic'
 import { Hash } from '../types/hexadecimal'
 import { MapProof } from './merkle-patricia'
 
-const TableKey = newType({
-  fields: [
-    { name: 'service_id', type: Uint16 },
-    { name: 'table_index', type: Uint16 }
-  ]
-})
+/**
+ * Serialization table key
+ * @param {number} serviceId
+ * @param {number} tableIndex
+ * @returns {Array}
+ */
+function serializeKey (serviceId, tableIndex) {
+  let buffer = []
+  Uint16.serialize(serviceId, buffer, buffer.length)
+  Uint16.serialize(tableIndex, buffer, buffer.length)
+  return buffer
+}
 
 /**
  * Validate path from tree root to some table
@@ -19,11 +25,10 @@ const TableKey = newType({
  * @returns {string}
  */
 export function verifyTable (proof, stateHash, serviceId, tableIndex) {
+  const keyBuffer = serializeKey(serviceId, tableIndex)
+
   // calculate key of table in the root tree
-  const key = TableKey.hash({
-    service_id: serviceId,
-    table_index: tableIndex
-  })
+  const key = hash(keyBuffer)
 
   // validate proof of table existence in root tree
   const tableProof = new MapProof(proof, Hash, Hash)
