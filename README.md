@@ -25,7 +25,7 @@ Library compatibility with Exonum core:
 
 | JavaScript light client | Exonum core |
 |---|---|
-| 0.16.0 | 0.10.* |
+| 0.16.1 | 0.10.* |
 | 0.13.0 | 0.9.* |
 | 0.10.2 | 0.8.* |
 | 0.9.0 | 0.7.* |
