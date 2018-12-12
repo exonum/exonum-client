@@ -95,28 +95,25 @@ let Exonum = require('exonum-client')
 
 ## Data types
 
-Exonum use using [protobufjs][protobufjs] library to serialize structured data under the hood into [protobuf][protobuf]
-format.
+Exonum use [protobufjs][protobufjs] library to serialize structured data into [protobuf][protobuf] format.
 
-On the one hand, each transaction must be [signed](#sign-data) before sending into blockchain.
+Each transaction is [signed](#sign-data) before sending into blockchain.
 Before the transaction is signed it is converted into byte array under the hood.
 
-On the other hand, the data received from the blockchain should be converted into byte array under the hood
+The data received from the blockchain should be converted into byte array under the hood
 before it will be possible to [verify proof of its existence](#cryptographic-proofs) using cryptographic algorithm.
 
 Developer can both define data stuctures on the fly or use precompiled stubs wuth data structures.
 
-Define protobuf structure using [protobufjs][protobufjs] library:
+To define protobuf structures use [protobufjs][protobufjs] library.
+
+Example:
 
 ```javascript
 let Message = new Type('CustomMessage')
 Message.add(new Field('balance', 1, 'uint32'))
 Message.add(new Field('name', 2, 'string'))
-```
 
-Define Exonum data type:
-
-```javascript
 let type = Exonum.newType(Message)
 ```
 

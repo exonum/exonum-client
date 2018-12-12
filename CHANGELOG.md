@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.16.0 (Dec 11, 2018)
+## 0.16.0 (Dec 12, 2018)
 
 * Use protobuf serialization format instead of Exonum serialization format. ([#141][pr-141])
 * Rework `newType` method syntax. ([#141][pr-141])

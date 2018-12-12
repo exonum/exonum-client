@@ -1,4 +1,8 @@
-import { binaryStringToUint8Array, uint8ArrayToHexadecimal, hexadecimalToBinaryString } from '../types/convert'
+import {
+  binaryStringToUint8Array,
+  uint8ArrayToHexadecimal,
+  hexadecimalToBinaryString
+} from '../types/convert'
 
 const BIT_LENGTH = 256
 
