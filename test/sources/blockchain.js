@@ -8,7 +8,7 @@ const chaiAsPromised = require('chai-as-promised')
 const assert = chai.assert
 const expect = chai.expect
 const Exonum = require('../../src')
-const proto = require('./proto/cryptocurrency.js')
+const proto = require('./proto/stubs')
 
 chai.use(chaiAsPromised)
 const mock = new MockAdapter(axios)

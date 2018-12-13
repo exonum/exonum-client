@@ -9,7 +9,7 @@ const ProofPath = require('../../src/blockchain/ProofPath').default
 const Exonum = require('../../src')
 const { MapProof, MapProofError } = Exonum
 
-const proto = require('./proto/cryptocurrency.js')
+const proto = require('./proto/stubs')
 
 const samples = require('./data/map-proof.json')
 
@@ -289,6 +289,7 @@ describe('MapProof', () => {
   const PublicKey = Exonum.PublicKey
 
   const Wallet = Exonum.newType(proto.exonum.examples.cryptocurrency_advanced.Wallet)
+  const TimestampEntry = Exonum.newType(proto.exonum.examples.timestamping.TimestampEntry)
 
   describe('type checks', () => {
     it('should fail on missing key and value type', () => {
@@ -633,6 +634,9 @@ describe('MapProof', () => {
         case 'Wallet':
           valueType = Wallet
           break
+        case 'TimestampEntry':
+          valueType = TimestampEntry
+          break
         case 'UniqueHash':
           valueType = {
             hash: (value) => value
@@ -665,4 +669,6 @@ describe('MapProof', () => {
   testValidSample('valid-hash-value')
   testValidSample('valid-not-found')
   testValidSample('valid-single-wallet')
+  testValidSample('valid-timestamp')
+  testValidSample('valid-timestamp-empty-metadata')
 })
