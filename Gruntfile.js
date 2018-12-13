@@ -62,7 +62,7 @@ module.exports = function (grunt) {
           reporter: 'spec',
           require: ['babel-register']
         },
-        src: ['./test/sources/protobuf-message.js']
+        src: ['./test/sources/**/*.js']
       },
       all: {
         options: {

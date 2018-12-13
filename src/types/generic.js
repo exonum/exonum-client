@@ -17,6 +17,7 @@ class Type {
    */
   serialize (data) {
     const object = cleanZeroValuedFields(data, {})
+
     return Array.from(this.schema.encode(object).finish())
   }
 

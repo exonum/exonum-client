@@ -1,9 +1,23 @@
+function isStrictTypedArray (arr) {
+  return (
+    arr instanceof Int8Array ||
+    arr instanceof Int16Array ||
+    arr instanceof Int32Array ||
+    arr instanceof Uint8Array ||
+    arr instanceof Uint8ClampedArray ||
+    arr instanceof Uint16Array ||
+    arr instanceof Uint32Array ||
+    arr instanceof Float32Array ||
+    arr instanceof Float64Array
+  )
+}
+
 /**
  * Check if element is of type Object
  * @param obj
  * @returns {boolean}
  */
-export function isObject(obj) {
+export function isObject (obj) {
   return (typeof obj === 'object' && !Array.isArray(obj) && obj !== null && !(obj instanceof Date))
 }
 
@@ -11,11 +25,11 @@ export function isObject(obj) {
  * @param {Object} element
  * @returns {boolean}
  */
-export function verifyElement(element) {
+export function verifyElement (element) {
   switch (typeof element) {
-    case 'string' :
+    case 'string':
       return element !== '0' && element.length !== 0
-    case 'number' :
+    case 'number':
       return element !== 0
   }
   return true
@@ -26,14 +40,18 @@ export function verifyElement(element) {
  * @param {Object} object
  * @returns {Object}
  */
-export function cleanZeroValuedFields(data, object) {
+export function cleanZeroValuedFields (data, object) {
   const keys = Object.keys(data)
-  keys.forEach(element => {
-    if (element instanceof Object) {
-      object[element] = cleanZeroValuedFields(data[element], object)
+  keys.forEach(key => {
+    if (isStrictTypedArray(data[key]) || data[key] instanceof Array) {
+      object[key] = data[key]
     } else {
-      if (verifyElement(data[element])) {
-        object[element] = data[element]
+      if (typeof data[key] === 'object') {
+        object[key] = cleanZeroValuedFields(data[key], {})
+      } else {
+        if (verifyElement(data[key])) {
+          object[key] = data[key]
+        }
       }
     }
   })
