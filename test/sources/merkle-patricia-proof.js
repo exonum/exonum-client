@@ -670,4 +670,5 @@ describe('MapProof', () => {
   testValidSample('valid-not-found')
   testValidSample('valid-single-wallet')
   testValidSample('valid-timestamp')
+  testValidSample('valid-timestamp-empty-metadata')
 })
