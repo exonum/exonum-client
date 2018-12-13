@@ -4,7 +4,7 @@
 const $protobuf = require('protobufjs/light')
 const expect = require('chai').expect
 const Exonum = require('../../src')
-const proto = require('./proto/cryptocurrency.js')
+const proto = require('./proto/stubs')
 
 const Root = $protobuf.Root
 const Type = $protobuf.Type

@@ -2,13 +2,13 @@ import { Uint8, Uint16 } from './primitive'
 import { Digest, PublicKey } from './hexadecimal'
 import * as crypto from '../crypto'
 import { send } from '../blockchain/transport'
+import { cleanZeroValuedFields } from '../helpers'
 
 export const SIGNATURE_LENGTH = 64
 const TRANSACTION_CLASS = 0
 const TRANSACTION_TYPE = 0
 const PRECOMMIT_CLASS = 1
 const PRECOMMIT_TYPE = 0
-const intTypes = ['sint32', 'uint32', 'int32', 'sfixed32', 'fixed32', 'sint64', 'uint64', 'int64', 'sfixed64', 'fixed64']
 
 class Message {
   constructor (type) {
@@ -16,28 +16,6 @@ class Message {
     this.author = type.author
     this.cls = type.cls
     this.type = type.type
-  }
-
-  /**
-   * @param {Precommit | Transaction } schema
-   * @param {Object} data
-   * @param {Object} object
-   * @returns {Object}
-   */
-  fixZeroIntFields (schema, data, object) {
-    const keys = Object.keys(data)
-    keys.forEach(element => {
-      if (schema.fields && schema.fields[element] && schema.fields[element].name && schema.fields[element].type) {
-        if (schema.fields[element].type === 'message') {
-          object[element] = this.fixZeroIntFields(schema.fields[element], data[element], object)
-        }
-        if (!(intTypes.find((value) => { return value === schema.fields[element].type }) && data[element] === 0)) {
-          object[element] = data[element]
-        }
-      }
-    })
-
-    return data
   }
 }
 
@@ -76,7 +54,7 @@ class Transaction extends Message {
    * @returns {Array}
    */
   serialize (data) {
-    const object = this.fixZeroIntFields(this.schema, data, {})
+    const object = cleanZeroValuedFields(this.schema, data, {})
     const buffer = this.serializeHeader()
     const body = this.schema.encode(object).finish()
 
@@ -183,7 +161,7 @@ class Precommit extends Message {
    * @returns {Array}
    */
   serialize (data) {
-    const object = this.fixZeroIntFields(this.schema, data, {})
+    const object = cleanZeroValuedFields(this.schema, data, {})
     const buffer = this.serializeHeader()
     const body = this.schema.encode(object).finish()
 
