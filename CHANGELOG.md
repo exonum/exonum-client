@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.16.3 (Dec 13, 2018)
+
+* Fix issue with serialization of empty strings and zero-valued numbers. ([#145][pr-145])
+
 ## 0.16.2 (Dec 12, 2018)
 
 * Add proto stubs into npm package. ([#143][pr-143])
@@ -176,6 +180,7 @@ matching [release 0.1][release-0.1] of the Exonum core repository.
 [release-0.7]: https://github.com/exonum/exonum/blob/master/CHANGELOG.md#07---2018-04-11
 [release-0.5]: https://github.com/exonum/exonum/blob/master/CHANGELOG.md#05---2018-01-30
 [release-0.1]: https://github.com/exonum/exonum/releases/tag/v0.1
+[pr-145]: https://github.com/exonum/exonum-client/pull/145
 [pr-143]: https://github.com/exonum/exonum-client/pull/143
 [pr-142]: https://github.com/exonum/exonum-client/pull/142
 [pr-141]: https://github.com/exonum/exonum-client/pull/141
