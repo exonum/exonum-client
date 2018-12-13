@@ -73,6 +73,18 @@ describe('Check cryptography', function () {
       expect('d7923cc44dafaad4d89a1ed46bbb2390cfd0b2c9c5a18ba1ceb15955750ff455').to.equal(Exonum.hash(buffer))
     })
 
+    it('should serialize entity of newType with zero int', () => {
+      const Issue = Exonum.newType(proto.exonum.examples.cryptocurrency_advanced.Issue)
+      const data = {
+        amount: 0,
+        seed: 1
+      }
+
+      const buffer = Issue.serialize(data)
+
+      expect('27c24fcb8474773e2af799d0848495ff053272d33c432dc26277993df45c9276').to.equal(Exonum.hash(buffer))
+    })
+
     it('should return hash of data of newType type using built-in method', function () {
       const hash = CreateType.hash(CreateTypeData.data)
       expect(hash).to.equal(CreateTypeData.hash)
