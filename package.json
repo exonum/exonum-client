@@ -89,7 +89,11 @@
       "lcov"
     ],
     "sourceMap": false,
-    "instrument": false
+    "instrument": false,
+    "exclude": [
+      "proto/*.js",
+      "test/sources/proto/*.js"
+    ]
   },
   "homepage": "https://github.com/exonum/exonum-client#readme",
   "keywords": [
