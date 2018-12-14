@@ -15,7 +15,7 @@ script:
 - npm run proto
 - npm run proto:test
 - grunt
-#- node examples/map-proof.js
+- node examples/map-proof.js
 #jobs:
 #  include:
 #  - env: FEATURE=integration
