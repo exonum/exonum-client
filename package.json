@@ -91,7 +91,8 @@
     "sourceMap": false,
     "instrument": false,
     "exclude": [
-      "proto/*.js"
+      "proto/*.js",
+      "test/sources/proto/*.js"
     ]
   },
   "homepage": "https://github.com/exonum/exonum-client#readme",
