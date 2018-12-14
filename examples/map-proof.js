@@ -5,15 +5,15 @@
 
 const Exonum = require('..')
 const expect = require('chai').expect
+const $protobuf = require('protobufjs/light')
+const Type = $protobuf.Type
+const Field = $protobuf.Field
 
 // Declare the value type used in the proof.
-const Wallet = Exonum.newType({
-  fields: [
-    { name: 'pub_key', type: Exonum.PublicKey },
-    { name: 'name', type: Exonum.String },
-    { name: 'balance', type: Exonum.Uint64 }
-  ]
-})
+let Scheme = new Type('CustomMessage')
+Scheme.add(new Field('name', 1, 'string'))
+Scheme.add(new Field('balance', 2, 'uint64'))
+const Wallet = Exonum.newType(Scheme)
 
 // This proof JSON for 2 existing and 2 missing wallets is generated
 // with the help of the `/random` endpoint of the integration test server
@@ -27,9 +27,8 @@ let proof = {
     {
       key: 'd00d21c3d01cd84188f3ec92a84f8637c616edc535d80541af81baf3c0b527e2',
       value: {
-        balance: '13969599690876119175',
         name: 'd00d21c3',
-        pub_key: 'd00d21c3d01cd84188f3ec92a84f8637c616edc535d80541af81baf3c0b527e2'
+        balance: 0
       }
     },
     { missing: '569bb4cfc5130af3ad824b3e4d111e1c3b536597c42aa640fe0d3dda6a87445d' },
@@ -37,9 +36,8 @@ let proof = {
     {
       key: '6d9a46cf3476811b33f6a2bb5fab8d0bd0b494cf7dcab75910432ee5ea4dfaaf',
       value: {
-        balance: '10491468210891190018',
         name: '6d9a46cf',
-        pub_key: '6d9a46cf3476811b33f6a2bb5fab8d0bd0b494cf7dcab75910432ee5ea4dfaaf'
+        balance: 1000
       }
     }
   ],
@@ -76,4 +74,4 @@ for (let missingKey of proof.missingKeys) {
 // The Merkle root of the proof is usually propagated further to the trust anchor
 // (usually, a `state_hash` field in the block header). Here, we just compare
 // it to the reference value for simplicity.
-expect(proof.merkleRoot).to.equal('b3f833e0bb9a814e4cb5aeae6f0ef45f5dc43af26ff57e4500b713d7ea32dcec')
+expect(proof.merkleRoot).to.equal('3c8a4e51ccc5e91ad475d5bac1e4c58e72a34af4b8a47a7dbdcba1eac19d7418')
