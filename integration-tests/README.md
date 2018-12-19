@@ -12,7 +12,7 @@ with the help of [`rustup`][rustup]. If you have several toolchains installed,
 you need to set the nightly one as default; you can do this by executing
 
 ```shell
-rustup override nightly
+rustup override set nightly
 ```
 
 in the project root directory.
