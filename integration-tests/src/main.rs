@@ -14,12 +14,18 @@
 
 //! Rocket-powered web service implementing CRUD operations on a `ProofMapIndex`.
 
-#![feature(plugin, custom_derive, nll)]
-#![plugin(rocket_codegen)]
+#![feature(proc_macro_hygiene, decl_macro)]
 
-#[macro_use]
 extern crate exonum;
+#[macro_use]
+extern crate exonum_derive;
+extern crate hex;
+#[macro_use]
+extern crate failure;
+extern crate protobuf;
 extern crate rand;
+extern crate rand_xorshift;
+#[macro_use]
 extern crate rocket;
 extern crate rocket_contrib;
 extern crate serde;
@@ -27,25 +33,48 @@ extern crate serde;
 extern crate serde_derive;
 extern crate uuid;
 
-use exonum::{crypto::{self, Hash, PublicKey, Seed},
-             storage::{Database, MapProof, MemoryDB, ProofMapIndex}};
-use rand::{Rng, SeedableRng, XorShiftRng, seq::sample_slice_ref};
-use rocket::{State, config::{Config, Environment}, http::RawStr, request::FromParam,
-             response::status::BadRequest};
-use rocket_contrib::Json;
+use exonum::{
+    crypto::{gen_keypair_from_seed, Hash, PublicKey, Seed},
+    storage::{Database, MapProof, MemoryDB, ProofMapIndex},
+};
+use failure::Error;
+use rand::{seq::SliceRandom, RngCore, SeedableRng};
+use rand_xorshift::XorShiftRng;
+use rocket::{
+    config::{Config, Environment},
+    http::RawStr,
+    request::{Form, FromParam},
+    response::status::BadRequest,
+    State,
+};
+use rocket_contrib::json::Json;
+use uuid::Uuid;
 
-use std::str::FromStr;
-
-use uuid::{Uuid, UuidVersion};
+pub mod proto;
 
 const INDEX_NAME: &str = "wallets";
 
-encoding_struct! {
-    struct Wallet {
-        pub_key: &PublicKey,
-        name: &str,
-        balance: u64,
-        uniq_id: Uuid
+#[derive(Serialize, Deserialize, Clone, Debug, ProtobufConvert)]
+#[exonum(pb = "proto::Wallet")]
+pub struct Wallet {
+    /// Public key of the wallet owner.
+    pub pub_key: PublicKey,
+    /// Name of the wallet owner.
+    pub name: String,
+    /// Current balance.
+    pub balance: u64,
+    /// Unique ID
+    pub uniq_id: String,
+}
+
+impl Wallet {
+    fn new(pub_key: &PublicKey, name: &str, balance: u64, uniq_id: Uuid) -> Self {
+        Self {
+            pub_key: *pub_key,
+            name: name.to_owned(),
+            balance,
+            uniq_id: uniq_id.to_string(),
+        }
     }
 }
 
@@ -64,10 +93,12 @@ struct IndexInfo {
 struct PublicKeyParam(PublicKey);
 
 impl<'r> FromParam<'r> for PublicKeyParam {
-    type Error = <PublicKey as FromStr>::Err;
+    type Error = Error;
 
     fn from_param(param: &'r RawStr) -> Result<Self, Self::Error> {
-        <PublicKey as FromStr>::from_str(param).map(PublicKeyParam)
+        PublicKey::from_slice(&hex::decode(param).unwrap())
+            .map(PublicKeyParam)
+            .ok_or_else(|| format_err!("Couldn't create PublicKey"))
     }
 }
 
@@ -75,16 +106,19 @@ impl<'r> FromParam<'r> for PublicKeyParam {
 struct PublicKeyList(Vec<PublicKey>);
 
 impl<'r> FromParam<'r> for PublicKeyList {
-    type Error = <PublicKey as FromStr>::Err;
+    type Error = Error;
 
     fn from_param(param: &'r RawStr) -> Result<Self, Self::Error> {
         if param.is_empty() {
             return Ok(PublicKeyList(vec![]));
         }
 
-        let mut keys: Vec<PublicKey> = Vec::new();
+        let mut keys = Vec::new();
         for part in param.split(',') {
-            keys.push(PublicKey::from_str(part)?);
+            keys.push(
+                PublicKey::from_slice(&hex::decode(part).map_err(|e| format_err!("{}", e))?)
+                    .ok_or_else(|| format_err!("Couldn't create PublicKey"))?,
+            );
         }
         Ok(PublicKeyList(keys))
     }
@@ -115,12 +149,10 @@ fn create_wallet(db: State<MemoryDB>, wallet: Json<Wallet>) -> Json<IndexInfo> {
     let mut fork = db.fork();
     let info = {
         let mut index = ProofMapIndex::new(INDEX_NAME, &mut fork);
-        let pubkey = wallet.pub_key().clone();
-        index.put(&pubkey, wallet.into_inner());
-
-        IndexInfo {
-            size: index.iter().count(),
-        }
+        let pub_key = wallet.pub_key;
+        index.put(&pub_key, wallet.into_inner());
+        let size = index.iter().count();
+        IndexInfo { size }
     };
     db.merge(fork.into_patch()).unwrap();
     Json(info)
@@ -132,18 +164,16 @@ fn create_wallets(db: State<MemoryDB>, wallets: Json<Vec<Wallet>>) -> Json<Index
     let info = {
         let mut index = ProofMapIndex::new(INDEX_NAME, &mut fork);
         for wallet in wallets.into_inner() {
-            let pubkey = wallet.pub_key().clone();
-            index.put(&pubkey, wallet);
+            let pub_key = wallet.pub_key;
+            index.put(&pub_key, wallet);
         }
-
-        IndexInfo {
-            size: index.iter().count(),
-        }
+        let size = index.iter().count();
+        IndexInfo { size }
     };
     db.merge(fork.into_patch()).unwrap();
     Json(info)
 }
-
+//
 #[delete("/")]
 fn reset(db: State<MemoryDB>) {
     let mut fork = db.fork();
@@ -163,8 +193,8 @@ struct RandomParams {
     missing_keys: Option<usize>,
 }
 
-#[get("/random?<params>")]
-fn generate_proof(params: RandomParams) -> Result<Json<WalletProof>, BadRequest<String>> {
+#[get("/random?<params..>")]
+fn generate_proof(params: Form<RandomParams>) -> Result<Json<WalletProof>, BadRequest<String>> {
     let wallets_in_proof = params
         .wallets_in_proof
         .unwrap_or_else(|| params.wallets / 4);
@@ -174,37 +204,35 @@ fn generate_proof(params: RandomParams) -> Result<Json<WalletProof>, BadRequest<
         )));
     }
     let missing_keys = params.missing_keys.unwrap_or(wallets_in_proof);
-
-    let mut rng = XorShiftRng::from_seed([params.seed as u32, (params.seed >> 32) as u32, 0, 0]);
+    let mut rng = XorShiftRng::seed_from_u64(params.seed);
     let db = MemoryDB::new();
     let mut fork = db.fork();
     let mut index: ProofMapIndex<_, PublicKey, Wallet> = ProofMapIndex::new(INDEX_NAME, &mut fork);
 
-    let wallets: Vec<_> = (0..params.wallets)
+    let wallets = (0..params.wallets)
         .map(|_| {
             let mut seed = [0u8; 32];
             rng.fill_bytes(&mut seed);
-            let pubkey = crypto::gen_keypair_from_seed(&Seed::new(seed)).0;
-            let uuid = Uuid::new(UuidVersion::Random);
-
-            Wallet::new(&pubkey, &pubkey.to_string()[..8], rng.next_u64(), uuid.unwrap())
+            let (pub_key, _) = gen_keypair_from_seed(&Seed::new(seed));
+            let uuid = Uuid::new_v4();
+            Wallet::new(&pub_key, &pub_key.to_string()[..8], rng.next_u64(), uuid)
         })
-        .collect();
+        .collect::<Vec<_>>();
 
-    let mut wallet_keys: Vec<_> = sample_slice_ref(&mut rng, &wallets, wallets_in_proof)
-        .iter()
-        .map(|wallet| wallet.pub_key())
-        .cloned()
-        .collect();
+    let mut wallet_keys = wallets
+        .choose_multiple(&mut rng, wallets_in_proof)
+        .into_iter()
+        .map(|wallet| wallet.pub_key)
+        .collect::<Vec<_>>();
     let missing_keys = (0..missing_keys).map(|_| {
         let mut seed = [0u8; 32];
         rng.fill_bytes(&mut seed);
-        crypto::gen_keypair_from_seed(&Seed::new(seed)).0
+        gen_keypair_from_seed(&Seed::new(seed)).0
     });
     wallet_keys.extend(missing_keys);
 
     for wallet in wallets {
-        let key = *wallet.pub_key();
+        let key = wallet.pub_key;
         index.put(&key, wallet);
     }
 
@@ -222,7 +250,7 @@ fn config() -> Config {
 }
 
 fn main() {
-    rocket::custom(config(), false)
+    rocket::custom(config())
         .mount(
             "/",
             routes![
