@@ -6,22 +6,37 @@
 const exonum = require('../src')
 const uuid = require('uuid/v4')
 const fetch = require('node-fetch')
-const expect = require('chai')
-  .use(require('dirty-chai'))
-  .expect
+const chai = require('chai')
+const dirtyChai = require('dirty-chai')
+const deepEql = require('deep-eql')
+const proto = require('./src/proto/stubs')
 
-const { MapProof, PublicKey, newType } = exonum
+chai.use(dirtyChai)
+chai.use(deepEql)
+
+const { expect } = chai
+
+const { MapProof, PublicKey, newType, hexadecimalToUint8Array } = exonum
 
 const BASE_URL = 'http://localhost:8000'
 
-const Wallet = newType({
-  fields: [
-    { name: 'pub_key', type: PublicKey },
-    { name: 'name', type: exonum.String },
-    { name: 'balance', type: exonum.Uint64 },
-    { name: 'uniq_id', type: exonum.Uuid }
-  ]
-})
+const Wallet = newType(proto.exonum.client.integration.tests.Wallet)
+
+// TODO temp fix
+function convertPubKey(obj) {
+  for (var key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      if (key === 'pub_key') {
+        return obj[key] = {
+          data: Array.from(hexadecimalToUint8Array(obj[key]))
+        }
+      }
+      if (obj[key] instanceof Object) {
+        convertPubKey(obj[key])
+      }
+    }
+  }
+}
 
 /**
  * Client-side stub for the CRUD operations on a `ProofMapIndex<PublicKey, Wallet>`.
@@ -48,6 +63,9 @@ const service = {
   async getWallet (pubkey) {
     const response = await fetch(BASE_URL + '/' + pubkey)
     const json = await response.json()
+
+    convertPubKey(json.proof.entries[0]) // TODO temp fix
+
     const trustedRoot = json.trusted_root
     const proof = new MapProof(json.proof, PublicKey, Wallet)
 
@@ -76,6 +94,12 @@ const service = {
   async getWallets (pubkeys) {
     const response = await fetch(BASE_URL + '/batch/' + pubkeys.join(','))
     const json = await response.json()
+
+    // TODO remove this temporary hack later
+    for (var i in json.proof.entries) {
+      convertPubKey(json.proof.entries[i]) // TODO temp fix
+    }
+
     const trustedRoot = json.trusted_root
     const proof = new MapProof(json.proof, PublicKey, Wallet)
 
@@ -143,13 +167,16 @@ describe('MapProof integration', function () {
     const wallet = {
       pub_key: publicKey,
       name: 'Alice',
-      balance: '100',
+      balance: 100,
       uniq_id: uuid()
     }
 
     await service.createWallet(wallet)
     const resp = await service.getWallet(publicKey)
-    expect(resp).to.deep.equal(wallet)
+
+    convertPubKey(wallet) // TODO temp fix
+
+    expect(resp).to.eql(wallet)
   })
 
   function generateWallets (size) {
@@ -159,7 +186,7 @@ describe('MapProof integration', function () {
       wallets.push({
         pub_key: publicKey,
         name: `Alice #${i}`,
-        balance: '100',
+        balance: 100,
         uniq_id: uuid()
       })
     }
@@ -188,7 +215,11 @@ describe('MapProof integration', function () {
         for (let i = 0; i < 10; i++) {
           const idx = Math.floor(n / 10 * i)
           const resp = await service.getWallet(wallets[idx].pub_key)
-          expect(resp).to.deep.equal(wallets[idx])
+
+          const wallet = Object.assign({}, wallets[idx]) // TODO temp fix
+          convertPubKey(wallet) // TODO temp fix
+
+          expect(resp).to.eql(wallet)
         }
       })
 
