@@ -21,6 +21,7 @@
 * Use protobuf serialization format instead of Exonum serialization format. ([#141][pr-141])
 * Rework `newType` method syntax. ([#141][pr-141])
 * Rework `newTransaction` method syntax. ([#141][pr-141])
+* Rework `verifyBlock` method syntax to return Promise. ([#140][pr-140])
 
 ## 0.15.0 (Oct 9, 2018)
 
@@ -189,6 +190,7 @@ matching [release 0.1][release-0.1] of the Exonum core repository.
 [pr-143]: https://github.com/exonum/exonum-client/pull/143
 [pr-142]: https://github.com/exonum/exonum-client/pull/142
 [pr-141]: https://github.com/exonum/exonum-client/pull/141
+[pr-140]: https://github.com/exonum/exonum-client/pull/140
 [pr-139]: https://github.com/exonum/exonum-client/pull/139
 [pr-138]: https://github.com/exonum/exonum-client/pull/138
 [pr-137]: https://github.com/exonum/exonum-client/pull/137
