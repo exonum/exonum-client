@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.16.5 (Jan 9, 2019)
+
+* Export compiled protobuf stubs as `protocol`. ([#151][pr-151])
+
 ## 0.16.4 (Dec 13, 2018)
 
 * Re-build [package-lock.json](package-lock.json) file. ([#146][pr-146])
@@ -185,6 +189,7 @@ matching [release 0.1][release-0.1] of the Exonum core repository.
 [release-0.7]: https://github.com/exonum/exonum/blob/master/CHANGELOG.md#07---2018-04-11
 [release-0.5]: https://github.com/exonum/exonum/blob/master/CHANGELOG.md#05---2018-01-30
 [release-0.1]: https://github.com/exonum/exonum/releases/tag/v0.1
+[pr-151]: https://github.com/exonum/exonum-client/pull/151
 [pr-146]: https://github.com/exonum/exonum-client/pull/146
 [pr-145]: https://github.com/exonum/exonum-client/pull/145
 [pr-143]: https://github.com/exonum/exonum-client/pull/143

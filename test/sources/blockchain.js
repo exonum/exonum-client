@@ -493,3 +493,33 @@ describe('Send multiple transactions to the blockchain', function () {
     })
   })
 })
+
+describe('Export proto stubs', function () {
+  it('should export blockchain stubs', function () {
+    expect(Exonum.protocol.exonum.Block).to.be.an('function')
+    expect(Exonum.protocol.exonum.ConfigReference).to.be.an('function')
+    expect(Exonum.protocol.exonum.TxLocation).to.be.an('function')
+    expect(Exonum.protocol.exonum.TransactionResult).to.be.an('function')
+  })
+
+  it('should export consensus stubs', function () {
+    expect(Exonum.protocol.exonum.consensus.Connect).to.be.an('function')
+    expect(Exonum.protocol.exonum.consensus.Status).to.be.an('function')
+    expect(Exonum.protocol.exonum.consensus.Propose).to.be.an('function')
+    expect(Exonum.protocol.exonum.consensus.Prevote).to.be.an('function')
+    expect(Exonum.protocol.exonum.consensus.Precommit).to.be.an('function')
+    expect(Exonum.protocol.exonum.consensus.BlockResponse).to.be.an('function')
+    expect(Exonum.protocol.exonum.consensus.TransactionsResponse).to.be.an('function')
+    expect(Exonum.protocol.exonum.consensus.ProposeRequest).to.be.an('function')
+    expect(Exonum.protocol.exonum.consensus.TransactionsRequest).to.be.an('function')
+    expect(Exonum.protocol.exonum.consensus.PrevotesRequest).to.be.an('function')
+    expect(Exonum.protocol.exonum.consensus.PeersRequest).to.be.an('function')
+    expect(Exonum.protocol.exonum.consensus.BlockRequest).to.be.an('function')
+  })
+
+  it('should export helpers stubs', function () {
+    expect(Exonum.protocol.exonum.Hash).to.be.an('function')
+    expect(Exonum.protocol.exonum.PublicKey).to.be.an('function')
+    expect(Exonum.protocol.exonum.BitVec).to.be.an('function')
+  })
+})

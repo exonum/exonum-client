@@ -25,7 +25,7 @@ Library compatibility with Exonum core:
 
 | JavaScript light client | Exonum core |
 |---|---|
-| 0.16.4 | 0.10.* |
+| 0.16.5 | 0.10.* |
 | 0.13.0 | 0.9.* |
 | 0.10.2 | 0.8.* |
 | 0.9.0 | 0.7.* |
@@ -53,6 +53,7 @@ Library compatibility with Exonum core:
 * [Integrity checks](#integrity-checks)
   * [Verify block](#verify-block)
   * [Verify table](#verify-table)
+  * [Built-in structures](#built-in-structures)
 * [Helpers](#helpers)
   * [Generate key pair](#generate-key-pair)
   * [Get random number](#get-random-number)
@@ -528,6 +529,42 @@ Returns root hash for the table as hexadecimal `String`.
 | **stateHash** | Hash of current blockchain state stored in each block. | `String` |
 | **serviceId** | [Service ID][docs:architecture:serialization:service-id]. | `Number` |
 | **tableIndex** | Table index. | `Number` |
+
+### Built-in structures
+
+List of built-in Exonum [blockchain](proto/blockchain.proto) structures:
+
+| Structure | Use as |
+|---|---|
+| **Block** | `Exonum.protocol.exonum.Block` |
+| **ConfigReference** | `Exonum.protocol.exonum.ConfigReference` |
+| **TxLocation** | `Exonum.protocol.exonum.TxLocation` |
+| **TransactionResult** | `Exonum.protocol.exonum.TransactionResult` |
+
+List of built-in Exonum [consensus](proto/protocol.proto) structures:
+
+| Structure | Use as |
+|---|---|
+| **Connect** | `Exonum.protocol.exonum.consensus.Connect` |
+| **Status** | `Exonum.protocol.exonum.consensus.Status` |
+| **Propose** | `Exonum.protocol.exonum.consensus.Propose` |
+| **Prevote** | `Exonum.protocol.exonum.consensus.Prevote` |
+| **Precommit** | `Exonum.protocol.exonum.consensus.Precommit` |
+| **BlockResponse** | `Exonum.protocol.exonum.consensus.BlockResponse` |
+| **TransactionsResponse** | `Exonum.protocol.exonum.consensus.TransactionsResponse` |
+| **ProposeRequest** | `Exonum.protocol.exonum.consensus.ProposeRequest` |
+| **TransactionsRequest** | `Exonum.protocol.exonum.consensus.TransactionsRequest` |
+| **PrevotesRequest** | `Exonum.protocol.exonum.consensus.PrevotesRequest` |
+| **PeersRequest** | `Exonum.protocol.exonum.consensus.PeersRequest` |
+| **BlockRequest** | `Exonum.protocol.exonum.consensus.BlockRequest` |
+
+List of built-in Exonum [helpers](proto/helpers.proto) structures:
+
+| Structure | Use as |
+|---|---|
+| **Hash** | `Exonum.protocol.exonum.Hash` |
+| **PublicKey** | `Exonum.protocol.exonum.PublicKey` |
+| **BitVec** | `Exonum.protocol.exonum.BitVec` |
 
 ## Helpers
 
