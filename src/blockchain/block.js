@@ -66,3 +66,5 @@ export function verifyBlock (data, validators) {
     resolve()
   })
 }
+
+export { protocol }

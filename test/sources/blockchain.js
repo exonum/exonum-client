@@ -493,3 +493,10 @@ describe('Send multiple transactions to the blockchain', function () {
     })
   })
 })
+
+describe('Export proto', function () {
+  it('should export basic proto structures', function () {
+    expect(Exonum.protocol.exonum.Block).to.be.an('function')
+    expect(Exonum.protocol.exonum.consensus.Precommit).to.be.an('function')
+  })
+})
