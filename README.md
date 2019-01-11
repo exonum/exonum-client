@@ -25,7 +25,7 @@ Library compatibility with Exonum core:
 
 | JavaScript light client | Exonum core |
 |---|---|
-| 0.16.5 | 0.10.* |
+| 0.16.6 | 0.10.* |
 | 0.13.0 | 0.9.* |
 | 0.10.2 | 0.8.* |
 | 0.9.0 | 0.7.* |
@@ -676,25 +676,25 @@ Detailed changes for each release are documented in the [CHANGELOG](CHANGELOG.md
 
 Exonum Client is licensed under the Apache License (Version 2.0). See [LICENSE](LICENSE) for details.
 
-[docs:clients]: https://exonum.com/doc/architecture/clients
-[docs:architecture:services]: https://exonum.com/doc/architecture/services
-[docs:architecture:serialization]: https://exonum.com/doc/architecture/serialization
-[docs:architecture:serialization:network-id]: https://exonum.com/doc/architecture/serialization/#etwork-id
-[docs:architecture:serialization:protocol-version]: https://exonum.com/doc/architecture/serialization/#protocol-version
-[docs:architecture:serialization:service-id]: https://exonum.com/doc/architecture/serialization/#service-id
-[docs:architecture:serialization:message-id]: https://exonum.com/doc/architecture/serialization/#message-id
-[docs:architecture:transactions]: https://exonum.com/doc/architecture/transactions
-[docs:advanced:merkelized-list]: https://exonum.com/doc/advanced/merkelized-list
-[docs:glossary:digital-signature]: https://exonum.com/doc/glossary/#digital-signature
-[docs:glossary:hash]: https://exonum.com/doc/glossary/#hash
-[docs:glossary:blockchain-state]: https://exonum.com/doc/glossary/#blockchain-state
-[docs:glossary:merkle-tree]: https://exonum.com/doc/glossary/#merkle-tree
-[docs:glossary:validator]: https://exonum.com/doc/glossary/#validator
+[docs:clients]: https://exonum.com/doc/version/latest/architecture/clients
+[docs:architecture:services]: https://exonum.com/doc/version/latest/architecture/services
+[docs:architecture:serialization]: https://exonum.com/doc/version/latest/architecture/serialization
+[docs:architecture:serialization:network-id]: https://exonum.com/doc/version/latest/architecture/serialization/#etwork-id
+[docs:architecture:serialization:protocol-version]: https://exonum.com/doc/version/latest/architecture/serialization/#protocol-version
+[docs:architecture:serialization:service-id]: https://exonum.com/doc/version/latest/architecture/serialization/#service-id
+[docs:architecture:serialization:message-id]: https://exonum.com/doc/version/latest/architecture/serialization/#message-id
+[docs:architecture:transactions]: https://exonum.com/doc/version/latest/architecture/transactions
+[docs:advanced:merkelized-list]: https://exonum.com/doc/version/latest/advanced/merkelized-list
+[docs:glossary:digital-signature]: https://exonum.com/doc/version/latest/glossary/#digital-signature
+[docs:glossary:hash]: https://exonum.com/doc/version/latest/glossary/#hash
+[docs:glossary:blockchain-state]: https://exonum.com/doc/version/latest/glossary/#blockchain-state
+[docs:glossary:merkle-tree]: https://exonum.com/doc/version/latest/glossary/#merkle-tree
+[docs:glossary:validator]: https://exonum.com/doc/version/latest/glossary/#validator
 [npmjs]: https://www.npmjs.com/package/exonum-client
 [gitter]: https://gitter.im/exonum/exonum
 [twitter]: https://twitter.com/ExonumPlatform
 [newsletter]: https://exonum.com/#newsletter
-[contributing]: https://exonum.com/doc/contributing/
+[contributing]: https://exonum.com/doc/version/latest/contributing/
 [is-safe-integer]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isSafeInteger
 [vector-structure]: https://doc.rust-lang.org/std/vec/struct.Vec.html
 [tweetnacl:key-pair]: https://github.com/dchest/tweetnacl-js#naclsignkeypair
