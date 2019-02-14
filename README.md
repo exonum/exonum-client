@@ -672,6 +672,10 @@ This applies to both of adding new features and fixing existed bugs.
 
 Detailed changes for each release are documented in the [CHANGELOG](CHANGELOG.md) file.
 
+## Other languages support
+
+[Light Client Java][lc-java]
+
 ## License
 
 Exonum Client is licensed under the Apache License (Version 2.0). See [LICENSE](LICENSE) for details.
@@ -701,3 +705,4 @@ Exonum Client is licensed under the Apache License (Version 2.0). See [LICENSE](
 [tweetnacl:random-bytes]: https://github.com/dchest/tweetnacl-js#random-bytes-generation
 [protobuf]: https://developers.google.com/protocol-buffers/
 [protobufjs]: https://www.npmjs.com/package/protobufjs
+[lc-java]: https://github.com/exonum/exonum-java-binding/tree/master/exonum-light-client
