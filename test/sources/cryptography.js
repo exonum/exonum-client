@@ -58,6 +58,58 @@ describe('Check cryptography', function () {
       expect(hash).to.equal(CreateTypeData.hash)
     })
 
+    it('should return key pair from seed', function () {
+      const keyPair1 = Exonum.fromSeed(Uint8Array.from([
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+        11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+        21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+        31, 32]))
+
+      expect(keyPair1.publicKey).to.not.equal(null)
+      expect(keyPair1.secretKey).to.not.equal(null)
+    })
+
+    it('should throw if anything different is passed instead of Uint8Array as a seed', function () {
+      expect(() => Exonum.fromSeed(undefined))
+        .to.throw(TypeError, 'unexpected type [object Undefined], use Uint8Array')
+
+      expect(() => Exonum.fromSeed(null))
+        .to.throw(TypeError, 'unexpected type [object Null], use Uint8Array')
+
+      expect(() => Exonum.fromSeed())
+        .to.throw(TypeError, 'unexpected type [object Undefined], use Uint8Array')
+
+      expect(() => Exonum.fromSeed('123'))
+        .to.throw(TypeError, 'unexpected type [object String], use Uint8Array')
+    })
+
+    it('should throw bad size of Uint8Array is passed as a seed', function () {
+      expect(() => Exonum.fromSeed(Uint8Array.from([1, 2, 3])))
+        .to.throw(Error, 'bad seed size')
+    })
+
+    it('should return unique key pair from different seeds', function () {
+      const keyPair1 = Exonum.fromSeed(Uint8Array.from([
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+        11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+        21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+        31, 32]))
+
+      const keyPair2 = Exonum.fromSeed(Uint8Array.from([
+        0, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+        11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+        21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+        31, 32]))
+
+      expect(keyPair1.publicKey).to.not.equal(null)
+      expect(keyPair1.secretKey).to.not.equal(null)
+      expect(keyPair2.publicKey).to.not.equal(null)
+      expect(keyPair2.secretKey).to.not.equal(null)
+
+      expect(keyPair1.publicKey).to.not.equal(keyPair2.publicKey)
+      expect(keyPair1.secretKey).to.not.equal(keyPair2.secretKey)
+    })
+
     it('should serialize entity of newType', () => {
       const Wallet = Exonum.newType(proto.exonum.examples.cryptocurrency_advanced.Wallet)
       const data = {
