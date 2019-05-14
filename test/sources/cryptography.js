@@ -69,6 +69,25 @@ describe('Check cryptography', function () {
       expect(keyPair1.secretKey).to.not.equal(null)
     })
 
+    it('should throw if anything different is passed instead of Uint8Array as a seed', function () {
+      expect(() => Exonum.fromSeed(undefined))
+        .to.throw(TypeError, 'unexpected type [object Undefined], use Uint8Array')
+
+      expect(() => Exonum.fromSeed(null))
+        .to.throw(TypeError, 'unexpected type [object Null], use Uint8Array')
+
+      expect(() => Exonum.fromSeed())
+        .to.throw(TypeError, 'unexpected type [object Undefined], use Uint8Array')
+
+      expect(() => Exonum.fromSeed('123'))
+        .to.throw(TypeError, 'unexpected type [object String], use Uint8Array')
+    })
+
+    it('should throw bad size of Uint8Array is passed as a seed', function () {
+      expect(() => Exonum.fromSeed(Uint8Array.from([1, 2, 3])))
+        .to.throw(Error, 'bad seed size')
+    })
+
     it('should return unique key pair from different seeds', function () {
       const keyPair1 = Exonum.fromSeed(Uint8Array.from([
         1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
