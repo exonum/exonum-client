@@ -132,6 +132,23 @@ export function keyPair () {
 }
 
 /**
+ * Returns a new signing key pair generated deterministically from a 32-byte seed
+ * @return {Object}
+ *  publicKey {string}
+ *  secretKey {string}
+ */
+export function fromSeed (seed) {
+  const pair = nacl.sign.keyPair.fromSeed(seed)
+  const publicKey = convert.uint8ArrayToHexadecimal(pair.publicKey)
+  const secretKey = convert.uint8ArrayToHexadecimal(pair.secretKey)
+
+  return {
+    publicKey,
+    secretKey
+  }
+}
+
+/**
  * Get random number of cryptographic quality
  * @returns {string}
  */
