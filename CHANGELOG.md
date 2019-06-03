@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.16.8 (June 3, 2019)
+
+* Fix axios.
+
 ## 0.16.6 (Jan 11, 2019)
 
 * Fix links to Exonum documentation. ([#152][pr-152])
