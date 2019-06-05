@@ -1,8 +1,9 @@
 # Changelog
 
-## 0.16.8 (June 3, 2019)
+## 0.16.9 (June 5, 2019)
 
-* Fix axios.
+* Fix axios security alert.
+* Fix js-yaml security alert.
 
 ## 0.16.6 (Jan 11, 2019)
 
