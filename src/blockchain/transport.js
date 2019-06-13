@@ -18,7 +18,7 @@ const ATTEMPT_TIMEOUT = 500
  * @param {number} timeout
  * @return {Promise}
  */
-export function send (explorerBasePath, type, data, secretKey, headers, attempts, timeout) {
+export function send (explorerBasePath, type, data, secretKey, attempts, timeout, headers) {
   if (typeof explorerBasePath !== 'string') {
     throw new TypeError('Explorer base path endpoint of wrong data type is passed. String is required.')
   }
