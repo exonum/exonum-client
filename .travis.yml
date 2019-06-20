@@ -50,7 +50,7 @@ jobs:
   include:
   - env: FEATURE=integration
     language: rust
-    rust: nightly-2018-12-05
+    rust: nightly-2019-06-19
     before_install:
     - nvm install 8 && nvm use 8
     - node --version
