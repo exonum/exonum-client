@@ -16,22 +16,14 @@
 
 #![feature(proc_macro_hygiene, decl_macro)]
 
-extern crate exonum;
 #[macro_use]
 extern crate exonum_derive;
-extern crate hex;
 #[macro_use]
 extern crate failure;
-extern crate protobuf;
-extern crate rand;
-extern crate rand_xorshift;
 #[macro_use]
 extern crate rocket;
-extern crate rocket_contrib;
-extern crate serde;
 #[macro_use]
 extern crate serde_derive;
-extern crate uuid;
 
 use exonum::{
     crypto::{gen_keypair_from_seed, Hash, PublicKey, Seed},
@@ -39,7 +31,6 @@ use exonum::{
 };
 use failure::Error;
 use rand::{seq::SliceRandom, RngCore, SeedableRng};
-use rand_xorshift::XorShiftRng;
 use rocket::{
     config::{Config, Environment},
     http::RawStr,
@@ -49,6 +40,7 @@ use rocket::{
 };
 use rocket_contrib::json::Json;
 use uuid::Uuid;
+use rand::prelude::StdRng;
 
 pub mod proto;
 
@@ -204,7 +196,7 @@ fn generate_proof(params: Form<RandomParams>) -> Result<Json<WalletProof>, BadRe
         )));
     }
     let missing_keys = params.missing_keys.unwrap_or(wallets_in_proof);
-    let mut rng = XorShiftRng::seed_from_u64(params.seed);
+    let mut rng: StdRng = SeedableRng::seed_from_u64(params.seed);
     let db = MemoryDB::new();
     let mut fork = db.fork();
     let mut index: ProofMapIndex<_, PublicKey, Wallet> = ProofMapIndex::new(INDEX_NAME, &mut fork);
