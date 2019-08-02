@@ -142,7 +142,7 @@ function parseEntries (entries, keyType, valueType) {
       key,
       value,
       path: createPath(key),
-      hash: hash([BLOB_PREFIX, ...valueType.serialize(value)])
+      hash: hash([BLOB_PREFIX, ...valueType.serialize(value, [], 0)])
     }
   })
 }
