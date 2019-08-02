@@ -47,8 +47,7 @@ describe('ProofPath', () => {
     binaryStrings.forEach(seq => {
       it(`should construct path from short bit sequence: ${seq}`, () => {
         const path = new ProofPath(seq)
-        expect(path.bitLength()).to.equal(seq.length)
-        expect(path.isTerminal).to.be.false()
+        expect(path.bitLength).to.equal(seq.length)
 
         for (let i = 0; i < seq.length; i++) {
           expect(+seq[i]).to.equal(path.bit(i))
@@ -65,8 +64,7 @@ describe('ProofPath', () => {
       expect(bits).to.match(/^[01]{256}$/)
 
       const path = new ProofPath(bits)
-      expect(path.bitLength()).to.equal(256)
-      expect(path.isTerminal).to.be.true()
+      expect(path.bitLength).to.equal(256)
       for (let i = 0; i < bits.length; i++) {
         expect(+bits[i]).to.equal(path.bit(i))
       }
@@ -77,8 +75,7 @@ describe('ProofPath', () => {
       buffer[0] = 1
 
       const path = new ProofPath(buffer)
-      expect(path.bitLength()).to.equal(256)
-      expect(path.isTerminal).to.be.true()
+      expect(path.bitLength).to.equal(256)
       expect(path.bit(0)).to.equal(1)
       for (let i = 1; i < 256; i++) {
         expect(path.bit(i)).to.equal(0)
@@ -169,6 +166,50 @@ describe('ProofPath', () => {
     })
   })
 
+  describe('serialize', () => {
+    it('should work for a terminal key', () => {
+      const path = new ProofPath('1'.repeat(256))
+      const buffer = []
+      path.serialize(buffer)
+      let expectedBuffer = [128, 2]
+      for (let i = 0; i < 32; i++) {
+        expectedBuffer.push(255)
+      }
+      expect(buffer).to.deep.equal(expectedBuffer)
+
+      const nonEmptyBuffer = [1, 2, 3]
+      path.serialize(nonEmptyBuffer)
+      expectedBuffer = [1, 2, 3, 128, 2]
+      for (let i = 0; i < 32; i++) {
+        expectedBuffer.push(255)
+      }
+      expect(nonEmptyBuffer).to.deep.equal(expectedBuffer)
+    })
+
+    it('should work for a short non-terminal key', () => {
+      let buffer = []
+      let path = new ProofPath('10110')
+      path.serialize(buffer)
+      expect(buffer).to.deep.equal([5, 0b00001101])
+
+      buffer = []
+      path = new ProofPath('10110101')
+      path.serialize(buffer)
+      expect(buffer).to.deep.equal([8, 0b10101101])
+    })
+
+    it('should work for a long non-terminal key', () => {
+      const buffer = []
+      const path = new ProofPath('10110001'.repeat(29))
+      path.serialize(buffer)
+      const expectedBuffer = [128 + (29 * 8 % 128), 1]
+      for (let i = 0; i < 29; i++) {
+        expectedBuffer.push(0b10001101)
+      }
+      expect(buffer).to.deep.equal(expectedBuffer)
+    })
+  })
+
   describe('truncate', () => {
     binaryStrings.forEach(str => {
       const repr = (str.length > 40) ? str.substring(0, 40) + '...' : str
@@ -176,7 +217,7 @@ describe('ProofPath', () => {
       for (let len = 0; len < str.length; len++) {
         it(`should truncate bit string ${repr} to length ${len}`, () => {
           const path = new ProofPath(str).truncate(len)
-          expect(path.bitLength()).to.equal(len)
+          expect(path.bitLength).to.equal(len)
           expect(path.toJSON()).to.equal(str.substring(0, len))
         })
       }
@@ -546,7 +587,10 @@ describe('MapProof', () => {
         proof: []
       }, PublicKey, Exonum.Uint16)
 
-      const expHash = '0000000000000000000000000000000000000000000000000000000000000000'
+      const expHash = sha('sha256')
+        .update([3])
+        .update(new Uint8Array(32))
+        .digest('hex')
       expect(proof.merkleRoot).to.equal(expHash)
     })
 
