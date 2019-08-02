@@ -4,16 +4,19 @@
 'use strict'
 
 const Exonum = require('..')
-const expect = require('chai').expect
-const $protobuf = require('protobufjs/light')
-const Type = $protobuf.Type
-const Field = $protobuf.Field
+const { expect } = require('chai')
+const { Type, Field } = require('protobufjs/light')
 
 // Declare the value type used in the proof.
-let Scheme = new Type('CustomMessage')
-Scheme.add(new Field('name', 1, 'string'))
-Scheme.add(new Field('balance', 2, 'uint64'))
-const Wallet = Exonum.newType(Scheme)
+const PublicKeySchema = new Type('PublicKey')
+PublicKeySchema.add(new Field('data', 1, 'bytes'))
+const WalletSchema = new Type('Wallet')
+WalletSchema.add(PublicKeySchema)
+WalletSchema.add(new Field('pub_key', 1, 'PublicKey'))
+WalletSchema.add(new Field('name', 2, 'string'))
+WalletSchema.add(new Field('balance', 3, 'uint64'))
+WalletSchema.add(new Field('uniq_id', 4, 'string'))
+const Wallet = Exonum.newType(WalletSchema)
 
 // This proof JSON for 2 existing and 2 missing wallets is generated
 // with the help of the `/random` endpoint of the integration test server
@@ -21,38 +24,74 @@ const Wallet = Exonum.newType(Scheme)
 //
 //   cd integration-tests
 //   cargo run &
-//   curl http://localhost:8000/endpoint?seed=1337&wallets=20&wallets_in_proof=2
+//   curl http://localhost:8000/random?seed=1337&wallets=20&wallets_in_proof=2
 let proof = {
   entries: [
     {
-      key: 'd00d21c3d01cd84188f3ec92a84f8637c616edc535d80541af81baf3c0b527e2',
+      missing: 'c6e167e6914c68fe9cb6d02e72ff4c8ecfe8fa1696625e4b1f89eb6597b1c16a'
+    },
+    {
+      key: 'c1608da6fe83023f95c1d9d31d070c4e70b93059f1a298b1a02e85eb4414c855',
       value: {
-        name: 'd00d21c3',
-        balance: 0
+        pub_key: 'c1608da6fe83023f95c1d9d31d070c4e70b93059f1a298b1a02e85eb4414c855',
+        name: 'c1608da6',
+        balance: 3986358255,
+        uniq_id: '0621b404-80c5-bf18-04c1-6c466054f28a'
       }
     },
-    { missing: '569bb4cfc5130af3ad824b3e4d111e1c3b536597c42aa640fe0d3dda6a87445d' },
-    { missing: '2ea39bb12ac8ef87d666c8c4f7216ce13cf61d3303e7c5d0ccfe2d4c725a0a5c' },
     {
-      key: '6d9a46cf3476811b33f6a2bb5fab8d0bd0b494cf7dcab75910432ee5ea4dfaaf',
+      key: '049b1598a5b417fcd53e318bc90322b72c52bd771ff3febb3d53d36b77329ada',
       value: {
-        name: '6d9a46cf',
-        balance: 1000
+        pub_key: '049b1598a5b417fcd53e318bc90322b72c52bd771ff3febb3d53d36b77329ada',
+        name: '049b1598',
+        balance: 69049252,
+        uniq_id: 'beb5bee7-ac51-c829-1b16-e8b77a12d371'
       }
+    },
+    {
+      missing: '69a5411f3ec4c2cd7e83bf61130e15654d69b76585dcca6e1dcc986a50b96cad'
     }
   ],
-  proof: [
-    { path: '0001', hash: 'f43428abd106381717dc1b275240544815ef86ffb6f7c6c5dcb15fc08fe1aec0' },
-    { path: '001', hash: 'dac5cf333d08a9f66769e948c6daa531eddc3b654a019cdf5c8356a6b47f59b3' },
-    { path: '010', hash: '678a1c44ce08143c74a441405fec3e8702a8b45971f636e7ec7fdef090193fcc' },
-    { path: '0110001100001110000111001110110110101000110001110100000111001011000000010101001100000100110110000001000100011100000101101110000001110111100011100001000110011000111010000011110001011000000011001001001000101011110011001111001000110010001100100000100010010100', hash: '3ea19ae82a0d35e2a98a9ff4b9d4f279ae9a2f6b22b3b1271054d1843c8f8fbd' },
-    { path: '0110100011101000100110011111000011010111001010001001001011110100011011110011100010010100101101111111110111110000110111000001000010011100111011111111101111001011111011110000010101011010110110011000000010001101100011011001100010100001001110001101111101011001', hash: '6c1e9182aaddef6361d1a6a9c60f32afe8a1944642056a210517b09593249874' },
-    { path: '0111100011010101000100010100101101001111001101010000001000000111000010100010110000111110110111100011100001111110100011110001010001001011001000001101100101110111111100010111110100010011110111010010011100110101111010011101001011010000001111001000000010110101', hash: 'e4916d59f1776745311b3dfd6cdf96b38461a1844328c5258a6572046a8cad99' },
-    { path: '100', hash: '885e183fdd22fae157e14c0391af7bf296a27a2fe518b433fb5b1279514a040d' },
-    { path: '101010', hash: '8d09f5ae5a534ddc3aba6cacd41584251b9cac075a9c9130cfefeff86233e139' },
-    { path: '11', hash: 'cba4967eff747eaa417b36714af95fc77c9c6fad48267fdc329417fcc9c382f8' }
+  'proof': [
+    {
+      path: '0000110110110010100111000100010110011110110000100010100001000101010000110001110001010110010001111011011101000111101100111010010000010110011110111011110111001111001110110000101111101100111101100001000110010101101101010001111000111101000111110111110011000101',
+      hash: '42458b0cf398d03cefb02fe31919b4bbe6ee6c68a79c49bea7c80a0b0bef3936'
+    },
+    {
+      path: '001011',
+      hash: 'dcaf092596dcd3e3a9a8405d8dfb3817df21657ecb1e5257a7779c0c3c0157f8'
+    },
+    {
+      path: '01',
+      hash: 'f7e72241fb9ee2351c9ab54c3020554bd26af62a217072d4eb8eaaba0a13af21'
+    },
+    {
+      path: '10',
+      hash: 'b69cd61a9c22f2467e1be1309a06671c7b2ab38b97a9bc47ce85e3646271b240'
+    },
+    {
+      path: '1100101011001101010001000111001000101010100001110101110010111010100011010010101011100110111111100100101001111111010111000010010010100110110110001101000100110101101011100100011010000010111011001000111110000110110111010011110100011100100101111110110001111100',
+      hash: 'da18257a7f0b9c0c863468f2c15819cd93a67a87408ddd884db1142e657965b7'
+    },
+    {
+      path: '1101011001101000011110000011010100011010110001100100001110100110110111100010101000010100101100101011111011010011001000100110111111101111100010111100101110000100011011010101010000010000010111011011010000110011100011100100111010100110001101111101110100011101',
+      hash: 'd156aba4c4e5c63124ac52295466e935ba5d2282a64082c85841e32bbf5b4c97'
+    },
+    {
+      path: '1111100001001101101101000111010010001010100111001101100110101011110100110001110110110110101101000100100011101000011010100111001110000011100110111111101110000010010001011101000011111011000010100110110010100000111111111001110100000110100011001001100011000011',
+      hash: '3bb6a394e0f69404bf8594f5fc42a2a5275b1d98f86bb766e4091597f4df7803'
+    }
   ]
 }
+
+// Temporary hack to convert `PublicKey`s into the form compatible with the Protobuf reader.
+proof.entries.forEach(({ value }) => {
+  if (value && value.pub_key) {
+    value.pub_key = {
+      data: Buffer.from(value.pub_key, 'hex')
+    }
+  }
+})
 
 // Create a `MapProof` instance. The constructor will throw an error if
 // the supplied JSON is malformed.
@@ -74,4 +113,4 @@ for (let missingKey of proof.missingKeys) {
 // The Merkle root of the proof is usually propagated further to the trust anchor
 // (usually, a `state_hash` field in the block header). Here, we just compare
 // it to the reference value for simplicity.
-expect(proof.merkleRoot).to.equal('3c8a4e51ccc5e91ad475d5bac1e4c58e72a34af4b8a47a7dbdcba1eac19d7418')
+expect(proof.merkleRoot).to.equal('22e3fa8457f2226546f8919ef22bba7853ddc55e221c95644daf21970e8ea8a6')
