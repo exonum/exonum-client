@@ -3,7 +3,28 @@ import binarySearch from 'binary-search'
 import { hash } from '../crypto'
 import { Hash } from '../types/hexadecimal'
 import ProofPath from './ProofPath'
-import { Bool, Uint8 } from '../types/primitive'
+import { hexadecimalToUint8Array } from '../types'
+
+/**
+ * Prefix marker for a blob node in a `ProofMapIndex`.
+ *
+ * @type {number}
+ */
+const BLOB_PREFIX = 0
+/**
+ * Prefix marker for an intermediate `ProofMapIndex` nodes.
+ * It is defined in the `HashTag` enum in the `exonum_merkledb` crate.
+ *
+ * @type {number}
+ */
+const MAP_BRANCH_PREFIX = 4
+/**
+ * Prefix marker for a `ProofMapIndex` object.
+ * It is defined in the `HashTag` enum in the `exonum_merkledb` crate.
+ *
+ * @type {number}
+ */
+const MAP_PREFIX = 3
 
 /**
  * Proof of existence and/or absence of certain elements from a Merkelized
@@ -17,11 +38,10 @@ export class MapProof {
    *   JSON object containing (untrusted) proof
    * @param {{serialize: (any) => Array<number>}} keyType
    *   Type of keys used in the underlying Merkelized map. Usually, `PublicKey`
-   *   or `Hash`. The keys must serialize to exactly 32 bytes.
-   * @param {{hash?: (any) => string, serialize: (any) => Array<number>}} valueType
+   *   or `Hash`. The keys must be serializable.
+   * @param {{ serialize: (any) => Array<number>}} valueType
    *   Type of values used in the underlying Merkelized map. Usually, it should
-   *   be a type created with the `newType` function. The type should possess
-   *   one of `hash` or `serialize` methods.
+   *   be a type created with the `newType` function. The type must be serializable.
    * @throws {MapProofError}
    *   if the proof is malformed
    */
@@ -34,10 +54,7 @@ export class MapProof {
     }
     this.keyType = keyType
 
-    if (!valueType || (
-      typeof valueType.serialize !== 'function' &&
-      typeof valueType.hash !== 'function'
-    )) {
+    if (!valueType || typeof valueType.serialize !== 'function') {
       throw new TypeError('No `hash` or `serialize` method in the value type')
     }
     this.valueType = valueType
@@ -62,7 +79,8 @@ export class MapProof {
       }
     }
 
-    this.merkleRoot = collect(completeProof.filter(({ hash }) => !!hash))
+    const rootHash = hexadecimalToUint8Array(collect(completeProof.filter(({ hash }) => !!hash)))
+    this.merkleRoot = hash([MAP_PREFIX, ...rootHash])
     this.missingKeys = new Set(
       this.entries
         .filter(e => e.missing !== undefined)
@@ -97,12 +115,7 @@ function parseProof (proof) {
 
 function parseEntries (entries, keyType, valueType) {
   function createPath (data) {
-    const bytes = keyType.serialize(data, [], 0)
-    if (bytes.length !== ProofPath.BYTE_LENGTH) {
-      throw new TypeError('invalid key type; keys should serialize to ' +
-        `${ProofPath.BYTE_LENGTH}-byte buffers`)
-    }
-
+    const bytes = hexadecimalToUint8Array(hash(keyType.serialize(data, [], 0)))
     return new ProofPath(new Uint8Array(bytes))
   }
 
@@ -129,15 +142,13 @@ function parseEntries (entries, keyType, valueType) {
       key,
       value,
       path: createPath(key),
-      hash: typeof valueType.hash === 'function'
-        ? valueType.hash(value) // `newType`s
-        : hash(valueType.serialize(value, [], 0)) // "primitive" types
+      hash: hash([BLOB_PREFIX, ...valueType.serialize(value)])
     }
   })
 }
 
 /**
- * @param this MapProof
+ * @this {MapProof}
  */
 function precheckProof () {
   // Check that entries in proof are in increasing order
@@ -179,25 +190,18 @@ function precheckProof () {
   })
 }
 
-function serializeProofPathType (type, buffer) {
-  Bool.serialize(type.isTerminal, buffer, buffer.length)
-  Hash.serialize(type.hexKey, buffer, buffer.length)
-  Uint8.serialize(type.lengthByte, buffer, buffer.length)
-  return buffer
-}
-
 function serializeBranchNode (leftHash, rightHash, leftPath, rightPath) {
-  let buffer = []
+  const buffer = [MAP_BRANCH_PREFIX]
   Hash.serialize(leftHash, buffer, buffer.length)
   Hash.serialize(rightHash, buffer, buffer.length)
-  serializeProofPathType(leftPath, buffer)
-  serializeProofPathType(rightPath, buffer)
+  leftPath.serialize(buffer)
+  rightPath.serialize(buffer)
   return buffer
 }
 
 function serializeIsolatedNode (path, hash) {
-  let buffer = []
-  serializeProofPathType(path, buffer)
+  // `1, ...path.key, 0` is the old `ProofPath` serialization for terminal paths.
+  const buffer = [MAP_BRANCH_PREFIX, 1, ...path.key, 0]
   Hash.serialize(hash, buffer, buffer.length)
   return buffer
 }
@@ -232,7 +236,7 @@ function collect (entries) {
       return '0000000000000000000000000000000000000000000000000000000000000000'
 
     case 1:
-      if (!entries[0].path.isTerminal) {
+      if (!entries[0].path.isTerminal()) {
         throw new MapProofError('nonTerminalNode', entries[0].path)
       }
       return hashIsolatedNode(entries[0])
@@ -248,7 +252,7 @@ function collect (entries) {
         const entry = entries[i]
         const newPrefix = entry.path.commonPrefix(contour[contour.length - 1].path)
 
-        while (contour.length > 1 && newPrefix.bitLength() < lastPrefix.bitLength()) {
+        while (contour.length > 1 && newPrefix.bitLength < lastPrefix.bitLength) {
           const foldedPrefix = fold(contour, lastPrefix)
           if (foldedPrefix) {
             lastPrefix = foldedPrefix
