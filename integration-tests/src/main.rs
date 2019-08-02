@@ -16,7 +16,7 @@
 
 #![feature(proc_macro_hygiene, decl_macro)]
 
-use exonum::crypto::{gen_keypair_from_seed, CryptoHash, Hash, PublicKey, Seed};
+use exonum::crypto::{gen_keypair_from_seed, Hash, PublicKey, Seed};
 use exonum_derive::*;
 use exonum_merkledb::{Database, MapProof, ObjectHash, ProofMapIndex, TemporaryDB};
 use failure::{format_err, Error};
