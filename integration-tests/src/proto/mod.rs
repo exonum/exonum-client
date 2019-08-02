@@ -15,8 +15,7 @@
 //! Module of the rust-protobuf generated files.
 
 // For protobuf generated files.
-#![allow(bare_trait_objects)]
-#![allow(renamed_and_removed_lints)]
+#![allow(bare_trait_objects, renamed_and_removed_lints)]
 
 pub use self::wallet::Wallet;
 
