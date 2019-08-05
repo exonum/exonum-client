@@ -115,7 +115,10 @@ function parseProof (proof) {
 
 function parseEntries (entries, keyType, valueType) {
   function createPath (data) {
-    const bytes = hexadecimalToUint8Array(hash(keyType.serialize(data, [], 0)))
+    const keyBytes = (typeof keyType.hash === 'function')
+      ? keyType.hash(data)
+      : hash(keyType.serialize(data, [], 0))
+    const bytes = hexadecimalToUint8Array(keyBytes)
     return new ProofPath(new Uint8Array(bytes))
   }
 
