@@ -96,9 +96,7 @@ const service = {
     const json = await response.json()
 
     // TODO remove this temporary hack later
-    for (var i in json.proof.entries) {
-      convertPubKey(json.proof.entries[i]) // TODO temp fix
-    }
+    json.proof.entries.forEach(convertPubKey)
 
     const trustedRoot = json.trusted_root
     const proof = new MapProof(json.proof, PublicKey, Wallet)
@@ -170,12 +168,10 @@ describe('MapProof integration', function () {
       balance: 100,
       uniq_id: uuid()
     }
-
     await service.createWallet(wallet)
-    const resp = await service.getWallet(publicKey)
 
     convertPubKey(wallet) // TODO temp fix
-
+    const resp = await service.getWallet(publicKey)
     expect(resp).to.eql(wallet)
   })
 
@@ -204,7 +200,7 @@ describe('MapProof integration', function () {
     return Array.from(requestedKeys)
   }
 
-  let sizes = [2, 3, 5, 8, 13, 21, 34, 55, 89, 144]
+  const sizes = [2, 3, 5, 8, 13, 21, 34, 55, 89, 144]
   sizes.forEach(n => {
     describe(`in a tree with ${n} wallets`, () => {
       it('should recognize a proof for a single wallet', async () => {

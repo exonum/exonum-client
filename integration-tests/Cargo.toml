@@ -8,12 +8,14 @@ edition = "2018"
 build = "build.rs"
 
 [dependencies]
-exonum = "0.11.0"
-exonum-derive = "0.11.0"
+exonum = { version = "0.11.0", git = "https://github.com/exonum/exonum", rev = "10451e1" }
+exonum-merkledb = { version = "0.11.0", git = "https://github.com/exonum/exonum", rev = "10451e1" }
+exonum-derive = { version = "0.11.0", git = "https://github.com/exonum/exonum", rev = "10451e1" }
 hex = "0.3.2"
 failure = "0.1.5"
 protobuf = "2.6.2"
 rand = "0.6"
+rand_chacha = "0.1"
 rocket = "0.4.1"
 rocket_codegen = "0.4.1"
 serde = "1.0"

@@ -16,21 +16,12 @@
 
 #![feature(proc_macro_hygiene, decl_macro)]
 
-#[macro_use]
-extern crate exonum_derive;
-#[macro_use]
-extern crate failure;
-#[macro_use]
-extern crate rocket;
-#[macro_use]
-extern crate serde_derive;
-
-use exonum::{
-    crypto::{gen_keypair_from_seed, Hash, PublicKey, Seed},
-    storage::{Database, MapProof, MemoryDB, ProofMapIndex},
-};
-use failure::Error;
-use rand::{seq::SliceRandom, RngCore, SeedableRng};
+use exonum::crypto::{gen_keypair_from_seed, Hash, PublicKey, Seed};
+use exonum_derive::*;
+use exonum_merkledb::{Database, MapProof, ObjectHash, ProofMapIndex, TemporaryDB};
+use failure::{format_err, Error};
+use rand::{seq::SliceRandom, Rng, RngCore, SeedableRng};
+use rand_chacha::ChaChaRng;
 use rocket::{
     config::{Config, Environment},
     http::RawStr,
@@ -38,9 +29,10 @@ use rocket::{
     response::status::BadRequest,
     State,
 };
+use rocket_codegen::*;
 use rocket_contrib::json::Json;
-use uuid::Uuid;
-use rand::prelude::StdRng;
+use serde_derive::*;
+use uuid::{Builder as UuidBuilder, Uuid};
 
 pub mod proto;
 
@@ -117,30 +109,30 @@ impl<'r> FromParam<'r> for PublicKeyList {
 }
 
 #[get("/<pubkey>")]
-fn get_wallet(db: State<MemoryDB>, pubkey: PublicKeyParam) -> Json<WalletProof> {
-    let index = ProofMapIndex::new(INDEX_NAME, db.snapshot());
-
+fn get_wallet(db: State<TemporaryDB>, pubkey: PublicKeyParam) -> Json<WalletProof> {
+    let snapshot = db.snapshot();
+    let index = ProofMapIndex::new(INDEX_NAME, &snapshot);
     Json(WalletProof {
         proof: index.get_proof(pubkey.0),
-        trusted_root: index.merkle_root(),
+        trusted_root: index.object_hash(),
     })
 }
 
 #[get("/batch/<pubkeys>")]
-fn get_wallets(db: State<MemoryDB>, pubkeys: PublicKeyList) -> Json<WalletProof> {
-    let index = ProofMapIndex::new(INDEX_NAME, db.snapshot());
-
+fn get_wallets(db: State<TemporaryDB>, pubkeys: PublicKeyList) -> Json<WalletProof> {
+    let snapshot = db.snapshot();
+    let index = ProofMapIndex::new(INDEX_NAME, &snapshot);
     Json(WalletProof {
         proof: index.get_multiproof(pubkeys.0),
-        trusted_root: index.merkle_root(),
+        trusted_root: index.object_hash(),
     })
 }
 
 #[post("/", format = "application/json", data = "<wallet>")]
-fn create_wallet(db: State<MemoryDB>, wallet: Json<Wallet>) -> Json<IndexInfo> {
-    let mut fork = db.fork();
+fn create_wallet(db: State<TemporaryDB>, wallet: Json<Wallet>) -> Json<IndexInfo> {
+    let fork = db.fork();
     let info = {
-        let mut index = ProofMapIndex::new(INDEX_NAME, &mut fork);
+        let mut index = ProofMapIndex::new(INDEX_NAME, &fork);
         let pub_key = wallet.pub_key;
         index.put(&pub_key, wallet.into_inner());
         let size = index.iter().count();
@@ -151,10 +143,10 @@ fn create_wallet(db: State<MemoryDB>, wallet: Json<Wallet>) -> Json<IndexInfo> {
 }
 
 #[put("/", format = "application/json", data = "<wallets>")]
-fn create_wallets(db: State<MemoryDB>, wallets: Json<Vec<Wallet>>) -> Json<IndexInfo> {
-    let mut fork = db.fork();
+fn create_wallets(db: State<TemporaryDB>, wallets: Json<Vec<Wallet>>) -> Json<IndexInfo> {
+    let fork = db.fork();
     let info = {
-        let mut index = ProofMapIndex::new(INDEX_NAME, &mut fork);
+        let mut index = ProofMapIndex::new(INDEX_NAME, &fork);
         for wallet in wallets.into_inner() {
             let pub_key = wallet.pub_key;
             index.put(&pub_key, wallet);
@@ -165,13 +157,12 @@ fn create_wallets(db: State<MemoryDB>, wallets: Json<Vec<Wallet>>) -> Json<Index
     db.merge(fork.into_patch()).unwrap();
     Json(info)
 }
-//
+
 #[delete("/")]
-fn reset(db: State<MemoryDB>) {
-    let mut fork = db.fork();
+fn reset(db: State<TemporaryDB>) {
+    let fork = db.fork();
     {
-        let mut index: ProofMapIndex<_, PublicKey, Wallet> =
-            ProofMapIndex::new(INDEX_NAME, &mut fork);
+        let mut index: ProofMapIndex<_, PublicKey, Wallet> = ProofMapIndex::new(INDEX_NAME, &fork);
         index.clear();
     }
     db.merge(fork.into_patch()).unwrap();
@@ -196,41 +187,47 @@ fn generate_proof(params: Form<RandomParams>) -> Result<Json<WalletProof>, BadRe
         )));
     }
     let missing_keys = params.missing_keys.unwrap_or(wallets_in_proof);
-    let mut rng: StdRng = SeedableRng::seed_from_u64(params.seed);
-    let db = MemoryDB::new();
-    let mut fork = db.fork();
-    let mut index: ProofMapIndex<_, PublicKey, Wallet> = ProofMapIndex::new(INDEX_NAME, &mut fork);
+    let mut rng = ChaChaRng::seed_from_u64(params.seed);
+    let db = TemporaryDB::new();
+    let fork = db.fork();
+    let wallet_keys = {
+        let mut index: ProofMapIndex<_, PublicKey, Wallet> = ProofMapIndex::new(INDEX_NAME, &fork);
 
-    let wallets = (0..params.wallets)
-        .map(|_| {
+        let wallets = (0..params.wallets)
+            .map(|_| {
+                let mut seed = [0u8; 32];
+                rng.fill_bytes(&mut seed);
+                let (pub_key, _) = gen_keypair_from_seed(&Seed::new(seed));
+                let uuid = UuidBuilder::from_bytes(rng.gen()).build();
+                Wallet::new(&pub_key, &pub_key.to_string()[..8], u64::from(rng.next_u32()), uuid)
+            })
+            .collect::<Vec<_>>();
+
+        let mut wallet_keys = wallets
+            .choose_multiple(&mut rng, wallets_in_proof)
+            .into_iter()
+            .map(|wallet| wallet.pub_key)
+            .collect::<Vec<_>>();
+        let missing_keys = (0..missing_keys).map(|_| {
             let mut seed = [0u8; 32];
             rng.fill_bytes(&mut seed);
-            let (pub_key, _) = gen_keypair_from_seed(&Seed::new(seed));
-            let uuid = Uuid::new_v4();
-            Wallet::new(&pub_key, &pub_key.to_string()[..8], rng.next_u64(), uuid)
-        })
-        .collect::<Vec<_>>();
+            gen_keypair_from_seed(&Seed::new(seed)).0
+        });
+        wallet_keys.extend(missing_keys);
 
-    let mut wallet_keys = wallets
-        .choose_multiple(&mut rng, wallets_in_proof)
-        .into_iter()
-        .map(|wallet| wallet.pub_key)
-        .collect::<Vec<_>>();
-    let missing_keys = (0..missing_keys).map(|_| {
-        let mut seed = [0u8; 32];
-        rng.fill_bytes(&mut seed);
-        gen_keypair_from_seed(&Seed::new(seed)).0
-    });
-    wallet_keys.extend(missing_keys);
+        for wallet in wallets {
+            let key = wallet.pub_key;
+            index.put(&key, wallet);
+        }
+        wallet_keys
+    };
 
-    for wallet in wallets {
-        let key = wallet.pub_key;
-        index.put(&key, wallet);
-    }
-
+    db.merge(fork.into_patch()).unwrap();
+    let snapshot = db.snapshot();
+    let index: ProofMapIndex<_, PublicKey, Wallet> = ProofMapIndex::new(INDEX_NAME, &snapshot);
     Ok(Json(WalletProof {
         proof: index.get_multiproof(wallet_keys),
-        trusted_root: index.merkle_root(),
+        trusted_root: index.object_hash(),
     }))
 }
 
@@ -254,6 +251,6 @@ fn main() {
                 reset,
             ],
         )
-        .manage(MemoryDB::new())
+        .manage(TemporaryDB::new())
         .launch();
 }

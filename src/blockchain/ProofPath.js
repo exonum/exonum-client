@@ -4,6 +4,11 @@ import {
   hexadecimalToBinaryString
 } from '../types/convert'
 
+/**
+ * Length of a path to a terminal node in bits.
+ *
+ * @type {number}
+ */
 const BIT_LENGTH = 256
 
 export default class ProofPath {
@@ -11,6 +16,7 @@ export default class ProofPath {
    * Constructs a proof path from a binary string or a byte buffer.
    *
    * @param {string | Uint8Array} bits
+   * @param {number} bitLength?
    */
   constructor (bits, bitLength = BIT_LENGTH) {
     if (typeof bits === 'string') {
@@ -22,13 +28,17 @@ export default class ProofPath {
       throw new TypeError('Invalid `bits` parameter')
     }
 
-    this.isTerminal = bitLength === BIT_LENGTH
-    this.lengthByte = bitLength % BIT_LENGTH
+    this.bitLength = bitLength
     this.hexKey = uint8ArrayToHexadecimal(this.key)
   }
 
-  bitLength () {
-    return this.isTerminal ? BIT_LENGTH : this.lengthByte
+  /**
+   * Checks if this path corresponds to the terminal node / leaf in the Merkle Patricia tree.
+   *
+   * @returns {boolean}
+   */
+  isTerminal () {
+    return this.bitLength === BIT_LENGTH
   }
 
   /**
@@ -39,7 +49,7 @@ export default class ProofPath {
    */
   bit (pos) {
     pos = +pos
-    if (pos >= this.bitLength() || pos < 0) {
+    if (pos >= this.bitLength || pos < 0) {
       return undefined
     }
 
@@ -47,7 +57,7 @@ export default class ProofPath {
   }
 
   commonPrefixLength (other) {
-    const intersectingBits = Math.min(this.bitLength(), other.bitLength())
+    const intersectingBits = Math.min(this.bitLength, other.bitLength)
 
     // First, advance by a full byte while it is possible
     let pos
@@ -55,7 +65,7 @@ export default class ProofPath {
       pos < intersectingBits >> 3 && this.key[pos >> 3] === other.key[pos >> 3];
       pos += 8) ;
 
-    // Then, check inidividual bits
+    // Then, check individual bits
     for (; pos < intersectingBits && this.bit(pos) === other.bit(pos); pos++) ;
 
     return pos
@@ -79,7 +89,7 @@ export default class ProofPath {
    * @returns {boolean}
    */
   startsWith (other) {
-    return this.commonPrefixLength(other) === other.bitLength()
+    return this.commonPrefixLength(other) === other.bitLength
   }
 
   /**
@@ -89,7 +99,7 @@ export default class ProofPath {
    * @returns {-1 | 0 | 1}
    */
   compare (other) {
-    const [thisLen, otherLen] = [this.bitLength(), other.bitLength()]
+    const [thisLen, otherLen] = [this.bitLength, other.bitLength]
     const intersectingBits = Math.min(thisLen, otherLen)
     const pos = this.commonPrefixLength(other)
 
@@ -109,9 +119,9 @@ export default class ProofPath {
    */
   truncate (bits) {
     bits = +bits
-    if (bits > this.bitLength()) {
+    if (bits > this.bitLength) {
       throw new TypeError('Cannot truncate bit slice to length more than current ' +
-        `(current: ${this.bitLength()}, requested: ${bits})`)
+        `(current: ${this.bitLength}, requested: ${bits})`)
     }
 
     const bytes = new Uint8Array(BIT_LENGTH / 8)
@@ -126,6 +136,31 @@ export default class ProofPath {
   }
 
   /**
+   * Serializes this path into a buffer. The serialization is performed according as follows:
+   *
+   * 1. Serialize number of bits in the path in LEB128 encoding.
+   * 2. Serialize bits with zero padding to the right.
+   *
+   * @param {Array<number>} buffer
+   */
+  serialize (buffer) {
+    if (this.bitLength < 128) {
+      buffer.push(this.bitLength)
+    } else {
+      // The length is encoded as two bytes.
+      // The first byte contains the lower 7 bits of the length, and has the highest bit set
+      // as per LEB128. The second byte contains the upper bit of the length
+      // (i.e., 1 or 2), thus, it always equals 1 or 2.
+      buffer.push(128 + (this.bitLength % 128), this.bitLength >> 7)
+    }
+
+    // Copy the bits.
+    for (let pos = 0; pos < (this.bitLength + 7) >> 3; pos++) {
+      buffer.push(this.key[pos])
+    }
+  }
+
+  /**
    * Converts this path to its JSON presentation.
    *
    * @returns {string}
@@ -133,14 +168,14 @@ export default class ProofPath {
    */
   toJSON () {
     const bits = hexadecimalToBinaryString(this.hexKey)
-    return trimZeros(bits, this.bitLength())
+    return trimZeros(bits, this.bitLength)
   }
 
   toString () {
     let bits = hexadecimalToBinaryString(this.hexKey)
-    bits = (this.bitLength() > 8)
+    bits = (this.bitLength > 8)
       ? trimZeros(bits, 8) + '...'
-      : trimZeros(bits, this.bitLength())
+      : trimZeros(bits, this.bitLength)
     return `path(${bits})`
   }
 }

@@ -1,5 +1,7 @@
 /* eslint-env node, mocha */
 
+import { hexadecimalToBinaryString } from '../../src/types'
+
 const sha = require('sha.js')
 const expect = require('chai')
   .use(require('dirty-chai'))
@@ -16,7 +18,7 @@ const samples = require('./data/map-proof.json')
 /**
  * Helper function for hashing a variable number of arguments.
  *
- * @param {Array<string | number[] | Uint8Array>} args
+ * @param {string | number[] | Uint8Array} args
  */
 function streamHash (...args) {
   const stream = args.reduce((acc, arg) => {
@@ -47,8 +49,7 @@ describe('ProofPath', () => {
     binaryStrings.forEach(seq => {
       it(`should construct path from short bit sequence: ${seq}`, () => {
         const path = new ProofPath(seq)
-        expect(path.bitLength()).to.equal(seq.length)
-        expect(path.isTerminal).to.be.false()
+        expect(path.bitLength).to.equal(seq.length)
 
         for (let i = 0; i < seq.length; i++) {
           expect(+seq[i]).to.equal(path.bit(i))
@@ -65,8 +66,7 @@ describe('ProofPath', () => {
       expect(bits).to.match(/^[01]{256}$/)
 
       const path = new ProofPath(bits)
-      expect(path.bitLength()).to.equal(256)
-      expect(path.isTerminal).to.be.true()
+      expect(path.bitLength).to.equal(256)
       for (let i = 0; i < bits.length; i++) {
         expect(+bits[i]).to.equal(path.bit(i))
       }
@@ -77,8 +77,7 @@ describe('ProofPath', () => {
       buffer[0] = 1
 
       const path = new ProofPath(buffer)
-      expect(path.bitLength()).to.equal(256)
-      expect(path.isTerminal).to.be.true()
+      expect(path.bitLength).to.equal(256)
       expect(path.bit(0)).to.equal(1)
       for (let i = 1; i < 256; i++) {
         expect(path.bit(i)).to.equal(0)
@@ -169,6 +168,50 @@ describe('ProofPath', () => {
     })
   })
 
+  describe('serialize', () => {
+    it('should work for a terminal key', () => {
+      const path = new ProofPath('1'.repeat(256))
+      const buffer = []
+      path.serialize(buffer)
+      let expectedBuffer = [128, 2]
+      for (let i = 0; i < 32; i++) {
+        expectedBuffer.push(255)
+      }
+      expect(buffer).to.deep.equal(expectedBuffer)
+
+      const nonEmptyBuffer = [1, 2, 3]
+      path.serialize(nonEmptyBuffer)
+      expectedBuffer = [1, 2, 3, 128, 2]
+      for (let i = 0; i < 32; i++) {
+        expectedBuffer.push(255)
+      }
+      expect(nonEmptyBuffer).to.deep.equal(expectedBuffer)
+    })
+
+    it('should work for a short non-terminal key', () => {
+      let buffer = []
+      let path = new ProofPath('10110')
+      path.serialize(buffer)
+      expect(buffer).to.deep.equal([5, 0b00001101])
+
+      buffer = []
+      path = new ProofPath('10110101')
+      path.serialize(buffer)
+      expect(buffer).to.deep.equal([8, 0b10101101])
+    })
+
+    it('should work for a long non-terminal key', () => {
+      const buffer = []
+      const path = new ProofPath('10110001'.repeat(29))
+      path.serialize(buffer)
+      const expectedBuffer = [128 + (29 * 8 % 128), 1]
+      for (let i = 0; i < 29; i++) {
+        expectedBuffer.push(0b10001101)
+      }
+      expect(buffer).to.deep.equal(expectedBuffer)
+    })
+  })
+
   describe('truncate', () => {
     binaryStrings.forEach(str => {
       const repr = (str.length > 40) ? str.substring(0, 40) + '...' : str
@@ -176,7 +219,7 @@ describe('ProofPath', () => {
       for (let len = 0; len < str.length; len++) {
         it(`should truncate bit string ${repr} to length ${len}`, () => {
           const path = new ProofPath(str).truncate(len)
-          expect(path.bitLength()).to.equal(len)
+          expect(path.bitLength).to.equal(len)
           expect(path.toJSON()).to.equal(str.substring(0, len))
         })
       }
@@ -312,16 +355,6 @@ describe('MapProof', () => {
       const json = { entries: [], proof: [] }
       const MyType = { foo: 'bar' }
       expect(() => new MapProof(json, PublicKey, MyType)).to.throw('value type')
-    })
-
-    it('should fail on incorrect key type serialization size', () => {
-      const json = {
-        proof: [],
-        entries: [
-          { missing: 100 }
-        ]
-      }
-      expect(() => new MapProof(json, Exonum.Uint16, Wallet)).to.throw('key type')
     })
   })
 
@@ -466,27 +499,31 @@ describe('MapProof', () => {
       expect(() => new MapProof(json, PublicKey, Exonum.Uint16))
         .to.throw('path(0) is a prefix of path(001)')
 
-      json = {
-        entries: [
-          { key: '3434343434343434343434343434343434343434343434343434343434343434', value: 10000 }
-        ],
-        proof: [
-          { path: '001', hash: '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011' }
-        ]
-      }
-      expect(() => new MapProof(json, PublicKey, Exonum.Uint16))
-        .to.throw('path(001) is a prefix of path(00101100')
+      const keyByte = '03'
+      const keyBits = hexadecimalToBinaryString(streamHash(keyByte.repeat(32)))
+      expect(keyBits).to.match(/^001/)
 
       json = {
         entries: [
-          { missing: '3434343434343434343434343434343434343434343434343434343434343434' }
+          { key: keyByte.repeat(32), value: 10000 }
         ],
         proof: [
           { path: '001', hash: '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011' }
         ]
       }
       expect(() => new MapProof(json, PublicKey, Exonum.Uint16))
-        .to.throw('path(001) is a prefix of path(00101100')
+        .to.throw('path(001) is a prefix')
+
+      json = {
+        entries: [
+          { missing: keyByte.repeat(32) }
+        ],
+        proof: [
+          { path: '001', hash: '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011' }
+        ]
+      }
+      expect(() => new MapProof(json, PublicKey, Exonum.Uint16))
+        .to.throw('path(001) is a prefix')
     })
 
     it('should throw on duplicate paths', () => {
@@ -511,9 +548,9 @@ describe('MapProof', () => {
         proof: []
       }
       expect(() => new MapProof(json, PublicKey, Exonum.Uint16))
-        .to.throw('duplicate path(00101100')
+        .to.throw('duplicate path')
 
-      const path = Exonum.hexadecimalToBinaryString(json.entries[0].missing)
+      const path = Exonum.hexadecimalToBinaryString(streamHash(json.entries[0].missing))
       json = {
         entries: [
           { missing: '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011' }
@@ -523,7 +560,7 @@ describe('MapProof', () => {
         ]
       }
       expect(() => new MapProof(json, PublicKey, Exonum.Uint16))
-        .to.throw('duplicate path(00101100')
+        .to.throw('duplicate path')
     })
 
     it('should throw on unordered paths in proof', () => {
@@ -546,7 +583,10 @@ describe('MapProof', () => {
         proof: []
       }, PublicKey, Exonum.Uint16)
 
-      const expHash = '0000000000000000000000000000000000000000000000000000000000000000'
+      const expHash = sha('sha256')
+        .update([3])
+        .update(new Uint8Array(32))
+        .digest('hex')
       expect(proof.merkleRoot).to.equal(expHash)
     })
 
@@ -559,12 +599,13 @@ describe('MapProof', () => {
         proof: []
       }, PublicKey, Exonum.Uint16)
 
-      const expHash = streamHash(
-        Exonum.Bool.serialize(true, [], 0),
-        Exonum.PublicKey.serialize(key, [], 0),
-        Exonum.Uint8.serialize(0, [], 0),
-        Exonum.hash(Exonum.Uint16.serialize(100, [], 0))
+      const nodeHash = streamHash(
+        [4, 1],
+        streamHash(key),
+        [0],
+        streamHash([0, 100, 0]) // Blob marker + little-endian encoding of the value
       )
+      const expHash = streamHash([3], nodeHash)
       expect(proof.merkleRoot).to.equal(expHash)
     })
 
@@ -580,12 +621,13 @@ describe('MapProof', () => {
         ]
       }, PublicKey, Exonum.Uint16)
 
-      const expHash = streamHash(
-        Exonum.Bool.serialize(true, [], 0),
+      const nodeHash = streamHash(
+        [4, 1],
         Exonum.PublicKey.serialize(key, [], 0),
-        Exonum.Uint8.serialize(0, [], 0),
+        [0],
         key
       )
+      const expHash = streamHash([3], nodeHash)
       expect(proof.merkleRoot).to.equal(expHash)
     })
 
@@ -604,18 +646,16 @@ describe('MapProof', () => {
         ]
       }, PublicKey, Exonum.Uint16)
 
-      const expHash = streamHash(
-        '0000000000000000000000000000000000000000000000000000000000000000',
-        '0f00000000000000000000000000000000000000000000000000000000000000',
-        // left path
-        Exonum.Bool.serialize(false, [], 0),
-        '0000000000000000000000000000000000000000000000000000000000000000',
-        Exonum.Uint8.serialize(1, [], 0),
-        // right path
-        Exonum.Bool.serialize(false, [], 0),
-        '0100000000000000000000000000000000000000000000000000000000000000',
-        Exonum.Uint8.serialize(2, [], 0)
+      const nodeHash = streamHash(
+        [4], // marker
+        '0000000000000000000000000000000000000000000000000000000000000000', // left hash
+        '0f00000000000000000000000000000000000000000000000000000000000000', // right hash
+        // left path:
+        [1, 0], // LEB128-encoded bit length 1 + first byte of the key
+        // right path:
+        [2, 0b00000001] // LEB128-encoded bit length 2 + first byte of the key
       )
+      const expHash = streamHash([3], nodeHash)
       expect(proof.merkleRoot).to.equal(expHash)
     })
   })
@@ -639,7 +679,7 @@ describe('MapProof', () => {
           break
         case 'UniqueHash':
           valueType = {
-            hash: (value) => value
+            serialize: (value) => value
           }
           break
         case 'Uint16':

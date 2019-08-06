@@ -94,27 +94,24 @@ describe('Verify block of precommits', function () {
 
 describe('Verify table existence', function () {
   const proof = {
-    'entries': [
-      {
-        'key': '50c8ba3a6170f0a2fb6736ece8a603576ef6309a35e810911599bc6211b554a9',
-        'value': 'b6515d670579b2932bc4295398a631f2b57bf4690f8a61893b02a470649022a2'
-      }
-    ],
+    'entries': [{
+      'key': '50c8ba3a6170f0a2fb6736ece8a603576ef6309a35e810911599bc6211b554a9',
+      'value': '8ea22c377194b41307f8c8db6271737f0dfe938ad2ec21184f785ab39430bb13'
+    }],
     'proof': [
       {
         'path': '0000101010101110110000001010110110011000000001100011001110110111000101011001101100100100000010011111001000011101110010101110111001111111101111101110100011111110000111011111101111110011011010100100110101110010101000101110101000100110011100100010101101100001',
-        'hash': '0000000000000000000000000000000000000000000000000000000000000000'
+        'hash': '5e543acd420b34b729fded566a8641f81f16694ee176de0e7574181c91cfd54f'
       },
       {
         'path': '11',
-        'hash': '9a956751533579014822f8265925f7ed591a9af654e75b129f999e549f7e8ae6'
-      }
-    ]
+        'hash': 'a9eb38ea8dd87f2e09652904d3df5d81b3babcdad0a9dc050093a5291b2f98f5'
+      }]
   }
   const serviceId = 128
   const tableIndex = 0
-  const stateHash = '6a445788116c7c95417de326720bb1a9e56f01d2fe72315b4879b58be905bd02'
-  const rootHash = 'b6515d670579b2932bc4295398a631f2b57bf4690f8a61893b02a470649022a2'
+  const stateHash = '14bb036786f213f573dc50f2550f8d23664ce9a3f3c32ea4060d704e139ac51b'
+  const rootHash = '8ea22c377194b41307f8c8db6271737f0dfe938ad2ec21184f785ab39430bb13'
 
   it('should return root hash when valid proof', function () {
     expect(Exonum.verifyTable(proof, stateHash, serviceId, tableIndex)).to.equals(rootHash)
