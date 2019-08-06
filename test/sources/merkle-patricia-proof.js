@@ -679,7 +679,7 @@ describe('MapProof', () => {
           break
         case 'UniqueHash':
           valueType = {
-            hash: (value) => value
+            serialize: (value) => value
           }
           break
         case 'Uint16':
