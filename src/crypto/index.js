@@ -7,6 +7,12 @@ import * as validate from '../types/validate'
 import * as convert from '../types/convert'
 
 /**
+ * Byte size of a hash.
+ * @type {number}
+ */
+export const HASH_LENGTH = 32
+
+/**
  * Get SHA256 hash
  * @param {Object|Array|Uint8Array} data - object of NewType type or array of 8-bit integers
  * @param {Type|Transaction} [type] - optional, used only if data of {Object} type is passed
