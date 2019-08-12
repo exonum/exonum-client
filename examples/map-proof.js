@@ -19,12 +19,12 @@ WalletSchema.add(new Field('uniq_id', 4, 'string'))
 const Wallet = Exonum.newType(WalletSchema)
 
 // This proof JSON for 2 existing and 2 missing wallets is generated
-// with the help of the `/random` endpoint of the integration test server
+// with the help of the `/wallets/random` endpoint of the integration test server
 // (located in the `integration-tests` directory):
 //
 //   cd integration-tests
 //   cargo run &
-//   curl http://localhost:8000/random?seed=1337&wallets=20&wallets_in_proof=2
+//   curl http://localhost:8000/wallets/random?seed=1337&wallets=20&wallets_in_proof=2
 let proof = {
   entries: [
     {
