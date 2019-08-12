@@ -164,7 +164,7 @@ describe('Check proof of Merkle tree', function () {
       rootHash,
       4,
       proof,
-      [0, 4],
+      [0, 3],
       Exonum.Hash
     )
     expect(elements).to.deep.equal([
