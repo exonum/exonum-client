@@ -228,7 +228,7 @@ export function merkleProof (rootHash, count, proofNode, range, type) {
   if (rootHash.toLowerCase() !== actualHash) {
     throw new Error('rootHash parameter is not equal to actual hash.')
   }
-  if (bigInt(elements.length).neq(end.eq(start) ? 1 : end.minus(start).plus(1))) {
+  if (bigInt(elements.length).neq(end.minus(start).plus(1))) {
     throw new Error('Actual elements in tree amount is not equal to requested.')
   }
 
