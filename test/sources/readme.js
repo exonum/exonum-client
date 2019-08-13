@@ -89,7 +89,7 @@ describe('Examples from README.md', function () {
 
   describe('Merkle tree verifying example', function () {
     it('should verify a Merkle tree', function () {
-      const rootHash = '1b896884ccc3777b961b7cc3b120d96a79861f19510ace2d36ec2d52648f5821'
+      const rootHash = 'e8191f90b68102a3ea427118646add7c7dddfa9a14ef33f95c051891fad5c38b'
       const count = 3
       const proofNode = {
         left: {
@@ -124,7 +124,7 @@ describe('Examples from README.md', function () {
     })
 
     it('should verify a Merkle tree with elements passed as hashes', function () {
-      const rootHash = 'd61dc473664954eaffc1c418a55cab83f7b49cc4276a8a799a42cbdc9722a009'
+      const rootHash = '553c53eab1505aef358f078ef8102801240599ea5ac3dc97f4c8e146db391c80'
       const count = 2
       const proofNode = {
         left: {
@@ -143,7 +143,7 @@ describe('Examples from README.md', function () {
     })
 
     it('should verify a Merkle tree with elements passed as byte arrays', function () {
-      const rootHash = '6956f2d3b391b1106e160210de1345c563cbece4199fd13f5c195207e429ff13'
+      const rootHash = '3f29780d915d5111e7852751684fee505f671520044fb6c01df9dd2283237a80'
       const count = 8
       const proofNode = {
         left: {
