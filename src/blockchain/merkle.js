@@ -3,7 +3,8 @@ import { isObject } from '../helpers'
 import { isType } from '../types/generic'
 import { validateHexadecimal, validateBytesArray } from '../types/validate'
 import { hexadecimalToUint8Array } from '../types/convert'
-import { hash } from '../crypto'
+import { hash, HASH_LENGTH } from '../crypto'
+import { BLOB_PREFIX, LIST_PREFIX, LIST_BRANCH_PREFIX } from './constants'
 
 /**
  * Calculate height of merkle tree
@@ -80,7 +81,10 @@ export function merkleProof (rootHash, count, proofNode, range, type) {
     }
 
     elements.push(element)
-    return elementsHash
+    const hashedBuffer = new Uint8Array(1 + HASH_LENGTH)
+    hashedBuffer[0] = BLOB_PREFIX
+    hashedBuffer.set(hexadecimalToUint8Array(elementsHash), 1)
+    return hash(hashedBuffer)
   }
 
   /**
@@ -93,7 +97,6 @@ export function merkleProof (rootHash, count, proofNode, range, type) {
   function recursive (node, depth, index) {
     let hashLeft
     let hashRight
-    let summingBuffer
 
     // case with single node in tree
     if (depth === 0 && node.val !== undefined) {
@@ -141,17 +144,20 @@ export function merkleProof (rootHash, count, proofNode, range, type) {
         }
       }
 
-      summingBuffer = new Uint8Array(64)
-      summingBuffer.set(hexadecimalToUint8Array(hashLeft))
-      summingBuffer.set(hexadecimalToUint8Array(hashRight), 32)
-      return hash(summingBuffer)
+      const hashedBuffer = new Uint8Array(1 + 2 * HASH_LENGTH)
+      hashedBuffer[0] = LIST_BRANCH_PREFIX
+      hashedBuffer.set(hexadecimalToUint8Array(hashLeft), 1)
+      hashedBuffer.set(hexadecimalToUint8Array(hashRight), 1 + HASH_LENGTH)
+      return hash(hashedBuffer)
     }
 
     if (depth === 0 || rootBranch === 'left') {
       throw new Error('Right leaf is missed in left branch of tree.')
     }
-    summingBuffer = hexadecimalToUint8Array(hashLeft)
-    return hash(summingBuffer)
+    const hashedBuffer = new Uint8Array(1 + HASH_LENGTH)
+    hashedBuffer[0] = LIST_BRANCH_PREFIX
+    hashedBuffer.set(hexadecimalToUint8Array(hashLeft), 1)
+    return hash(hashedBuffer)
   }
 
   // validate rootHash
@@ -206,12 +212,23 @@ export function merkleProof (rootHash, count, proofNode, range, type) {
   const start = rangeStart
   const end = rangeEnd.lt(count) ? rangeEnd : count.minus(1)
 
-  const actualHash = recursive(proofNode, 0, 0)
+  const merkleRoot = recursive(proofNode, 0, 0)
+  const hashedBuffer = new Uint8Array(9 + HASH_LENGTH)
+  hashedBuffer[0] = LIST_PREFIX
+  // Set bytes 1..9 as little-endian list length
+  let quotient = count
+  for (let byte = 1; byte < 9; byte++) {
+    let remainder
+    ({ quotient, remainder } = quotient.divmod(256))
+    hashedBuffer[byte] = remainder
+  }
+  hashedBuffer.set(hexadecimalToUint8Array(merkleRoot), 9)
+  const actualHash = hash(hashedBuffer)
 
   if (rootHash.toLowerCase() !== actualHash) {
     throw new Error('rootHash parameter is not equal to actual hash.')
   }
-  if (bigInt(elements.length).neq(end.eq(start) ? 1 : end.minus(start).plus(1))) {
+  if (bigInt(elements.length).neq(end.minus(start).plus(1))) {
     throw new Error('Actual elements in tree amount is not equal to requested.')
   }
 

@@ -16,9 +16,11 @@
 
 #![feature(proc_macro_hygiene, decl_macro)]
 
-use exonum::crypto::{gen_keypair_from_seed, Hash, PublicKey, Seed};
+use exonum::crypto::{gen_keypair_from_seed, Hash, PublicKey, Seed, HASH_SIZE};
 use exonum_derive::*;
-use exonum_merkledb::{Database, MapProof, ObjectHash, ProofMapIndex, TemporaryDB};
+use exonum_merkledb::{
+    Database, ListProof, MapProof, ObjectHash, ProofListIndex, ProofMapIndex, TemporaryDB,
+};
 use failure::{format_err, Error};
 use rand::{seq::SliceRandom, Rng, RngCore, SeedableRng};
 use rand_chacha::ChaChaRng;
@@ -199,7 +201,12 @@ fn generate_proof(params: Form<RandomParams>) -> Result<Json<WalletProof>, BadRe
                 rng.fill_bytes(&mut seed);
                 let (pub_key, _) = gen_keypair_from_seed(&Seed::new(seed));
                 let uuid = UuidBuilder::from_bytes(rng.gen()).build();
-                Wallet::new(&pub_key, &pub_key.to_string()[..8], u64::from(rng.next_u32()), uuid)
+                Wallet::new(
+                    &pub_key,
+                    &pub_key.to_string()[..8],
+                    u64::from(rng.next_u32()),
+                    uuid,
+                )
             })
             .collect::<Vec<_>>();
 
@@ -231,6 +238,58 @@ fn generate_proof(params: Form<RandomParams>) -> Result<Json<WalletProof>, BadRe
     }))
 }
 
+#[derive(Debug, FromForm)]
+struct RandomListParams {
+    seed: u64,
+    count: u64,
+    start: Option<u64>,
+    end: Option<u64>,
+}
+
+#[derive(Debug, Serialize)]
+struct HashListProof {
+    proof: ListProof<Hash>,
+    trusted_root: Hash,
+}
+
+#[get("/random?<params..>")]
+fn generate_list_proof(
+    params: Form<RandomListParams>,
+) -> Result<Json<HashListProof>, BadRequest<String>> {
+    let start_index = params.start.unwrap_or_default();
+    if start_index >= params.count {
+        return Err(BadRequest(Some(
+            "start index exceeds list length".to_string(),
+        )));
+    }
+    let end_index = params.end.unwrap_or(params.count);
+    if end_index <= start_index {
+        return Err(BadRequest(Some(
+            "end index is greater than start index".to_string(),
+        )));
+    }
+
+    let mut rng = ChaChaRng::seed_from_u64(params.seed);
+    let db = TemporaryDB::new();
+    let fork = db.fork();
+    {
+        let mut index: ProofListIndex<_, Hash> = ProofListIndex::new(INDEX_NAME, &fork);
+        index.extend((0..params.count).map(|_| {
+            let mut bytes = [0; HASH_SIZE];
+            rng.fill_bytes(&mut bytes[..]);
+            Hash::new(bytes)
+        }));
+    }
+
+    db.merge(fork.into_patch()).unwrap();
+    let snapshot = db.snapshot();
+    let index: ProofListIndex<_, Hash> = ProofListIndex::new(INDEX_NAME, &snapshot);
+    Ok(Json(HashListProof {
+        proof: index.get_range_proof(start_index..end_index),
+        trusted_root: index.object_hash(),
+    }))
+}
+
 fn config() -> Config {
     Config::build(Environment::Development)
         .address("127.0.0.1")
@@ -241,7 +300,7 @@ fn config() -> Config {
 fn main() {
     rocket::custom(config())
         .mount(
-            "/",
+            "/wallets",
             routes![
                 generate_proof,
                 get_wallets,
@@ -251,6 +310,7 @@ fn main() {
                 reset,
             ],
         )
+        .mount("/hash-list", routes![generate_list_proof])
         .manage(TemporaryDB::new())
         .launch();
 }

@@ -141,48 +141,37 @@ describe('Check proof of Merkle tree', function () {
   })
 
   it('should return array of children of valid tree with hashes as values', function () {
-    const data = require('./common_data/merkle-tree/valid-merkle-tree-with-hashes-as-values.json')
-    const elements = Exonum.merkleProof(
-      data.root_hash,
-      data.list_length,
-      data.proof,
-      [data.range_st, data.range_end - 1]
-    )
-    expect(elements).to.deep.equal([
-      'eeeebb395347996b3ee7aa2e91f9b74c498c84440ec98bc1dac97fa8a3aac38c',
-      'fc44dbdc3cf6adbe4b75937c3cca9d632abaf53d8326fe8a8943964a25cf2e1e',
-      'a90939b4eaefcaf740ca80a704efafa25230e4995eeb381e9410d7b07b1b140b'
-    ])
-  })
-
-  it('should return array of children of valid tree with hashes as values', function () {
     const proof = {
       left: {
         left: {
-          val: '228ad47f29a1978a0e50b6dec64f530cd626501df07ec75ee7be8cb1e22a82bd'
+          val: '5d70e5b51e7a502fa251589d97e08de61be81c013b8ec22b831e2fc64b6d8303'
         },
         right: {
-          val: '2e964f57ac702737a6d1d0d5ecc68a48ff64c3a32efffa4bfc476d960a7e678d'
+          val: 'baa5ae0e76d648fcf7607a058efd0632710c30da2502e40e35965a658add895d'
         }
       },
       right: {
         left: {
-          val: '89f5c626f30f0e38dac16754432c6307f5593d00142e0ffd34f9d05b0539b1e7'
+          val: '641e76a0e5dcb1751bba6f52ca1c08f025cdda934cf93bb3bf691947b672a124'
+        },
+        right: {
+          val: '3692ff9ef7639cc9b55b0f43230412facff6dba2ac185ccb4d5bc03030c1e459'
         }
       }
     }
-    const rootHash = 'e6a4349d4c0f2e07c44f145cf765318ce14a0c869ca458e12bdae4724df853d4'
+    const rootHash = '69f94f42a4674202b061a032afada281091dd3acb5c2cdd0b1cde68106252657'
     const elements = Exonum.merkleProof(
       rootHash,
-      3,
+      4,
       proof,
       [0, 3],
       Exonum.Hash
     )
     expect(elements).to.deep.equal([
-      '228ad47f29a1978a0e50b6dec64f530cd626501df07ec75ee7be8cb1e22a82bd',
-      '2e964f57ac702737a6d1d0d5ecc68a48ff64c3a32efffa4bfc476d960a7e678d',
-      '89f5c626f30f0e38dac16754432c6307f5593d00142e0ffd34f9d05b0539b1e7'
+      '5d70e5b51e7a502fa251589d97e08de61be81c013b8ec22b831e2fc64b6d8303',
+      'baa5ae0e76d648fcf7607a058efd0632710c30da2502e40e35965a658add895d',
+      '641e76a0e5dcb1751bba6f52ca1c08f025cdda934cf93bb3bf691947b672a124',
+      '3692ff9ef7639cc9b55b0f43230412facff6dba2ac185ccb4d5bc03030c1e459'
     ])
   })
 

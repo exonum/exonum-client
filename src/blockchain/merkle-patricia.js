@@ -2,29 +2,9 @@ import binarySearch from 'binary-search'
 
 import { hash } from '../crypto'
 import { Hash } from '../types/hexadecimal'
+import { BLOB_PREFIX, MAP_PREFIX, MAP_BRANCH_PREFIX } from './constants'
 import ProofPath from './ProofPath'
 import { hexadecimalToUint8Array } from '../types'
-
-/**
- * Prefix marker for a blob node in a `ProofMapIndex`.
- *
- * @type {number}
- */
-const BLOB_PREFIX = 0
-/**
- * Prefix marker for an intermediate `ProofMapIndex` nodes.
- * It is defined in the `HashTag` enum in the `exonum_merkledb` crate.
- *
- * @type {number}
- */
-const MAP_BRANCH_PREFIX = 4
-/**
- * Prefix marker for a `ProofMapIndex` object.
- * It is defined in the `HashTag` enum in the `exonum_merkledb` crate.
- *
- * @type {number}
- */
-const MAP_PREFIX = 3
 
 /**
  * Proof of existence and/or absence of certain elements from a Merkelized
