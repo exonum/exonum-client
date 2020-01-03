@@ -51,7 +51,7 @@ jobs:
   include:
   - env: FEATURE=integration
     language: rust
-    rust: 1.40.0
+    rust: nightly-2019-12-03
     before_install:
     - nvm install 10 && nvm use 10
     - node --version

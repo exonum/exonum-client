@@ -11,19 +11,19 @@ build = "build.rs"
 exonum = { version = "0.11.0", git = "https://github.com/exonum/exonum", rev = "10451e1" }
 exonum-merkledb = { version = "0.11.0", git = "https://github.com/exonum/exonum", rev = "10451e1" }
 exonum-derive = { version = "0.11.0", git = "https://github.com/exonum/exonum", rev = "10451e1" }
-hex = "0.3.2"
-failure = "0.1.5"
-protobuf = "2.6.2"
-rand = "0.6"
-rand_chacha = "0.1"
-rocket = "0.4.1"
-rocket_codegen = "0.4.1"
+hex = "0.4.0"
+failure = "0.1.6"
+protobuf = "2.10.0"
+rand = "0.7.2"
+rand_chacha = "0.2.1"
+rocket = "0.4.2"
+rocket_codegen = "0.4.2"
 serde = "1.0"
 serde_derive = "1.0"
-uuid = "0.7.4"
+uuid = "0.8.1"
 
 [dependencies.rocket_contrib]
-version = "0.4.1"
+version = "0.4.2"
 default-features = false
 features = ["json"]
 
