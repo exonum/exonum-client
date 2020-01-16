@@ -106,7 +106,7 @@ Before the transaction is signed it is converted into byte array under the hood.
 The data received from the blockchain should be converted into byte array under the hood
 before it will be possible to [verify proof of its existence](#cryptographic-proofs) using cryptographic algorithm.
 
-Developer can both define data stuctures on the fly or use precompiled stubs wuth data structures.
+Developer can both define data stuctures on the fly or use precompiled stubs with data structures.
 
 To define protobuf structures use [protobufjs][protobufjs] library.
 
@@ -247,7 +247,7 @@ let signature = Exonum.sign(keyPair.secretKey, data, User)
 
 ### Verify signature
 
-The signature can be verified using the **author's public key**.
+The signature can be signedMessage using the **author's public key**.
 
 There are two possible signatures of the `verifySignature` function:
 
@@ -325,8 +325,8 @@ Transaction.add(new Field('amount', 3, 'uint32'))
 
 let sendFunds = Exonum.newTransaction({
   author: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
-  service_id: 130,
-  message_id: 0,
+  instance_id: 130,
+  method_id: 0,
   schema: Transaction
 })
 ```
@@ -336,8 +336,8 @@ let sendFunds = Exonum.newTransaction({
 | Property | Description | Type |
 |---|---|---|
 | **author** | Author's public key as hexadecimal string. | `String` |
-| **service_id** | [Service ID][docs:architecture:serialization:service-id]. | `Number` |
-| **message_id** | [Message ID][docs:architecture:serialization:message-id]. | `Number` |
+| **instance_id** | [Service ID][docs:architecture:serialization:service-id]. | `Number` |
+| **method_id** | [Message ID][docs:architecture:serialization:message-id]. | `Number` |
 | **schema** | Protobuf data structure. | `Array` |
 | **signature** | Signature as hexadecimal string. *Optional.* | `String` |
 
@@ -539,9 +539,7 @@ List of built-in Exonum [blockchain](proto/blockchain.proto) structures:
 | Structure | Use as |
 |---|---|
 | **Block** | `Exonum.protocol.exonum.Block` |
-| **ConfigReference** | `Exonum.protocol.exonum.ConfigReference` |
 | **TxLocation** | `Exonum.protocol.exonum.TxLocation` |
-| **TransactionResult** | `Exonum.protocol.exonum.TransactionResult` |
 
 List of built-in Exonum [consensus](proto/protocol.proto) structures:
 

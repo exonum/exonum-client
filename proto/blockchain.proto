@@ -1,4 +1,4 @@
-// Copyright 2018 The Exonum Team
+// Copyright 2020 The Exonum Team
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,28 +16,55 @@ syntax = "proto3";
 
 package exonum;
 
-import "helpers.proto";
+option java_package = "com.exonum.core.messages";
+
+import "types.proto";
+import "key_value_sequence.proto";
+
+// Extensible set of additional headers, represented
+// as a sequence of key-value pairs.
+message AdditionalHeaders {
+  KeyValueSequence headers = 1;
+}
 
 message Block {
   uint32 proposer_id = 1;
   uint64 height = 2;
   uint32 tx_count = 3;
-  exonum.Hash prev_hash = 4;
-  exonum.Hash tx_hash = 5;
-  exonum.Hash state_hash = 6;
-}
-
-message ConfigReference {
-  uint64 actual_from = 1;
-  exonum.Hash cfg_hash = 2;
+  exonum.crypto.Hash prev_hash = 4;
+  exonum.crypto.Hash tx_hash = 5;
+  exonum.crypto.Hash state_hash = 6;
+  exonum.crypto.Hash error_hash = 7;
+  AdditionalHeaders additional_headers = 8;
 }
 
 message TxLocation {
   uint64 block_height = 1;
-  uint64 position_in_block = 2;
+  uint32 position_in_block = 2;
 }
 
-message TransactionResult {
-  uint32 status = 1;
-  string description = 2;
+// Location of an isolated call within a block.
+message CallInBlock {
+  oneof call {
+    // Call of a transaction within the block. The value is the zero-based
+    // transaction index.
+    uint32 transaction = 1;
+    // Call of `before_transactions` hook in a service. The value is
+    // the service identifier.
+    uint32 before_transactions = 2;
+    // Call of `after_transactions` hook in a service. The value is
+    // the service identifier.
+    uint32 after_transactions = 3;
+  }
+}
+
+// Consensus configuration parameters
+
+// Public keys of a validator.
+message ValidatorKeys {
+  // Consensus key is used for messages related to the consensus algorithm.
+  exonum.crypto.PublicKey consensus_key = 1;
+  // Service key is used for services, for example, the configuration
+  // updater service, the anchoring service, etc.
+  exonum.crypto.PublicKey service_key = 2;
 }

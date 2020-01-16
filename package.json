@@ -61,7 +61,7 @@
   },
   "scripts": {
     "test": "grunt test",
-    "proto": "pbjs --keep-case -t static-module ./proto/protocol.proto -o ./proto/protocol.js",
+    "proto": "pbjs --keep-case -t static-module ./proto/protocol.proto ./proto/timestamp.proto ./proto/consensus.proto ./proto/runtime.proto ./proto/types.proto ./proto/blockchain.proto ./proto/common.proto ./proto/key_value_sequence.proto -o ./proto/protocol.js",
     "proto:test": "pbjs --keep-case -t static-module ./proto/protocol.proto ./test/sources/proto/**/*.proto -o ./test/sources/proto/stubs.js",
     "proto:integration-tests": "pbjs --keep-case -t static-module ./proto/protocol.proto ./integration-tests/src/proto/**/*.proto -o ./integration-tests/src/proto/stubs.js",
     "integration:build": "cargo build --manifest-path integration-tests/Cargo.toml",

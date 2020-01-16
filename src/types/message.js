@@ -1,21 +1,16 @@
-import { Uint8, Uint16 } from './primitive'
-import { Digest, PublicKey } from './hexadecimal'
+import { PublicKey } from './hexadecimal'
 import * as crypto from '../crypto'
 import { send } from '../blockchain/transport'
 import { cleanZeroValuedFields } from '../helpers'
+import * as protocol from '../../proto/protocol.js'
+import { hexadecimalToUint8Array } from './convert'
 
 export const SIGNATURE_LENGTH = 64
-const TRANSACTION_CLASS = 0
-const TRANSACTION_TYPE = 0
-const PRECOMMIT_CLASS = 1
-const PRECOMMIT_TYPE = 0
 
 class Message {
   constructor (type) {
     this.schema = type.schema
     this.author = type.author
-    this.cls = type.cls
-    this.type = type.type
   }
 }
 
@@ -26,47 +21,77 @@ class Message {
 class Transaction extends Message {
   constructor (type) {
     super(type)
-
-    this.cls = TRANSACTION_CLASS
-    this.type = TRANSACTION_TYPE
-    this.service_id = type.service_id
-    this.message_id = type.message_id
+    this.instance_id = type.instance_id
+    this.method_id = type.method_id
     this.signature = type.signature
   }
 
   /**
    * Serialization header
-   * @returns {Array}
+   * @returns {Uint8Array}
    */
-  serializeHeader () {
-    let buffer = []
-    PublicKey.serialize(this.author, buffer, buffer.length)
-    Uint8.serialize(this.cls, buffer, buffer.length)
-    Uint8.serialize(this.type, buffer, buffer.length)
-    Uint16.serialize(this.service_id, buffer, buffer.length)
-    Uint16.serialize(this.message_id, buffer, buffer.length)
-    return buffer
+  serializeHeader (data) {
+    const txMessage = this.schema.create(data)
+    const txBuffer = new Uint8Array(this.schema.encode(txMessage).finish())
+
+    const callInfo = {
+      instance_id: this.instance_id,
+      method_id: this.method_id
+    }
+
+    const anyTx = {
+      call_info: callInfo,
+      arguments: txBuffer
+    }
+
+    const exonumMsg = {
+      any_tx: anyTx
+    }
+
+    const exonumMsgPb = protocol.exonum.consensus.ExonumMessage.create(exonumMsg)
+    return new Uint8Array(protocol.exonum.consensus.ExonumMessage.encode(exonumMsgPb).finish())
+  }
+
+  /**
+   * Create signed message from serialized exonum message and serialize it into array of 8-bit integers
+   * @param {Object} exonumMsg
+   * @returns {Uint8Array}
+   */
+  signedMessage (exonumMsg) {
+    const signedMsg = {
+      payload: exonumMsg,
+      author: { data: hexadecimalToUint8Array(this.author) },
+      signature: { data: hexadecimalToUint8Array(this.signature) }
+    }
+
+    const verifiedPb = protocol.exonum.consensus.SignedMessage.create(signedMsg)
+    return new Uint8Array(protocol.exonum.consensus.SignedMessage.encode(verifiedPb).finish())
   }
 
   /**
    * Serialize into array of 8-bit integers
    * @param {Object} data
-   * @returns {Array}
+   * @returns {Uint8Array}
    */
   serialize (data) {
-    const object = cleanZeroValuedFields(data, {})
-    const buffer = this.serializeHeader()
-    const body = this.schema.encode(object).finish()
-
-    body.forEach(element => {
-      buffer.push(element)
-    })
-
+    const exonumMsgSerialized = this.serializeHeader(data)
     if (this.signature) {
-      Digest.serialize(this.signature, buffer, buffer.length)
+      return this.signedMessage(exonumMsgSerialized)
+    } else {
+      return exonumMsgSerialized
     }
+  }
 
-    return buffer
+  /**
+   * Sign and serialize into array of 8-bit integers
+   * @param {Object} secretKey
+   * @param {Object} data
+   * @returns {Uint8Array}
+   */
+  signAndSerialize (secretKey, data) {
+    const exonumMsgSerialized = this.serializeHeader(data)
+    this.signature = crypto.sign(secretKey, exonumMsgSerialized)
+    return this.signedMessage(exonumMsgSerialized)
   }
 
   /**
@@ -96,7 +121,7 @@ class Transaction extends Message {
    * @returns {boolean}
    */
   verifySignature (signature, publicKey, data) {
-    return crypto.verifySignature(signature, publicKey, data, this)
+    return crypto.verifySignature(signature, publicKey, this.serializeHeader(data), this)
   }
 
   /**
@@ -136,13 +161,6 @@ export function isTransaction (type) {
  * @param {Object} type
  */
 class Precommit extends Message {
-  constructor (type) {
-    super(type)
-
-    this.cls = PRECOMMIT_CLASS
-    this.type = PRECOMMIT_TYPE
-  }
-
   /**
    * Serialization header
    * @returns {Array}
@@ -150,8 +168,6 @@ class Precommit extends Message {
   serializeHeader () {
     let buffer = []
     PublicKey.serialize(this.author, buffer, buffer.length)
-    Uint8.serialize(this.cls, buffer, buffer.length)
-    Uint8.serialize(this.type, buffer, buffer.length)
     return buffer
   }
 

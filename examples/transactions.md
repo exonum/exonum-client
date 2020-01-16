@@ -14,8 +14,8 @@ Transaction.add(new Field('amount', 3, 'uint32'))
 // Define a transaction
 const sendFunds = Exonum.newTransaction({
   author: keyPair.publicKey,
-  service_id: 130,
-  message_id: 0,
+  instance_id: 130,
+  method_id: 0,
   schema: Transaction
 })
 
@@ -46,8 +46,8 @@ Transaction.add(new Field('amount', 3, 'uint32'))
 // Define a transaction
 const sendFunds = Exonum.newTransaction({
   author: keyPair.publicKey,
-  service_id: 130,
-  message_id: 0,
+  instance_id: 130,
+  method_id: 0,
   schema: Transaction
 })
 
@@ -85,8 +85,8 @@ Transaction.add(new Field('amount', 3, 'uint32'))
 // Define a transaction
 const sendFunds = Exonum.newTransaction({
   author: keyPair.publicKey,
-  service_id: 130,
-  message_id: 0,
+  instance_id: 130,
+  method_id: 0,
   schema: Transaction
 })
 
@@ -130,8 +130,8 @@ Transaction.add(new Field('amount', 3, 'uint32'))
 // Define a transaction
 const sendFunds = Exonum.newTransaction({
   author: keyPair.publicKey,
-  service_id: 130,
-  message_id: 0,
+  instance_id: 130,
+  method_id: 0,
   schema: Transaction
 })
 
@@ -173,8 +173,8 @@ Transaction.add(new Field('amount', 3, 'uint32'))
 // Define a transaction
 const sendFunds = Exonum.newTransaction({
   author: keyPair.publicKey,
-  service_id: 130,
-  message_id: 0,
+  instance_id: 130,
+  method_id: 0,
   schema: Transaction
 })
 
@@ -213,8 +213,8 @@ Transaction.add(new Field('amount', 3, 'uint32'))
 // Define a transaction
 const sendFunds = Exonum.newTransaction({
   author: keyPair.publicKey,
-  service_id: 130,
-  message_id: 0,
+  instance_id: 130,
+  method_id: 0,
   schema: Transaction
 })
 

@@ -1,4 +1,4 @@
-// Copyright 2018 The Exonum Team
+// Copyright 2020 The Exonum Team
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,9 +14,11 @@
 
 syntax = "proto3";
 
-package exonum.consensus;
+package exonum.common;
 
-import "types.proto";
-import "blockchain.proto";
-import "consensus.proto";
-import "google/protobuf/timestamp.proto";
+option java_package = "com.exonum.core.messages";
+
+message BitVec {
+  bytes data = 1;
+  uint64 len = 2;
+}

@@ -37,8 +37,8 @@ CreateTransactionProtobuf.add(new Field('balance', 3, 'int64'))
 root.define('CreateTransactionProtobuf').add(CreateTransactionProtobuf)
 const CreateTransaction = Exonum.newTransaction({
   author: keyPair.publicKey,
-  service_id: 130,
-  message_id: 0,
+  instance_id: 130,
+  method_id: 2,
   schema: CreateTransactionProtobuf
 })
 const CreateTransactionData = {
@@ -47,8 +47,8 @@ const CreateTransactionData = {
     'name': 'Smart wallet',
     'balance': 359120
   },
-  hash: '8f239bebc50e1a16e36732cf35cf0278e4b0ad2ec3fcd0370f846d0709764b25',
-  signed: '76176937694edb44e128343a7ba5cc3bdee52d821f819d54ce523765955bb5cfeafab1d4c95e3f341ef23a045406f18a9b7f84401139ef3a51a3cb4744c13900'
+  hash: '46032883a2544a9a1ede0825af5c027e51e6e60aaf46e2b69762bce4f55ca94f',
+  signed: '8741fc113f0c346610d6d9e0123d30f14ea3ff0532d1723b5d8540e4b7329dce3359353a70156914f91ac4cd117f87278b6ffd4e4c7461961baf2ac8dec99c08'
 }
 
 describe('Check cryptography', function () {

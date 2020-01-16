@@ -130,8 +130,8 @@ describe('Send transaction to the blockchain', function () {
   }
   const sendFunds = Exonum.newTransaction({
     author: keyPair.publicKey,
-    service_id: 128,
-    message_id: 0,
+    instance_id: 128,
+    method_id: 0,
     schema: proto.exonum.examples.cryptocurrency_advanced.Transfer
   })
   const data = {
@@ -139,7 +139,7 @@ describe('Send transaction to the blockchain', function () {
     amount: '25',
     seed: '7743941227375415562'
   }
-  const txHash = 'b4f78eab1d9b0b04a82f77f30ac0656e3a41765a4fccb513f8f6e4571a1f4003'
+  const txHash = '3738fe0e11d8dab85d93fe32d33632b0b785f77f705c6fa13edef239df3d7bbd'
   const explorerBasePath = '/api/explorer/v1/transactions'
   const transactionPath = `${explorerBasePath}?hash=${txHash}`
 
@@ -412,8 +412,8 @@ describe('Send multiple transactions to the blockchain', function () {
   }
   let sendFunds = Exonum.newTransaction({
     author: keyPair.publicKey,
-    service_id: 128,
-    message_id: 0,
+    instance_id: 128,
+    method_id: 0,
     schema: proto.exonum.examples.cryptocurrency_advanced.Transfer
   })
   const explorerBasePath = '/api/explorer/v1/transactions'
@@ -436,8 +436,8 @@ describe('Send multiple transactions to the blockchain', function () {
     }
   ]
   const transactionHashes = [
-    'dcea2d6b9dd46ae6f4da47f1e3d79f5fa0348b3b156be714d2d9471d7f476482',
-    'b4f78eab1d9b0b04a82f77f30ac0656e3a41765a4fccb513f8f6e4571a1f4003'
+    '4a8a297ed327bb25ddac2cc05a980a86f9856c810c7e3dff4cbf31f80a077e0a',
+    '3738fe0e11d8dab85d93fe32d33632b0b785f77f705c6fa13edef239df3d7bbd'
   ]
 
   transactions.forEach(transaction => {
@@ -494,9 +494,7 @@ describe('Send multiple transactions to the blockchain', function () {
 describe('Export proto stubs', function () {
   it('should export blockchain stubs', function () {
     expect(Exonum.protocol.exonum.Block).to.be.an('function')
-    expect(Exonum.protocol.exonum.ConfigReference).to.be.an('function')
     expect(Exonum.protocol.exonum.TxLocation).to.be.an('function')
-    expect(Exonum.protocol.exonum.TransactionResult).to.be.an('function')
   })
 
   it('should export consensus stubs', function () {
@@ -515,8 +513,8 @@ describe('Export proto stubs', function () {
   })
 
   it('should export helpers stubs', function () {
-    expect(Exonum.protocol.exonum.Hash).to.be.an('function')
-    expect(Exonum.protocol.exonum.PublicKey).to.be.an('function')
-    expect(Exonum.protocol.exonum.BitVec).to.be.an('function')
+    expect(Exonum.protocol.exonum.crypto.Hash).to.be.an('function')
+    expect(Exonum.protocol.exonum.crypto.PublicKey).to.be.an('function')
+    expect(Exonum.protocol.exonum.common.BitVec).to.be.an('function')
   })
 })

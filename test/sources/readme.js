@@ -56,8 +56,8 @@ describe('Examples from README.md', function () {
     }
     const sendFunds = Exonum.newTransaction({
       author: keyPair.publicKey,
-      service_id: 130,
-      message_id: 0,
+      instance_id: 130,
+      method_id: 0,
       schema: Transaction
     })
     const data = {
@@ -65,9 +65,14 @@ describe('Examples from README.md', function () {
       to: 'Adam',
       amount: 50
     }
-    const buffer = [250, 127, 158, 228, 58, 255, 112, 200, 121, 248, 15, 167, 253, 21, 149, 92, 24, 185, 140, 114, 49, 11, 9, 231, 129, 131, 16, 50, 80, 80, 207, 122, 0, 0, 130, 0, 0, 0, 10, 4, 74, 111, 104, 110, 18, 4, 65, 100, 97, 109, 24, 50]
-    const signature = '3dcf7891f6c2dda876758818c11d50ffcdfec47f6b7145dd0a4a12705f51f21965b192f6cec9175e5df4fd978af95e005afe5c8218e234e7552b716e64708b0f'
-    const hash = 'b4791644c07054a60bcc8c40a6b87cc26160ac0da973fbe2ceb06e8f1da68f72'
+    const buffer = new Uint8Array([
+      10, 23, 10, 5, 8, 130, 1, 16,
+      0, 18, 14, 10, 4, 74, 111, 104,
+      110, 18, 4, 65, 100, 97, 109, 24,
+      50
+    ])
+    const signature = '206aa6a97467b91ce8b7c7c650f8aca0f14d78be92478fd12fe20874ea20db385262cb4772891db05f73022829aef6018aa294db7cd1bafc9e5e7b3281255e02'
+    const hash = 'babd11e9855c1f4546f46cd45f10048f17dcb3fdbd80e935cfbe3e8d7ffb0a60'
 
     it('should serialize transaction', function () {
       expect(sendFunds.serialize(data)).to.deep.equal(buffer)
