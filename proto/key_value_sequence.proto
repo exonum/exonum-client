@@ -1,4 +1,4 @@
-// Copyright 2018 The Exonum Team
+// Copyright 2020 The Exonum Team
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,15 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Storage with keys and values represented as bytes arrays.
+
 syntax = "proto3";
 
 package exonum;
 
-message Hash { bytes data = 1; }
+option java_package = "com.exonum.core.messages";
 
-message PublicKey { bytes data = 1; }
+// Some non-scalar key-value pair.
+message KeyValue {
+  string key = 1;
+  bytes value = 2;
+}
 
-message BitVec {
-  bytes data = 1;
-  uint64 len = 2;
+// A sequence of key-value pairs.
+message KeyValueSequence {
+  repeated KeyValue entry = 1;
 }

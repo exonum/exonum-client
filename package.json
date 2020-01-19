@@ -61,9 +61,9 @@
   },
   "scripts": {
     "test": "grunt test",
-    "proto": "pbjs --keep-case -t static-module ./proto/protocol.proto -o ./proto/protocol.js",
-    "proto:test": "pbjs --keep-case -t static-module ./proto/protocol.proto ./test/sources/proto/**/*.proto -o ./test/sources/proto/stubs.js",
-    "proto:integration-tests": "pbjs --keep-case -t static-module ./proto/protocol.proto ./integration-tests/src/proto/**/*.proto -o ./integration-tests/src/proto/stubs.js",
+    "proto": "pbjs --keep-case -t static-module proto/**/*.proto -o ./proto/protocol.js",
+    "proto:test": "pbjs --keep-case -t static-module proto/**/*.proto ./test/sources/proto/**/*.proto -o ./test/sources/proto/stubs.js",
+    "proto:integration-tests": "pbjs --keep-case -t static-module proto/**/*.proto ./integration-tests/src/proto/**/*.proto -o ./integration-tests/src/proto/stubs.js",
     "integration:build": "cargo build --manifest-path integration-tests/Cargo.toml",
     "integration": "npm run proto:integration-tests && mocha -r babel-register integration-tests/test.js",
     "preintegration:unix": "npm run integration:build && npm run postintegration:unix && cargo run --manifest-path integration-tests/Cargo.toml & sleep 10",
