@@ -3,6 +3,7 @@
     "node": true,
     "es6": true
   },
+  "parser": "babel-eslint",
   "extends": "standard",
   "parserOptions": {
     "ecmaVersion": 6,
