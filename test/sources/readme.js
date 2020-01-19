@@ -2,9 +2,7 @@
 /* eslint-disable no-unused-expressions */
 
 const $protobuf = require('protobufjs/light')
-const chai = require('chai')
-const expect = chai.expect
-const assert = chai.assert
+const { expect } = require('chai')
 const Exonum = require('../../src')
 
 const Type = $protobuf.Type
@@ -46,44 +44,32 @@ describe('Examples from README.md', function () {
   })
 
   describe('Transaction section', function () {
-    let Transaction = new Type('CustomMessage')
-    Transaction.add(new Field('from', 1, 'string'))
-    Transaction.add(new Field('to', 2, 'string'))
-    Transaction.add(new Field('amount', 3, 'uint32'))
-    const keyPair = {
-      publicKey: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
-      secretKey: '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2bfa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
-    }
-    const sendFunds = Exonum.newTransaction({
-      author: keyPair.publicKey,
-      service_id: 130,
-      message_id: 0,
+    const Transaction = new Type('CustomMessage')
+    Transaction.add(new Field('to', 1, 'string'))
+    Transaction.add(new Field('amount', 2, 'uint32'))
+    const sendFunds = new Exonum.Transaction({
+      serviceId: 130,
+      methodId: 0,
       schema: Transaction
     })
-    const data = {
-      from: 'John',
-      to: 'Adam',
-      amount: 50
-    }
-    const buffer = [250, 127, 158, 228, 58, 255, 112, 200, 121, 248, 15, 167, 253, 21, 149, 92, 24, 185, 140, 114, 49, 11, 9, 231, 129, 131, 16, 50, 80, 80, 207, 122, 0, 0, 130, 0, 0, 0, 10, 4, 74, 111, 104, 110, 18, 4, 65, 100, 97, 109, 24, 50]
-    const signature = '3dcf7891f6c2dda876758818c11d50ffcdfec47f6b7145dd0a4a12705f51f21965b192f6cec9175e5df4fd978af95e005afe5c8218e234e7552b716e64708b0f'
-    const hash = 'b4791644c07054a60bcc8c40a6b87cc26160ac0da973fbe2ceb06e8f1da68f72'
 
-    it('should serialize transaction', function () {
-      expect(sendFunds.serialize(data)).to.deep.equal(buffer)
-    })
+    it('should work', () => {
+      const keyPair = {
+        publicKey: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
+        secretKey: '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2bfa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
+      }
+      const data = {
+        to: 'Adam',
+        amount: 50
+      }
+      const signed = sendFunds.create(data, keyPair)
+      expect(signed.payload.any_tx.call_info.instance_id).to.equal(sendFunds.serviceId)
+      expect(signed.payload.any_tx.arguments).to.deep.equal(Transaction.encode(data).finish())
+      expect(signed.author).to.equal(keyPair.publicKey)
 
-    it('should sign transaction', function () {
-      expect(sendFunds.sign(keyPair.secretKey, data)).to.equal(signature)
-    })
-
-    it('should verify transaction signature', function () {
-      expect(sendFunds.verifySignature(signature, keyPair.publicKey, data)).to.be.true
-    })
-
-    it('should get transaction hash', function () {
-      sendFunds.signature = signature
-      expect(sendFunds.hash(data)).to.equal(hash)
+      const deserialized = sendFunds.deserialize(signed.serialize())
+      expect(deserialized.payload.to).to.equal('Adam')
+      expect(deserialized.payload.amount).to.equal(50)
     })
   })
 
@@ -177,6 +163,7 @@ describe('Examples from README.md', function () {
 
   describe('Block verifying example', function () {
     it('should verify a block', function () {
+      // FIXME: use new data
       const data = {
         'block': {
           'proposer_id': 0,
@@ -199,7 +186,7 @@ describe('Examples from README.md', function () {
         'c4c7c60108aa053b8c2e758253da776e29553aa41056d553118a9c57e06243d9'
       ]
 
-      return assert.isFulfilled(Exonum.verifyBlock(data, validators))
+      Exonum.verifyBlock(data, validators)
     })
   })
 })

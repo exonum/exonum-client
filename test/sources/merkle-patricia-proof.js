@@ -15,6 +15,12 @@ const proto = require('./proto/stubs')
 
 const samples = require('./data/map-proof.json')
 
+const Uint16 = {
+  serialize (value) {
+    return [value % 255, (value >> 8) % 255]
+  }
+}
+
 /**
  * Helper function for hashing a variable number of arguments.
  *
@@ -496,7 +502,7 @@ describe('MapProof', () => {
           { path: '001', hash: '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011' }
         ]
       }
-      expect(() => new MapProof(json, PublicKey, Exonum.Uint16))
+      expect(() => new MapProof(json, PublicKey, Uint16))
         .to.throw('path(0) is a prefix of path(001)')
 
       const keyByte = '03'
@@ -511,7 +517,7 @@ describe('MapProof', () => {
           { path: '001', hash: '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011' }
         ]
       }
-      expect(() => new MapProof(json, PublicKey, Exonum.Uint16))
+      expect(() => new MapProof(json, PublicKey, Uint16))
         .to.throw('path(001) is a prefix')
 
       json = {
@@ -522,7 +528,7 @@ describe('MapProof', () => {
           { path: '001', hash: '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011' }
         ]
       }
-      expect(() => new MapProof(json, PublicKey, Exonum.Uint16))
+      expect(() => new MapProof(json, PublicKey, Uint16))
         .to.throw('path(001) is a prefix')
     })
 
@@ -534,7 +540,7 @@ describe('MapProof', () => {
           { path: '001', hash: '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4012' }
         ]
       }
-      expect(() => new MapProof(json, PublicKey, Exonum.Uint16))
+      expect(() => new MapProof(json, PublicKey, Uint16))
         .to.throw('duplicate path(001)')
 
       json = {
@@ -547,7 +553,7 @@ describe('MapProof', () => {
         ],
         proof: []
       }
-      expect(() => new MapProof(json, PublicKey, Exonum.Uint16))
+      expect(() => new MapProof(json, PublicKey, Uint16))
         .to.throw('duplicate path')
 
       const path = Exonum.hexadecimalToBinaryString(streamHash(json.entries[0].missing))
@@ -559,7 +565,7 @@ describe('MapProof', () => {
           { path, hash: '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011' }
         ]
       }
-      expect(() => new MapProof(json, PublicKey, Exonum.Uint16))
+      expect(() => new MapProof(json, PublicKey, Uint16))
         .to.throw('duplicate path')
     })
 
@@ -571,7 +577,7 @@ describe('MapProof', () => {
           { path: '0', hash: '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011' }
         ]
       }
-      expect(() => new MapProof(json, PublicKey, Exonum.Uint16))
+      expect(() => new MapProof(json, PublicKey, Uint16))
         .to.throw('invalid path ordering')
     })
   })
@@ -581,7 +587,7 @@ describe('MapProof', () => {
       const proof = new MapProof({
         entries: [],
         proof: []
-      }, PublicKey, Exonum.Uint16)
+      }, PublicKey, Uint16)
 
       const expHash = sha('sha256')
         .update([3])
@@ -597,7 +603,7 @@ describe('MapProof', () => {
           { key, value: 100 }
         ],
         proof: []
-      }, PublicKey, Exonum.Uint16)
+      }, PublicKey, Uint16)
 
       const nodeHash = streamHash(
         [4, 1],
@@ -619,7 +625,7 @@ describe('MapProof', () => {
             hash: key
           }
         ]
-      }, PublicKey, Exonum.Uint16)
+      }, PublicKey, Uint16)
 
       const nodeHash = streamHash(
         [4, 1],
@@ -644,7 +650,7 @@ describe('MapProof', () => {
             hash: '0f00000000000000000000000000000000000000000000000000000000000000'
           }
         ]
-      }, PublicKey, Exonum.Uint16)
+      }, PublicKey, Uint16)
 
       const nodeHash = streamHash(
         [4], // marker
@@ -683,7 +689,9 @@ describe('MapProof', () => {
           }
           break
         case 'Uint16':
-          valueType = Exonum.Uint16
+          valueType = {
+            serialize: (value) => [value % 255, (value >> 8) % 255]
+          }
           break
         default:
           throw new TypeError(`Unknown value type: ${expected.valueType}`)

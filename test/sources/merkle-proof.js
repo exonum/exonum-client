@@ -3,9 +3,7 @@
 
 const expect = require('chai').expect
 const Exonum = require('../../src')
-const $protobuf = require('protobufjs/light')
-const Type = $protobuf.Type
-const Field = $protobuf.Field
+const { Type, Field } = require('protobufjs/light')
 
 describe('Check proof of Merkle tree', function () {
   it('should return array of children of valid tree', function () {
