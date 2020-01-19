@@ -19,14 +19,14 @@ const { MapProof, PublicKey, newType, hexadecimalToUint8Array, merkleProof } = e
 
 const WALLET_BASE_URL = 'http://localhost:8000/wallets'
 const LIST_BASE_URL = 'http://localhost:8000/hash-list'
-const Wallet = newType(proto.exonum.client.integration.tests.Wallet)
+const Wallet = newType(proto.exonum.client.integration_tests.Wallet)
 
 // TODO temp fix
-function convertPubKey(obj) {
-  for (var key in obj) {
+function convertPubKey (obj) {
+  for (let key in obj) {
     if (obj.hasOwnProperty(key)) {
       if (key === 'pub_key') {
-        return obj[key] = {
+        obj[key] = {
           data: Array.from(hexadecimalToUint8Array(obj[key]))
         }
       }

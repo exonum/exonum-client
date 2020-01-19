@@ -1,4 +1,4 @@
-// Copyright 2018 The Exonum Team
+// Copyright 2020 The Exonum Team
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,15 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern crate exonum_build;
-
-use exonum_build::{get_exonum_protobuf_files_path, protobuf_generate};
+use exonum_build::ProtobufGenerator;
 
 fn main() {
-    let exonum_protos = get_exonum_protobuf_files_path();
-    protobuf_generate(
-        "src/proto",
-        &["src/proto", &exonum_protos],
-        "protobuf_mod.rs",
-    );
+    ProtobufGenerator::with_mod_name("protobuf_mod.rs")
+        .with_input_dir("src/proto")
+        .with_crypto()
+        .generate();
 }

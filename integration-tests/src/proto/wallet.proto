@@ -14,14 +14,14 @@
 
 syntax = "proto3";
 
-package exonum.client.integration.tests;
+package exonum.client.integration_tests;
 
-import "helpers.proto";
+import "types.proto";
 
 // Wallet struct used to persist data within the service.
 message Wallet {
     // Public key of the wallet owner.
-    exonum.PublicKey pub_key = 1;
+    exonum.crypto.PublicKey pub_key = 1;
     // Name of the wallet owner.
     string name = 2;
     // Current balance.
