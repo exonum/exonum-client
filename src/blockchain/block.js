@@ -1,70 +1,60 @@
 import * as Long from 'long'
-import * as protocol from '../../proto/protocol.js'
-import { SIGNATURE_LENGTH } from '../types/message'
+import { Verified } from '../types/message'
 import { hexadecimalToUint8Array, uint8ArrayToHexadecimal } from '../types/convert'
-import { PUBLIC_KEY_LENGTH } from '../types/hexadecimal'
-import { hash, verifySignature } from '../crypto'
+import { hash } from '../crypto'
+
+import * as protobuf from '../../proto/protocol'
+const Block = protobuf.exonum.Block
+const { CoreMessage } = protobuf.exonum.messages
 
 /**
  * Validate block and each precommit in block
  * @param {Object} data
  * @param {Array} validators
- * @return {Promise}
  */
-export function verifyBlock (data, validators) {
-  return new Promise(resolve => {
-    const block = {
-      prev_hash: { data: hexadecimalToUint8Array(data.block.prev_hash) },
-      tx_hash: { data: hexadecimalToUint8Array(data.block.tx_hash) },
-      state_hash: { data: hexadecimalToUint8Array(data.block.state_hash) }
-    }
-    let blockHash
+export function verifyBlock ({ block, precommits }, validators) {
+  const buffer = Block.encode(block).finish()
+  const blockHash = hash(buffer)
 
-    if (data.block.proposer_id !== 0) {
-      block.proposer_id = data.block.proposer_id
-    }
+  if (precommits.length < quorumSize(validators.length)) {
+    throw new Error('Insufficient number of precommits')
+  }
 
-    if (data.block.height !== 0) {
-      block.height = data.block.height
+  const endorsingValidators = new Set()
+  for (let i = 0; i < precommits.length; i++) {
+    const message = Verified.deserialize(CoreMessage, hexadecimalToUint8Array(precommits[i]))
+    if (!message) {
+      throw new Error('Precommit signature is wrong')
     }
-
-    if (data.block.tx_count !== 0) {
-      block.tx_count = data.block.tx_count
+    const precommit = message.precommit
+    if (!precommit) {
+      throw new Error('Invalid message type')
     }
 
-    const message = protocol.exonum.Block.create(block)
-    const buffer = new Uint8Array(protocol.exonum.Block.encode(message).finish())
+    const plain = precommit.payload
 
-    blockHash = hash(buffer)
-
-    for (let i = 0; i < data.precommits.length; i++) {
-      const precommit = data.precommits[i]
-      const buffer = hexadecimalToUint8Array(precommit)
-      const message = protocol.exonum.consensus.Precommit.decode(new Uint8Array(buffer.slice(34, buffer.length - SIGNATURE_LENGTH)))
-      const plain = protocol.exonum.consensus.Precommit.toObject(message)
-
-      if (Long.fromValue(plain.height).compare(Long.fromValue(data.block.height)) !== 0) {
-        throw new Error('Precommit height is not match with block height')
-      }
-
-      if (uint8ArrayToHexadecimal(plain.block_hash.data) !== blockHash) {
-        throw new Error('Precommit block hash is not match with calculated block hash')
-      }
-
-      const publicKey = validators[plain.validator || 0]
-      if (uint8ArrayToHexadecimal(buffer.slice(0, PUBLIC_KEY_LENGTH)) !== publicKey) {
-        throw new Error('Precommit public key is not match with buffer')
-      }
-
-      const signature = uint8ArrayToHexadecimal(buffer.slice(buffer.length - SIGNATURE_LENGTH, buffer.length))
-
-      if (!verifySignature(signature, publicKey, buffer.slice(0, buffer.length - SIGNATURE_LENGTH))) {
-        throw new Error('Precommit signature is wrong')
-      }
+    if (Long.fromValue(plain.height).compare(Long.fromValue(block.height)) !== 0) {
+      throw new Error('Precommit height does not match with block height')
     }
 
-    resolve()
-  })
+    if (uint8ArrayToHexadecimal(plain.block_hash.data) !== blockHash) {
+      throw new Error('Precommit block hash does not match with calculated block hash')
+    }
+
+    const validatorId = plain.validator || 0
+    if (endorsingValidators.has(validatorId)) {
+      throw new Error('Double endorsement from a validator')
+    }
+    endorsingValidators.add(validatorId)
+
+    const actualKey = uint8ArrayToHexadecimal(precommit.author)
+    const expectedKey = validators[validatorId]
+    if (actualKey !== expectedKey) {
+      throw new Error('Precommit public key is not match with buffer')
+    }
+  }
 }
 
-export { protocol }
+function quorumSize (validatorCount) {
+  return Math.floor(validatorCount * 2 / 3) + 1
+}

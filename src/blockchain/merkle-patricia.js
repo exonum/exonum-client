@@ -16,10 +16,10 @@ export class MapProof {
    *
    * @param {Object} json
    *   JSON object containing (untrusted) proof
-   * @param {{serialize: (any) => Array<number>}} keyType
+   * @param {{create: (any) => Array<number>}} keyType
    *   Type of keys used in the underlying Merkelized map. Usually, `PublicKey`
    *   or `Hash`. The keys must be serializable.
-   * @param {{ serialize: (any) => Array<number>}} valueType
+   * @param {{ create: (any) => Array<number>}} valueType
    *   Type of values used in the underlying Merkelized map. Usually, it should
    *   be a type created with the `newType` function. The type must be serializable.
    * @throws {MapProofError}
@@ -30,12 +30,12 @@ export class MapProof {
     this.entries = parseEntries(json.entries, keyType, valueType)
 
     if (!keyType || typeof keyType.serialize !== 'function') {
-      throw new TypeError('No `serialize` method in the key type')
+      throw new TypeError('No `create` method in the key type')
     }
     this.keyType = keyType
 
     if (!valueType || typeof valueType.serialize !== 'function') {
-      throw new TypeError('No `hash` or `serialize` method in the value type')
+      throw new TypeError('No `hash` or `create` method in the value type')
     }
     this.valueType = valueType
 

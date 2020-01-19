@@ -1,21 +1,53 @@
-import { Uint8, Uint16 } from './primitive'
-import { Digest, PublicKey } from './hexadecimal'
+import nacl from 'tweetnacl'
 import * as crypto from '../crypto'
-import { send } from '../blockchain/transport'
 import { cleanZeroValuedFields } from '../helpers'
 
-export const SIGNATURE_LENGTH = 64
-const TRANSACTION_CLASS = 0
-const TRANSACTION_TYPE = 0
-const PRECOMMIT_CLASS = 1
-const PRECOMMIT_TYPE = 0
+import * as protobuf from '../../proto/protocol.js'
+import { hexadecimalToUint8Array, uint8ArrayToHexadecimal } from './convert'
+const { CoreMessage, SignedMessage } = protobuf.exonum.messages
 
-class Message {
-  constructor (type) {
-    this.schema = type.schema
-    this.author = type.author
-    this.cls = type.cls
-    this.type = type.type
+export class Verified {
+  constructor (schema, payload, author, signature) {
+    this.schema = schema
+    this.payload = payload
+    this.author = author
+    this.signature = signature
+    this.bytes = SignedMessage.encode({
+      payload: schema.encode(payload).finish(),
+      author: { data: hexadecimalToUint8Array(author) },
+      signature: { data: hexadecimalToUint8Array(signature) }
+    }).finish()
+  }
+
+  static sign (schema, payload, { publicKey, secretKey }) {
+    const signingKey = hexadecimalToUint8Array(secretKey)
+    const rawSignature = nacl.sign.detached(schema.encode(payload).finish(), signingKey)
+    const signature = uint8ArrayToHexadecimal(rawSignature)
+    return new this(schema, payload, publicKey, signature)
+  }
+
+  static deserialize (schema, bytes) {
+    const { payload, author: rawAuthor, signature: rawSignature } = SignedMessage.decode(bytes)
+    if (!nacl.sign.detached.verify(payload, rawSignature.data, rawAuthor.data)) {
+      return null
+    } else {
+      const decoded = schema.decode(payload)
+      const author = uint8ArrayToHexadecimal(rawAuthor.data)
+      const signature = uint8ArrayToHexadecimal(rawSignature.data)
+      return new this(schema, decoded, author, signature)
+    }
+  }
+
+  serialize () {
+    return this.bytes
+  }
+
+  /**
+   * Gets the SHA-256 digest of the message.
+   * @returns {string}
+   */
+  hash () {
+    return crypto.hash(this.bytes)
   }
 }
 
@@ -23,103 +55,69 @@ class Message {
  * @constructor
  * @param {Object} type
  */
-class Transaction extends Message {
-  constructor (type) {
-    super(type)
-
-    this.cls = TRANSACTION_CLASS
-    this.type = TRANSACTION_TYPE
-    this.service_id = type.service_id
-    this.message_id = type.message_id
-    this.signature = type.signature
+export class Transaction {
+  constructor ({ schema, serviceId, methodId }) {
+    this.serviceId = serviceId
+    this.methodId = methodId
+    this.schema = schema
   }
 
   /**
-   * Serialization header
-   * @returns {Array}
+   * Creates a signature transaction.
+   *
+   * @param {Object} payload
+   *   transaction payload
+   * @param {Uint8Array | {publicKey: string, secretKey: string}} authorOrKeypair
+   *   author or keypair
+   * @param {Uint8Array?} signature
+   *   transaction signature
+   * @returns {Verified}
+   *   signature transaction message
    */
-  serializeHeader () {
-    let buffer = []
-    PublicKey.serialize(this.author, buffer, buffer.length)
-    Uint8.serialize(this.cls, buffer, buffer.length)
-    Uint8.serialize(this.type, buffer, buffer.length)
-    Uint16.serialize(this.service_id, buffer, buffer.length)
-    Uint16.serialize(this.message_id, buffer, buffer.length)
-    return buffer
+  create (payload, authorOrKeypair, signature) {
+    const fullPayload = this._serializePayload(payload)
+    if (signature === undefined) {
+      return Verified.sign(CoreMessage, fullPayload, authorOrKeypair)
+    } else {
+      return new Verified(CoreMessage, fullPayload, authorOrKeypair, signature)
+    }
   }
 
-  /**
-   * Serialize into array of 8-bit integers
-   * @param {Object} data
-   * @returns {Array}
-   */
-  serialize (data) {
-    const object = cleanZeroValuedFields(data, {})
-    const buffer = this.serializeHeader()
-    const body = this.schema.encode(object).finish()
+  _serializePayload (payload) {
+    const args = this.schema.encode(cleanZeroValuedFields(payload, {})).finish()
+    const transaction = {
+      call_info: {
+        instance_id: this.serviceId,
+        method_id: this.methodId
+      },
+      arguments: args
+    }
+    return { any_tx: transaction }
+  }
 
-    body.forEach(element => {
-      buffer.push(element)
-    })
+  serialize (payload) {
+    return CoreMessage.encode(this._serializePayload(payload)).finish()
+  }
 
-    if (this.signature) {
-      Digest.serialize(this.signature, buffer, buffer.length)
+  deserialize (bytes) {
+    const verified = Verified.deserialize(CoreMessage, bytes)
+    if (!verified) {
+      return null
+    }
+    const payload = verified.payload.any_tx
+    if (!payload) {
+      return null
     }
 
-    return buffer
+    if (
+      payload.call_info.instance_id !== this.serviceId ||
+      payload.call_info.method_id !== this.methodId
+    ) {
+      return null
+    }
+    verified.payload = this.schema.decode(payload.arguments)
+    return verified
   }
-
-  /**
-   * Get SHA256 hash
-   * @param {Object} data
-   * @returns {string}
-   */
-  hash (data) {
-    return crypto.hash(data, this)
-  }
-
-  /**
-   * Get ED25519 signature
-   * @param {string} secretKey
-   * @param {Object} data
-   * @returns {string}
-   */
-  sign (secretKey, data) {
-    return crypto.sign(secretKey, data, this)
-  }
-
-  /**
-   * Verifies ED25519 signature
-   * @param {string} signature
-   * @param {string} publicKey
-   * @param {Object} data
-   * @returns {boolean}
-   */
-  verifySignature (signature, publicKey, data) {
-    return crypto.verifySignature(signature, publicKey, data, this)
-  }
-
-  /**
-   * Send transaction to the blockchain
-   * @param {string} explorerBasePath
-   * @param {Object} data
-   * @param {string} secretKey
-   * @param {number} attempts
-   * @param {number} timeout
-   * @returns {Promise}
-   */
-  send (explorerBasePath, data, secretKey, attempts, timeout) {
-    return send(explorerBasePath, this, data, secretKey, attempts, timeout)
-  }
-}
-
-/**
- * Create element of Transaction class
- * @param {Object} type
- * @returns {Transaction}
- */
-export function newTransaction (type) {
-  return new Transaction(type)
 }
 
 /**
@@ -129,55 +127,4 @@ export function newTransaction (type) {
  */
 export function isTransaction (type) {
   return type instanceof Transaction
-}
-
-/**
- * @constructor
- * @param {Object} type
- */
-class Precommit extends Message {
-  constructor (type) {
-    super(type)
-
-    this.cls = PRECOMMIT_CLASS
-    this.type = PRECOMMIT_TYPE
-  }
-
-  /**
-   * Serialization header
-   * @returns {Array}
-   */
-  serializeHeader () {
-    let buffer = []
-    PublicKey.serialize(this.author, buffer, buffer.length)
-    Uint8.serialize(this.cls, buffer, buffer.length)
-    Uint8.serialize(this.type, buffer, buffer.length)
-    return buffer
-  }
-
-  /**
-   * Serialize data into array of 8-bit integers
-   * @param {Object} data
-   * @returns {Array}
-   */
-  serialize (data) {
-    const object = cleanZeroValuedFields(data, {})
-    const buffer = this.serializeHeader()
-    const body = this.schema.encode(object).finish()
-
-    body.forEach(element => {
-      buffer.push(element)
-    })
-
-    return buffer
-  }
-}
-
-/**
- * Create element of Precommit class
- * @param {Object} type
- * @returns {Precommit}
- */
-export function newPrecommit (type) {
-  return new Precommit(type)
 }
