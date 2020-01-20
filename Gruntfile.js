@@ -18,7 +18,7 @@ module.exports = function (grunt) {
     },
     babel: {
       options: {
-        presets: ['babel-preset-es2015']
+        presets: ['@babel/preset-env']
       },
       dist: {
         expand: true,
@@ -31,7 +31,7 @@ module.exports = function (grunt) {
       dist: {
         options: {
           browserifyOptions: { debug: false, standalone: 'Exonum' },
-          transform: [['babelify', { 'presets': ['es2015'] }]]
+          transform: [['babelify', { 'presets': ['@babel/env'] }]]
         },
         src: './src/index.js',
         dest: './dist/<%= pkg.name %>.js'
@@ -60,7 +60,7 @@ module.exports = function (grunt) {
       dist: {
         options: {
           reporter: 'spec',
-          require: ['babel-register']
+          require: ['@babel/register']
         },
         src: ['./test/sources/**/*.js']
       },
