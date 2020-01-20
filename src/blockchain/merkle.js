@@ -228,12 +228,12 @@ function hashLayer (layer, lastIndex) {
     }
 
     layer[i / 2] = {
-      height: layer[i].height + 1,
-      index: Math.floor(layer[i].index / 2),
+      height: left.height + 1,
+      index: left.index / 2,
       hash
     }
   }
-  layer.length /= 2
+  layer.length = Math.ceil(layer.length / 2)
 }
 
 function hashNode (leftHash, maybeRightHash) {
