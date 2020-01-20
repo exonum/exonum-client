@@ -1,0 +1,29 @@
+{
+  "proof": {
+    "proof": [
+      {
+        "index": 3,
+        "height": 1,
+        "hash": "61119196a01db39f0b3a381579c366c8f85bf5186f53754531efe95f7e7a47c8"
+      },
+      {
+        "index": 0,
+        "height": 2,
+        "hash": "7bfe099e406e9c23b06ef1c6d50268524941cfa19152720fe841a9268b9375dc"
+      },
+      {
+        "index": 1,
+        "height": 3,
+        "hash": "5f5a1116ef235eeba051b17ba1e16e96d6a2126cbcfe0c27528ffa63ef30c6b9"
+      }
+    ],
+    "entries": [
+      [
+        2,
+        "463249d0a1109e8469a2af46419655c9cd2a41f6ce5d2afc16597927467ab56c"
+      ]
+    ],
+    "length": 6
+  },
+  "trustedRoot": "48a29bbce0f0054a8e75a653c9fb1408dce5b808e27e5922e7c8bc7b6e919ae9"
+}

@@ -1,0 +1,13 @@
+{
+  "proof": {
+    "proof": [],
+    "entries": [
+      [0, "d6daf4cabee921faf9f9b2424b53bf49f7f1d8e813e4ed06d465d0ef5bcf2b4b"],
+      [1, "ef9c89edc71fdf62b1642aa13b5d6f6e9b09717b4e77c045dcbd24c1318a50e9"],
+      [2, "463249d0a1109e8469a2af46419655c9cd2a41f6ce5d2afc16597927467ab56c"],
+      [3, "c808416e4ce59b474a9e6311d8619f5519bc72cea884b435215b52540912ca93"]
+    ],
+    "length": 4
+  },
+  "trustedRoot": "33c91cbef14c785e8d87e383bad7dc8db81a5911c6061de77f786565b12ac46b"
+}

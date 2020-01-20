@@ -1,0 +1,33 @@
+{
+  "proof": {
+    "proof": [
+      {
+        "index": 2,
+        "height": 1,
+        "hash": "0d0a1b82c48c7165af77ee15d78ca5015a44f8ec52d168b38131702359de9920"
+      },
+      {
+        "index": 0,
+        "height": 2,
+        "hash": "7bfe099e406e9c23b06ef1c6d50268524941cfa19152720fe841a9268b9375dc"
+      },
+      {
+        "index": 3,
+        "height": 2,
+        "hash": "fc33b4e9d9fbaf2c44f29201605b309b2c736ac5061e95bd3bf192076cd434e0"
+      },
+      {
+        "index": 1,
+        "height": 4,
+        "hash": "af00f545fa8c4de315fa2e4f5de45e9f2f4fbd92e383b4b7b3b831e7bc28f538"
+      }
+    ],
+    "entries": [
+      [3, "c808416e4ce59b474a9e6311d8619f5519bc72cea884b435215b52540912ca93"],
+      [4, "06702cf775c0e5dc267d33299e80efc8e8328a50db24fc11a74c1897b5f16c22"],
+      [5, "996ee3fda175e2c199dadd447d5dd8c9dfa74248cf1e55582b865d75f5461315"]
+    ],
+    "length": 14
+  },
+  "trustedRoot": "7ee9e27d6704b3e5ad1fe6aca8030f318a9873d607b0f28205ae23e16d053569"
+}
