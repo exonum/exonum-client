@@ -155,17 +155,38 @@ describe('Verify block of precommits', function () {
 })
 
 describe('Verify table existence', () => {
-  // FIXME
-  const proof = {}
-  const stateHash = '14bb036786f213f573dc50f2550f8d23664ce9a3f3c32ea4060d704e139ac51b'
-  const rootHash = '8ea22c377194b41307f8c8db6271737f0dfe938ad2ec21184f785ab39430bb13'
+  const proof = {
+    entries: [
+      {
+        key: 'prefixed.list',
+        value: '247d2cdfa9deeb9502080c4385e5ae341a55bf6d3115ed16170e444f4c8c9e87'
+      }
+    ],
+    proof: [
+      {
+        path: '0',
+        hash: 'c43f42f7976721b7061ea0d5ba925c613196d4eda97f211bd7faeccf79ecd97c'
+      },
+      {
+        path: '1100010100001100100111000011101000000011101001010101110010001011000001001110111001101100001010100101011011111111001011111100111010011010000000101100100110101110001001101101110111101111001110101000011110110111101101010000001000011110101100001000100110011100',
+        hash: 'd89d7c6b2955f99fd1113bd48f32fde18aa73e97695cdd9528ef921d1a772fbe'
+      }
+    ]
+  }
+  const stateHash = '681dccac8804d54bd5929425f34b9ef7628759cab7a954f0baaa8b572b19d3f5'
+  const rootHash = '247d2cdfa9deeb9502080c4385e5ae341a55bf6d3115ed16170e444f4c8c9e87'
 
   it('should return root hash with valid proof', () => {
-    expect(Exonum.verifyTable(proof, stateHash, 'token.wallets')).to.equal(rootHash)
+    expect(Exonum.verifyTable(proof, stateHash, 'prefixed.list')).to.equal(rootHash)
   })
 
-  it('should throw error when merkleRoot is unexpected', () => {
-    expect(() => Exonum.verifyTable(proof, '', 'token.wallets'))
+  it('should fail with wrong table name', () => {
+    expect(() => Exonum.verifyTable(proof, stateHash, 'other.table'))
+      .to.throw('Table not found in the root tree')
+  })
+
+  it('should throw error when `stateHash` is invalid', () => {
+    expect(() => Exonum.verifyTable(proof, '00'.repeat(32), 'token.wallets'))
       .to.throw(Error, 'Table proof is corrupted')
   })
 })

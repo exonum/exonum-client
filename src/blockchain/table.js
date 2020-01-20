@@ -9,8 +9,14 @@ import { MapProof } from './merkle-patricia'
  * @returns {string}
  */
 export function verifyTable (proof, stateHash, tableFullName) {
+  const stringKeys = {
+    serialize (str) {
+      return Buffer.from(str)
+    }
+  }
+
   // Validate proof of table existence in the state hash.
-  const tableProof = new MapProof(proof, Hash, Hash)
+  const tableProof = new MapProof(proof, stringKeys, Hash)
   if (tableProof.merkleRoot !== stateHash) {
     throw new Error('Table proof is corrupted')
   }
