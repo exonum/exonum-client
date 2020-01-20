@@ -75,118 +75,31 @@ describe('Examples from README.md', function () {
 
   describe('Merkle tree verifying example', function () {
     it('should verify a Merkle tree', function () {
-      const rootHash = 'e8191f90b68102a3ea427118646add7c7dddfa9a14ef33f95c051891fad5c38b'
-      const count = 3
-      const proofNode = {
-        left: {
-          left: {
-            val: {
-              firstName: 'John',
-              lastName: 'Doe',
-              age: 28,
-              balance: 2500
-            }
-          },
-          right: '8dc134fc6f0e0b7fccd32bb0f6090e68600710234c1cb318261d5e78be659bd1'
-        },
-        right: '3b45eedc6952cbec6a8b769c3e50f96d1d059853bbedb7c26f8621243b308e9a'
+      const rootHash = '92cb0ac4e56995b3dfe002be166dd18d2965535d9ad812b055b953c9b3d35456'
+      const proofData = {
+        proof: [
+          { height: 1, index: 1, hash: '8dc134fc6f0e0b7fccd32bb0f6090e68600710234c1cb318261d5e78be659bd1' },
+          { height: 2, index: 1, hash: '3b45eedc6952cbec6a8b769c3e50f96d1d059853bbedb7c26f8621243b308e9a' }
+        ],
+        entries: [
+          [0, {
+            firstName: 'John',
+            lastName: 'Doe',
+            age: 28,
+            balance: 2500
+          }]
+        ],
+        length: 3
       }
-      const range = [0, 0]
-      let Schema = new Type('CustomMessage')
-      Schema.add(new Field('firstName', 1, 'string'))
-      Schema.add(new Field('lastName', 2, 'string'))
-      Schema.add(new Field('age', 3, 'uint32'))
-      Schema.add(new Field('balance', 4, 'uint32'))
-      let User = Exonum.newType(Schema)
 
-      expect(Exonum.merkleProof(rootHash, count, proofNode, range, User)).to.deep.equal([
-        {
-          firstName: 'John',
-          lastName: 'Doe',
-          age: 28,
-          balance: 2500
-        }
-      ])
-    })
+      const User = Exonum.newType(new Type('CustomMessage')
+        .add(new Field('firstName', 1, 'string'))
+        .add(new Field('lastName', 2, 'string'))
+        .add(new Field('age', 3, 'uint32'))
+        .add(new Field('balance', 4, 'uint32')))
 
-    it('should verify a Merkle tree with elements passed as hashes', function () {
-      const rootHash = '553c53eab1505aef358f078ef8102801240599ea5ac3dc97f4c8e146db391c80'
-      const count = 2
-      const proofNode = {
-        left: {
-          val: 'c19569c5b391b1106e16021f50d20763cbece4199fd1356f2d3e429ff13e1345'
-        },
-        right: {
-          val: '3e1ff2f54195207e42d36ff0de1b345be9c59111b67263c31364506d11e2190f'
-        }
-      }
-      const range = [0, 8]
-
-      expect(Exonum.merkleProof(rootHash, count, proofNode, range)).to.deep.equal([
-        'c19569c5b391b1106e16021f50d20763cbece4199fd1356f2d3e429ff13e1345',
-        '3e1ff2f54195207e42d36ff0de1b345be9c59111b67263c31364506d11e2190f'
-      ])
-    })
-
-    it('should verify a Merkle tree with elements passed as byte arrays', function () {
-      const rootHash = '3f29780d915d5111e7852751684fee505f671520044fb6c01df9dd2283237a80'
-      const count = 8
-      const proofNode = {
-        left: {
-          left: {
-            left: { val: [1, 2] },
-            right: { val: [2, 3] }
-          },
-          right: {
-            left: { val: [3, 4] },
-            right: { val: [4, 5] }
-          }
-        },
-        right: {
-          left: {
-            left: { val: [5, 6] },
-            right: { val: [6, 7] }
-          },
-          right: {
-            left: { val: [7, 8] },
-            right: { val: [8, 9] }
-          }
-        }
-      }
-      const range = [0, 8]
-
-      expect(Exonum.merkleProof(rootHash, count, proofNode, range)).to.deep.equal([
-        [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8], [8, 9]
-      ])
-    })
-  })
-
-  describe('Block verifying example', function () {
-    it('should verify a block', function () {
-      // FIXME: use new data
-      const data = {
-        'block': {
-          'proposer_id': 0,
-          'height': 175,
-          'tx_count': 0,
-          'prev_hash': 'c0521a0a97314b7b834eaa39e4a338c454342def89a02121b4e036eb7b457770',
-          'tx_hash': '0000000000000000000000000000000000000000000000000000000000000000',
-          'state_hash': 'a697f4806e3230b75c1bb2f7fa2e308509e4df7ee76ddbe1947f1c3b101a6601'
-        },
-        'precommits': [
-          '71981ffe69aa80cc05457a5df32db891a6bbbca868aeb3288f676e7197dc96350100080210af01180122220a206d750c8aec9897261a8e64daf8a9fd47c0aaff5421b4f57065bfcde0ec5f11c52a220a20b83938eaccab6709f2a127b17a686dea53883ef86b03034f6c94fea739a64804320c08a2a5b9e0051098eee6ba023b02f53d0f59e065ce0a139aead0ba1b59c09e300924d1e34f1388606376c116b60ba1004955f1a09a80253f0585c0168652f5eafb699ad45b144ef19cbcbb08',
-          'c4c7c60108aa053b8c2e758253da776e29553aa41056d553118a9c57e06243d90100080310af01180122220a206d750c8aec9897261a8e64daf8a9fd47c0aaff5421b4f57065bfcde0ec5f11c52a220a20b83938eaccab6709f2a127b17a686dea53883ef86b03034f6c94fea739a64804320c08a2a5b9e005108082e3ba02fc0a86a189010aa592a21c9bcf31ee72eca9e2f48f6635a0dff9b025b902a14f22a04ec15ddaa6419f789c52576726bdcf93a0ea772fcb44f53bbc053ba05304',
-          '56dc946c2292b2425e92076e2d7ad8363a0940c03136090c41e85d35066d161e010010af01180122220a206d750c8aec9897261a8e64daf8a9fd47c0aaff5421b4f57065bfcde0ec5f11c52a220a20b83938eaccab6709f2a127b17a686dea53883ef86b03034f6c94fea739a64804320c08a2a5b9e00510c0c0e3ba020dc182f4fc9430efd73a5ef50de2654608ddfcfe9ad73c0dd7bd5efb571378ffd2e9156298d76c128ede33c4999f11d42aa620507ffc758a613c2a822d40f908'
-        ]
-      }
-      const validators = [
-        '56dc946c2292b2425e92076e2d7ad8363a0940c03136090c41e85d35066d161e',
-        '6649b6e4c68fa7436b2481b70a174d938e8cbcf8f92157fa94308e7ee747b4ab',
-        '71981ffe69aa80cc05457a5df32db891a6bbbca868aeb3288f676e7197dc9635',
-        'c4c7c60108aa053b8c2e758253da776e29553aa41056d553118a9c57e06243d9'
-      ]
-
-      Exonum.verifyBlock(data, validators)
+      const listProof = new Exonum.ListProof(proofData, User)
+      expect(listProof.merkleRoot).to.equal(rootHash)
     })
   })
 })
