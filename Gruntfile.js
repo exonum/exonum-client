@@ -67,7 +67,7 @@ module.exports = function (grunt) {
       all: {
         options: {
           reporter: 'spec',
-          require: ['babel-register']
+          require: ['@babel/register']
         },
         src: ['./test/**/*.js']
       }
