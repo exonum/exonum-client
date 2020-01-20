@@ -27,10 +27,10 @@ class Transaction extends Message {
   }
 
   /**
-   * Serialization header
+   * Payload serialization
    * @returns {Uint8Array}
    */
-  serializeHeader (data) {
+  serializePayload (data) {
     const txMessage = this.schema.create(data)
     const txBuffer = new Uint8Array(this.schema.encode(txMessage).finish())
 
@@ -74,7 +74,7 @@ class Transaction extends Message {
    * @returns {Uint8Array}
    */
   serialize (data) {
-    const exonumMsgSerialized = this.serializeHeader(data)
+    const exonumMsgSerialized = this.serializePayload(data)
     if (this.signature) {
       return this.signedMessage(exonumMsgSerialized)
     } else {
@@ -89,9 +89,8 @@ class Transaction extends Message {
    * @returns {Uint8Array}
    */
   signAndSerialize (secretKey, data) {
-    const exonumMsgSerialized = this.serializeHeader(data)
-    this.signature = crypto.sign(secretKey, exonumMsgSerialized)
-    return this.signedMessage(exonumMsgSerialized)
+    this.signature = this.sign(secretKey, data)
+    return this.serialize(data)
   }
 
   /**
@@ -121,7 +120,7 @@ class Transaction extends Message {
    * @returns {boolean}
    */
   verifySignature (signature, publicKey, data) {
-    return crypto.verifySignature(signature, publicKey, this.serializeHeader(data), this)
+    return crypto.verifySignature(signature, publicKey, this.serializePayload(data), this)
   }
 
   /**
