@@ -24,7 +24,8 @@ use exonum::{
     crypto::{gen_keypair_from_seed, hash, Hash, PublicKey, SecretKey, Seed, HASH_SIZE},
     helpers::{Height, Round, ValidatorId},
     merkledb::{
-        access::AccessExt, BinaryValue, Database, ListProof, MapProof, ObjectHash, TemporaryDB,
+        access::AccessExt, BinaryValue, Database, ListProof, MapProof, ObjectHash, SystemSchema,
+        TemporaryDB,
     },
     messages::{AnyTx, Precommit, Verified},
     runtime::CallInfo,
@@ -375,6 +376,40 @@ fn generate_block_proof(params: Query<BlockParams>) -> ApiResult<Json<BlockRespo
     }))
 }
 
+#[derive(Deserialize)]
+struct TableProofParams {
+    table_name: String,
+}
+
+#[derive(Serialize)]
+struct TableProof {
+    state_hash: Hash,
+    table_proof: MapProof<String, Hash>,
+}
+
+fn generate_table_proof(params: Query<TableProofParams>) -> ApiResult<Json<TableProof>> {
+    let db = TemporaryDB::new();
+    let fork = db.fork();
+    fork.get_proof_entry("entry").set(1_u32);
+    fork.get_proof_list("list").extend(vec![1_u32, 2, 3]);
+    fork.get_proof_map("map").put("key", 5_u64);
+    fork.get_proof_entry("prefixed.entry").set("!!".to_owned());
+    fork.get_proof_list("prefixed.list")
+        .extend(vec![4_u32, 5, 6]);
+    db.merge(fork.into_patch()).unwrap();
+
+    let snapshot = db.snapshot();
+    let system_schema = SystemSchema::new(&snapshot);
+    let state_hash = system_schema.state_hash();
+    let table_proof = system_schema
+        .state_aggregator()
+        .get_proof(params.into_inner().table_name);
+    Ok(Json(TableProof {
+        state_hash,
+        table_proof,
+    }))
+}
+
 fn create_app(db: Arc<TemporaryDB>) -> App<Arc<TemporaryDB>> {
     App::with_state(db)
         .route("/wallets", Method::POST, create_wallet)
@@ -384,6 +419,7 @@ fn create_app(db: Arc<TemporaryDB>) -> App<Arc<TemporaryDB>> {
         .route("/wallets/{public_key}", Method::GET, get_wallet)
         .route("/wallets/batch/{keys}", Method::GET, get_wallets)
         .route("/hash-list/random", Method::GET, generate_list_proof)
+        .route("/tables", Method::GET, generate_table_proof)
         .route("/messages/transaction", Method::GET, generate_wallet_tx)
         .route("/messages/block", Method::GET, generate_block_proof)
 }
