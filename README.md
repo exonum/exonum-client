@@ -247,7 +247,7 @@ let signature = Exonum.sign(keyPair.secretKey, data, User)
 
 ### Verify signature
 
-The signature can be signedMessage using the **author's public key**.
+The signature can be verified using the **author's public key**.
 
 There are two possible signatures of the `verifySignature` function:
 
@@ -336,8 +336,8 @@ let sendFunds = Exonum.newTransaction({
 | Property | Description | Type |
 |---|---|---|
 | **author** | Author's public key as hexadecimal string. | `String` |
-| **instance_id** | [Service ID][docs:architecture:serialization:service-id]. | `Number` |
-| **method_id** | [Message ID][docs:architecture:serialization:message-id]. | `Number` |
+| **instance_id** | [Instance ID][docs:architecture:serialization:instance-id]. | `Number` |
+| **method_id** | [Method ID][docs:architecture:serialization:method-id]. | `Number` |
 | **schema** | Protobuf data structure. | `Array` |
 | **signature** | Signature as hexadecimal string. *Optional.* | `String` |
 
@@ -518,7 +518,7 @@ An example of [block verification](examples/block.md).
 ### Verify table
 
 ```javascript
-Exonum.verifyTable(proof, stateHash, serviceId, tableIndex)
+Exonum.verifyTable(proof, stateHash, instanceId, tableIndex)
 ```
 
 Verify table existence in the root tree.
@@ -529,7 +529,7 @@ Returns root hash for the table as hexadecimal `String`.
 |---|---|---|
 | **proof** | The JSON presentation of the proof obtained from a full node. | `Object` |
 | **stateHash** | Hash of current blockchain state stored in each block. | `String` |
-| **serviceId** | [Service ID][docs:architecture:serialization:service-id]. | `Number` |
+| **instanceId** | [Instance ID][docs:architecture:serialization:instance-id]. | `Number` |
 | **tableIndex** | Table index. | `Number` |
 
 ### Built-in structures
@@ -755,8 +755,8 @@ Exonum Client is licensed under the Apache License (Version 2.0). See [LICENSE](
 [docs:architecture:serialization]: https://exonum.com/doc/version/latest/architecture/serialization
 [docs:architecture:serialization:network-id]: https://exonum.com/doc/version/latest/architecture/serialization/#etwork-id
 [docs:architecture:serialization:protocol-version]: https://exonum.com/doc/version/latest/architecture/serialization/#protocol-version
-[docs:architecture:serialization:service-id]: https://exonum.com/doc/version/latest/architecture/serialization/#service-id
-[docs:architecture:serialization:message-id]: https://exonum.com/doc/version/latest/architecture/serialization/#message-id
+[docs:architecture:serialization:instance-id]: https://exonum.com/doc/version/latest/architecture/serialization/#instance-id
+[docs:architecture:serialization:method-id]: https://exonum.com/doc/version/latest/architecture/serialization/#method-id
 [docs:architecture:transactions]: https://exonum.com/doc/version/latest/architecture/transactions
 [docs:advanced:merkelized-list]: https://exonum.com/doc/version/latest/advanced/merkelized-list
 [docs:glossary:digital-signature]: https://exonum.com/doc/version/latest/glossary/#digital-signature
