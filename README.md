@@ -534,17 +534,23 @@ Returns root hash for the table as hexadecimal `String`.
 
 ### Built-in structures
 
-List of built-in Exonum [blockchain](proto/blockchain.proto) structures:
+List of built-in Exonum [blockchain](proto/exonum/blockchain.proto) structures:
 
 | Structure | Use as |
 |---|---|
+| **AdditionalHeaders** | `Exonum.protocol.exonum.AdditionalHeaders` |
 | **Block** | `Exonum.protocol.exonum.Block` |
 | **TxLocation** | `Exonum.protocol.exonum.TxLocation` |
+| **CallInBlock** | `Exonum.protocol.exonum.CallInBlock` |
+| **ValidatorKeys** | `Exonum.protocol.exonum.ValidatorKeys` |
 
-List of built-in Exonum [consensus](proto/protocol.proto) structures:
+
+List of built-in Exonum [consensus](proto/exonum/consensus.proto) structures:
 
 | Structure | Use as |
 |---|---|
+| **SignedMessage** | `Exonum.protocol.exonum.consensus.SignedMessage` |
+| **Verified** | `Exonum.protocol.exonum.consensus.Verified` |
 | **Connect** | `Exonum.protocol.exonum.consensus.Connect` |
 | **Status** | `Exonum.protocol.exonum.consensus.Status` |
 | **Propose** | `Exonum.protocol.exonum.consensus.Propose` |
@@ -557,14 +563,82 @@ List of built-in Exonum [consensus](proto/protocol.proto) structures:
 | **PrevotesRequest** | `Exonum.protocol.exonum.consensus.PrevotesRequest` |
 | **PeersRequest** | `Exonum.protocol.exonum.consensus.PeersRequest` |
 | **BlockRequest** | `Exonum.protocol.exonum.consensus.BlockRequest` |
+| **PoolTransactionsRequest** | `Exonum.protocol.exonum.consensus.PoolTransactionsRequest` |
+| **ExonumMessage** | `Exonum.protocol.exonum.consensus.ExonumMessage` |
 
-List of built-in Exonum [helpers](proto/helpers.proto) structures:
+
+List of built-in Exonum [key-value sequence](proto/exonum/key_value_sequence.proto) structures:
+
+| Structure | Use as |
+|---|---|
+| **KeyValue** | `Exonum.protocol.exonum.KeyValue` |
+| **KeyValueSequence** | `Exonum.protocol.exonum.KeyValueSequence` |
+
+
+List of built-in Exonum [proofs](proto/exonum/proofs.proto) structures:
+
+| Structure | Use as |
+|---|---|
+| **BlockProof** | `Exonum.protocol.exonum.BlockProof` |
+| **IndexProof** | `Exonum.protocol.exonum.IndexProof` |
+
+
+List of built-in Exonum [runtime](proto/exonum/runtime.proto) structures:
+
+| Structure | Use as |
+|---|---|
+| **CallInfo** | `Exonum.protocol.exonum.runtime.CallInfo` |
+| **AnyTx** | `Exonum.protocol.exonum.runtime.AnyTx` |
+| **ArtifactId** | `Exonum.protocol.exonum.runtime.ArtifactId` |
+| **ArtifactSpec** | `Exonum.protocol.exonum.runtime.ArtifactSpec` |
+| **InstanceSpec** | `Exonum.protocol.exonum.runtime.InstanceSpec` |
+| **InstanceInitParams** | `Exonum.protocol.exonum.runtime.InstanceInitParams` |
+| **GenesisConfig** | `Exonum.protocol.exonum.runtime.GenesisConfig` |
+| **ExecutionError** | `Exonum.protocol.exonum.runtime.ExecutionError` |
+| **CallSite** | `Exonum.protocol.exonum.runtime.CallSite` |
+| **ExecutionStatus** | `Exonum.protocol.exonum.runtime.ExecutionStatus` |
+| **ArtifactState** | `Exonum.protocol.exonum.runtime.ArtifactState` |
+| **InstanceStatus** | `Exonum.protocol.exonum.runtime.InstanceStatus` |
+| **InstanceMigration** | `Exonum.protocol.exonum.runtime.InstanceMigration` |
+| **InstanceState** | `Exonum.protocol.exonum.runtime.InstanceState` |
+| **MigrationStatus** | `Exonum.protocol.exonum.runtime.MigrationStatus` |
+| **ModifiedInstanceInfo** | `Exonum.protocol.exonum.runtime.ModifiedInstanceInfo` |
+
+
+List of built-in Exonum [crypto](proto/crypto/types.proto) structures:
 
 | Structure | Use as |
 |---|---|
 | **Hash** | `Exonum.protocol.exonum.Hash` |
 | **PublicKey** | `Exonum.protocol.exonum.PublicKey` |
+| **Signature** | `Exonum.protocol.exonum.Signature` |
+
+
+List of built-in Exonum [common](proto/common.proto) structures:
+
+| Structure | Use as |
+|---|---|
 | **BitVec** | `Exonum.protocol.exonum.BitVec` |
+
+
+List of built-in Exonum [list proof](proto/merkledb/list_proof.proto) structures:
+
+| Structure | Use as |
+|---|---|
+| **ListProof** | `Exonum.protocol.exonum.proof.ListProof` |
+| **HashedEntry** | `Exonum.protocol.exonum.proof.HashedEntry` |
+| **ListProofEntry** | `Exonum.protocol.exonum.proof.ListProofEntry` |
+| **ProofListKey** | `Exonum.protocol.exonum.proof.ProofListKey` |
+
+
+List of built-in Exonum [map proof](proto/merkledb/map_proof.proto) structures:
+
+| Structure | Use as |
+|---|---|
+| **MapProof** | `Exonum.protocol.exonum.proof.MapProof` |
+| **OptionalEntry** | `Exonum.protocol.exonum.proof.OptionalEntry` |
+| **MapProofEntry** | `Exonum.protocol.exonum.proof.MapProofEntry` |
+
 
 ## Helpers
 

@@ -20,7 +20,7 @@ option java_package = "com.exonum.core.messages";
 
 import "blockchain.proto";
 import "consensus.proto";
-import "map_proof.proto";
+import "merkledb/map_proof.proto";
 
 // Block with its `Precommit` messages.
 //

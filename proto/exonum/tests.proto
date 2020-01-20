@@ -14,7 +14,7 @@
 
 syntax = "proto3";
 
-import "types.proto";
+import "crypto/types.proto";
 import "common.proto";
 import "google/protobuf/timestamp.proto";
 

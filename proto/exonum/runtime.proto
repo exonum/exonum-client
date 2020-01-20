@@ -19,7 +19,7 @@ package exonum.runtime;
 option java_package = "com.exonum.core.messages";
 
 import "blockchain.proto";
-import "types.proto";
+import "crypto/types.proto";
 import "google/protobuf/empty.proto";
 
 // Unique service transaction identifier.

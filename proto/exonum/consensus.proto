@@ -20,11 +20,11 @@ package exonum.consensus;
 
 option java_package = "com.exonum.core.messages";
 
-import "types.proto";
-import "common.proto";
+import "crypto/types.proto";
+import "../common.proto";
 import "blockchain.proto";
 import "runtime.proto";
-import "timestamp.proto";
+import "google/protobuf/timestamp.proto";
 
 // Container for the signed messages.
 message SignedMessage {
