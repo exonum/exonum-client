@@ -1,12 +1,13 @@
 /* eslint-env node, mocha */
 /* eslint-disable no-unused-expressions */
 
+import { uint8ArrayToHexadecimal } from '../../src/types'
+
 const MockAdapter = require('axios-mock-adapter')
 const axios = require('axios')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
-const assert = chai.assert
-const expect = chai.expect
+const { expect } = chai
 const Exonum = require('../../src')
 
 const proto = require('./proto/stubs')
@@ -17,80 +18,139 @@ const mock = new MockAdapter(axios)
 
 describe('Verify block of precommits', function () {
   const validators = [
-    '2006d14a17808b39d803087cb7c4346a692714e82cf5c4868fc2dbe736fe5e38'
+    '55c48a5ccf060c4ab644277e4a98c6c4f4c480c115477e81523662948fa75a55'
   ]
+  const validatorSecretKey =
+    'a822fd6e7e8265fbc00f8401696a5bdc34f5a6d2ff3f922f58a28c18576b71e5' +
+    '55c48a5ccf060c4ab644277e4a98c6c4f4c480c115477e81523662948fa75a55'
 
-  it('should return fulfilled promise result when block with precommits is valid', function () {
-    const data = require('./common_data/block-with-precommits/valid-block-with-precommits.json')
-    return assert.isFulfilled(Exonum.verifyBlock(data, validators))
+  const validBlockProof = {
+    block: {
+      height: 123,
+      tx_count: 5,
+      prev_hash: '4f319987a786107dc63b2b70115b3734cb9880b099b70c463c5e1b05521ab764',
+      tx_hash: '0a2c6ea0370d1d49c411a6e2396695fcd4eab03d96e9e7a8a3ec1ec312d9ab38',
+      state_hash: '0000000000000000000000000000000000000000000000000000000000000000',
+      error_hash: '0000000000000000000000000000000000000000000000000000000000000000',
+      additional_headers: {
+        headers: {
+          proposer_id: [0, 0]
+        }
+      }
+    },
+    precommits: [
+      '0a5c125a107b180122220a20e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b8552a2' +
+      '20a201e4d7209d7a1a74b6c51921017324fc926ccf25e6721e158dffd89ff53608b15320c08ccb395f10510f4b5' +
+      'b9cb0212220a2055c48a5ccf060c4ab644277e4a98c6c4f4c480c115477e81523662948fa75a551a420a406bb74' +
+      'b0ea8362164f73520844a509b5cac80b6852791687a4571b218f9739429ac089be4dc4581d2331ee1e415676903' +
+      'e47116e9c69234549f72e6cca1bccf0f'
+    ]
+  }
+
+  const secondValidator = 'd519b0219afdf43556c4972c6efc37d971c8675ec8d0257b7f8e7f8206fb4d9e'
+  const secondPrecommit =
+    '0a5e125c0801107b180122220a20e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b85' +
+    '52a220a201e4d7209d7a1a74b6c51921017324fc926ccf25e6721e158dffd89ff53608b15320c08d5ba95f10510' +
+    'd49cfcb70112220a20d519b0219afdf43556c4972c6efc37d971c8675ec8d0257b7f8e7f8206fb4d9e1a420a402' +
+    '77e69dc4050db11814a787f84e2b79318b7e47f8f09c45d8dcd0f26a9a45d08916c542606e8c331c1da6356a089' +
+    '4c7b5a07e95b120e34d50d1823d47c045e01'
+
+  it('should work when block with precommits is valid', () => {
+    Exonum.verifyBlock(validBlockProof, validators)
   })
 
-  it('should throw error when precommit height is unexpected', function () {
-    const data = {
-      'block': {
-        'proposer_id': 0,
-        'height': 44128,
-        'tx_count': 0,
-        'prev_hash': '1eaa862bc8a0d17bcd0d524cdc7bb53245daa702290e794c80180e20a7e261bd',
-        'tx_hash': '0000000000000000000000000000000000000000000000000000000000000000',
-        'state_hash': '6a445788116c7c95417de326720bb1a9e56f01d2fe72315b4879b58be905bd02'
-      },
-      'precommits': [
-        '2006d14a17808b39d803087cb7c4346a692714e82cf5c4868fc2dbe736fe5e38010010e1d802180122220a208524f6073155a6e7f18e0003eaa5cc254ab1345f7b2c51aa2a02da471640c2a52a220a20e2006e4a899f3686b8bb5b3f0274cb1fbf394f304a0bde08ee5ae2795d9f7a5f320c089aaba4e00510c897c8be026b49be4e61f47b5cd23264f63e7bf02e15bfa642aa558d0db8e9997699cb66b04721366a4c16a842c1e1733155d63c79f6b660e9cbfa10e6f939fc6cc2148104'
-      ]
+  it('should throw error when precommit height is unexpected', () => {
+    const invalidBlockProof = {
+      block: Object.assign({}, validBlockProof.block),
+      precommits: validBlockProof.precommits
     }
-    return assert.isRejected(Exonum.verifyBlock(data, validators), Error, 'Precommit height is not match with block height')
+    invalidBlockProof.block.height -= 1
+    expect(() => Exonum.verifyBlock(invalidBlockProof, validators))
+      .to.throw('Precommit height does not match block height')
   })
 
-  it('should throw error when block hash is unexpected', function () {
-    const data = {
-      'block': {
-        'proposer_id': 1,
-        'height': 44129,
-        'tx_count': 0,
-        'prev_hash': '1eaa862bc8a0d17bcd0d524cdc7bb53245daa702290e794c80180e20a7e261bd',
-        'tx_hash': '0000000000000000000000000000000000000000000000000000000000000000',
-        'state_hash': '6a445788116c7c95417de326720bb1a9e56f01d2fe72315b4879b58be905bd02'
-      },
-      'precommits': [
-        '2006d14a17808b39d803087cb7c4346a692714e82cf5c4868fc2dbe736fe5e38010010e1d802180122220a208524f6073155a6e7f18e0003eaa5cc254ab1345f7b2c51aa2a02da471640c2a52a220a20e2006e4a899f3686b8bb5b3f0274cb1fbf394f304a0bde08ee5ae2795d9f7a5f320c089aaba4e00510c897c8be026b49be4e61f47b5cd23264f63e7bf02e15bfa642aa558d0db8e9997699cb66b04721366a4c16a842c1e1733155d63c79f6b660e9cbfa10e6f939fc6cc2148104'
-      ]
+  it('should throw error when block hash is unexpected', () => {
+    const invalidBlockProof = {
+      block: Object.assign({}, validBlockProof.block),
+      precommits: validBlockProof.precommits
     }
-    return assert.isRejected(Exonum.verifyBlock(data, validators), Error, 'Precommit block hash is not match with calculated block hash')
+    invalidBlockProof.block.tx_count += 1
+    expect(() => Exonum.verifyBlock(invalidBlockProof, validators))
+      .to.throw('Precommit block hash does not match calculated block hash')
   })
 
-  it('should throw error when public key is unexpected', function () {
-    const data = {
-      'block': {
-        'proposer_id': 0,
-        'height': 44129,
-        'tx_count': 0,
-        'prev_hash': '1eaa862bc8a0d17bcd0d524cdc7bb53245daa702290e794c80180e20a7e261bd',
-        'tx_hash': '0000000000000000000000000000000000000000000000000000000000000000',
-        'state_hash': '6a445788116c7c95417de326720bb1a9e56f01d2fe72315b4879b58be905bd02'
-      },
-      'precommits': [
-        '2106d14a17808b39d803087cb7c4346a692714e82cf5c4868fc2dbe736fe5e38010010e1d802180122220a208524f6073155a6e7f18e0003eaa5cc254ab1345f7b2c51aa2a02da471640c2a52a220a20e2006e4a899f3686b8bb5b3f0274cb1fbf394f304a0bde08ee5ae2795d9f7a5f320c089aaba4e00510c897c8be026b49be4e61f47b5cd23264f63e7bf02e15bfa642aa558d0db8e9997699cb66b04721366a4c16a842c1e1733155d63c79f6b660e9cbfa10e6f939fc6cc2148104'
-      ]
+  it('should throw error when public key is unexpected', () => {
+    const invalidBlockProof = {
+      block: validBlockProof.block,
+      precommits: [secondPrecommit]
     }
-    return assert.isRejected(Exonum.verifyBlock(data, validators), Error, 'Precommit public key is not match with buffer')
+    expect(() => Exonum.verifyBlock(invalidBlockProof, validators))
+      .to.throw('Precommit public key does not match')
   })
 
-  it('should throw error when signature is unexpected', function () {
-    const data = {
-      'block': {
-        'proposer_id': 0,
-        'height': 44129,
-        'tx_count': 0,
-        'prev_hash': '1eaa862bc8a0d17bcd0d524cdc7bb53245daa702290e794c80180e20a7e261bd',
-        'tx_hash': '0000000000000000000000000000000000000000000000000000000000000000',
-        'state_hash': '6a445788116c7c95417de326720bb1a9e56f01d2fe72315b4879b58be905bd02'
-      },
-      'precommits': [
-        '2006d14a17808b39d803087cb7c4346a692714e82cf5c4868fc2dbe736fe5e38010010e1d802180122220a208524f6073155a6e7f18e0003eaa5cc254ab1345f7b2c51aa2a02da471640c2a52a220a20e2006e4a899f3686b8bb5b3f0274cb1fbf394f304a0bde08ee5ae2795d9f7a5f320c089aaba4e00510c897c8be026b49be4e61f47b5cd23264f63e7bf02e15bfa642aa558d0db8e9997699cb66b04721366a4c16a842c1e1733155d63c79f6b660e9cbfa10e6f939fc6cc2148105'
-      ]
+  it('should throw error when signature is unexpected', () => {
+    const precommit = validBlockProof.precommits[0]
+    // The last bytes of the precommit correspond to the signature
+    const mangledPrecommit = precommit.substring(0, precommit.length - 1) + 'a'
+    expect(mangledPrecommit).to.not.equal(precommit)
+
+    const invalidBlockProof = {
+      block: validBlockProof.block,
+      precommits: [mangledPrecommit]
     }
-    return assert.isRejected(Exonum.verifyBlock(data, validators), Error, 'Precommit signature is wrong')
+    expect(() => Exonum.verifyBlock(invalidBlockProof, validators))
+      .to.throw('Precommit signature is wrong')
+  })
+
+  it('should work with 2 validators', () => {
+    const allValidators = [validators[0], secondValidator]
+    const newBlockProof = {
+      block: validBlockProof.block,
+      precommits: [validBlockProof.precommits[0], secondPrecommit]
+    }
+    Exonum.verifyBlock(newBlockProof, allValidators)
+
+    newBlockProof.precommits = [secondPrecommit, validBlockProof.precommits[0]]
+    Exonum.verifyBlock(newBlockProof, allValidators)
+  })
+
+  it('should throw when number of precommits is insufficient', () => {
+    const allValidators = [validators[0], secondValidator]
+    expect(() => Exonum.verifyBlock(validBlockProof, allValidators))
+      .to.throw('Insufficient number of precommits')
+  })
+
+  it('should throw error when transaction is used instead of precommit', () => {
+    const keyPair = { publicKey: validators[0], secretKey: validatorSecretKey }
+    const sendFunds = new Exonum.Transaction({
+      schema: cryptocurrency.Transfer,
+      serviceId: 128,
+      methodId: 1
+    })
+    const transactionData = {
+      to: {
+        data: Exonum.hexadecimalToUint8Array('278663010ebe1136011618ad5be1b9d6f51edc5b6c6b51b5450ffc72f54a57df')
+      },
+      amount: '25',
+      seed: '7743941227375415562'
+    }
+    const transaction = sendFunds.create(transactionData, keyPair).serialize()
+    const invalidBlockProof = {
+      block: validBlockProof.block,
+      precommits: [uint8ArrayToHexadecimal(transaction)]
+    }
+    expect(() => Exonum.verifyBlock(invalidBlockProof, validators))
+      .to.throw('Invalid message type')
+  })
+
+  it('should throw error on double endorsement', () => {
+    const allValidators = [validators[0], secondValidator]
+    const invalidBlockProof = {
+      block: validBlockProof.block,
+      precommits: [secondPrecommit, secondPrecommit]
+    }
+    expect(() => Exonum.verifyBlock(invalidBlockProof, allValidators))
+      .to.throw('Double endorsement from a validator')
   })
 })
 
