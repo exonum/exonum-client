@@ -18,7 +18,7 @@ const ATTEMPT_TIMEOUT = 500
  * @param {number} timeout
  * @return {Promise}
  */
-export function send (explorerBasePath, type, data, secretKey, attempts, timeout) {
+export function send (explorerBasePath, type, data, secretKey, attempts, timeout, headers) {
   if (typeof explorerBasePath !== 'string') {
     throw new TypeError('Explorer base path endpoint of wrong data type is passed. String is required.')
   }
@@ -63,7 +63,7 @@ export function send (explorerBasePath, type, data, secretKey, attempts, timeout
 
   return axios.post(`${explorerBasePath}`, {
     tx_body: txBody
-  }).then(() => {
+  }, headers).then(() => {
     if (attempts === 0) {
       return txHash
     }
