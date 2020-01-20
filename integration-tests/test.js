@@ -15,7 +15,7 @@ chai.use(dirtyChai)
 chai.use(deepEql)
 
 const { expect } = chai
-const { MapProof, PublicKey, newType, hexadecimalToUint8Array, merkleProof } = exonum
+const { ListProof, MapProof, PublicKey, newType, hexadecimalToUint8Array } = exonum
 
 const WALLET_BASE_URL = 'http://localhost:8000/wallets'
 const LIST_BASE_URL = 'http://localhost:8000/hash-list'
@@ -284,7 +284,13 @@ async function getListProof (seed, count, start = 0, end = count) {
   const url = `${LIST_BASE_URL}/random?seed=${seed}&count=${count}&start=${start}&end=${clampedEnd}`
   const response = await fetch(url)
   const { proof, trusted_root: trustedRoot } = await response.json()
-  merkleProof(trustedRoot, count, proof, [start, clampedEnd - 1], exonum.Hash)
+  const checkedProof = new ListProof(proof, exonum.Hash)
+
+  expect(checkedProof.merkleRoot).to.equal(trustedRoot)
+  expect(checkedProof.length).to.equal(count)
+  const indexes = checkedProof.entries.map(({ index }) => index)
+  expect(indexes).to.have.lengthOf(clampedEnd - start)
+  indexes.forEach((index, i) => expect(index).to.equal(start + i))
 }
 
 describe('ListProof integration', function () {
