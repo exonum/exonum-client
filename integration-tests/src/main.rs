@@ -18,9 +18,16 @@ use actix_web::{
     error::ErrorBadRequest, http::Method, server, App, Json, Path, Query, Result as ApiResult,
     State,
 };
+use chrono::Utc;
 use exonum::{
-    crypto::{gen_keypair_from_seed, Hash, PublicKey, Seed, HASH_SIZE},
-    merkledb::{access::AccessExt, Database, ListProof, MapProof, ObjectHash, TemporaryDB},
+    blockchain::{AdditionalHeaders, Block, BlockProof, ProposerId},
+    crypto::{gen_keypair_from_seed, hash, Hash, PublicKey, SecretKey, Seed, HASH_SIZE},
+    helpers::{Height, Round, ValidatorId},
+    merkledb::{
+        access::AccessExt, BinaryValue, Database, ListProof, MapProof, ObjectHash, TemporaryDB,
+    },
+    messages::{AnyTx, Precommit, Verified},
+    runtime::CallInfo,
 };
 use exonum_derive::*;
 use exonum_proto::ProtobufConvert;
@@ -259,6 +266,115 @@ fn generate_list_proof(params: Query<RandomListParams>) -> ApiResult<Json<HashLi
     }))
 }
 
+#[derive(Deserialize)]
+struct TxParams {
+    #[serde(default)]
+    seed: u64,
+    #[serde(default)]
+    instance_id: u32,
+    #[serde(default)]
+    method_id: u32,
+}
+
+#[derive(Serialize)]
+struct TxResponse {
+    message: Verified<AnyTx>,
+    wallet: Wallet,
+    call_info: CallInfo,
+    hash: Hash,
+}
+
+fn generate_wallet_tx(params: Query<TxParams>) -> ApiResult<Json<TxResponse>> {
+    let mut rng = ChaChaRng::seed_from_u64(params.seed);
+    let mut seed = [0u8; 32];
+    rng.fill_bytes(&mut seed);
+    let (pub_key, secret_key) = gen_keypair_from_seed(&Seed::new(seed));
+    let uuid = UuidBuilder::from_bytes(rng.gen()).build();
+    let wallet = Wallet::new(
+        &pub_key,
+        &pub_key.to_string()[..8],
+        u64::from(rng.next_u32()),
+        uuid,
+    );
+    let call_info = CallInfo::new(params.instance_id, params.method_id);
+    let message = AnyTx {
+        call_info: call_info.clone(),
+        arguments: wallet.to_bytes(),
+    };
+    let message = message.sign(pub_key, &secret_key);
+    Ok(Json(TxResponse {
+        call_info,
+        wallet,
+        hash: message.object_hash(),
+        message,
+    }))
+}
+
+#[derive(Deserialize)]
+struct BlockParams {
+    #[serde(default)]
+    seed: u64,
+    #[serde(default)]
+    height: u64,
+    #[serde(default = "BlockParams::default_validators")]
+    validators: u16,
+}
+
+impl BlockParams {
+    fn default_validators() -> u16 {
+        4
+    }
+}
+
+#[derive(Serialize)]
+struct BlockResponse {
+    validators: Vec<(PublicKey, SecretKey)>,
+    block: BlockProof,
+}
+
+fn generate_block_proof(params: Query<BlockParams>) -> ApiResult<Json<BlockResponse>> {
+    let mut rng = ChaChaRng::seed_from_u64(params.seed);
+
+    let mut additional_headers = AdditionalHeaders::new();
+    additional_headers.insert::<ProposerId>(ValidatorId(0).into());
+    let block = Block {
+        height: Height(params.height),
+        tx_count: rng.gen_range(0, 10),
+        prev_hash: params.height.object_hash(),
+        tx_hash: hash(&[rng.gen()]),
+        state_hash: Hash::zero(),
+        error_hash: Hash::zero(),
+        additional_headers,
+    };
+
+    let validator_keys: Vec<_> = (0..params.validators)
+        .map(|_| {
+            let mut seed = [0_u8; 32];
+            rng.fill_bytes(&mut seed);
+            gen_keypair_from_seed(&Seed::new(seed))
+        })
+        .collect();
+    let precommits: Vec<_> = validator_keys
+        .iter()
+        .enumerate()
+        .map(|(i, (pk, sk))| {
+            let precommit = Precommit {
+                validator: ValidatorId(i as u16),
+                height: block.height,
+                round: Round::first(),
+                propose_hash: hash(&[]),
+                block_hash: block.object_hash(),
+                time: Utc::now(),
+            };
+            Verified::from_value(precommit, *pk, sk)
+        })
+        .collect();
+    Ok(Json(BlockResponse {
+        validators: validator_keys,
+        block: BlockProof { block, precommits },
+    }))
+}
+
 fn create_app(db: Arc<TemporaryDB>) -> App<Arc<TemporaryDB>> {
     App::with_state(db)
         .route("/wallets", Method::POST, create_wallet)
@@ -268,6 +384,8 @@ fn create_app(db: Arc<TemporaryDB>) -> App<Arc<TemporaryDB>> {
         .route("/wallets/{public_key}", Method::GET, get_wallet)
         .route("/wallets/batch/{keys}", Method::GET, get_wallets)
         .route("/hash-list/random", Method::GET, generate_list_proof)
+        .route("/messages/transaction", Method::GET, generate_wallet_tx)
+        .route("/messages/block", Method::GET, generate_block_proof)
 }
 
 fn main() {
