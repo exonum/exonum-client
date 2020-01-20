@@ -9,13 +9,13 @@ const { Type, Field } = require('protobufjs/light')
 
 // Declare the value type used in the proof.
 const PublicKeySchema = new Type('PublicKey')
-PublicKeySchema.add(new Field('data', 1, 'bytes'))
+  .add(new Field('data', 1, 'bytes'))
 const WalletSchema = new Type('Wallet')
-WalletSchema.add(PublicKeySchema)
-WalletSchema.add(new Field('pub_key', 1, 'PublicKey'))
-WalletSchema.add(new Field('name', 2, 'string'))
-WalletSchema.add(new Field('balance', 3, 'uint64'))
-WalletSchema.add(new Field('uniq_id', 4, 'string'))
+  .add(PublicKeySchema)
+  .add(new Field('pub_key', 1, 'PublicKey'))
+  .add(new Field('name', 2, 'string'))
+  .add(new Field('balance', 3, 'uint64'))
+  .add(new Field('uniq_id', 4, 'string'))
 const Wallet = Exonum.newType(WalletSchema)
 
 // This proof JSON for 2 existing and 2 missing wallets is generated

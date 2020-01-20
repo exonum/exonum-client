@@ -76,7 +76,7 @@ Library compatibility with Exonum core:
 
 There are several options to include light client library in the application:
 
-The most preferred way is to install Exonum Client as a [package][npmjs] from npm registry:
+The preferred way is to install Exonum Client as a [package][npmjs] from npm registry:
 
 ```sh
 npm install exonum-client
@@ -98,7 +98,7 @@ let Exonum = require('exonum-client')
 
 ## Data types
 
-Exonum use [protobufjs][protobufjs] library to serialize structured data into [protobuf][protobuf] format.
+Exonum uses [protobufjs][protobufjs] library to serialize structured data into [protobuf][protobuf] format.
 
 Each transaction is [signed](#sign-data) before sending into blockchain.
 Before the transaction is signed it is converted into byte array under the hood.
@@ -106,9 +106,9 @@ Before the transaction is signed it is converted into byte array under the hood.
 The data received from the blockchain should be converted into byte array under the hood
 before it will be possible to [verify proof of its existence](#cryptographic-proofs) using cryptographic algorithm.
 
-Developer can both define data stuctures on the fly or use precompiled stubs wuth data structures.
+Developer can both define data structures on the fly or use precompiled stubs with data structures.
 
-To define protobuf structures use [protobufjs][protobufjs] library.
+To define Protobuf structures use [protobufjs][protobufjs] library.
 
 Example:
 
@@ -464,7 +464,7 @@ The `merkleProof` method is used to validate the Merkle tree and extract a **lis
 | **range** | An array of two elements of `Number` type. Represents list of obtained elements: `[startIndex; endIndex)`. | `Array` |
 | **type** | Definition of the elements type. *Optional. The `merkleProof` method expects to find byte arrays or hashes as values in the tree if `type` is not passed.* | [Custom data type](#define-data-type) |
 
-An [example of verifying a Merkle tree](examples/merkle-tree.md).
+<!-- FIXME: Add example -->
 
 ### Map proof
 
@@ -513,7 +513,7 @@ Fulfilled state means that block is valid.
 | **data** | Structure with block and precommits. | `Object` |
 | **validators** | An array of validators public keys as a hexadecimal strings. | `Array` |
 
-An example of [block verification](examples/block.md).
+<!-- FIXME: Add example -->
 
 ### Verify table
 
