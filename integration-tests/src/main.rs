@@ -311,6 +311,27 @@ fn generate_wallet_tx(params: Query<TxParams>) -> ApiResult<Json<TxResponse>> {
     }))
 }
 
+#[derive(Serialize)]
+struct VerifyResponse {
+    hash: Hash,
+    instance_id: u32,
+    method_id: u32,
+    wallet: Wallet,
+}
+
+fn check_wallet_tx(transaction: Json<Verified<AnyTx>>) -> ApiResult<Json<VerifyResponse>> {
+    let transaction = transaction.into_inner();
+    let payload = transaction.payload();
+    let wallet: Wallet = payload.parse().map_err(ErrorBadRequest)?;
+
+    Ok(Json(VerifyResponse {
+        hash: transaction.object_hash(),
+        instance_id: payload.call_info.instance_id,
+        method_id: payload.call_info.method_id,
+        wallet,
+    }))
+}
+
 #[derive(Deserialize)]
 struct BlockParams {
     #[serde(default)]
@@ -421,6 +442,7 @@ fn create_app(db: Arc<TemporaryDB>) -> App<Arc<TemporaryDB>> {
         .route("/hash-list/random", Method::GET, generate_list_proof)
         .route("/tables", Method::GET, generate_table_proof)
         .route("/messages/transaction", Method::GET, generate_wallet_tx)
+        .route("/messages/transaction", Method::POST, check_wallet_tx)
         .route("/messages/block", Method::GET, generate_block_proof)
 }
 

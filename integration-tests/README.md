@@ -7,15 +7,8 @@ its responses with the help of the client.
 
 ## Prerequisites
 
-You need to have a nightly toolchain of Rust installed, which can be accomplished
-with the help of [`rustup`][rustup]. If you have several toolchains installed,
-you need to set the nightly one as default; you can do this by executing
-
-```shell
-rustup override set nightly
-```
-
-in the project root directory.
+You need to have a Rust toolchain installed, which can be accomplished
+with the help of [`rustup`][rustup].
 
 ## Running Tests
 
