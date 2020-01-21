@@ -354,16 +354,6 @@ Exonum.sendQueue(explorerBasePath, transactions, attempts, timeout)
 The `sendQueue` function returns a `Promise` with an array of transaction hashes.
 The promise resolves when all transactions are committed.
 
-Find more examples of operations on transactions:
-
-* [Define transaction](examples/transactions.md#define-transaction)
-* [Serialize transaction](examples/transactions.md#serialize-transaction)
-* [Sign transaction](examples/transactions.md#sign-transaction)
-* [Verify signed transaction](examples/transactions.md#verify-signed-transaction)
-* [Get a transaction hash](examples/transactions.md#get-a-transaction-hash)
-* [Send transaction](examples/transactions.md#send-transaction)
-* [Send multiple transactions](examples/transactions.md#send-multiple-transaction)
-
 ## Cryptographic proofs
 
 A cryptographic proof is a format in which a Exonum node can provide sensitive data from a blockchain.
