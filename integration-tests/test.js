@@ -272,6 +272,58 @@ describe('MapProof integration', function () {
   })
 })
 
+async function getRawMapProof (seed, count, inProof) {
+  let url = `${WALLET_BASE_URL}/random-raw?seed=${seed}&wallets=${count}&wallets_in_proof=${inProof}`
+  if (inProof === 0) {
+    url += '&missing_keys=1'
+  }
+  const response = await fetch(url)
+  const { proof, trusted_root: trustedRoot } = await response.json()
+  proof.entries.forEach(convertPubKey)
+  const checkedProof = new MapProof(proof, MapProof.rawKey(PublicKey), Wallet)
+
+  expect(checkedProof.merkleRoot).to.equal(trustedRoot)
+  expect(checkedProof.entries.size).to.equal(inProof)
+}
+
+describe('RawMapProof integration', function () {
+  this.slow(1500)
+  const maxSeed = 4
+
+  for (let seed = 0; seed < maxSeed; seed++) {
+    it(`should recognize proof for a single wallet (seed = ${seed})`, async () => {
+      await getRawMapProof(seed, 1, 1)
+    })
+  }
+
+  for (let seed = 0; seed < maxSeed; seed++) {
+    it(`should recognize proof for a single hidden wallet (seed = ${seed})`, async () => {
+      await getRawMapProof(seed, 1, 0)
+    })
+  }
+
+  const walletCounts = [2, 3, 5, 8, 13, 21, 34, 55, 89, 144]
+  walletCounts.forEach((count) => {
+    const inProofCounts = new Set([
+      1,
+      Math.round(count / 4),
+      Math.round(count / 2),
+      count - 1,
+      count
+    ])
+
+    describe(`in a tree with ${count} wallets`, () => {
+      inProofCounts.forEach((inProof) => {
+        for (let seed = 0; seed < maxSeed; seed++) {
+          it(`should recognize proof for ${inProof} wallets (seed = ${seed})`, async () => {
+            await getRawMapProof(seed, count, inProof)
+          })
+        }
+      })
+    })
+  })
+})
+
 /**
  * Fetches a proof for a randomly generated list from the server and checks it.
  *
