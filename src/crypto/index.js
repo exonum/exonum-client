@@ -5,7 +5,6 @@ import { isType } from '../types/generic'
 import { isTransaction } from '../types/message'
 import * as validate from '../types/validate'
 import * as convert from '../types/convert'
-import { hexadecimalToUint8Array } from '../types/convert'
 import * as protobuf from '../../proto/protocol'
 
 const { Caller } = protobuf.exonum.runtime
@@ -176,7 +175,7 @@ export function randomUint64 () {
  * @returns {string}
  */
 export function publicKeyToAddress (publicKey) {
-  const keyBytes = { data: hexadecimalToUint8Array(publicKey) }
+  const keyBytes = { data: convert.hexadecimalToUint8Array(publicKey) }
   const caller = Caller.encode({ transaction_author: keyBytes }).finish()
   return hash(caller)
 }
