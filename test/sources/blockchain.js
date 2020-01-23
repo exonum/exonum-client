@@ -1,181 +1,246 @@
 /* eslint-env node, mocha */
 /* eslint-disable no-unused-expressions */
 
+import { uint8ArrayToHexadecimal } from '../../src/types'
+
 const MockAdapter = require('axios-mock-adapter')
 const axios = require('axios')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
-const assert = chai.assert
-const expect = chai.expect
+const { expect } = chai
 const Exonum = require('../../src')
+
 const proto = require('./proto/stubs')
+const { cryptocurrency_advanced: cryptocurrency } = proto.exonum.examples
 
 chai.use(chaiAsPromised)
 const mock = new MockAdapter(axios)
 
 describe('Verify block of precommits', function () {
   const validators = [
-    '2006d14a17808b39d803087cb7c4346a692714e82cf5c4868fc2dbe736fe5e38'
+    '55c48a5ccf060c4ab644277e4a98c6c4f4c480c115477e81523662948fa75a55'
   ]
+  const validatorSecretKey =
+    'a822fd6e7e8265fbc00f8401696a5bdc34f5a6d2ff3f922f58a28c18576b71e5' +
+    '55c48a5ccf060c4ab644277e4a98c6c4f4c480c115477e81523662948fa75a55'
 
-  it('should return fulfilled promise result when block with precommits is valid', function () {
-    const data = require('./common_data/block-with-precommits/valid-block-with-precommits.json')
-    return assert.isFulfilled(Exonum.verifyBlock(data, validators))
+  const validBlockProof = {
+    block: {
+      height: 123,
+      tx_count: 5,
+      prev_hash: '4f319987a786107dc63b2b70115b3734cb9880b099b70c463c5e1b05521ab764',
+      tx_hash: '0a2c6ea0370d1d49c411a6e2396695fcd4eab03d96e9e7a8a3ec1ec312d9ab38',
+      state_hash: '0000000000000000000000000000000000000000000000000000000000000000',
+      error_hash: '0000000000000000000000000000000000000000000000000000000000000000',
+      additional_headers: {
+        headers: {
+          proposer_id: [0, 0]
+        }
+      }
+    },
+    precommits: [
+      '0a5c125a107b180122220a20e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b8552a2' +
+      '20a201e4d7209d7a1a74b6c51921017324fc926ccf25e6721e158dffd89ff53608b15320c08ccb395f10510f4b5' +
+      'b9cb0212220a2055c48a5ccf060c4ab644277e4a98c6c4f4c480c115477e81523662948fa75a551a420a406bb74' +
+      'b0ea8362164f73520844a509b5cac80b6852791687a4571b218f9739429ac089be4dc4581d2331ee1e415676903' +
+      'e47116e9c69234549f72e6cca1bccf0f'
+    ]
+  }
+
+  const secondValidator = 'd519b0219afdf43556c4972c6efc37d971c8675ec8d0257b7f8e7f8206fb4d9e'
+  const secondPrecommit =
+    '0a5e125c0801107b180122220a20e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b85' +
+    '52a220a201e4d7209d7a1a74b6c51921017324fc926ccf25e6721e158dffd89ff53608b15320c08d5ba95f10510' +
+    'd49cfcb70112220a20d519b0219afdf43556c4972c6efc37d971c8675ec8d0257b7f8e7f8206fb4d9e1a420a402' +
+    '77e69dc4050db11814a787f84e2b79318b7e47f8f09c45d8dcd0f26a9a45d08916c542606e8c331c1da6356a089' +
+    '4c7b5a07e95b120e34d50d1823d47c045e01'
+
+  it('should work when block with precommits is valid', () => {
+    Exonum.verifyBlock(validBlockProof, validators)
   })
 
-  it('should throw error when precommit height is unexpected', function () {
-    const data = {
-      'block': {
-        'proposer_id': 0,
-        'height': 44128,
-        'tx_count': 0,
-        'prev_hash': '1eaa862bc8a0d17bcd0d524cdc7bb53245daa702290e794c80180e20a7e261bd',
-        'tx_hash': '0000000000000000000000000000000000000000000000000000000000000000',
-        'state_hash': '6a445788116c7c95417de326720bb1a9e56f01d2fe72315b4879b58be905bd02'
-      },
-      'precommits': [
-        '2006d14a17808b39d803087cb7c4346a692714e82cf5c4868fc2dbe736fe5e38010010e1d802180122220a208524f6073155a6e7f18e0003eaa5cc254ab1345f7b2c51aa2a02da471640c2a52a220a20e2006e4a899f3686b8bb5b3f0274cb1fbf394f304a0bde08ee5ae2795d9f7a5f320c089aaba4e00510c897c8be026b49be4e61f47b5cd23264f63e7bf02e15bfa642aa558d0db8e9997699cb66b04721366a4c16a842c1e1733155d63c79f6b660e9cbfa10e6f939fc6cc2148104'
-      ]
+  it('should throw error when precommit height is unexpected', () => {
+    const invalidBlockProof = {
+      block: Object.assign({}, validBlockProof.block),
+      precommits: validBlockProof.precommits
     }
-    return assert.isRejected(Exonum.verifyBlock(data, validators), Error, 'Precommit height is not match with block height')
+    invalidBlockProof.block.height -= 1
+    expect(() => Exonum.verifyBlock(invalidBlockProof, validators))
+      .to.throw('Precommit height does not match block height')
   })
 
-  it('should throw error when block hash is unexpected', function () {
-    const data = {
-      'block': {
-        'proposer_id': 1,
-        'height': 44129,
-        'tx_count': 0,
-        'prev_hash': '1eaa862bc8a0d17bcd0d524cdc7bb53245daa702290e794c80180e20a7e261bd',
-        'tx_hash': '0000000000000000000000000000000000000000000000000000000000000000',
-        'state_hash': '6a445788116c7c95417de326720bb1a9e56f01d2fe72315b4879b58be905bd02'
-      },
-      'precommits': [
-        '2006d14a17808b39d803087cb7c4346a692714e82cf5c4868fc2dbe736fe5e38010010e1d802180122220a208524f6073155a6e7f18e0003eaa5cc254ab1345f7b2c51aa2a02da471640c2a52a220a20e2006e4a899f3686b8bb5b3f0274cb1fbf394f304a0bde08ee5ae2795d9f7a5f320c089aaba4e00510c897c8be026b49be4e61f47b5cd23264f63e7bf02e15bfa642aa558d0db8e9997699cb66b04721366a4c16a842c1e1733155d63c79f6b660e9cbfa10e6f939fc6cc2148104'
-      ]
+  it('should throw error when block hash is unexpected', () => {
+    const invalidBlockProof = {
+      block: Object.assign({}, validBlockProof.block),
+      precommits: validBlockProof.precommits
     }
-    return assert.isRejected(Exonum.verifyBlock(data, validators), Error, 'Precommit block hash is not match with calculated block hash')
+    invalidBlockProof.block.tx_count += 1
+    expect(() => Exonum.verifyBlock(invalidBlockProof, validators))
+      .to.throw('Precommit block hash does not match calculated block hash')
   })
 
-  it('should throw error when public key is unexpected', function () {
-    const data = {
-      'block': {
-        'proposer_id': 0,
-        'height': 44129,
-        'tx_count': 0,
-        'prev_hash': '1eaa862bc8a0d17bcd0d524cdc7bb53245daa702290e794c80180e20a7e261bd',
-        'tx_hash': '0000000000000000000000000000000000000000000000000000000000000000',
-        'state_hash': '6a445788116c7c95417de326720bb1a9e56f01d2fe72315b4879b58be905bd02'
-      },
-      'precommits': [
-        '2106d14a17808b39d803087cb7c4346a692714e82cf5c4868fc2dbe736fe5e38010010e1d802180122220a208524f6073155a6e7f18e0003eaa5cc254ab1345f7b2c51aa2a02da471640c2a52a220a20e2006e4a899f3686b8bb5b3f0274cb1fbf394f304a0bde08ee5ae2795d9f7a5f320c089aaba4e00510c897c8be026b49be4e61f47b5cd23264f63e7bf02e15bfa642aa558d0db8e9997699cb66b04721366a4c16a842c1e1733155d63c79f6b660e9cbfa10e6f939fc6cc2148104'
-      ]
+  it('should throw error when public key is unexpected', () => {
+    const invalidBlockProof = {
+      block: validBlockProof.block,
+      precommits: [secondPrecommit]
     }
-    return assert.isRejected(Exonum.verifyBlock(data, validators), Error, 'Precommit public key is not match with buffer')
+    expect(() => Exonum.verifyBlock(invalidBlockProof, validators))
+      .to.throw('Precommit public key does not match')
   })
 
-  it('should throw error when signature is unexpected', function () {
-    const data = {
-      'block': {
-        'proposer_id': 0,
-        'height': 44129,
-        'tx_count': 0,
-        'prev_hash': '1eaa862bc8a0d17bcd0d524cdc7bb53245daa702290e794c80180e20a7e261bd',
-        'tx_hash': '0000000000000000000000000000000000000000000000000000000000000000',
-        'state_hash': '6a445788116c7c95417de326720bb1a9e56f01d2fe72315b4879b58be905bd02'
-      },
-      'precommits': [
-        '2006d14a17808b39d803087cb7c4346a692714e82cf5c4868fc2dbe736fe5e38010010e1d802180122220a208524f6073155a6e7f18e0003eaa5cc254ab1345f7b2c51aa2a02da471640c2a52a220a20e2006e4a899f3686b8bb5b3f0274cb1fbf394f304a0bde08ee5ae2795d9f7a5f320c089aaba4e00510c897c8be026b49be4e61f47b5cd23264f63e7bf02e15bfa642aa558d0db8e9997699cb66b04721366a4c16a842c1e1733155d63c79f6b660e9cbfa10e6f939fc6cc2148105'
-      ]
+  it('should throw error when signature is unexpected', () => {
+    const precommit = validBlockProof.precommits[0]
+    // The last bytes of the precommit correspond to the signature
+    const mangledPrecommit = precommit.substring(0, precommit.length - 1) + 'a'
+    expect(mangledPrecommit).to.not.equal(precommit)
+
+    const invalidBlockProof = {
+      block: validBlockProof.block,
+      precommits: [mangledPrecommit]
     }
-    return assert.isRejected(Exonum.verifyBlock(data, validators), Error, 'Precommit signature is wrong')
+    expect(() => Exonum.verifyBlock(invalidBlockProof, validators))
+      .to.throw('Precommit signature is wrong')
+  })
+
+  it('should work with 2 validators', () => {
+    const allValidators = [validators[0], secondValidator]
+    const newBlockProof = {
+      block: validBlockProof.block,
+      precommits: [validBlockProof.precommits[0], secondPrecommit]
+    }
+    Exonum.verifyBlock(newBlockProof, allValidators)
+
+    newBlockProof.precommits = [secondPrecommit, validBlockProof.precommits[0]]
+    Exonum.verifyBlock(newBlockProof, allValidators)
+  })
+
+  it('should throw when number of precommits is insufficient', () => {
+    const allValidators = [validators[0], secondValidator]
+    expect(() => Exonum.verifyBlock(validBlockProof, allValidators))
+      .to.throw('Insufficient number of precommits')
+  })
+
+  it('should throw error when transaction is used instead of precommit', () => {
+    const keyPair = { publicKey: validators[0], secretKey: validatorSecretKey }
+    const sendFunds = new Exonum.Transaction({
+      schema: cryptocurrency.Transfer,
+      serviceId: 128,
+      methodId: 1
+    })
+    const transactionData = {
+      to: {
+        data: Exonum.hexadecimalToUint8Array('278663010ebe1136011618ad5be1b9d6f51edc5b6c6b51b5450ffc72f54a57df')
+      },
+      amount: '25',
+      seed: '7743941227375415562'
+    }
+    const transaction = sendFunds.create(transactionData, keyPair).serialize()
+    const invalidBlockProof = {
+      block: validBlockProof.block,
+      precommits: [uint8ArrayToHexadecimal(transaction)]
+    }
+    expect(() => Exonum.verifyBlock(invalidBlockProof, validators))
+      .to.throw('Invalid message type')
+  })
+
+  it('should throw error on double endorsement', () => {
+    const allValidators = [validators[0], secondValidator]
+    const invalidBlockProof = {
+      block: validBlockProof.block,
+      precommits: [secondPrecommit, secondPrecommit]
+    }
+    expect(() => Exonum.verifyBlock(invalidBlockProof, allValidators))
+      .to.throw('Double endorsement from a validator')
   })
 })
 
-describe('Verify table existence', function () {
+describe('Verify table existence', () => {
   const proof = {
-    'entries': [{
-      'key': '50c8ba3a6170f0a2fb6736ece8a603576ef6309a35e810911599bc6211b554a9',
-      'value': '8ea22c377194b41307f8c8db6271737f0dfe938ad2ec21184f785ab39430bb13'
-    }],
-    'proof': [
+    entries: [
       {
-        'path': '0000101010101110110000001010110110011000000001100011001110110111000101011001101100100100000010011111001000011101110010101110111001111111101111101110100011111110000111011111101111110011011010100100110101110010101000101110101000100110011100100010101101100001',
-        'hash': '5e543acd420b34b729fded566a8641f81f16694ee176de0e7574181c91cfd54f'
+        key: 'prefixed.list',
+        value: '247d2cdfa9deeb9502080c4385e5ae341a55bf6d3115ed16170e444f4c8c9e87'
+      }
+    ],
+    proof: [
+      {
+        path: '0',
+        hash: 'c43f42f7976721b7061ea0d5ba925c613196d4eda97f211bd7faeccf79ecd97c'
       },
       {
-        'path': '11',
-        'hash': 'a9eb38ea8dd87f2e09652904d3df5d81b3babcdad0a9dc050093a5291b2f98f5'
-      }]
+        path: '1100010100001100100111000011101000000011101001010101110010001011000001001110111001101100001010100101011011111111001011111100111010011010000000101100100110101110001001101101110111101111001110101000011110110111101101010000001000011110101100001000100110011100',
+        hash: 'd89d7c6b2955f99fd1113bd48f32fde18aa73e97695cdd9528ef921d1a772fbe'
+      }
+    ]
   }
-  const serviceId = 128
-  const tableIndex = 0
-  const stateHash = '14bb036786f213f573dc50f2550f8d23664ce9a3f3c32ea4060d704e139ac51b'
-  const rootHash = '8ea22c377194b41307f8c8db6271737f0dfe938ad2ec21184f785ab39430bb13'
+  const stateHash = '681dccac8804d54bd5929425f34b9ef7628759cab7a954f0baaa8b572b19d3f5'
+  const rootHash = '247d2cdfa9deeb9502080c4385e5ae341a55bf6d3115ed16170e444f4c8c9e87'
 
-  it('should return root hash when valid proof', function () {
-    expect(Exonum.verifyTable(proof, stateHash, serviceId, tableIndex)).to.equals(rootHash)
+  it('should return root hash with valid proof', () => {
+    expect(Exonum.verifyTable(proof, stateHash, 'prefixed.list')).to.equal(rootHash)
   })
 
-  it('should throw error when merkleRoot is unexpected', function () {
-    expect(() => Exonum.verifyTable(proof, '', serviceId, tableIndex))
+  it('should fail with wrong table name', () => {
+    expect(() => Exonum.verifyTable(proof, stateHash, 'other.table'))
+      .to.throw('Table not found in the root tree')
+  })
+
+  it('should throw error when `stateHash` is invalid', () => {
+    expect(() => Exonum.verifyTable(proof, '00'.repeat(32), 'token.wallets'))
       .to.throw(Error, 'Table proof is corrupted')
   })
 })
 
-describe('Send transaction to the blockchain', function () {
+describe('Send transaction to the blockchain', () => {
+  const sendFunds = new Exonum.Transaction({
+    schema: cryptocurrency.Transfer,
+    serviceId: 128,
+    methodId: 1
+  })
+
   const keyPair = {
     publicKey: '78cf8b5e5c020696319eb32a1408e6c65e7d97733d34528fbdce08438a0243e8',
     secretKey: 'b5b3ccf6ca4475b7ff3d910d5ab31e4723098490a3e341dd9d2896b42ebc9f8978cf8b5e5c020696319eb32a1408e6c65e7d97733d34528fbdce08438a0243e8'
   }
-  const sendFunds = Exonum.newTransaction({
-    author: keyPair.publicKey,
-    service_id: 128,
-    message_id: 0,
-    schema: proto.exonum.examples.cryptocurrency_advanced.Transfer
-  })
   const data = {
-    to: { data: Exonum.hexadecimalToUint8Array('278663010ebe1136011618ad5be1b9d6f51edc5b6c6b51b5450ffc72f54a57df') },
+    to: {
+      data: Exonum.hexadecimalToUint8Array('278663010ebe1136011618ad5be1b9d6f51edc5b6c6b51b5450ffc72f54a57df')
+    },
     amount: '25',
     seed: '7743941227375415562'
   }
+  const transaction = sendFunds.create(data, keyPair).serialize()
+
   const txHash = 'b4f78eab1d9b0b04a82f77f30ac0656e3a41765a4fccb513f8f6e4571a1f4003'
   const explorerBasePath = '/api/explorer/v1/transactions'
   const transactionPath = `${explorerBasePath}?hash=${txHash}`
 
-  describe('Valid transaction has been sent', function () {
-    before(function () {
+  describe('Valid transaction has been sent', () => {
+    before(() => {
       mock
         .onPost(explorerBasePath)
-        .replyOnce(200)
+        .replyOnce(200, { tx_hash: txHash })
 
       mock
         .onGet(transactionPath)
-        .replyOnce(200, {
-          type: 'in-pool'
-        })
+        .replyOnce(200, { type: 'in_pool' })
         .onGet(transactionPath)
-        .replyOnce(200, {
-          type: 'committed'
-        })
+        .replyOnce(200, { type: 'committed' })
     })
 
-    after(function () {
-      mock.reset()
-    })
+    after(() => mock.reset())
 
-    it('should return fulfilled Promise state when transaction has accepted to the blockchain', function () {
-      return Exonum.send(explorerBasePath, sendFunds, data, keyPair.secretKey).then(response => {
-        expect(response).to.deep.equal(txHash)
-      })
+    it('should return fulfilled Promise state when transaction has accepted to the blockchain', async () => {
+      const response = await Exonum.send(explorerBasePath, transaction)
+      expect(response).to.deep.equal(txHash)
     })
   })
 
-  describe('Valid transaction has been sent but node processes it very slow', function () {
-    before(function () {
+  describe('Valid transaction has been sent but node processes it very slow', () => {
+    before(() => {
       mock
         .onPost(explorerBasePath)
-        .replyOnce(200)
+        .replyOnce(200, { tx_hash: txHash })
 
       mock
         .onGet(transactionPath)
@@ -185,221 +250,118 @@ describe('Send transaction to the blockchain', function () {
         .onGet(transactionPath)
         .replyOnce(404)
         .onGet(transactionPath)
-        .replyOnce(200, {
-          type: 'in-pool'
-        })
+        .replyOnce(200, { type: 'in_pool' })
         .onGet(transactionPath)
-        .replyOnce(200, {
-          type: 'committed'
-        })
+        .replyOnce(200, { type: 'committed' })
     })
 
-    after(function () {
-      mock.reset()
-    })
+    after(() => mock.reset())
 
-    it('should return fulfilled Promise state when transaction has accepted to the blockchain', function () {
+    it('should return fulfilled Promise state when transaction has accepted to the blockchain', async function () {
       this.timeout(5000)
-      return Exonum.send(explorerBasePath, sendFunds, data, keyPair.secretKey).then(response => {
-        expect(response).to.deep.equal(txHash)
-      })
+      const response = await Exonum.send(explorerBasePath, transaction)
+      expect(response).to.deep.equal(txHash)
     })
   })
 
   describe('Valid transaction has been sent with custom attempts and timeout number', function () {
-    before(function () {
+    before(() => {
       mock
         .onPost(explorerBasePath)
-        .replyOnce(200)
+        .replyOnce(200, { tx_hash: txHash })
 
       mock
         .onGet(transactionPath)
-        .replyOnce(200, {
-          type: 'in-pool'
-        })
+        .replyOnce(200, { type: 'in_pool' })
         .onGet(transactionPath)
-        .replyOnce(200, {
-          type: 'in-pool'
-        })
+        .replyOnce(200, { type: 'in_pool' })
         .onGet(transactionPath)
-        .replyOnce(200, {
-          type: 'in-pool'
-        })
+        .replyOnce(200, { type: 'in_pool' })
         .onGet(transactionPath)
-        .replyOnce(200, {
-          type: 'in-pool'
-        })
+        .replyOnce(200, { type: 'in_pool' })
         .onGet(transactionPath)
-        .replyOnce(200, {
-          type: 'in-pool'
-        })
+        .replyOnce(200, { type: 'in_pool' })
         .onGet(transactionPath)
-        .replyOnce(200, {
-          type: 'in-pool'
-        })
+        .replyOnce(200, { type: 'in_pool' })
         .onGet(transactionPath)
-        .replyOnce(200, {
-          type: 'committed'
-        })
+        .replyOnce(200, { type: 'committed' })
     })
 
-    after(function () {
-      mock.reset()
-    })
+    after(() => mock.reset())
 
-    it('should return fulfilled Promise state when transaction has accepted to the blockchain', function () {
-      return Exonum.send(explorerBasePath, sendFunds, data, keyPair.secretKey, 100, 7).then(response => {
-        expect(response).to.deep.equal(txHash)
-      })
-    })
-  })
-
-  describe('Valid transaction has been sent with zero attempts', function () {
-    before(function () {
-      mock
-        .onPost(explorerBasePath)
-        .replyOnce(200)
-    })
-
-    after(function () {
-      mock.reset()
-    })
-
-    it('should return fulfilled Promise state when transaction has been sent to the blockchain', function () {
-      return Exonum.send(explorerBasePath, sendFunds, data, keyPair.secretKey, 0).then(response => {
-        expect(response).to.deep.equal(txHash)
-      })
+    it('should return fulfilled Promise state when transaction has accepted to the blockchain', async function () {
+      this.timeout(5000)
+      const response = await Exonum.send(explorerBasePath, transaction, 100, 7)
+      expect(response).to.deep.equal(txHash)
     })
   })
 
   describe('Invalid data has been passed', function () {
-    it('should throw error when wrong explorer base path is passed', function () {
+    it('should throw error when wrong explorer base path is passed', async () => {
       const paths = [null, false, 42, new Date(), {}, []]
 
-      paths.forEach(function (value) {
-        expect(() => Exonum.send(value))
-          .to.throw(Error, 'Explorer base path endpoint of wrong data type is passed. String is required.')
-      })
-    })
-
-    it('should throw error when wrong transaction type is passed', function () {
-      const types = [null, false, 42, new Date(), '', []]
-
-      types.forEach(function (value) {
-        expect(() => Exonum.send(explorerBasePath, value))
-          .to.throw(Error, 'Transaction of wrong type is passed.')
-      })
-    })
-
-    it('should throw error when wrong data is passed', function () {
-      const data = [null, false, 42, new Date(), '', []]
-
-      data.forEach(function (value) {
-        expect(() => Exonum.send(explorerBasePath, sendFunds, value))
-          .to.throw(Error, 'Data of wrong data type is passed. Object is required.')
-      })
-    })
-
-    it('should throw error when wrong secret key is passed', function () {
-      const keys = [null, false, 42, new Date(), '', {}, []]
-
-      keys.forEach(function (value) {
-        expect(() => Exonum.send(explorerBasePath, sendFunds, data, value))
-          .to.throw(Error, 'secretKey of wrong type is passed. Hexadecimal expected.')
-      })
-    })
-
-    it('should throw error when wrong transaction attempts number is passed', function () {
-      const types = [null, false, new Date(), '', {}, []]
-
-      types.forEach(function (value) {
-        expect(() => Exonum.send(explorerBasePath, sendFunds, data, keyPair.secretKey, value))
-          .to.throw(Error, 'Attempts of wrong type is passed.')
-      })
-    })
-
-    it('should throw error when wrong transaction timeout is passed', function () {
-      const timeouts = [null, false, new Date(), '', {}, []]
-
-      timeouts.forEach(function (value) {
-        expect(() => Exonum.send(explorerBasePath, sendFunds, data, keyPair.secretKey, 500, value))
-          .to.throw(Error, 'Timeout of wrong type is passed.')
-      })
+      for (let value of paths) {
+        await expect(Exonum.send(value, transaction))
+          .to.be.rejectedWith('Explorer base path endpoint of wrong data type is passed.')
+      }
     })
   })
 
   describe('Unexpected node behavior', function () {
     describe('Stay suspended in pool', function () {
-      before(function () {
+      before(() => {
         mock
           .onPost(explorerBasePath)
-          .reply(200)
+          .reply(200, { tx_hash: txHash })
 
         mock
           .onGet(transactionPath)
-          .reply(200, {
-            type: 'in-pool'
-          })
+          .reply(200, { type: 'in_pool' })
       })
 
-      after(function () {
-        mock.reset()
-      })
+      after(() => mock.reset())
 
-      it('should return rejected Promise state', function () {
-        return Exonum.send(explorerBasePath, sendFunds, data, keyPair.secretKey, 3, 100).catch(error => {
-          expect(() => {
-            throw new Error(error)
-          }).to.throw(Error, 'The transaction was not accepted to the block for the expected period.')
-        })
+      it('should return rejected Promise state', async () => {
+        await expect(Exonum.send(explorerBasePath, transaction, 3, 100))
+          .to.be.rejectedWith('The transaction was not accepted to the block for the expected period.')
       })
     })
 
-    describe('Node responded in unknown format', function () {
-      before(function () {
+    describe('Node responded in unknown format', () => {
+      before(() => {
         mock
           .onPost(explorerBasePath)
-          .reply(200)
+          .reply(200, { tx_hash: txHash })
 
         mock
           .onGet(transactionPath)
           .reply(200)
       })
 
-      after(function () {
-        mock.reset()
-      })
+      after(() => mock.reset())
 
-      it('should return rejected Promise state', function () {
-        return Exonum.send(explorerBasePath, sendFunds, data, keyPair.secretKey, 3, 100).catch(error => {
-          expect(() => {
-            throw new Error(error)
-          }).to.throw(Error, 'The transaction was not accepted to the block for the expected period.')
-        })
+      it('should return rejected Promise state', async () => {
+        await expect(Exonum.send(explorerBasePath, transaction, 3, 100))
+          .to.be.rejectedWith('The request failed or the blockchain node did not respond.')
       })
     })
 
-    describe('Node responded with error', function () {
-      before(function () {
+    describe('Node responded with error', () => {
+      before(() => {
         mock
           .onPost(explorerBasePath)
-          .reply(200)
+          .reply(200, { tx_hash: txHash })
 
         mock
           .onGet(transactionPath)
           .reply(404)
       })
 
-      after(function () {
-        mock.reset()
-      })
+      after(() => mock.reset())
 
-      it('should return rejected Promise state', function () {
-        return Exonum.send(explorerBasePath, sendFunds, data, keyPair.secretKey, 3, 100).catch(error => {
-          expect(() => {
-            throw new Error(error)
-          }).to.throw(Error, 'The request failed or the blockchain node did not respond.')
-        })
+      it('should return rejected Promise state', async () => {
+        await expect(Exonum.send(explorerBasePath, transaction, 3, 100))
+          .to.be.rejectedWith('The request failed or the blockchain node did not respond.')
       })
     })
   })
@@ -410,14 +372,13 @@ describe('Send multiple transactions to the blockchain', function () {
     publicKey: '78cf8b5e5c020696319eb32a1408e6c65e7d97733d34528fbdce08438a0243e8',
     secretKey: 'b5b3ccf6ca4475b7ff3d910d5ab31e4723098490a3e341dd9d2896b42ebc9f8978cf8b5e5c020696319eb32a1408e6c65e7d97733d34528fbdce08438a0243e8'
   }
-  let sendFunds = Exonum.newTransaction({
-    author: keyPair.publicKey,
-    service_id: 128,
-    message_id: 0,
-    schema: proto.exonum.examples.cryptocurrency_advanced.Transfer
+  const sendFunds = new Exonum.Transaction({
+    schema: cryptocurrency.Transfer,
+    serviceId: 128,
+    methodId: 0
   })
   const explorerBasePath = '/api/explorer/v1/transactions'
-  const transactions = [
+  const transactionData = [
     {
       data: {
         to: { data: Exonum.hexadecimalToUint8Array('278663010ebe1136011618ad5be1b9d6f51edc5b6c6b51b5450ffc72f54a57df') },
@@ -435,88 +396,47 @@ describe('Send multiple transactions to the blockchain', function () {
       type: sendFunds
     }
   ]
+  const transactions = transactionData.map(data => sendFunds.create(data, keyPair))
   const transactionHashes = [
     'dcea2d6b9dd46ae6f4da47f1e3d79f5fa0348b3b156be714d2d9471d7f476482',
     'b4f78eab1d9b0b04a82f77f30ac0656e3a41765a4fccb513f8f6e4571a1f4003'
   ]
 
-  transactions.forEach(transaction => {
-    transaction.signature = transaction.type.sign(keyPair.secretKey, transaction.data)
-  })
-
-  describe('Queue of valid transactions has been sent', function () {
-    before(function () {
+  describe('Queue of valid transactions has been sent', () => {
+    before(() => {
+      let txIndex = 0
       mock
         .onPost(explorerBasePath)
-        .reply(200)
+        .reply(() => [200, { tx_hash: transactionHashes[txIndex++] }])
 
       mock
         .onGet(`${explorerBasePath}?hash=${transactionHashes[0]}`)
-        .replyOnce(200, { type: 'in-pool' })
+        .replyOnce(200, { type: 'in_pool' })
         .onGet(`${explorerBasePath}?hash=${transactionHashes[0]}`)
         .replyOnce(200, { type: 'committed' })
         .onGet(`${explorerBasePath}?hash=${transactionHashes[1]}`)
-        .replyOnce(200, { type: 'in-pool' })
+        .replyOnce(200, { type: 'in_pool' })
         .onGet(`${explorerBasePath}?hash=${transactionHashes[1]}`)
         .replyOnce(200, { type: 'committed' })
     })
 
-    after(function () {
-      mock.reset()
-    })
+    after(() => mock.reset())
 
-    it('should return fulfilled Promise state when queue of valid transactions has been accepted to the blockchain', function () {
-      return Exonum.sendQueue(explorerBasePath, transactions, keyPair.secretKey).then(response => {
-        expect(response).to.deep.equal(transactionHashes)
-      })
-    })
-  })
-
-  describe('Queue of valid transactions has been sent with zero attempts', function () {
-    before(function () {
-      mock
-        .onPost(explorerBasePath)
-        .reply(200)
-    })
-
-    after(function () {
-      mock.reset()
-    })
-
-    it('should return fulfilled Promise state when queue of valid transactions has been sent to the blockchain', function () {
-      return Exonum.sendQueue(explorerBasePath, transactions, keyPair.secretKey, 0).then(response => {
-        expect(response).to.deep.equal(transactionHashes)
-      })
+    it('should return fulfilled Promise', async () => {
+      const response = await Exonum.sendQueue(explorerBasePath, transactions)
+      expect(response).to.deep.equal(transactionHashes)
     })
   })
 })
 
-describe('Export proto stubs', function () {
-  it('should export blockchain stubs', function () {
-    expect(Exonum.protocol.exonum.Block).to.be.an('function')
-    expect(Exonum.protocol.exonum.ConfigReference).to.be.an('function')
-    expect(Exonum.protocol.exonum.TxLocation).to.be.an('function')
-    expect(Exonum.protocol.exonum.TransactionResult).to.be.an('function')
+describe('Export proto stubs', () => {
+  it('should export blockchain stubs', () => {
+    expect(Exonum.protocol.exonum.Block).to.be.a('function')
+    expect(Exonum.protocol.exonum.TxLocation).to.be.a('function')
   })
 
-  it('should export consensus stubs', function () {
-    expect(Exonum.protocol.exonum.consensus.Connect).to.be.an('function')
-    expect(Exonum.protocol.exonum.consensus.Status).to.be.an('function')
-    expect(Exonum.protocol.exonum.consensus.Propose).to.be.an('function')
-    expect(Exonum.protocol.exonum.consensus.Prevote).to.be.an('function')
-    expect(Exonum.protocol.exonum.consensus.Precommit).to.be.an('function')
-    expect(Exonum.protocol.exonum.consensus.BlockResponse).to.be.an('function')
-    expect(Exonum.protocol.exonum.consensus.TransactionsResponse).to.be.an('function')
-    expect(Exonum.protocol.exonum.consensus.ProposeRequest).to.be.an('function')
-    expect(Exonum.protocol.exonum.consensus.TransactionsRequest).to.be.an('function')
-    expect(Exonum.protocol.exonum.consensus.PrevotesRequest).to.be.an('function')
-    expect(Exonum.protocol.exonum.consensus.PeersRequest).to.be.an('function')
-    expect(Exonum.protocol.exonum.consensus.BlockRequest).to.be.an('function')
-  })
-
-  it('should export helpers stubs', function () {
-    expect(Exonum.protocol.exonum.Hash).to.be.an('function')
-    expect(Exonum.protocol.exonum.PublicKey).to.be.an('function')
-    expect(Exonum.protocol.exonum.BitVec).to.be.an('function')
+  it('should export helpers stubs', () => {
+    expect(Exonum.protocol.exonum.crypto.Hash).to.be.a('function')
+    expect(Exonum.protocol.exonum.crypto.PublicKey).to.be.a('function')
   })
 })

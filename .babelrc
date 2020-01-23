@@ -1,11 +1,20 @@
 {
   "presets": [
-    "es2015"
+    ["@babel/preset-env", {
+      "targets": "> 0.25%, not dead"
+    }]
   ],
   "env": {
     "test": {
       "plugins": [
         "istanbul"
+      ],
+      "presets": [
+        ["@babel/preset-env", {
+          "targets": {
+            "node": true
+          }
+        }]
       ]
     }
   }

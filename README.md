@@ -76,7 +76,7 @@ Library compatibility with Exonum core:
 
 There are several options to include light client library in the application:
 
-The most preferred way is to install Exonum Client as a [package][npmjs] from npm registry:
+The preferred way is to install Exonum Client as a [package][npmjs] from npm registry:
 
 ```sh
 npm install exonum-client
@@ -98,7 +98,7 @@ let Exonum = require('exonum-client')
 
 ## Data types
 
-Exonum use [protobufjs][protobufjs] library to serialize structured data into [protobuf][protobuf] format.
+Exonum uses [protobufjs][protobufjs] library to serialize structured data into [protobuf][protobuf] format.
 
 Each transaction is [signed](#sign-data) before sending into blockchain.
 Before the transaction is signed it is converted into byte array under the hood.
@@ -106,21 +106,20 @@ Before the transaction is signed it is converted into byte array under the hood.
 The data received from the blockchain should be converted into byte array under the hood
 before it will be possible to [verify proof of its existence](#cryptographic-proofs) using cryptographic algorithm.
 
-Developer can both define data stuctures on the fly or use precompiled stubs wuth data structures.
+Developer can both define data structures on the fly or use precompiled stubs with data structures.
 
-To define protobuf structures use [protobufjs][protobufjs] library.
+To define Protobuf structures use [protobufjs][protobufjs] library.
 
 Example:
 
 ```javascript
-let Message = new Type('CustomMessage')
-Message.add(new Field('balance', 1, 'uint32'))
-Message.add(new Field('name', 2, 'string'))
-
-let type = Exonum.newType(Message)
+const MessageSchema = new Type('CustomMessage')
+  .add(new Field('balance', 1, 'uint32'))
+  .add(new Field('name', 2, 'string'))
+const Message = Exonum.newType(MessageSchema)
 ```
 
-**Exonum.newType** function requires a single argument of `protobuf.Type` type with next structure.
+**Exonum.newType** function requires a single argument of `protobuf.Type` type.
 
 ## Hash
 
@@ -131,9 +130,6 @@ Different signatures of the `hash` function are possible:
 
 ```javascript
 Exonum.hash(data, type)
-```
-
-```javascript
 type.hash(data)
 ```
 
@@ -146,21 +142,19 @@ An example of hash calculation:
 
 ```javascript
 // Define a data structure
-let Message = new Type('CustomMessage')
-Message.add(new Field('balance', 1, 'uint32'))
-Message.add(new Field('name', 2, 'string'))
-
+const Message = new Type('User')
+  .add(new Field('balance', 1, 'uint32'))
+  .add(new Field('name', 2, 'string'))
 // Define a data type
 const User = Exonum.newType(Message)
 
-// Data that has been hashed
+// Data to hash
 const data = {
   balance: 100,
   name: 'John Doe'
 }
-
 // Get a hash
-let hash = User.hash(data) // 9786347be1ab7e8f3d68a49ef8a995a4decb31103c53565a108170dec4c1c2fa
+const hash = User.hash(data)
 ```
 
 It is also possible to get a hash from byte array:
@@ -177,8 +171,7 @@ An example of byte array hash calculation:
 
 ```javascript
 const arr = [8, 100, 18, 8, 74, 111, 104, 110, 32, 68, 111, 101]
-
-let hash = Exonum.hash(arr) // 9786347be1ab7e8f3d68a49ef8a995a4decb31103c53565a108170dec4c1c2fa
+const hash = Exonum.hash(arr)
 ```
 
 ## Signature
@@ -198,13 +191,7 @@ There are three possible signatures of the `sign` function:
 
 ```javascript
 Exonum.sign(secretKey, data, type)
-```
-
-```javascript
 type.sign(secretKey, data)
-```
-
-```javascript
 Exonum.sign(secretKey, buffer)
 ```
 
@@ -212,38 +199,10 @@ Exonum.sign(secretKey, buffer)
 |---|---|---|
 | **secretKey** | Secret key as hexadecimal string. | `String` |
 | **data** | Data to be signed. | `Object` |
-| **type** | Definition of the data type. | [Custom data type](#define-data-type) or [transaction](#define-transaction). |
+| **type** | Definition of the data type. | [Custom data type](#define-data-type). |
 | **buffer** | Byte array. | `Array` or `Uint8Array`. |
 
 The `sign` function returns value as hexadecimal `String`.
-
-An example of data signing:
-
-```javascript
-// Define a data structure
-let Message = new Type('CustomMessage')
-Message.add(new Field('balance', 1, 'uint32'))
-Message.add(new Field('name', 2, 'string'))
-
-// Define a data type
-const User = Exonum.newType(Message)
-
-// Data that has been hashed
-const data = {
-  balance: 100,
-  name: 'John Doe'
-}
-
-// Define a signing key pair
-const keyPair = {
-  publicKey: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
-  secretKey: '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2b' +
-  'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
-}
-
-// Sign the data
-let signature = Exonum.sign(keyPair.secretKey, data, User)
-```
 
 ### Verify signature
 
@@ -253,9 +212,6 @@ There are two possible signatures of the `verifySignature` function:
 
 ```javascript
 Exonum.verifySignature(signature, publicKey, data, type)
-```
-
-```javascript
 type.verifySignature(signature, publicKey, data)
 ```
 
@@ -264,52 +220,44 @@ type.verifySignature(signature, publicKey, data)
 | **signature** | Signature as hexadecimal string. | `String` |
 | **publicKey** | Author's public key as hexadecimal string. | `String` |
 | **data** | Data that has been signed. | `Object` |
-| **type** | Definition of the data type. | [Custom data type](#define-data-type) or [transaction](#define-transaction). |
+| **type** | Definition of the data type. | [Custom data type](#define-data-type). |
 
 The `verifySignature` function returns value of `Boolean` type.
 
-An example of signature verification:
+An example of signature creation and verification:
 
 ```javascript
 // Define a data structure
-let Message = new Type('CustomMessage')
-Message.add(new Field('balance', 1, 'uint32'))
-Message.add(new Field('name', 2, 'string'))
-
-// Define a data type
+const Message = new Type('User')
+  .add(new Field('balance', 1, 'uint32'))
+  .add(new Field('name', 2, 'string'))
 const User = Exonum.newType(Message)
+
+// Define a signing key pair
+const keyPair = Exonum.keyPair()
 
 // Data that has been hashed
 const data = {
   balance: 100,
   name: 'John Doe'
 }
-
-// Define a signing key pair
-const keyPair = {
-  publicKey: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
-  secretKey: '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2b' +
-  'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
-}
-
 // Signature obtained upon signing using secret key
-const signature = 'a4cf7c457e3f4d54ef0c87900e7c860d2faa17a8dccbaafa573a3a960cda3f66' +
- '27911088138526d9d7e46feba471e6bc7b93262349a5ed18262cbc39c8a47b04'
-
+const signature = Exonum.sign(keyPair.secretKey, data, User)
 // Verify the signature
-let result = Exonum.verifySignature(signature, keyPair.publicKey, data, User) // true
+const result = Exonum.verifySignature(signature, keyPair.publicKey, data, User)
 ```
 
 ## Transactions
 
-Transaction in Exonum is a operation to change the data stored in blockchain.
-Transaction processing rules is a part of business logic implemented on [service][docs:architecture:services] side.
+Transaction in Exonum is an operation to change the data stored in blockchain.
+Transaction processing rules is a part of business logic implemented
+in a [service][docs:architecture:services].
 
 Sending data to the blockchain from a light client consist of 3 steps:
 
-1) Describe the fields of transaction using [custom data types](#define-data-type);
-2) [Sign](#sign-data) data of transaction using signing key pair;
-3) [Send transaction](#send-single-transaction) to the blockchain.
+1. Describe the fields of transaction using [custom data types](#define-data-type)
+2. [Sign](#sign-data) data of transaction using signing key pair
+3. [Send transaction](#send-single-transaction) to the blockchain
 
 Read more about [transactions][docs:architecture:transactions] in Exonum.
 
@@ -318,30 +266,27 @@ Read more about [transactions][docs:architecture:transactions] in Exonum.
 An example of a transaction definition:
 
 ```javascript
-let Transaction = new Type('CustomMessage')
-Transaction.add(new Field('from', 1, 'string'))
-Transaction.add(new Field('to', 2, 'string'))
-Transaction.add(new Field('amount', 3, 'uint32'))
+const Transaction = new Type('CustomMessage')
+  .add(new Field('to', 2, 'string'))
+  .add(new Field('amount', 3, 'uint32'))
 
-let sendFunds = Exonum.newTransaction({
-  author: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
+const SendFunds = new Exonum.Transaction({
+  schema: Transaction,
   service_id: 130,
-  message_id: 0,
-  schema: Transaction
+  method_id: 0
 })
 ```
 
-**Exonum.newTransaction** function requires a single argument of `Object` type with next structure:
+**Exonum.Transaction** constructor requires a single argument of `Object` type with
+the next structure:
 
 | Property | Description | Type |
 |---|---|---|
-| **author** | Author's public key as hexadecimal string. | `String` |
+| **schema** | Protobuf data structure. | `Object` |
 | **service_id** | [Service ID][docs:architecture:serialization:service-id]. | `Number` |
-| **message_id** | [Message ID][docs:architecture:serialization:message-id]. | `Number` |
-| **schema** | Protobuf data structure. | `Array` |
-| **signature** | Signature as hexadecimal string. *Optional.* | `String` |
+| **method_id** | [Method ID][docs:architecture:serialization:message-id]. | `Number` |
 
-Field structure is identical to field structure of [custom data type](#define-data-type).
+`schema` structure is identical to that of [custom data type](#define-data-type).
 
 ### Sign transaction
 
@@ -349,11 +294,7 @@ An example of a transaction signing:
 
 ```javascript
 // Signing key pair
-const keyPair = {
-  publicKey: 'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a',
-  secretKey: '978e3321bd6331d56e5f4c2bdb95bf471e95a77a6839e68d4241e7b0932ebe2b' +
-  'fa7f9ee43aff70c879f80fa7fd15955c18b98c72310b09e7818310325050cf7a'
-}
+const keyPair = Exonum.keyPair()
 
 // Transaction data to be signed
 const data = {
@@ -362,114 +303,95 @@ const data = {
   amount: 50
 }
 
-// Sign the data
-let signature = sendFunds.sign(keyPair.secretKey, data)
+// Create a signed transaction
+const signed = SendFunds.create(data, keyPair)
 ```
 
 ### Send transaction
 
 To submit transaction to the blockchain `send` function can be used.
 
-There are two possible signatures of the `send` function:
-
 ```javascript
-Exonum.send(explorerBasePath, type, data, secretKey, attempts, timeout)
-
-sendFunds.send(explorerBasePath, data, secretKey, attempts, timeout)
+Exonum.send(explorerBasePath, transaction, attempts, timeout)
 ```
 
 | Property | Description | Type |
 |---|---|---|
 | **explorerBasePath** | API address of transaction explorer on a blockchain node. | `String` |
-| **type** | Definition of the transaction. | [Transaction](#define-transaction). |
-| **data** | Data that has been signed. | `Object` |
-| **secretKey** | Secret key as hexadecimal string. | `String` |
+| **transaction** | Signed transaction bytes. | `String`, `Uint8Array` or `Array`-like |
 | **attempts** | Number of attempts to check transaction status. Pass `0` in case you do not need to verify if the transaction is accepted to the block. *Optional. Default value is `10`.* | `Number` |
 | **timeout** | Timeout between attempts to check transaction status. *Optional. Default value is `500`.* | `Number` |
 
-The `send` function returns value of `Promise` type with transaction hash as a fulfilled value.
-Fulfilled state means that transaction is accepted to the block.
-Fulfilled value contained transaction with its proof.
+The `send` function returns a `Promise` with the transaction hash.
+The promise resolves when the transaction is committed (accepted to a block).
 
 An example of a transaction sending:
 
 ```javascript
 // Define transaction explorer address
 const explorerBasePath = 'http://127.0.0.1:8200/api/explorer/v1/transactions'
-
-sendFunds.send(explorerBasePath, data, keyPair.secretKey).then(txHash => {})
+const transactionHash = await Exonum.send(explorerBasePath, signed.serialize())
 ```
 
 ### Send multiple transactions
 
 To submit multiple transactions to the blockchain `sendQueue` function can be used.
-Transactions will be stored in the appropriate order.
-Each transaction from the queue will be sent to the blockchain only after the previous transaction is accepted to the block.
+Transactions will be sent in the order specified by the caller.
+Each transaction from the queue will be sent to the blockchain only after the previous transaction
+is committed.
 
 ```javascript
-Exonum.sendQueue(explorerBasePath, transactions, secretKey, attempts, timeout)
+Exonum.sendQueue(explorerBasePath, transactions, attempts, timeout)
 ```
 
 | Property | Description | Type |
 |---|---|---|
 | **explorerBasePath** | API address of transaction explorer on a blockchain node. | `String` |
 | **transactions** | List of transactions. | `Array` |
-| **secretKey** | Secret key as hexadecimal string. | `String` |
 | **attempts** | Number of attempts to check each transaction status. Pass `0` in case you do not need to verify if the transactions are accepted to the block. *Optional. Default value is `10`.* | `Number` |
 | **timeout** | Timeout between attempts to check each transaction status. *Optional. Default value is `500`.* | `Number` |
 
-Transaction structure:
-
-| Field | Description | Type |
-|---|---|---|
-| **type** | Definition of the transaction. | [Transaction](#define-transaction). |
-| **data** | Transaction data that has been signed. | `Object` |
-
-The `sendQueue` function returns value of `Promise` type with an array of transaction hashes as a fulfilled value.
-Fulfilled state means that all transactions are accepted to the block.
-Fulfilled value contained an array of transactions with its proofs.
-
-Find more examples of operations on transactions:
-
-* [Define transaction](examples/transactions.md#define-transaction)
-* [Serialize transaction](examples/transactions.md#serialize-transaction)
-* [Sign transaction](examples/transactions.md#sign-transaction)
-* [Verify signed transaction](examples/transactions.md#verify-signed-transaction)
-* [Get a transaction hash](examples/transactions.md#get-a-transaction-hash)
-* [Send transaction](examples/transactions.md#send-transaction)
-* [Send multiple transactions](examples/transactions.md#send-multiple-transaction)
+The `sendQueue` function returns a `Promise` with an array of transaction hashes.
+The promise resolves when all transactions are committed.
 
 ## Cryptographic proofs
 
 A cryptographic proof is a format in which a Exonum node can provide sensitive data from a blockchain.
 These proofs are based on [Merkle trees][docs:glossary:merkle-tree] and their variants.
 
-Light client library validates the cryptographic proof and can prove the integrity and reliability of the received data.
+Light client library validates the cryptographic proof and can prove the integrity and reliability
+of the received data.
 
 Read more about design of [cryptographic proofs][docs:advanced:merkelized-list] in Exonum.
 
 ### Merkle tree proof
 
 ```javascript
-let elements = Exonum.merkleProof(rootHash, count, tree, range, type)
+const proof = new Exonum.ListProof(json, ValueType)
+console.log(proof.entries)
 ```
 
-The `merkleProof` method is used to validate the Merkle tree and extract a **list of data elements**.
+The `ListProof` class is used to validate proofs for Merkelized lists.
 
 | Argument | Description | Type |
 |---|---|---|
-| **rootHash** | The root hash of the Merkle tree as hexadecimal string. | `String` |
-| **count** | The total number of elements in the Merkle tree. | `Number` |
-| **proofNode** | The Merkle tree. | `Object` |
-| **range** | An array of two elements of `Number` type. Represents list of obtained elements: `[startIndex; endIndex)`. | `Array` |
-| **type** | Definition of the elements type. *Optional. The `merkleProof` method expects to find byte arrays or hashes as values in the tree if `type` is not passed.* | [Custom data type](#define-data-type) |
+| **json** | The JSON presentation of the proof obtained from a full node. | `Object` |
+| **ValueType** | Data type for values in the Merkelized list. | [Custom data type](#define-data-type) |
 
-An [example of verifying a Merkle tree](examples/merkle-tree.md).
+The returned object has the following fields:
+
+| Field | Description | Type |
+|---|---|---|
+| **merkleRoot** | Hexadecimal hash of the root of the underlying Merkelized list | `String` |
+| **entries** | Elements that are proven to exist in the list, together with their indexes | `Array<{ index: number, value: V }>` |
+| **length** | List length | `Number` |
+
+<!-- FIXME: Add example -->
 
 ### Map proof
 
 ```javascript
-let proof = new Exonum.MapProof(json, KeyType, ValueType)
+const proof = new Exonum.MapProof(json, KeyType, ValueType)
 console.log(proof.entries)
 ```
 
@@ -487,7 +409,7 @@ The returned object has the following fields:
 |---|---|---|
 | **merkleRoot** | Hexadecimal hash of the root of the underlying Merkelized map | `String` |
 | **missingKeys** | Set of keys which the proof asserts as missing from the map | `Set<KeyType>` |
-| **entries** | Map of key-value pairs that the are proved to exist in the map | `Map<KeyType, ValueType>` |
+| **entries** | Map of key-value pairs that the are proven to exist in the map | `Map<KeyType, ValueType>` |
 
 An [example of using a `MapProof`](examples/map-proof.js).
 
@@ -503,22 +425,19 @@ Each new block in Exonum blockchain is signed by [validators][docs:glossary:vali
 To prove the integrity and reliability of the block, it is necessary to verify their signatures.
 The signature of each validator are stored in the precommits.
 
-The `merkleProof` method is used to validate block and its precommits.
-
-The `verifyBlock` function returns value of `Promise` type.
-Fulfilled state means that block is valid.
+The `verifyBlock` function throws an error if a block is invalid.
 
 | Argument | Description | Type |
 |---|---|---|
 | **data** | Structure with block and precommits. | `Object` |
 | **validators** | An array of validators public keys as a hexadecimal strings. | `Array` |
 
-An example of [block verification](examples/block.md).
+<!-- FIXME: Add example -->
 
 ### Verify table
 
 ```javascript
-Exonum.verifyTable(proof, stateHash, serviceId, tableIndex)
+Exonum.verifyTable(proof, stateHash, fullTableName)
 ```
 
 Verify table existence in the root tree.
@@ -529,44 +448,12 @@ Returns root hash for the table as hexadecimal `String`.
 |---|---|---|
 | **proof** | The JSON presentation of the proof obtained from a full node. | `Object` |
 | **stateHash** | Hash of current blockchain state stored in each block. | `String` |
-| **serviceId** | [Service ID][docs:architecture:serialization:service-id]. | `Number` |
-| **tableIndex** | Table index. | `Number` |
+| **fullTableName** | Name of the table, such as `token.wallets`. | `String` |
 
 ### Built-in structures
 
-List of built-in Exonum [blockchain](proto/blockchain.proto) structures:
-
-| Structure | Use as |
-|---|---|
-| **Block** | `Exonum.protocol.exonum.Block` |
-| **ConfigReference** | `Exonum.protocol.exonum.ConfigReference` |
-| **TxLocation** | `Exonum.protocol.exonum.TxLocation` |
-| **TransactionResult** | `Exonum.protocol.exonum.TransactionResult` |
-
-List of built-in Exonum [consensus](proto/protocol.proto) structures:
-
-| Structure | Use as |
-|---|---|
-| **Connect** | `Exonum.protocol.exonum.consensus.Connect` |
-| **Status** | `Exonum.protocol.exonum.consensus.Status` |
-| **Propose** | `Exonum.protocol.exonum.consensus.Propose` |
-| **Prevote** | `Exonum.protocol.exonum.consensus.Prevote` |
-| **Precommit** | `Exonum.protocol.exonum.consensus.Precommit` |
-| **BlockResponse** | `Exonum.protocol.exonum.consensus.BlockResponse` |
-| **TransactionsResponse** | `Exonum.protocol.exonum.consensus.TransactionsResponse` |
-| **ProposeRequest** | `Exonum.protocol.exonum.consensus.ProposeRequest` |
-| **TransactionsRequest** | `Exonum.protocol.exonum.consensus.TransactionsRequest` |
-| **PrevotesRequest** | `Exonum.protocol.exonum.consensus.PrevotesRequest` |
-| **PeersRequest** | `Exonum.protocol.exonum.consensus.PeersRequest` |
-| **BlockRequest** | `Exonum.protocol.exonum.consensus.BlockRequest` |
-
-List of built-in Exonum [helpers](proto/helpers.proto) structures:
-
-| Structure | Use as |
-|---|---|
-| **Hash** | `Exonum.protocol.exonum.Hash` |
-| **PublicKey** | `Exonum.protocol.exonum.PublicKey` |
-| **BitVec** | `Exonum.protocol.exonum.BitVec` |
+The library exports Protobuf declarations from the core crate.
+Consult [Protobuf files included into the library](proto) for more details.
 
 ## Helpers
 
@@ -583,8 +470,8 @@ const pair = Exonum.keyPair()
 }
 ```
 
-**Exonum.keyPair** function generates a new random [Ed25519][docs:glossary:digital-signature] signing key pair using the
-[TweetNaCl][tweetnacl:key-pair] cryptographic library.
+**Exonum.keyPair** function generates a new random [Ed25519][docs:glossary:digital-signature]
+signing key pair using the [TweetNaCl][tweetnacl:key-pair] cryptographic library.
 
 ### Get random number
 
@@ -592,65 +479,58 @@ const pair = Exonum.keyPair()
 const rand = Exonum.randomUint64()
 ```
 
-**Exonum.randomUint64** function generates a new random `Uint64` number of cryptographic quality using the
-[TweetNaCl][tweetnacl:random-bytes] cryptographic library.
+**Exonum.randomUint64** function generates a new random `Uint64` number of cryptographic quality
+using the [TweetNaCl][tweetnacl:random-bytes] cryptographic library.
 
 ### Converters
 
-#### Hexadecimal to Uint8Array
+#### Hexadecimal to `Uint8Array`
 
 ```javascript
 const hex = '674718178bd97d3ac5953d0d8e5649ea373c4d98b3b61befd5699800eaa8513b'
-
-Exonum.hexadecimalToUint8Array(hex) // [103, 71, 24, 23, 139, 217, 125, 58, 197, 149, 61, 13, 142, 86, 73, 234, 55, 60, 77, 152, 179, 182, 27, 239, 213, 105, 152, 0, 234, 168, 81, 59]
+Exonum.hexadecimalToUint8Array(hex)
 ```
 
 #### Hexadecimal to String
 
 ```javascript
 const hex = '674718178bd97d3ac5953d0d8e5649ea373c4d98b3b61befd5699800eaa8513b'
-
-Exonum.hexadecimalToBinaryString(hex) // '0110011101000111000110000001011110001011110110010111110100111010110001011001010100111101000011011000111001010110010010011110101000110111001111000100110110011000101100111011011000011011111011111101010101101001100110000000000011101010101010000101000100111011'
+Exonum.hexadecimalToBinaryString(hex)
 ```
 
-#### Uint8Array to Hexadecimal
+#### `Uint8Array` to Hexadecimal
 
 ```javascript
-const arr = new Uint8Array([103, 71, 24, 23, 139, 217, 125, 58, 197, 149, 61, 13, 142, 86, 73, 234, 55, 60, 77, 152, 179, 182, 27, 239, 213, 105, 152, 0, 234, 168, 81, 59])
-
-Exonum.uint8ArrayToHexadecimal(arr) // '674718178bd97d3ac5953d0d8e5649ea373c4d98b3b61befd5699800eaa8513b'
+const arr = new Uint8Array([103, 71, 24, 23, 139, 217, 125, 58, 197, 149, 61])
+Exonum.uint8ArrayToHexadecimal(arr)
 ```
 
-#### Uint8Array to BinaryString
+#### `Uint8Array` to Binary String
 
 ```javascript
-const arr = new Uint8Array([103, 71, 24, 23, 139, 217, 125, 58, 197, 149, 61, 13, 142, 86, 73, 234, 55, 60, 77, 152, 179, 182, 27, 239, 213, 105, 152, 0, 234, 168, 81, 59])
-
-Exonum.uint8ArrayToBinaryString(arr) // '0110011101000111000110000001011110001011110110010111110100111010110001011001010100111101000011011000111001010110010010011110101000110111001111000100110110011000101100111011011000011011111011111101010101101001100110000000000011101010101010000101000100111011'
+const arr = new Uint8Array([103, 71, 24, 23, 139, 217, 125, 58, 197, 149, 61])
+Exonum.uint8ArrayToBinaryString(arr)
 ```
 
-#### Binary String to Uint8Array
+#### Binary String to `Uint8Array`
 
 ```javascript
-const str = '0110011101000111000110000001011110001011110110010111110100111010110001011001010100111101000011011000111001010110010010011110101000110111001111000100110110011000101100111011011000011011111011111101010101101001100110000000000011101010101010000101000100111011'
-
-Exonum.binaryStringToUint8Array(str) // [103, 71, 24, 23, 139, 217, 125, 58, 197, 149, 61, 13, 142, 86, 73, 234, 55, 60, 77, 152, 179, 182, 27, 239, 213, 105, 152, 0, 234, 168, 81, 59]
+const str = '0110011101000111000110000001011110001011110110010111110100111010'
+Exonum.binaryStringToUint8Array(str)
 ```
 
 #### Binary String to Hexadecimal
 
 ```javascript
-const str = '0110011101000111000110000001011110001011110110010111110100111010110001011001010100111101000011011000111001010110010010011110101000110111001111000100110110011000101100111011011000011011111011111101010101101001100110000000000011101010101010000101000100111011'
-
-Exonum.binaryStringToHexadecimal(str) // '674718178bd97d3ac5953d0d8e5649ea373c4d98b3b61befd5699800eaa8513b'
+const str = '0110011101000111000110000001011110001011110110010111110100111010'
+Exonum.binaryStringToHexadecimal(str)
 ```
 
 #### String to Uint8Array
 
 ```javascript
 const str = 'Hello world'
-
-Exonum.stringToUint8Array(str) // [72, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100]
+Exonum.stringToUint8Array(str)
 ```
 
 ## Contributing

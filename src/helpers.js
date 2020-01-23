@@ -40,6 +40,7 @@ export function verifyElement (element) {
  * @param {Object} object
  * @returns {Object}
  */
+// FIXME: This is incorrect; `'0'` strings are removed even if they don't correspond to int field
 export function cleanZeroValuedFields (data, object) {
   const keys = Object.keys(data)
   keys.forEach(key => {

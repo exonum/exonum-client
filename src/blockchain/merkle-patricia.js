@@ -19,7 +19,7 @@ export class MapProof {
    * @param {{serialize: (any) => Array<number>}} keyType
    *   Type of keys used in the underlying Merkelized map. Usually, `PublicKey`
    *   or `Hash`. The keys must be serializable.
-   * @param {{ serialize: (any) => Array<number>}} valueType
+   * @param {{serialize: (any) => Array<number>}} valueType
    *   Type of values used in the underlying Merkelized map. Usually, it should
    *   be a type created with the `newType` function. The type must be serializable.
    * @throws {MapProofError}
@@ -35,7 +35,7 @@ export class MapProof {
     this.keyType = keyType
 
     if (!valueType || typeof valueType.serialize !== 'function') {
-      throw new TypeError('No `hash` or `serialize` method in the value type')
+      throw new TypeError('No `serialize` method in the value type')
     }
     this.valueType = valueType
 

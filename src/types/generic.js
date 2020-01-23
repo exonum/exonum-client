@@ -13,12 +13,11 @@ class Type {
   /**
    * Serialize data into array of 8-bit integers
    * @param {Object} data
-   * @returns {Array}
+   * @returns {Uint8Array}
    */
   serialize (data) {
     const object = cleanZeroValuedFields(data, {})
-
-    return Array.from(this.schema.encode(object).finish())
+    return this.schema.encode(object).finish()
   }
 
   /**

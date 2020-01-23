@@ -1,33 +1,35 @@
 // This test suite generates proofs on the server side and then checks them
-// on the client side.
+// on the client side. Also, it generates transactions on each side and tests their parsing
+// on the other side.
 
 /* eslint-env node, mocha */
 
-const exonum = require('../src')
-const uuid = require('uuid/v4')
-const fetch = require('node-fetch')
-const chai = require('chai')
-const dirtyChai = require('dirty-chai')
-const deepEql = require('deep-eql')
-const proto = require('./src/proto/stubs')
+import chai from 'chai'
+import deepEql from 'deep-eql'
+import dirtyChai from 'dirty-chai'
+import fetch from 'node-fetch'
+import uuid from 'uuid/v4'
 
-chai.use(dirtyChai)
-chai.use(deepEql)
+import * as exonum from '../src'
+import proto from './src/proto/stubs'
 
-const { expect } = chai
-const { MapProof, PublicKey, newType, hexadecimalToUint8Array, merkleProof } = exonum
+const { expect } = chai.use(dirtyChai).use(deepEql)
+const {
+  ListProof, MapProof, PublicKey, newType, hexadecimalToUint8Array, uint8ArrayToHexadecimal
+} = exonum
 
 const WALLET_BASE_URL = 'http://localhost:8000/wallets'
 const LIST_BASE_URL = 'http://localhost:8000/hash-list'
-const Wallet = newType(proto.exonum.client.integration.tests.Wallet)
+const TX_BASE_URL = 'http://localhost:8000/messages/transaction'
+const Wallet = newType(proto.exonum.client.integration_tests.Wallet)
 
 // TODO temp fix
-function convertPubKey(obj) {
-  for (var key in obj) {
+function convertPubKey (obj) {
+  for (let key in obj) {
     if (obj.hasOwnProperty(key)) {
       if (key === 'pub_key') {
-        return obj[key] = {
-          data: Array.from(hexadecimalToUint8Array(obj[key]))
+        obj[key] = {
+          data: hexadecimalToUint8Array(obj[key])
         }
       }
       if (obj[key] instanceof Object) {
@@ -284,7 +286,13 @@ async function getListProof (seed, count, start = 0, end = count) {
   const url = `${LIST_BASE_URL}/random?seed=${seed}&count=${count}&start=${start}&end=${clampedEnd}`
   const response = await fetch(url)
   const { proof, trusted_root: trustedRoot } = await response.json()
-  merkleProof(trustedRoot, count, proof, [start, clampedEnd - 1], exonum.Hash)
+  const checkedProof = new ListProof(proof, exonum.Hash)
+
+  expect(checkedProof.merkleRoot).to.equal(trustedRoot)
+  expect(checkedProof.length).to.equal(count)
+  const indexes = checkedProof.entries.map(({ index }) => index)
+  expect(indexes).to.have.lengthOf(clampedEnd - start)
+  indexes.forEach((index, i) => expect(index).to.equal(start + i))
 }
 
 describe('ListProof integration', function () {
@@ -349,6 +357,93 @@ describe('ListProof integration', function () {
             await getListProof(seed, size, index, index + largeRangeLen)
           })
         })
+      }
+    })
+  })
+})
+
+/**
+ * Gets a signed transaction with the specified params from the server.
+ *
+ * @param {number} instanceId
+ * @param {number} methodId
+ * @param {number} seed
+ * @returns {Promise<*>}
+ */
+async function getTransaction (instanceId, methodId, seed) {
+  const url = `${TX_BASE_URL}?seed=${seed}&instance_id=${instanceId}&method_id=${methodId}`
+  const response = await fetch(url)
+  return response.json()
+}
+
+/**
+ * Sends a signed transaction to the server.
+ *
+ * @param {Verified} transaction
+ * @returns {Promise<*>}
+ */
+async function sendTransaction (transaction) {
+  const response = await fetch(TX_BASE_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(uint8ArrayToHexadecimal(transaction.serialize()))
+  })
+  return response.json()
+}
+
+describe('transaction integration', function () {
+  this.slow(1000)
+
+  const instanceIds = [0, 1, 3, 100, 129, 256, 65535, 2 ** 32 - 2, 2 ** 32 - 1]
+  const methodIds = instanceIds.slice(0)
+
+  function testTransaction (instanceId, methodId, seed) {
+    const WalletTx = new exonum.Transaction({
+      schema: proto.exonum.client.integration_tests.Wallet,
+      serviceId: instanceId,
+      methodId
+    })
+
+    it(`parses transaction with instance=${instanceId}, method=${methodId}, seed=${seed}`, async () => {
+      const { message, wallet, hash } = await getTransaction(instanceId, methodId, seed)
+
+      // Deserialize the message and ensure that it is equal to wallet.
+      const bytes = exonum.hexadecimalToUint8Array(message)
+      const verified = WalletTx.deserialize(bytes)
+      expect(verified).to.not.be.null()
+
+      const { payload } = verified
+      expect(payload.name).to.equal(wallet.name)
+      expect(+payload.balance).to.equal(wallet.balance)
+      expect(payload.pub_key.data).to.deep.equal(hexadecimalToUint8Array(wallet.pub_key))
+
+      // Check that server- and client-computed hashes coincide.
+      expect(verified.hash()).to.equal(hash)
+    })
+
+    it(`sends transaction with instance=${instanceId}, method=${methodId}, seed=${seed}`, async () => {
+      const keySeed = hexadecimalToUint8Array(exonum.hash([seed]))
+      const keyPair = exonum.fromSeed(keySeed)
+      const wallet = {
+        pub_key: { data: hexadecimalToUint8Array(keyPair.publicKey) },
+        name: `Alice #${seed}`,
+        balance: 100,
+        uniq_id: uuid()
+      }
+      const transaction = WalletTx.create(wallet, keyPair)
+
+      const response = await sendTransaction(transaction)
+      expect(response.instance_id).to.equal(instanceId)
+      expect(response.method_id).to.equal(methodId)
+      expect(response.hash).to.equal(transaction.hash())
+      expect(response.wallet.name).to.equal(wallet.name)
+    })
+  }
+
+  instanceIds.forEach((instanceId) => {
+    methodIds.forEach((methodId) => {
+      for (let seed = 0; seed < 10; seed++) {
+        testTransaction(instanceId, methodId, seed)
       }
     })
   })

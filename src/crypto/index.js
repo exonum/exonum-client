@@ -60,7 +60,7 @@ export function sign (secretKey, data, type) {
   secretKeyUint8Array = convert.hexadecimalToUint8Array(secretKey)
 
   if (isType(type) || isTransaction(type)) {
-    buffer = new Uint8Array(type.serialize(data))
+    buffer = type.serialize(data)
   } else {
     if (type !== undefined) {
       throw new TypeError('Wrong type of data.')
@@ -106,7 +106,7 @@ export function verifySignature (signature, publicKey, data, type) {
   publicKeyUint8Array = convert.hexadecimalToUint8Array(publicKey)
 
   if (isType(type) || isTransaction(type)) {
-    buffer = new Uint8Array(type.serialize(data))
+    buffer = type.schema.encode(data).finish()
   } else if (type === undefined) {
     if (data instanceof Uint8Array) {
       buffer = data
