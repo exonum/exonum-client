@@ -1,6 +1,6 @@
 import binarySearch from 'binary-search'
 
-import { hash } from '../crypto'
+import { hash, HASH_LENGTH } from '../crypto'
 import { Hash } from '../types/hexadecimal'
 import { BLOB_PREFIX, MAP_PREFIX, MAP_BRANCH_PREFIX } from './constants'
 import ProofPath from './ProofPath'
@@ -11,6 +11,28 @@ import { hexadecimalToUint8Array } from '../types'
  * map index.
  */
 export class MapProof {
+  /**
+   * Converts a key type to a raw representation, in which keys are not hashed before
+   * Merkle Patricia tree construction.
+   *
+   * @param keyType
+   */
+  static rawKey (keyType) {
+    if (!keyType || typeof keyType.serialize !== 'function') {
+      throw new TypeError('Invalid key type; pass a type with a `serialize` function')
+    }
+
+    return {
+      hash (data) {
+        const bytes = keyType.serialize(data, [], 0)
+        if (bytes.length !== HASH_LENGTH) {
+          throw new Error(`Invalid raw key; raw keys should have ${HASH_LENGTH}-byte serialization`)
+        }
+        return bytes
+      }
+    }
+  }
+
   /**
    * Creates a new instance of a proof.
    *
@@ -29,8 +51,11 @@ export class MapProof {
     this.proof = parseProof(json.proof)
     this.entries = parseEntries(json.entries, keyType, valueType)
 
-    if (!keyType || typeof keyType.serialize !== 'function') {
-      throw new TypeError('No `serialize` method in the key type')
+    if (!keyType) {
+      throw new TypeError('No key type provided')
+    }
+    if (typeof keyType.serialize !== 'function' && typeof keyType.hash !== 'function') {
+      throw new TypeError('No `serialize` or `hash` method in the key type')
     }
     this.keyType = keyType
 
@@ -98,8 +123,14 @@ function parseEntries (entries, keyType, valueType) {
     const keyBytes = (typeof keyType.hash === 'function')
       ? keyType.hash(data)
       : hash(keyType.serialize(data, [], 0))
-    const bytes = hexadecimalToUint8Array(keyBytes)
-    return new ProofPath(new Uint8Array(bytes))
+
+    let bytes
+    if (typeof keyBytes === 'string') {
+      bytes = hexadecimalToUint8Array(keyBytes)
+    } else {
+      bytes = new Uint8Array(keyBytes)
+    }
+    return new ProofPath(bytes)
   }
 
   if (!Array.isArray(entries)) {

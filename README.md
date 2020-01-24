@@ -403,6 +403,12 @@ The `MapProof` class is used to validate proofs for Merkelized maps.
 | **KeyType** | Data type for keys in the Merkelized map. | [Custom](#define-data-type) or built-in data type |
 | **ValueType** | Data type for values in the Merkelized map. | [Custom data type](#define-data-type) |
 
+Keys in a map proof can either be *hashed* (which is the default option)
+or *raw*. To obtain a raw version for `KeyType`, use `MapProof.rawKey(KeyType)`.
+The key type is determined by the service developer when the service schema
+is created. Raw keys minimize the amount of hashing, but require that the underlying type
+has fixed-width binary serialization.
+
 The returned object has the following fields:
 
 | Field | Description | Type |

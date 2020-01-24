@@ -615,6 +615,25 @@ describe('MapProof', () => {
       expect(proof.merkleRoot).to.equal(expHash)
     })
 
+    it('should calculate hash for a single node with raw key', () => {
+      const key = '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011'
+      const proof = new MapProof({
+        entries: [
+          { key, value: 100 }
+        ],
+        proof: []
+      }, MapProof.rawKey(PublicKey), Uint16)
+
+      const nodeHash = streamHash(
+        [4, 1],
+        key,
+        [0],
+        streamHash([0, 100, 0]) // Blob marker + little-endian encoding of the value
+      )
+      const expHash = streamHash([3], nodeHash)
+      expect(proof.merkleRoot).to.equal(expHash)
+    })
+
     it('should calculate hash for a single hashed node', () => {
       const key = '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011'
       const proof = new MapProof({
@@ -663,6 +682,25 @@ describe('MapProof', () => {
       )
       const expHash = streamHash([3], nodeHash)
       expect(proof.merkleRoot).to.equal(expHash)
+    })
+  })
+
+  describe('MapProof.rawKey', () => {
+    it('should throw if incorrect input is passed', () => {
+      const incorrectInputs = [undefined, null, {}, true, 1, 'string']
+      incorrectInputs.forEach((input) => {
+        expect(() => MapProof.rawKey(input)).to.throw(TypeError, 'Invalid key type')
+      })
+    })
+
+    it('should throw if serialization has unexpected length', () => {
+      const BogusKey = MapProof.rawKey({
+        // `uint8` serialization
+        serialize (data) {
+          return [data % 256]
+        }
+      })
+      expect(() => BogusKey.hash(1)).to.throw('Invalid raw key')
     })
   })
 

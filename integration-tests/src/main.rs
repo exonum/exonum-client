@@ -24,8 +24,9 @@ use exonum::{
     crypto::{gen_keypair_from_seed, hash, Hash, PublicKey, SecretKey, Seed, HASH_SIZE},
     helpers::{Height, Round, ValidatorId},
     merkledb::{
-        access::AccessExt, BinaryValue, Database, ListProof, MapProof, ObjectHash, SystemSchema,
-        TemporaryDB,
+        access::AccessExt,
+        indexes::proof_map::{Hashed, Raw, ToProofPath},
+        BinaryValue, Database, ListProof, MapProof, ObjectHash, SystemSchema, TemporaryDB,
     },
     messages::{AnyTx, Precommit, Verified},
     runtime::CallInfo,
@@ -68,8 +69,9 @@ impl Wallet {
 }
 
 #[derive(Debug, Serialize)]
-struct WalletProof {
-    proof: MapProof<PublicKey, Wallet>,
+#[serde(bound = "")]
+struct WalletProof<Mode = Hashed> {
+    proof: MapProof<PublicKey, Wallet, Mode>,
     trusted_root: Hash,
 }
 
@@ -164,7 +166,10 @@ struct RandomParams {
     missing_keys: Option<usize>,
 }
 
-fn generate_proof(params: Query<RandomParams>) -> ApiResult<Json<WalletProof>> {
+fn generate_proof<Mode>(params: Query<RandomParams>) -> ApiResult<Json<WalletProof<Mode>>>
+where
+    Mode: ToProofPath<PublicKey>,
+{
     let wallets_in_proof = params
         .wallets_in_proof
         .unwrap_or_else(|| params.wallets / 4);
@@ -176,7 +181,7 @@ fn generate_proof(params: Query<RandomParams>) -> ApiResult<Json<WalletProof>> {
     let db = TemporaryDB::new();
     let fork = db.fork();
     let wallet_keys = {
-        let mut index = fork.get_proof_map::<_, PublicKey, Wallet>(INDEX_NAME);
+        let mut index = fork.get_generic_proof_map::<_, PublicKey, Wallet, Mode>(INDEX_NAME);
 
         let wallets = (0..params.wallets)
             .map(|_| {
@@ -213,7 +218,7 @@ fn generate_proof(params: Query<RandomParams>) -> ApiResult<Json<WalletProof>> {
 
     db.merge(fork.into_patch()).unwrap();
     let snapshot = db.snapshot();
-    let index = snapshot.get_proof_map::<_, PublicKey, Wallet>(INDEX_NAME);
+    let index = snapshot.get_generic_proof_map::<_, PublicKey, Wallet, Mode>(INDEX_NAME);
     Ok(Json(WalletProof {
         proof: index.get_multiproof(wallet_keys),
         trusted_root: index.object_hash(),
@@ -436,7 +441,8 @@ fn create_app(db: Arc<TemporaryDB>) -> App<Arc<TemporaryDB>> {
         .route("/wallets", Method::POST, create_wallet)
         .route("/wallets", Method::PUT, create_wallets)
         .route("/wallets", Method::DELETE, reset)
-        .route("/wallets/random", Method::GET, generate_proof)
+        .route("/wallets/random", Method::GET, generate_proof::<Hashed>)
+        .route("/wallets/random-raw", Method::GET, generate_proof::<Raw>)
         .route("/wallets/{public_key}", Method::GET, get_wallet)
         .route("/wallets/batch/{keys}", Method::GET, get_wallets)
         .route("/hash-list/random", Method::GET, generate_list_proof)
