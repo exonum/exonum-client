@@ -29,7 +29,7 @@ use exonum::{
         BinaryValue, Database, ListProof, MapProof, ObjectHash, SystemSchema, TemporaryDB,
     },
     messages::{AnyTx, Precommit, Verified},
-    runtime::CallInfo,
+    runtime::{CallInfo, CallerAddress},
 };
 use exonum_derive::*;
 use exonum_proto::ProtobufConvert;
@@ -303,10 +303,7 @@ fn generate_wallet_tx(params: Query<TxParams>) -> ApiResult<Json<TxResponse>> {
         uuid,
     );
     let call_info = CallInfo::new(params.instance_id, params.method_id);
-    let message = AnyTx {
-        call_info: call_info.clone(),
-        arguments: wallet.to_bytes(),
-    };
+    let message = AnyTx::new(call_info.clone(), wallet.to_bytes());
     let message = message.sign(pub_key, &secret_key);
     Ok(Json(TxResponse {
         call_info,
@@ -385,20 +382,20 @@ fn generate_block_proof(params: Query<BlockParams>) -> ApiResult<Json<BlockRespo
         .iter()
         .enumerate()
         .map(|(i, (pk, sk))| {
-            let precommit = Precommit {
-                validator: ValidatorId(i as u16),
-                height: block.height,
-                round: Round::first(),
-                propose_hash: hash(&[]),
-                block_hash: block.object_hash(),
-                time: Utc::now(),
-            };
+            let precommit = Precommit::new(
+                ValidatorId(i as u16),
+                block.height,
+                Round::first(),
+                hash(&[]),
+                block.object_hash(),
+                Utc::now(),
+            );
             Verified::from_value(precommit, *pk, sk)
         })
         .collect();
     Ok(Json(BlockResponse {
         validators: validator_keys,
-        block: BlockProof { block, precommits },
+        block: BlockProof::new(block, precommits),
     }))
 }
 
@@ -436,6 +433,16 @@ fn generate_table_proof(params: Query<TableProofParams>) -> ApiResult<Json<Table
     }))
 }
 
+#[derive(Deserialize)]
+struct AddressQuery {
+    public_key: PublicKey,
+}
+
+fn get_address(params: Query<AddressQuery>) -> ApiResult<Json<CallerAddress>> {
+    let addr = CallerAddress::from_key(params.public_key);
+    Ok(Json(addr))
+}
+
 fn create_app(db: Arc<TemporaryDB>) -> App<Arc<TemporaryDB>> {
     App::with_state(db)
         .route("/wallets", Method::POST, create_wallet)
@@ -450,6 +457,7 @@ fn create_app(db: Arc<TemporaryDB>) -> App<Arc<TemporaryDB>> {
         .route("/messages/transaction", Method::GET, generate_wallet_tx)
         .route("/messages/transaction", Method::POST, check_wallet_tx)
         .route("/messages/block", Method::GET, generate_block_proof)
+        .route("/address", Method::GET, get_address)
 }
 
 fn main() {

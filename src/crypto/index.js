@@ -5,6 +5,9 @@ import { isType } from '../types/generic'
 import { isTransaction } from '../types/message'
 import * as validate from '../types/validate'
 import * as convert from '../types/convert'
+import * as protobuf from '../../proto/protocol'
+
+const { Caller } = protobuf.exonum.runtime
 
 /**
  * Byte size of a hash.
@@ -155,10 +158,24 @@ export function fromSeed (seed) {
 }
 
 /**
- * Get random number of cryptographic quality
+ * Gets a random number of cryptographic quality.
  * @returns {string}
  */
 export function randomUint64 () {
   const buffer = nacl.randomBytes(8)
   return bigInt.fromArray(Array.from(buffer), 256).toString()
+}
+
+/**
+ * Converts a public key into a caller address, which is a uniform presentation
+ * of any transaction authorization supported by Exonum. Addresses may be used
+ * in `MapProof`s.
+ *
+ * @param {string} publicKey
+ * @returns {string}
+ */
+export function publicKeyToAddress (publicKey) {
+  const keyBytes = { data: convert.hexadecimalToUint8Array(publicKey) }
+  const caller = Caller.encode({ transaction_author: keyBytes }).finish()
+  return hash(caller)
 }
