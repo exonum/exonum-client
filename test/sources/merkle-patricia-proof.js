@@ -685,6 +685,25 @@ describe('MapProof', () => {
     })
   })
 
+  describe('MapProof.rawKey', () => {
+    it('should throw if incorrect input is passed', () => {
+      const incorrectInputs = [undefined, null, {}, true, 1, 'string']
+      incorrectInputs.forEach((input) => {
+        expect(() => MapProof.rawKey(input)).to.throw(TypeError, 'Invalid key type')
+      })
+    })
+
+    it('should throw if serialization has unexpected length', () => {
+      const BogusKey = MapProof.rawKey({
+        // `uint8` serialization
+        serialize (data) {
+          return [data % 256]
+        }
+      })
+      expect(() => BogusKey.hash(1)).to.throw('Invalid raw key')
+    })
+  })
+
   function testValidSample (sampleName) {
     it(`should work on sample ${sampleName}`, () => {
       const sample = samples[sampleName]

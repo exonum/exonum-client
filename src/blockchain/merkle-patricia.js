@@ -18,7 +18,7 @@ export class MapProof {
    * @param keyType
    */
   static rawKey (keyType) {
-    if (typeof keyType.serialize !== 'function') {
+    if (!keyType || typeof keyType.serialize !== 'function') {
       throw new TypeError('Invalid key type; pass a type with a `serialize` function')
     }
 
