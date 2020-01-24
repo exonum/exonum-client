@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.18.1 (January 24, 2020)
+
+* Support of Exonum core 0.13
+* Support of `CallerAddress`
+* Support unhashed `MapProof` keys
+
 ## 0.16.9 (June 5, 2019)
 
 * Fix axios security alert.
