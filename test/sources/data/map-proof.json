@@ -112,7 +112,7 @@
   "valid-single-wallet": {
     "expected": {
       "valueType": "Wallet",
-      "merkleRoot": "57b460754a95c6b50d23db1041a0b105b04be474325f7e37ac807857c3933b09",
+      "merkleRoot": "b662e771af954695cd8ab0df69ad66a1e064939e547fdd209a28217055f9a34a",
       "entries": [
         [
           "097bae292e571a32d86dc5e31a19b04f086b51b5d27b0455ad514931e8a7261d", {
