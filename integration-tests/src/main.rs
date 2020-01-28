@@ -24,7 +24,7 @@ use exonum::{
     crypto::{gen_keypair_from_seed, hash, Hash, PublicKey, SecretKey, Seed, HASH_SIZE},
     helpers::{Height, Round, ValidatorId},
     merkledb::{
-        access::AccessExt,
+        access::CopyAccessExt,
         indexes::proof_map::{Hashed, Raw, ToProofPath},
         BinaryValue, Database, ListProof, MapProof, ObjectHash, SystemSchema, TemporaryDB,
     },
