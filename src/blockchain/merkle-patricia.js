@@ -26,6 +26,18 @@ export class MapProof {
    *   if the proof is malformed
    */
   constructor (json, keyType, valueType) {
+    if (!valueType) {
+      throw new TypeError('Invalid value type')
+    }
+    if (typeof valueType.encode === 'function' && typeof valueType.serialize !== 'function') {
+      valueType.serialize = function (data, _buff, _offset) {
+        return this.encode(data).finish()
+      }
+    } else if (typeof valueType.serialize !== 'function') {
+      throw new TypeError('No `hash` or `serialize` method in the value type')
+    }
+
+    this.valueType = valueType
     this.proof = parseProof(json.proof)
     this.entries = parseEntries(json.entries, keyType, valueType)
 
@@ -33,11 +45,6 @@ export class MapProof {
       throw new TypeError('No `serialize` method in the key type')
     }
     this.keyType = keyType
-
-    if (!valueType || typeof valueType.serialize !== 'function') {
-      throw new TypeError('No `hash` or `serialize` method in the value type')
-    }
-    this.valueType = valueType
 
     precheckProof.call(this)
 

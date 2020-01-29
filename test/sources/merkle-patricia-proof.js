@@ -337,7 +337,7 @@ describe('MapProof', () => {
   describe('type checks', () => {
     it('should fail on missing key and value type', () => {
       const json = { entries: [], proof: [] }
-      expect(() => new MapProof(json)).to.throw('key type')
+      expect(() => new MapProof(json)).to.throw('Invalid value type')
     })
 
     it('should fail on missing value type', () => {

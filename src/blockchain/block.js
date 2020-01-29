@@ -1,8 +1,6 @@
 import * as Long from 'long'
 import * as protocol from '../../proto/protocol.js'
-import { SIGNATURE_LENGTH } from '../types/message'
 import { hexadecimalToUint8Array, uint8ArrayToHexadecimal } from '../types/convert'
-import { PUBLIC_KEY_LENGTH } from '../types/hexadecimal'
 import { hash, verifySignature } from '../crypto'
 
 /**
@@ -14,15 +12,22 @@ import { hash, verifySignature } from '../crypto'
 export function verifyBlock (data, validators) {
   return new Promise(resolve => {
     const block = {
+      additional_headers: { headers: {
+          entry:
+          [
+            {
+              key: 'proposer_id',
+              value: data.block.additional_headers.headers.proposer_id
+            }
+          ]
+        }
+      },
+      error_hash: { data: hexadecimalToUint8Array(data.block.error_hash) },
       prev_hash: { data: hexadecimalToUint8Array(data.block.prev_hash) },
       tx_hash: { data: hexadecimalToUint8Array(data.block.tx_hash) },
       state_hash: { data: hexadecimalToUint8Array(data.block.state_hash) }
     }
     let blockHash
-
-    if (data.block.proposer_id !== 0) {
-      block.proposer_id = data.block.proposer_id
-    }
 
     if (data.block.height !== 0) {
       block.height = data.block.height
@@ -40,7 +45,9 @@ export function verifyBlock (data, validators) {
     for (let i = 0; i < data.precommits.length; i++) {
       const precommit = data.precommits[i]
       const buffer = hexadecimalToUint8Array(precommit)
-      const message = protocol.exonum.consensus.Precommit.decode(new Uint8Array(buffer.slice(34, buffer.length - SIGNATURE_LENGTH)))
+      const singedMsg = protocol.exonum.consensus.SignedMessage.decode(new Uint8Array(buffer))
+      let message = protocol.exonum.consensus.ExonumMessage.decode(singedMsg.payload)
+      message = message.precommit
       const plain = protocol.exonum.consensus.Precommit.toObject(message)
 
       if (Long.fromValue(plain.height).compare(Long.fromValue(data.block.height)) !== 0) {
@@ -52,13 +59,13 @@ export function verifyBlock (data, validators) {
       }
 
       const publicKey = validators[plain.validator || 0]
-      if (uint8ArrayToHexadecimal(buffer.slice(0, PUBLIC_KEY_LENGTH)) !== publicKey) {
+      if (uint8ArrayToHexadecimal(singedMsg.author.data) !== publicKey) {
         throw new Error('Precommit public key is not match with buffer')
       }
 
-      const signature = uint8ArrayToHexadecimal(buffer.slice(buffer.length - SIGNATURE_LENGTH, buffer.length))
+      const signature = uint8ArrayToHexadecimal(singedMsg.signature.data)
 
-      if (!verifySignature(signature, publicKey, buffer.slice(0, buffer.length - SIGNATURE_LENGTH))) {
+      if (!verifySignature(signature, publicKey, singedMsg.payload)) {
         throw new Error('Precommit signature is wrong')
       }
     }
