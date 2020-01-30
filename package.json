@@ -1,6 +1,6 @@
 {
   "name": "exonum-client",
-  "version": "0.18.1",
+  "version": "0.18.2",
   "description": "Light Client for Exonum Blockchain",
   "main": "./lib/index.js",
   "engines": {
@@ -13,7 +13,7 @@
   "files": [
     "dist",
     "lib",
-    "proto/**/*.js"
+    "proto"
   ],
   "dependencies": {
     "axios": "^0.19.1",
