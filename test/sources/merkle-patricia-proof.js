@@ -606,9 +606,9 @@ describe('MapProof', () => {
       }, PublicKey, Uint16)
 
       const nodeHash = streamHash(
-        [4, 1],
+        [4], // domain separation tag
+        [128, 2], // LEB128 encoding of 256 (bits in the path)
         streamHash(key),
-        [0],
         streamHash([0, 100, 0]) // Blob marker + little-endian encoding of the value
       )
       const expHash = streamHash([3], nodeHash)
@@ -625,9 +625,8 @@ describe('MapProof', () => {
       }, MapProof.rawKey(PublicKey), Uint16)
 
       const nodeHash = streamHash(
-        [4, 1],
+        [4, 128, 2], // Marker + LEB128(256)
         key,
-        [0],
         streamHash([0, 100, 0]) // Blob marker + little-endian encoding of the value
       )
       const expHash = streamHash([3], nodeHash)
@@ -647,9 +646,8 @@ describe('MapProof', () => {
       }, PublicKey, Uint16)
 
       const nodeHash = streamHash(
-        [4, 1],
+        [4, 128, 2],
         Exonum.PublicKey.serialize(key, [], 0),
-        [0],
         key
       )
       const expHash = streamHash([3], nodeHash)

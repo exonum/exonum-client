@@ -214,8 +214,8 @@ function serializeBranchNode (leftHash, rightHash, leftPath, rightPath) {
 }
 
 function serializeIsolatedNode (path, hash) {
-  // `1, ...path.key, 0` is the old `ProofPath` serialization for terminal paths.
-  const buffer = [MAP_BRANCH_PREFIX, 1, ...path.key, 0]
+  const buffer = [MAP_BRANCH_PREFIX]
+  path.serialize(buffer)
   Hash.serialize(hash, buffer, buffer.length)
   return buffer
 }
