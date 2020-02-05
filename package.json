@@ -64,7 +64,7 @@
   },
   "scripts": {
     "test": "cross-env BABEL_ENV=test grunt test",
-    "proto": "pbjs --keep-case -t static-module proto/exonum/**/*.proto -o ./proto/protocol.js",
+    "proto": "pbjs --keep-case -t static-module -p proto proto/exonum/**/*.proto -o ./proto/protocol.js",
     "proto:test": "pbjs --keep-case -t static-module -r tests -p proto test/sources/proto/**/*.proto -o ./test/sources/proto/stubs.js",
     "proto:integration-tests": "pbjs --keep-case -t static-module -r tests -p proto integration-tests/src/proto/**/*.proto -o ./integration-tests/src/proto/stubs.js",
     "integration:build": "cargo build --manifest-path integration-tests/Cargo.toml",
