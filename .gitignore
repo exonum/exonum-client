@@ -9,10 +9,14 @@
 .vscode
 *.iml
 
+# npm output
 node_modules
 npm-debug.log
+
+# Auto-generated files
 coverage
 dist
 lib
 /proto/**/*.js
 /test/sources/proto/**/*.js
+/npm

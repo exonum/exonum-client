@@ -64,6 +64,17 @@ jobs:
     - npm run integration:unix
     after_script:
     - npm run postintegration:unix
+  - stage: deploy
+    node_js: '10'
+    script: skip
+    deploy:
+      - provider: script
+        script: npm run git-publish
+        skip_cleanup: true
+        # FIXME: restore once tested
+        # on:
+        #  branch: master
+        #  repo: exonum/exonum-client
 
 after_success:
 - npm run coveralls
