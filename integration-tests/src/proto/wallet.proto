@@ -16,7 +16,7 @@ syntax = "proto3";
 
 package exonum.client.integration_tests;
 
-import "types.proto";
+import "exonum/crypto/types.proto";
 
 // Wallet struct used to persist data within the service.
 message Wallet {
