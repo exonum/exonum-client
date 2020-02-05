@@ -43,8 +43,6 @@ cache:
   - "$HOME/.cargo"
 
 script:
-- npm run proto
-- npm run proto:test
 - npm test
 - node examples/map-proof.js
 
