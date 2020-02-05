@@ -67,7 +67,7 @@ jobs:
     env: FEATURE=deploy
     node_js: '10'
     script: skip
-    after_success: skip
+    after_success: echo "Done"
     deploy:
     - provider: npm
       email: exonum.bitfury@gmail.com
@@ -82,8 +82,7 @@ jobs:
       script: npm run git-publish
       skip_cleanup: true
       on:
-        # FIXME: replace once tested (branch: master)
-        all_branches: true
+        branch: master
         repo: exonum/exonum-client
 
 after_success:

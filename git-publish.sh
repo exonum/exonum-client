@@ -18,7 +18,6 @@ git clone -b npm "https://${GH_TOKEN}@github.com/${REPO}.git" npm
 
 rm -rf npm/* npm/.gitkeep
 
-cp -r dist npm/
 cp -r lib npm/
 cp -r proto npm/
 cp LICENSE npm/
