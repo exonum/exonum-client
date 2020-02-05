@@ -4,7 +4,7 @@ import { cleanZeroValuedFields } from '../helpers'
 
 import * as protobuf from '../../proto/protocol.js'
 import { hexadecimalToUint8Array, uint8ArrayToHexadecimal } from './convert'
-const { CoreMessage, SignedMessage } = protobuf.exonum.messages
+const { CoreMessage, SignedMessage } = protobuf.exonum
 
 export class Verified {
   constructor (schema, payload, author, signature) {
