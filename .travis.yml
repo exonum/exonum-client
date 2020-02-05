@@ -65,6 +65,7 @@ jobs:
     after_script:
     - npm run postintegration:unix
   - stage: deploy
+    env: FEATURE=deploy
     node_js: '10'
     script: skip
     deploy:
