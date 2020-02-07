@@ -2,9 +2,9 @@ import nacl from 'tweetnacl'
 import * as crypto from '../crypto'
 import { cleanZeroValuedFields } from '../helpers'
 
-import * as protobuf from '../../proto/protocol.js'
+import * as protobuf from '../../proto/protocol'
 import { hexadecimalToUint8Array, uint8ArrayToHexadecimal } from './convert'
-const { CoreMessage, SignedMessage } = protobuf.exonum.messages
+const { CoreMessage, SignedMessage } = protobuf.exonum
 
 export class Verified {
   constructor (schema, payload, author, signature) {

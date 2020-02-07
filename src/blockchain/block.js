@@ -6,7 +6,7 @@ import { hash } from '../crypto'
 import * as protobuf from '../../proto/protocol'
 import { cleanZeroValuedFields } from '../helpers'
 const Block = protobuf.exonum.Block
-const { CoreMessage } = protobuf.exonum.messages
+const { CoreMessage } = protobuf.exonum
 
 /**
  * Validate block and each precommit in block
@@ -26,7 +26,7 @@ export function verifyBlock ({ block, precommits }, validators) {
       key,
       value: Uint8Array.from(value)
     }))
-  blockMessage.additional_headers = { headers: { entry: additionalHeaders } }
+  blockMessage.additional_headers = { headers: { entries: additionalHeaders } }
 
   const buffer = Block.encode(blockMessage).finish()
   const blockHash = hash(buffer)

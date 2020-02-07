@@ -1,4 +1,4 @@
-// Copyright 2018 The Exonum Team
+// Copyright 2020 The Exonum Team
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,18 +14,15 @@
 
 syntax = "proto3";
 
-package exonum.client.integration_tests;
+package exonum.common;
 
-import "exonum/crypto/types.proto";
+option java_package = "com.exonum.messages.common";
 
-// Wallet struct used to persist data within the service.
-message Wallet {
-    // Public key of the wallet owner.
-    exonum.crypto.PublicKey pub_key = 1;
-    // Name of the wallet owner.
-    string name = 2;
-    // Current balance.
-    uint64 balance = 3;
-    // Unique id
-    string uniq_id = 4;
+// Vector of bits.
+message BitVec {
+  // Buffer containing the bits. Most significant bits of each byte
+  // have lower indexes in the vector.
+  bytes data = 1;
+  // Number of bits.
+  uint64 len = 2;
 }

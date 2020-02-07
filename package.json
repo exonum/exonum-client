@@ -64,9 +64,9 @@
   },
   "scripts": {
     "test": "cross-env BABEL_ENV=test grunt test",
-    "proto": "pbjs --keep-case -t static-module proto/**/*.proto -o ./proto/protocol.js",
-    "proto:test": "pbjs --keep-case -t static-module -r tests proto/**/*.proto test/sources/proto/**/*.proto -o ./test/sources/proto/stubs.js",
-    "proto:integration-tests": "pbjs --keep-case -t static-module -r tests proto/**/*.proto integration-tests/src/proto/**/*.proto -o ./integration-tests/src/proto/stubs.js",
+    "proto": "pbjs --keep-case -t static-module -p proto proto/exonum/*.proto proto/exonum/**/*.proto -o ./proto/protocol.js",
+    "proto:test": "pbjs --keep-case -t static-module -r tests -p proto test/sources/proto/*.proto -o ./test/sources/proto/stubs.js",
+    "proto:integration-tests": "pbjs --keep-case -t static-module -r tests -p proto integration-tests/src/proto/*.proto -o ./integration-tests/src/proto/stubs.js",
     "integration:build": "cargo build --manifest-path integration-tests/Cargo.toml",
     "integration": "npm run proto:integration-tests && cross-env BABEL_ENV=test mocha -r @babel/register integration-tests/test.js",
     "preintegration:unix": "npm run integration:build && npm run postintegration:unix && cargo run --manifest-path integration-tests/Cargo.toml & sleep 10",
@@ -75,7 +75,8 @@
     "coveralls": "cross-env NODE_ENV=test nyc mocha ./test/sources/*.js && cat ./coverage/lcov.info | coveralls",
     "prepare": "npm run proto && npm run proto:test && grunt compile",
     "lint": "eslint ./src ./test",
-    "lint:fix": "npm run lint -- --fix"
+    "lint:fix": "npm run lint -- --fix",
+    "git-publish": "npm run prepare && . ./git-publish.sh"
   },
   "repository": {
     "type": "git",

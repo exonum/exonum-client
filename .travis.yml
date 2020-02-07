@@ -1,3 +1,4 @@
+os: linux
 dist: bionic
 addons:
   apt:
@@ -31,7 +32,7 @@ node_js:
 env:
   global:
   - RUSTFLAGS="-D warnings"
-  - ROCKSDB_LIB_DIR=/usr/lib/x86_64-linux-gnu
+  - ROCKSDB_LIB_DIR=/usr/lib
   - SNAPPY_LIB_DIR=/usr/lib/x86_64-linux-gnu
   matrix:
   - FEATURE=test
@@ -43,8 +44,6 @@ cache:
   - "$HOME/.cargo"
 
 script:
-- npm run proto
-- npm run proto:test
 - npm test
 - node examples/map-proof.js
 
@@ -65,17 +64,27 @@ jobs:
     after_script:
     - npm run postintegration:unix
 
+  - stage: deploy
+    env: FEATURE=deploy
+    node_js: '10'
+    script: skip
+    after_success: echo "Done"
+    deploy:
+    - provider: npm
+      email: exonum.bitfury@gmail.com
+      api_key:
+        secure: KQihlRK+otmBcmKWA3w/HKPQxT19KnNVyP+nxaZp/lVrcUqszN1Qr0FAegz8Yaai6y2LVHA7ZKpGIMj9VZ1jEzcp59+jjYDj+gef8/kgPTgUjbmGnOs3p82ljZj4efQSuVwSRiEp4M9hyz2OlIbcPzu9bufLRx8DTmLKbFRWQ/7kaPVEzyJ1Me9kAPwFBVOptMkNR7mFFCNna0jJemi3hBwy59I0tTMAZNh/UUIu5kzG8JJ1kDxEuFLMNq65b6btjcd3gVs/nb3QjTtfx67BcMUCmdOvdgrXdZ1NtcN2SthDG+Ldott1wfL3vpPjCdILB5FrNQz//LSM7REGiNL7x/X51hhkMkD8oZq+SsdTMzODd6N+hoo+z/peKAqGskhsui671isdrwFwW/7u8PLz/kwfT6UEcHSrctwMl4ICICYpF81L/fSpysHMt83+1XqqECEu7pXwAsbgu37GO2vPg3QU3+HtFHdFaIQuGedXw+pbskMn/pbj4Ekh+//nVkhcDM6eJAR5WMXPnznEl9QEY7uSYepPRNLPG4LcBPIHARhSddq07ksWwD2uT2GogQr//Z2lRHjvy4eY+mEwVH4vna/FmQ2mRA9sgrX7E9TvptmamBMcCRZYol3VIDo1Eee3BuR9E5wxjHEyzkfEMrLIr0Oqe3K4L+rrNjfE8wnxBvw=
+      on:
+        branch: master
+        tags: true
+        repo: exonum/exonum-client
+      skip_cleanup: true
+    - provider: script
+      script: npm run git-publish
+      skip_cleanup: true
+      on:
+        branch: master
+        repo: exonum/exonum-client
+
 after_success:
 - npm run coveralls
-
-deploy:
-  provider: npm
-  email: exonum.bitfury@gmail.com
-  api_key:
-    secure: KQihlRK+otmBcmKWA3w/HKPQxT19KnNVyP+nxaZp/lVrcUqszN1Qr0FAegz8Yaai6y2LVHA7ZKpGIMj9VZ1jEzcp59+jjYDj+gef8/kgPTgUjbmGnOs3p82ljZj4efQSuVwSRiEp4M9hyz2OlIbcPzu9bufLRx8DTmLKbFRWQ/7kaPVEzyJ1Me9kAPwFBVOptMkNR7mFFCNna0jJemi3hBwy59I0tTMAZNh/UUIu5kzG8JJ1kDxEuFLMNq65b6btjcd3gVs/nb3QjTtfx67BcMUCmdOvdgrXdZ1NtcN2SthDG+Ldott1wfL3vpPjCdILB5FrNQz//LSM7REGiNL7x/X51hhkMkD8oZq+SsdTMzODd6N+hoo+z/peKAqGskhsui671isdrwFwW/7u8PLz/kwfT6UEcHSrctwMl4ICICYpF81L/fSpysHMt83+1XqqECEu7pXwAsbgu37GO2vPg3QU3+HtFHdFaIQuGedXw+pbskMn/pbj4Ekh+//nVkhcDM6eJAR5WMXPnznEl9QEY7uSYepPRNLPG4LcBPIHARhSddq07ksWwD2uT2GogQr//Z2lRHjvy4eY+mEwVH4vna/FmQ2mRA9sgrX7E9TvptmamBMcCRZYol3VIDo1Eee3BuR9E5wxjHEyzkfEMrLIr0Oqe3K4L+rrNjfE8wnxBvw=
-  on:
-    branch: master
-    tags: true
-    repo: exonum/exonum-client
-    node: '10'
-  skip_cleanup: true
