@@ -1,7 +1,6 @@
 /**
  * Example how to use `MapProof`s in client apps.
  */
-'use strict'
 
 const Exonum = require('..')
 const { MapProof, PublicKey } = Exonum
