@@ -15,8 +15,9 @@
 //! Rocket-powered web service implementing CRUD operations on a `ProofMapIndex`.
 
 use actix_web::{
-    error::ErrorBadRequest, http::Method, server, App, Json, Path, Query, Result as ApiResult,
-    State,
+    error::{ErrorBadRequest, ErrorNotFound},
+    http::Method,
+    server, App, Json, Path, Query, Result as ApiResult, State,
 };
 use chrono::Utc;
 use exonum::{
@@ -360,7 +361,7 @@ fn generate_block_proof(params: Query<BlockParams>) -> ApiResult<Json<BlockRespo
     let mut rng = ChaChaRng::seed_from_u64(params.seed);
 
     let mut additional_headers = AdditionalHeaders::new();
-    additional_headers.insert::<ProposerId>(ValidatorId(0).into());
+    additional_headers.insert::<ProposerId>(ValidatorId(0));
     let block = Block {
         height: Height(params.height),
         tx_count: rng.gen_range(0, 10),
@@ -443,6 +444,71 @@ fn get_address(params: Query<AddressQuery>) -> ApiResult<Json<CallerAddress>> {
     Ok(Json(addr))
 }
 
+#[derive(ProtobufConvert, BinaryValue)]
+#[protobuf_convert(source = "proto::MockPayload")]
+struct MockPayload {
+    metadata: String,
+    retries: u32,
+}
+
+#[derive(Deserialize)]
+struct ReceiveBody {
+    tx_body: Verified<AnyTx>,
+}
+
+#[derive(Serialize)]
+struct ReceiveResponse {
+    tx_hash: Hash,
+}
+
+fn mock_receive_tx(
+    db: State<Arc<TemporaryDB>>,
+    transaction: Json<ReceiveBody>,
+) -> ApiResult<Json<ReceiveResponse>> {
+    let transaction = transaction.into_inner().tx_body;
+    let tx_hash = transaction.object_hash();
+    let payload = transaction.payload();
+    let payload: MockPayload = payload.parse().map_err(ErrorBadRequest)?;
+
+    let fork = db.fork();
+    fork.get_map("transaction_pool")
+        .put(&tx_hash, payload.retries);
+    db.merge(fork.into_patch()).unwrap();
+    Ok(Json(ReceiveResponse { tx_hash }))
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "snake_case", tag = "type")]
+enum TransactionStatus {
+    InPool,
+    Committed,
+}
+
+#[derive(Deserialize)]
+struct StatusQuery {
+    hash: Hash,
+}
+
+fn mock_tx_status(
+    db: State<Arc<TemporaryDB>>,
+    query: Query<StatusQuery>,
+) -> ApiResult<Json<TransactionStatus>> {
+    let fork = db.fork();
+    let mut map = fork.get_map::<_, Hash, u32>("transaction_pool");
+    let retry = map
+        .get(&query.hash)
+        .ok_or_else(|| ErrorNotFound("transaction not found"))?;
+    let status = if retry == 0 {
+        TransactionStatus::Committed
+    } else {
+        map.put(&query.hash, retry - 1);
+        TransactionStatus::InPool
+    };
+    drop(map);
+    db.merge(fork.into_patch()).unwrap();
+    Ok(Json(status))
+}
+
 fn create_app(db: Arc<TemporaryDB>) -> App<Arc<TemporaryDB>> {
     App::with_state(db)
         .route("/wallets", Method::POST, create_wallet)
@@ -456,6 +522,8 @@ fn create_app(db: Arc<TemporaryDB>) -> App<Arc<TemporaryDB>> {
         .route("/tables", Method::GET, generate_table_proof)
         .route("/messages/transaction", Method::GET, generate_wallet_tx)
         .route("/messages/transaction", Method::POST, check_wallet_tx)
+        .route("/mock/transactions", Method::GET, mock_tx_status)
+        .route("/mock/transactions", Method::POST, mock_receive_tx)
         .route("/messages/block", Method::GET, generate_block_proof)
         .route("/address", Method::GET, get_address)
 }
