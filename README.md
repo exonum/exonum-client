@@ -260,7 +260,8 @@ Sending data to the blockchain from a light client consist of 3 steps:
 2. [Sign](#sign-data) data of transaction using signing key pair
 3. [Send transaction](#send-single-transaction) to the blockchain
 
-Read more about [transactions][docs:architecture:transactions] in Exonum.
+Read more about [transactions][docs:architecture:transactions] in Exonum,
+or see [the example of their usage](examples/transactions.js).
 
 ### Define transaction
 
@@ -387,7 +388,7 @@ The returned object has the following fields:
 | **entries** | Elements that are proven to exist in the list, together with their indexes | `Array<{ index: number, value: V }>` |
 | **length** | List length | `Number` |
 
-<!-- FIXME: Add example -->
+See an [example of using a `ListProof`](examples/list-proof.js).
 
 ### Map proof
 
@@ -418,7 +419,7 @@ The returned object has the following fields:
 | **missingKeys** | Set of keys which the proof asserts as missing from the map | `Set<KeyType>` |
 | **entries** | Map of key-value pairs that the are proven to exist in the map | `Map<KeyType, ValueType>` |
 
-An [example of using a `MapProof`](examples/map-proof.js).
+See an [example of using a `MapProof`](examples/map-proof.js).
 
 ## Integrity checks
 
@@ -438,8 +439,6 @@ The `verifyBlock` function throws an error if a block is invalid.
 |---|---|---|
 | **data** | Structure with block and precommits. | `Object` |
 | **validators** | An array of validators public keys as a hexadecimal strings. | `Array` |
-
-<!-- FIXME: Add example -->
 
 ### Verify table
 

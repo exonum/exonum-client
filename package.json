@@ -4,7 +4,7 @@
   "description": "Light Client for Exonum Blockchain",
   "main": "./lib/index.js",
   "engines": {
-    "node": ">=4"
+    "node": ">=8"
   },
   "directories": {
     "lib": "lib",
