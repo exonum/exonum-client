@@ -17,7 +17,7 @@
 // For protobuf generated files.
 #![allow(bare_trait_objects, renamed_and_removed_lints)]
 
-pub use self::wallet::Wallet;
+pub use self::wallet::{MockPayload, Wallet};
 
 include!(concat!(env!("OUT_DIR"), "/protobuf_mod.rs"));
 

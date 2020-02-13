@@ -20,12 +20,17 @@ import "exonum/crypto/types.proto";
 
 // Wallet struct used to persist data within the service.
 message Wallet {
-    // Public key of the wallet owner.
-    exonum.crypto.PublicKey pub_key = 1;
-    // Name of the wallet owner.
-    string name = 2;
-    // Current balance.
-    uint64 balance = 3;
-    // Unique id
-    string uniq_id = 4;
+  // Public key of the wallet owner.
+  exonum.crypto.PublicKey pub_key = 1;
+  // Name of the wallet owner.
+  string name = 2;
+  // Current balance.
+  uint64 balance = 3;
+  // Unique id
+  string uniq_id = 4;
+}
+
+message MockPayload {
+  string metadata = 1;
+  uint32 retries = 2;
 }

@@ -45,6 +45,7 @@ cache:
 
 script:
 - npm test
+- node examples/list-proof.js
 - node examples/map-proof.js
 
 jobs:
@@ -61,6 +62,8 @@ jobs:
     - npm run integration:build
     script:
     - npm run integration:unix
+    # The transactions example requires the integration server, so we test it here.
+    - npm run preintegration:unix && node examples/transactions.js
     after_script:
     - npm run postintegration:unix
 
