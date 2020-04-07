@@ -19,13 +19,13 @@ Used to sign transactions before sending to blockchain and verify blockchain res
 Contains numerous helper functions. Find out more information about the [architecture and tasks][docs:clients] of light clients in Exonum.
 
 If you are using Exonum in your project and want to be listed on our website & GitHub list — write
-us a line to <exonum@bitfury.com>.
+us a line to <contact@exonum.com>.
 
 Library compatibility with Exonum core:
 
 | JavaScript light client | Exonum core |
 |---|---|
-| 0.18.3 | 1.0.0-rc.1 |
+| 0.18.3 | 1.0.* |
 | 0.17.1 | 0.12.* |
 | 0.16.9 | 0.11.* |
 | 0.16.9 | 0.10.* |
@@ -562,7 +562,7 @@ Detailed changes for each release are documented in the [CHANGELOG](CHANGELOG.md
 
 ## Other languages support
 
-[Light Client Java][lc-java]
+Light Clients for [Java][lc-java] and [Python][lc-python]
 
 ## License
 
@@ -594,3 +594,4 @@ Exonum Client is licensed under the Apache License (Version 2.0). See [LICENSE](
 [protobuf]: https://developers.google.com/protocol-buffers/
 [protobufjs]: https://www.npmjs.com/package/protobufjs
 [lc-java]: https://github.com/exonum/exonum-java-binding/tree/master/exonum-light-client
+[lc-python]: https://github.com/exonum/exonum-python-client
