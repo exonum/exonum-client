@@ -239,12 +239,12 @@ describe('ProofPath', () => {
 
   describe('commonPrefix', () => {
     const pairs = [
-      [ '100', '10001', '100' ],
-      [ '1001', '1011101', '10' ],
-      [ '1001', '1001', '1001' ],
-      [ '00010100', '0001010111', '0001010' ],
-      [ '000101010', '0001010111', '00010101' ],
-      [ '0001001010000101010', '00010010100001010111', '000100101000010101' ]
+      ['100', '10001', '100'],
+      ['1001', '1011101', '10'],
+      ['1001', '1001', '1001'],
+      ['00010100', '0001010111', '0001010'],
+      ['000101010', '0001010111', '00010101'],
+      ['0001001010000101010', '00010010100001010111', '000100101000010101']
     ]
 
     pairs.forEach(({ 0: xStr, 1: yStr, 2: prefix }) => {
@@ -258,7 +258,7 @@ describe('ProofPath', () => {
 
     it('should return an empty bit slice when appropriate', () => {
       let x = new ProofPath('00')
-      let y = new ProofPath('10001')
+      const y = new ProofPath('10001')
       expect(x.commonPrefix(y).toJSON()).to.equal('')
       expect(y.commonPrefix(x).toJSON()).to.equal('')
 
@@ -570,7 +570,7 @@ describe('MapProof', () => {
     })
 
     it('should throw on unordered paths in proof', () => {
-      let json = {
+      const json = {
         entries: [],
         proof: [
           { path: '001', hash: '34264463370758a230017c5635678c9a39fa90a5081ec08f85de6c56243f4011' },

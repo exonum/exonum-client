@@ -73,10 +73,10 @@ export function sendQueue (
   timeout = ATTEMPT_TIMEOUT
 ) {
   let index = 0
-  let responses = []
+  const responses = []
 
   return (function shift () {
-    let transaction = transactions[index++]
+    const transaction = transactions[index++]
 
     return send(explorerBasePath, transaction, attempts, timeout).then(response => {
       responses.push(response)
