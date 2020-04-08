@@ -104,11 +104,11 @@ expect(proof.missingKeys.size).to.equal(2)
 // Output elements asserted by the proof to exist or to be absent in the
 // underlying index.
 console.log('\nEntries:')
-for (let wallet of proof.entries.values()) {
+for (const wallet of proof.entries.values()) {
   console.log(wallet)
 }
 console.log('\nMissing keys:')
-for (let missingKey of proof.missingKeys) {
+for (const missingKey of proof.missingKeys) {
   console.log(missingKey)
 }
 
@@ -141,7 +141,7 @@ proof = {
     },
     {
       key: 'c1608da6fe83023f95c1d9d31d070c4e70b93059f1a298b1a02e85eb4414c855',
-      'value': {
+      value: {
         pub_key: 'c1608da6fe83023f95c1d9d31d070c4e70b93059f1a298b1a02e85eb4414c855',
         name: 'c1608da6',
         balance: 3986358255,

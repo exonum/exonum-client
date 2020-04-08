@@ -65,7 +65,7 @@ expect(proof.length).to.equal(20)
 // Output elements asserted by the proof to exist in the underlying index.
 // As you see, each entry contains an `index` in the underlying list, and a `value`.
 console.log('\nEntries:')
-for (let { index, value } of proof.entries) {
+for (const { index, value } of proof.entries) {
   console.log(`list[${index}] = ${value}`)
 }
 

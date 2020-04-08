@@ -1,12 +1,8 @@
-/* eslint-env node, mocha */
-/* eslint-disable no-unused-expressions */
-import * as Protobuf from 'protobufjs/light'
+// /* eslint-env node, mocha */
+// /* eslint-disable no-unused-expressions */
+import { Field, Root, Type } from 'protobufjs/light'
 
-const Root = Protobuf.Root
-const Type = Protobuf.Type
-const Field = Protobuf.Field
-
-let root = new Root()
+const root = new Root()
 
 const expect = require('chai').expect
 const Exonum = require('../../src')
@@ -14,14 +10,14 @@ const Exonum = require('../../src')
 describe('Check protobuf serialization', function () {
   describe('Process Bytes', function () {
     it('should create data and return array of 8-bit integers when the value is valid for bytes', function () {
-      let Type1Protobuf = new Type('Type1').add(new Field('name', 1, 'bytes'))
+      const Type1Protobuf = new Type('Type1').add(new Field('name', 1, 'bytes'))
       Type1Protobuf.add(new Field('type', 2, 'string'))
       root.define('Type1Protobuf').add(Type1Protobuf)
       const Type1 = Exonum.newType(Type1Protobuf)
       const data = {
         data: {
-          'name': 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36',
-          'type': 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'
+          name: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36',
+          type: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36'
         },
         serialized: Uint8Array.from([
           10, 48, 127, 159, 58, 225, 166, 250, 107, 150, 182, 215, 221, 58,
@@ -37,14 +33,14 @@ describe('Check protobuf serialization', function () {
     })
 
     it('should throw error when the value is invalid string', function () {
-      let Type2Protobuf = new Type('Type2').add(new Field('name', 1, 'bytes'))
+      const Type2Protobuf = new Type('Type2').add(new Field('name', 1, 'bytes'))
       Type2Protobuf.add(new Field('type', 2, 'string'))
       root.define('Type2Protobuf').add(Type2Protobuf)
       const Type2 = Exonum.newType(Type2Protobuf)
       const data = {
         data: {
-          'name': 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36',
-          'type': 1
+          name: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36',
+          type: 1
         },
         serialized: [
           10, 48, 127, 159, 58, 225, 166, 250, 107, 150, 182, 215, 221, 58,
@@ -62,12 +58,12 @@ describe('Check protobuf serialization', function () {
 
   describe('Process int', function () {
     it('should create data and return array of 8-bit integers when the value is valid for int 32', function () {
-      let IntType1Protobuf = new Type('IntType1').add(new Field('amount', 1, 'int32'))
+      const IntType1Protobuf = new Type('IntType1').add(new Field('amount', 1, 'int32'))
       root.define('IntType1Protobuf').add(IntType1Protobuf)
       const IntType1 = Exonum.newType(IntType1Protobuf)
       const data = {
         data: {
-          'amount': 1
+          amount: 1
         },
         serialized: Uint8Array.from([8, 1])
       }
@@ -76,12 +72,12 @@ describe('Check protobuf serialization', function () {
     })
 
     it('should create data and return array of 8-bit integers when the value is valid for int 32 in string', function () {
-      let IntType2Protobuf = new Type('IntType2').add(new Field('amount', 1, 'int32'))
+      const IntType2Protobuf = new Type('IntType2').add(new Field('amount', 1, 'int32'))
       root.define('IntType2Protobuf').add(IntType2Protobuf)
       const IntType2 = Exonum.newType(IntType2Protobuf)
       const data = {
         data: {
-          'amount': '34506'
+          amount: '34506'
         },
         serialized: Uint8Array.from([8, 202, 141, 2])
       }
@@ -89,12 +85,12 @@ describe('Check protobuf serialization', function () {
     })
 
     it('should create data and return array of 8-bit integers when the value is valid for negative  int 32', function () {
-      let IntType3Protobuf = new Type('IntType3').add(new Field('amount', 1, 'int32'))
+      const IntType3Protobuf = new Type('IntType3').add(new Field('amount', 1, 'int32'))
       root.define('IntType3Protobuf').add(IntType3Protobuf)
       const IntType3 = Exonum.newType(IntType3Protobuf)
       const data = {
         data: {
-          'amount': -1
+          amount: -1
         },
         serialized: Uint8Array.from([8, 255, 255, 255, 255, 255, 255, 255, 255, 255, 1])
       }
@@ -102,12 +98,12 @@ describe('Check protobuf serialization', function () {
     })
 
     it('should create data and return array of 8-bit integers with lenght and 0 when the value not found', function () {
-      let IntType4Protobuf = new Type('IntType4').add(new Field('amount', 1, 'int32'))
+      const IntType4Protobuf = new Type('IntType4').add(new Field('amount', 1, 'int32'))
       root.define('IntType4Protobuf').add(IntType4Protobuf)
       const IntType4 = Exonum.newType(IntType4Protobuf)
       const data = {
         data: {
-          'amount': 'dsad'
+          amount: 'dsad'
         },
         serialized: Uint8Array.from([8, 0])
       }

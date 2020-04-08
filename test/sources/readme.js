@@ -10,7 +10,7 @@ const Field = $protobuf.Field
 
 describe('Examples from README.md', function () {
   describe('Custom type section', function () {
-    let Message = new Type('CustomMessage')
+    const Message = new Type('CustomMessage')
     Message.add(new Field('balance', 1, 'uint32'))
     Message.add(new Field('name', 2, 'string'))
     const User = Exonum.newType(Message)

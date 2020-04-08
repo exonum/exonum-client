@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.18.3 (February 7, 2020)
+
+* Support of Exonum core 1.0.0
+
 ## 0.18.1 (January 24, 2020)
 
 * Support of Exonum core 0.13

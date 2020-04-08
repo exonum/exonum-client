@@ -255,7 +255,7 @@ function collect (entries) {
       }
       return hashIsolatedNode(entries[0])
 
-    default:
+    default: {
       const contour = []
 
       // invariant: equal to the common prefix of the 2 last nodes in the contour
@@ -281,6 +281,7 @@ function collect (entries) {
         lastPrefix = fold(contour, lastPrefix)
       }
       return contour[0].hash
+    }
   }
 }
 

@@ -300,7 +300,7 @@ describe('Send transaction to the blockchain', () => {
     it('should throw error when wrong explorer base path is passed', async () => {
       const paths = [null, false, 42, new Date(), {}, []]
 
-      for (let value of paths) {
+      for (const value of paths) {
         await expect(Exonum.send(value, transaction))
           .to.be.rejectedWith('Explorer base path endpoint of wrong data type is passed.')
       }

@@ -25,9 +25,9 @@ root.define('CreateTypeProtobuf').add(CreateTypeProtobuf)
 const CreateType = Exonum.newType(CreateTypeProtobuf)
 const TYPE_DATA = {
   data: {
-    'pub_key': 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36',
-    'name': 'Smart wallet',
-    'balance': 359120
+    pub_key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36',
+    name: 'Smart wallet',
+    balance: 359120
   },
   hash: 'b6effedef97bd9bfee70bfa0007029d33d4526fa932c3d0d58ffca9c6a135246',
   signed: 'e0b074a33c370142ed7728782f579dd8701f55b2730f82ad5174c174fdcb597db2a8f9e2e4a4bcfbae8960ab47ddf9a5de741dba69785302649b5affcac1bb07'
@@ -46,9 +46,9 @@ const CreateTransaction = new Exonum.Transaction({
 
 const TX_DATA = {
   data: {
-    'pub_key': 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36',
-    'name': 'Smart wallet',
-    'balance': 359120
+    pub_key: 'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36',
+    name: 'Smart wallet',
+    balance: 359120
   },
   hash: 'b765a4f6f2a08f6c61876a090a18e9cfead4c80f6bab0f9e1b18a14433a94ff1',
   signature: '1224254b30ed5fa2f6f3e61be3e8b0400669eec29b1e295c75a37090fada3b79' +
@@ -73,18 +73,20 @@ describe('Check cryptography', function () {
       expect(keyPair1.secretKey).to.not.equal(null)
     })
 
+    const expectedErrorMessage = 'unexpected type, use Uint8Array'
+
     it('should throw if anything different is passed instead of Uint8Array as a seed', function () {
       expect(() => Exonum.fromSeed(undefined))
-        .to.throw(TypeError, 'unexpected type [object Undefined], use Uint8Array')
+        .to.throw(TypeError, expectedErrorMessage)
 
       expect(() => Exonum.fromSeed(null))
-        .to.throw(TypeError, 'unexpected type [object Null], use Uint8Array')
+        .to.throw(TypeError, expectedErrorMessage)
 
       expect(() => Exonum.fromSeed())
-        .to.throw(TypeError, 'unexpected type [object Undefined], use Uint8Array')
+        .to.throw(TypeError, expectedErrorMessage)
 
       expect(() => Exonum.fromSeed('123'))
-        .to.throw(TypeError, 'unexpected type [object String], use Uint8Array')
+        .to.throw(TypeError, expectedErrorMessage)
     })
 
     it('should throw bad size of Uint8Array is passed as a seed', function () {
@@ -303,6 +305,7 @@ describe('Check cryptography', function () {
     })
   })
 
+  /* eslint-disable quote-props */
   describe('publicKeyToAddress', () => {
     const referencePairs = {
       '0000000000000000000000000000000000000000000000000000000000000000':

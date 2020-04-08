@@ -52,15 +52,13 @@ export function hash (data, type) {
  * @return {string}
  */
 export function sign (secretKey, data, type) {
-  let secretKeyUint8Array
   let buffer
-  let signature
 
   if (!validate.validateHexadecimal(secretKey, 64)) {
     throw new TypeError('secretKey of wrong type is passed. Hexadecimal expected.')
   }
 
-  secretKeyUint8Array = convert.hexadecimalToUint8Array(secretKey)
+  const secretKeyUint8Array = convert.hexadecimalToUint8Array(secretKey)
 
   if (isType(type) || isTransaction(type)) {
     buffer = type.serialize(data)
@@ -78,7 +76,7 @@ export function sign (secretKey, data, type) {
       buffer = new Uint8Array(data)
     }
   }
-  signature = nacl.sign.detached(buffer, secretKeyUint8Array)
+  const signature = nacl.sign.detached(buffer, secretKeyUint8Array)
 
   return convert.uint8ArrayToHexadecimal(signature)
 }
@@ -92,21 +90,19 @@ export function sign (secretKey, data, type) {
  * @return {boolean}
  */
 export function verifySignature (signature, publicKey, data, type) {
-  let signatureUint8Array
-  let publicKeyUint8Array
   let buffer
 
   if (!validate.validateHexadecimal(signature, 64)) {
     throw new TypeError('Signature of wrong type is passed. Hexadecimal expected.')
   }
 
-  signatureUint8Array = convert.hexadecimalToUint8Array(signature)
+  const signatureUint8Array = convert.hexadecimalToUint8Array(signature)
 
   if (!validate.validateHexadecimal(publicKey)) {
     throw new TypeError('publicKey of wrong type is passed. Hexadecimal expected.')
   }
 
-  publicKeyUint8Array = convert.hexadecimalToUint8Array(publicKey)
+  const publicKeyUint8Array = convert.hexadecimalToUint8Array(publicKey)
 
   if (isType(type) || isTransaction(type)) {
     buffer = type.schema.encode(data).finish()
