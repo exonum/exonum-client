@@ -1,10 +1,6 @@
-/* eslint-env node, mocha */
-/* eslint-disable no-unused-expressions */
-import * as Protobuf from 'protobufjs/light'
-
-const Root = Protobuf.Root
-const Type = Protobuf.Type
-const Field = Protobuf.Field
+// /* eslint-env node, mocha */
+// /* eslint-disable no-unused-expressions */
+import { Field, Root, Type } from 'protobufjs/light'
 
 const root = new Root()
 

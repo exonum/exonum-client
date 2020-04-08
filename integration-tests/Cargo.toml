@@ -1,24 +1,24 @@
 [package]
 name = "integration_tests"
 version = "0.0.0"
-authors = ["Exonum Team <exonum@bitfury.com>"]
+authors = ["The Exonum Team <contact@exonum.com>"]
 publish = false
 edition = "2018"
 
 build = "build.rs"
 
 [dependencies]
-exonum = "=1.0.0-rc.1"
-exonum-derive = "=1.0.0-rc.1"
-exonum-merkledb = "=1.0.0-rc.1"
-exonum-proto = "=1.0.0-rc.1"
+exonum = "=1.0.0"
+exonum-derive = "=1.0.0"
+exonum-merkledb = "=1.0.0"
+exonum-proto = "=1.0.0"
 
 actix-web = { version = "0.7.19", default-features = false }
-backtrace = "=0.3.40" # Last Rust 1.36-compatible version
+anyhow = "1.0"
+backtrace = "0.3.46"
 chrono = "0.4.10"
 hex = "0.4.0"
-failure = "0.1.6"
-protobuf = "2.10.0"
+protobuf = "2.12.0"
 rand = "0.7.2"
 rand_chacha = "0.2.1"
 serde = "1.0"
@@ -26,4 +26,4 @@ serde_derive = "1.0"
 uuid = "0.8.1"
 
 [build-dependencies]
-exonum-build = "=1.0.0-rc.1"
+exonum-build = "=1.0.0"

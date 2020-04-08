@@ -305,6 +305,7 @@ describe('Check cryptography', function () {
     })
   })
 
+  /* eslint-disable quote-props */
   describe('publicKeyToAddress', () => {
     const referencePairs = {
       '0000000000000000000000000000000000000000000000000000000000000000':
@@ -313,7 +314,7 @@ describe('Check cryptography', function () {
         '711f87668175afae5f158a4f16ec705e558b8f7c9e494f12534759453bbfa004',
       '84e0d4ae17ceefd457da118729539d121c9f5586f82338d895d1744652ce4455':
         '069714edac1fdb7f932f7f0af657f19982b6e72318781e042d25cea12311086c',
-      f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36:
+      'f5864ab6a5a2190666b47c676bcf15a1f2f07703c5bcafb5749aa735ce8b7c36':
         '4d711ad2af3dead1e8562806f665d203a4174eb961dc19c54eff31053c4c449d'
     }
 
