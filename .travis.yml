@@ -71,7 +71,7 @@ jobs:
     deploy:
     - provider: npm
       email: exonum.bitfury@gmail.com
-      cleanup: false
+      skip_cleanup: true
       api_token:
         secure: KQihlRK+otmBcmKWA3w/HKPQxT19KnNVyP+nxaZp/lVrcUqszN1Qr0FAegz8Yaai6y2LVHA7ZKpGIMj9VZ1jEzcp59+jjYDj+gef8/kgPTgUjbmGnOs3p82ljZj4efQSuVwSRiEp4M9hyz2OlIbcPzu9bufLRx8DTmLKbFRWQ/7kaPVEzyJ1Me9kAPwFBVOptMkNR7mFFCNna0jJemi3hBwy59I0tTMAZNh/UUIu5kzG8JJ1kDxEuFLMNq65b6btjcd3gVs/nb3QjTtfx67BcMUCmdOvdgrXdZ1NtcN2SthDG+Ldott1wfL3vpPjCdILB5FrNQz//LSM7REGiNL7x/X51hhkMkD8oZq+SsdTMzODd6N+hoo+z/peKAqGskhsui671isdrwFwW/7u8PLz/kwfT6UEcHSrctwMl4ICICYpF81L/fSpysHMt83+1XqqECEu7pXwAsbgu37GO2vPg3QU3+HtFHdFaIQuGedXw+pbskMn/pbj4Ekh+//nVkhcDM6eJAR5WMXPnznEl9QEY7uSYepPRNLPG4LcBPIHARhSddq07ksWwD2uT2GogQr//Z2lRHjvy4eY+mEwVH4vna/FmQ2mRA9sgrX7E9TvptmamBMcCRZYol3VIDo1Eee3BuR9E5wxjHEyzkfEMrLIr0Oqe3K4L+rrNjfE8wnxBvw=
       on:
@@ -79,7 +79,7 @@ jobs:
         tags: true
         repo: exonum/exonum-client
     - provider: script
-      cleanup: false
+      skip_cleanup: true
       script: npm run git-publish
       on:
         branch: master
