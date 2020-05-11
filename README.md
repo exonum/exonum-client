@@ -6,7 +6,7 @@
 [![js-standard-style][codestyle-image]][codestyle-url]
 
 [travis-image]: https://img.shields.io/travis/exonum/exonum-client/master.svg
-[travis-url]: https://travis-ci.org/exonum/exonum-client
+[travis-url]: https://travis-ci.com/exonum/exonum-client
 [npmjs-image]: https://img.shields.io/npm/v/exonum-client.svg
 [npmjs-url]: https://www.npmjs.com/package/exonum-client
 [coveralls-image]: https://coveralls.io/repos/github/exonum/exonum-client/badge.svg?branch=master
