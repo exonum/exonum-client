@@ -66,6 +66,8 @@ jobs:
   - stage: deploy
     env: FEATURE=deploy
     node_js: '10'
+    install:
+    - npm install
     script: skip
     after_success: echo "Done"
     deploy:
