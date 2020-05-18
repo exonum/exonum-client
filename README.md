@@ -274,8 +274,8 @@ const Transaction = new Type('CustomMessage')
 
 const SendFunds = new Exonum.Transaction({
   schema: Transaction,
-  service_id: 130,
-  method_id: 0
+  serviceId: 130,
+  methodId: 0
 })
 ```
 
@@ -285,8 +285,8 @@ the next structure:
 | Property | Description | Type |
 |---|---|---|
 | **schema** | Protobuf data structure. | `Object` |
-| **service_id** | [Service ID][docs:architecture:serialization:service-id]. | `Number` |
-| **method_id** | [Method ID][docs:architecture:serialization:message-id]. | `Number` |
+| **serviceId** | [Service ID][docs:architecture:serialization:service-id]. | `Number` |
+| **methodId** | [Method ID][docs:architecture:serialization:method-id]. | `Number` |
 
 `schema` structure is identical to that of [custom data type](#define-data-type).
 
@@ -574,7 +574,7 @@ Exonum Client is licensed under the Apache License (Version 2.0). See [LICENSE](
 [docs:architecture:serialization:network-id]: https://exonum.com/doc/version/latest/architecture/serialization/#etwork-id
 [docs:architecture:serialization:protocol-version]: https://exonum.com/doc/version/latest/architecture/serialization/#protocol-version
 [docs:architecture:serialization:service-id]: https://exonum.com/doc/version/latest/architecture/serialization/#service-id
-[docs:architecture:serialization:message-id]: https://exonum.com/doc/version/latest/architecture/serialization/#message-id
+[docs:architecture:serialization:method-id]: https://exonum.com/doc/version/latest/architecture/serialization/#method-id
 [docs:architecture:transactions]: https://exonum.com/doc/version/latest/architecture/transactions
 [docs:advanced:merkelized-list]: https://exonum.com/doc/version/latest/advanced/merkelized-list
 [docs:glossary:digital-signature]: https://exonum.com/doc/version/latest/glossary/#digital-signature
