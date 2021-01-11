@@ -16,7 +16,7 @@
     "proto"
   ],
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "big-integer": "^1.6.48",
     "binary-search": "^1.3.6",
     "long": "^4.0.0",
