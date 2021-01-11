@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.18.4 (January 11, 2021)
+
+* Update outdated dependencies
+
 ## 0.18.3 (February 7, 2020)
 
 * Support of Exonum core 1.0.0
