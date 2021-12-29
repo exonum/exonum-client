@@ -364,7 +364,7 @@ fn generate_block_proof(params: Query<BlockParams>) -> ApiResult<Json<BlockRespo
     additional_headers.insert::<ProposerId>(ValidatorId(0));
     let block = Block {
         height: Height(params.height),
-        tx_count: rng.gen_range(0, 10),
+        tx_count: rng.gen_range(0..10),
         prev_hash: params.height.object_hash(),
         tx_hash: hash(&[rng.gen()]),
         state_hash: Hash::zero(),
